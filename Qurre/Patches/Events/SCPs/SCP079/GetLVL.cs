@@ -1,0 +1,27 @@
+﻿#pragma warning disable SA1313
+#pragma warning disable CS0618
+using HarmonyLib;
+using static Qurre.API.Events.SCP079;
+
+namespace Qurre.Patches.Events.SCPs.SCP079
+{
+    [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.TargetLevelChanged))]
+    internal static class GetLVL
+    {
+        private static bool Prefix(Scp079PlayerScript __instance, ref int newLvl)
+        {
+            try
+            {
+                var ev = new GetLVLEvent(ReferenceHub.GetHub(__instance.gameObject), __instance.NetworkcurLvl - 1, newLvl);
+                Qurre.Events.SCPs.SCP079.getLVL(ev);
+                newLvl = ev.NewLevel;
+                return ev.IsAllowed;
+            }
+            catch (System.Exception e)
+            {
+                Log.Error($"umm, error in patching SCPs.SCP079.GetLVL:\n{e}\n{e.StackTrace}");
+                return true;
+            }
+        }
+    }
+}
