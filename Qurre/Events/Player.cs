@@ -1,7 +1,6 @@
-﻿using Qurre.API.Events;
+using Qurre.API.Events;
 using Qurre.Events.modules;
 using static Qurre.Events.modules.main;
-
 namespace Qurre.Events
 {
     public static class Player
@@ -39,6 +38,7 @@ namespace Qurre.Events
         public static event AllEvents<ThrowGrenadeEvent> ThrowGrenade;
         public static event AllEvents<TeslaTriggerEvent> TeslaTrigger;
         public static event AllEvents<InteractGeneratorEvent> InteractGenerator;
+        public static event AllEvents<SpeakEvent> Speak;
         public static void banned(BannedEvent ev) => Banned.invoke(ev);
         public static void ban(BanEvent ev) => Ban.invoke(ev);
         public static void kick(KickEvent ev) => Kick.invoke(ev);
@@ -72,5 +72,6 @@ namespace Qurre.Events
         public static void throwGrenade(ThrowGrenadeEvent ev) => ThrowGrenade.invoke(ev);
         public static void teslaTrigger(TeslaTriggerEvent ev) => TeslaTrigger.invoke(ev);
         public static void interactGenerator(InteractGeneratorEvent ev) => InteractGenerator.invoke(ev);
+        public static void speak(SpeakEvent ev) => Speak.invoke(ev);
     }
 }
