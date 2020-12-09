@@ -1,4 +1,5 @@
-﻿using Grenades;
+using Assets._Scripts.Dissonance;
+using Grenades;
 using Qurre.API.Objects;
 using System;
 using System.Collections.Generic;
@@ -363,6 +364,26 @@ namespace Qurre.API.Events
         public ReferenceHub Shooter { get; }
         public GameObject Target { get; }
         public Vector3 Position { get; set; }
+        public bool IsAllowed { get; set; }
+    }
+    public class SpeakEvent : EventArgs
+    {
+        public SpeakEvent(DissonanceUserSetup userSetup, bool isIcom, bool isRadio, bool isMimicAs939, bool isScpChat, bool isRipChat, bool isAllowed = true)
+        {
+            UserSetup = userSetup;
+            IsIntercom = isIcom;
+            IsRadio = isRadio;
+            IsMimicAs939 = isMimicAs939;
+            IsScpChat = isScpChat;
+            IsRipChat = isRipChat;
+            IsAllowed = isAllowed;
+        }
+        public DissonanceUserSetup UserSetup { get; }
+        public bool IsIntercom { get; }
+        public bool IsRadio { get; }
+        public bool IsMimicAs939 { get; }
+        public bool IsScpChat { get; }
+        public bool IsRipChat { get; }
         public bool IsAllowed { get; set; }
     }
     public class RagdollSpawnEvent : EventArgs
