@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using MEC;
 using QurreModLoader;
 using System;
@@ -19,6 +19,7 @@ namespace Qurre
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
 		public static string PluginsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Plugins");
+		public static string LoadedDependenciesDirectory { get; private set; } = Path.Combine(PluginsDirectory, "dependencies");
 		public static string ConfigsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Configs");
 		public static string ManagedAssembliesDirectory { get; private set; } = Path.Combine(Path.Combine(Environment.CurrentDirectory, "SCPSL_Data"), "Managed");
 		public static string ConfigsPath { get; internal set; }
@@ -26,17 +27,24 @@ namespace Qurre
 
 		public static IEnumerator<float> LoadPlugins()
 		{
-			//CheckPlan();
-
-			PatchMethods();
-
-			yield return Timing.WaitForSeconds(0.5f);
-
 			if (!Directory.Exists(PluginsDirectory))
 			{
 				Log.Warn($"plugins directory not found - creating: {PluginsDirectory}");
 				Directory.CreateDirectory(PluginsDirectory);
 			}
+			try
+			{
+				LoadDependencies();
+			}
+			catch (Exception exception)
+			{
+				ServerConsole.AddLog(exception.ToString(), ConsoleColor.Red);
+			}
+			//CheckPlan();
+
+			PatchMethods();
+
+			yield return Timing.WaitForSeconds(0.5f);
 
 			List<string> mods = Directory.GetFiles(PluginsDirectory).ToList();
 
@@ -50,6 +58,43 @@ namespace Qurre
 
 			Enable();
 		}
+		private static void LoadDependencies()
+		{
+			Log.Custom("Loading dependencies...", "Loader", ConsoleColor.Magenta);
+
+			if (!Directory.Exists(LoadedDependenciesDirectory))
+				Directory.CreateDirectory(LoadedDependenciesDirectory);
+
+			string[] depends = Directory.GetFiles(LoadedDependenciesDirectory);
+
+			foreach (string dll in depends)
+			{
+				if (!dll.EndsWith(".dll"))
+					continue;
+
+				if (IsLoaded(dll))
+					return;
+
+				if (dll.EndsWith("0Harmony.dll") || dll.EndsWith("YamlDotNet.dll"))
+					continue;
+
+				Assembly assembly = Assembly.LoadFrom(dll);
+				localLoaded.Add(assembly);
+				Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
+			}
+			Log.Custom("Dependencies loaded!", "Loader", ConsoleColor.Green);
+		}
+		private static bool IsLoaded(string a)
+		{
+			foreach (Assembly asm in localLoaded)
+			{
+				if (asm.Location == a)
+					return true;
+			}
+
+			return false;
+		}
+		private static List<Assembly> localLoaded = new List<Assembly>();
 
 		public static void LoadPlugin(string mod)
 		{
