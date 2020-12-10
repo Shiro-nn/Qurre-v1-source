@@ -2,7 +2,7 @@
 using System;
 using HarmonyLib;
 using Mirror;
-using Qurre.API.Events.Alpha;
+using Qurre.API.Events;
 using UnityEngine;
 namespace Qurre.Patches.Events.Alpha
 {

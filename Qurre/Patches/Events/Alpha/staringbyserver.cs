@@ -1,7 +1,7 @@
 ﻿#pragma warning disable SA1118
 using HarmonyLib;
 using Qurre.API;
-using Qurre.API.Events.Alpha;
+using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.Alpha
 {

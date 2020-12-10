@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
-using Qurre.API.Events.Alpha;
+using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.Alpha
