@@ -351,6 +351,10 @@ namespace Qurre.API
 		public static void AddHP(this ReferenceHub player, float amount) => player.playerStats.Health += amount;
 		public static void Heal(this ReferenceHub player, float amount) => player.playerStats.Health = Mathf.Clamp(player.playerStats.Health + amount, 1, player.playerStats.maxHP);
 		public static void Heal(this ReferenceHub player) => player.playerStats.Health = player.playerStats.maxHP;
+		public static void Damage(this ReferenceHub player, int amount, DamageTypes.DamageType damageType)
+		{
+			player.playerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, player.queryProcessor.PlayerId), player.gameObject);
+		}
 		public static float GetMaxHP(this ReferenceHub player) => player.playerStats.maxHP;
 		public static void SetMaxHP(this ReferenceHub player, float amount) => player.playerStats.maxHP = (int)amount;
 		public static float GetAHP(this ReferenceHub player) => player.playerStats.unsyncedArtificialHealth;
