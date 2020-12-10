@@ -34,7 +34,7 @@ namespace Qurre.Patches.Events.Server
             {
                 ServerConsole.AddLog(text, ConsoleColor.Gray);
             }
-            public BotSender(){}
+            public BotSender() { }
             public override string SenderId => "SERVER CONSOLE";
             public override string Nickname => "SERVER CONSOLE";
             public override ulong Permissions => ServerStatic.GetPermissionsHandler().FullPerm;

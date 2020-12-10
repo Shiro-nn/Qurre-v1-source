@@ -2,9 +2,9 @@
 using System.IO;
 namespace Qurre
 {
-	public class MainLoader
-	{
-		public static void QurreLoad()
+    public class MainLoader
+    {
+        public static void QurreLoad()
         {
             Log.Info($"Initializing Qurre...");
             if (!Directory.Exists(PluginManager.ConfigsDirectory))

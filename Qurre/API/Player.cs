@@ -361,7 +361,7 @@ namespace Qurre.API
 		public static List<Inventory.SyncItemInfo> GetAllItems(this ReferenceHub player) => player.inventory.items.ToList();
 		public static Inventory.SyncItemInfo GetCurrentItem(this ReferenceHub player) => player.inventory.GetItemInHand();
 		public static void SetCurrentItem(this ReferenceHub player, ItemType itemType) => player.inventory.SetCurItem(itemType);
-		public static void AddItem(this ReferenceHub player, ItemType itemType, float duration = float.NegativeInfinity, int sight = 0, int barrel = 0, int other = 0) => 
+		public static void AddItem(this ReferenceHub player, ItemType itemType, float duration = float.NegativeInfinity, int sight = 0, int barrel = 0, int other = 0) =>
 			player.inventory.AddNewItem(itemType, duration, sight, barrel, other);
 		public static void AddItem(this ReferenceHub player, ItemType itemType) => player.inventory.AddNewItem(itemType);
 		public static void AddItem(this ReferenceHub player, Inventory.SyncItemInfo item) => player.inventory.AddNewItem(item.id, item.durability, item.modSight, item.modBarrel, item.modOther);
@@ -389,8 +389,8 @@ namespace Qurre.API
 		{
 			Handcuffs handcuffs = target.handcuffs;
 			if (handcuffs == null) { return; }
-			if (handcuffs.CufferId < 0 && 
-				player.inventory.items.Any((Inventory.SyncItemInfo item) => item.id == ItemType.Disarmer) && 
+			if (handcuffs.CufferId < 0 &&
+				player.inventory.items.Any((Inventory.SyncItemInfo item) => item.id == ItemType.Disarmer) &&
 				Vector3.Distance(player.transform.position, target.transform.position) <= 130f)
 				handcuffs.NetworkCufferId = player.GetPlayerId();
 		}

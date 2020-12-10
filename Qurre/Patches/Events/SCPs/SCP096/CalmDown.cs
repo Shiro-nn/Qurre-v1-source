@@ -2,7 +2,6 @@
 using HarmonyLib;
 using PlayableScps;
 using static Qurre.API.Events.SCP096;
-
 namespace Qurre.Patches.Events.SCPs.SCP096
 {
     [HarmonyPatch(typeof(Scp096), nameof(Scp096.EndEnrage))]

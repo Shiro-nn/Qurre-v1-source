@@ -5,7 +5,6 @@ using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
 using UnityEngine;
-
 namespace Qurre.Patches.Events.PlayeR
 {
 	[HarmonyPatch(typeof(Generator079), nameof(Generator079.Interact))]

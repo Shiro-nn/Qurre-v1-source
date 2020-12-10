@@ -2,7 +2,6 @@
 using System;
 using HarmonyLib;
 using Qurre.API.Events;
-
 namespace Qurre.Patches.Events.PlayeR
 {
     [HarmonyPatch(typeof(ConsumableAndWearableItems), nameof(ConsumableAndWearableItems.SendRpc))]

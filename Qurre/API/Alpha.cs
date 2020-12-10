@@ -2,10 +2,10 @@
 using static QurreModLoader.umm;
 namespace Qurre.API
 {
-    public static class Alpha
-    {
-        private static AlphaWarheadController awc;
-        private static AlphaWarheadNukesitePanel awnp;
+	public static class Alpha
+	{
+		private static AlphaWarheadController awc;
+		private static AlphaWarheadNukesitePanel awnp;
 		public static AlphaWarheadController AlphaWarheadController
 		{
 			get

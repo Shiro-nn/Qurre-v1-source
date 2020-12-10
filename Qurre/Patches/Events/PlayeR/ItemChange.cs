@@ -2,7 +2,6 @@
 using HarmonyLib;
 using Qurre.API.Events;
 using Qurre.Events;
-
 namespace Qurre.Patches.Events.PlayeR
 {
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.CallCmdSetUnic))]

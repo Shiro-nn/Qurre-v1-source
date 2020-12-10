@@ -3,9 +3,7 @@ using System;
 using Qurre.API;
 using HarmonyLib;
 using MEC;
-using UnityEngine;
 using Qurre.API.Events;
-
 namespace Qurre.Patches.Events.PlayeR
 {
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkIsVerified), MethodType.Setter)]

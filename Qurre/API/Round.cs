@@ -15,11 +15,11 @@ namespace Qurre.API
             set => RoundSummary.RoundLock = value;
         }
         public static bool LobbyLock
-		{
-			get => RoundStart.LobbyLock;
-			set => RoundStart.LobbyLock = value;
-		}
-		public static void Restart() => Map.Host.playerStats.Roundrestart();
+        {
+            get => RoundStart.LobbyLock;
+            set => RoundStart.LobbyLock = value;
+        }
+        public static void Restart() => Map.Host.playerStats.Roundrestart();
         public static void Start() => CharacterClassManager.ForceRoundStart();
         public static void AddUnit(Team team, string text)
         {

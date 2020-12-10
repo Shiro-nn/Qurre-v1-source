@@ -34,8 +34,8 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                 if (Scp106Script_blastDoor().isClosed)
                 {
                     __instance.GetComponent<CharacterClassManager>().RpcPlaceBlood(ply.transform.position, 1, 2f);
-                    __instance.GetComponent<PlayerStats>().HurtPlayer(new PlayerStats.HitInfo(500f, 
-                        __instance.GetComponent<NicknameSync>().MyNick + " (" + __instance.GetComponent<CharacterClassManager>().UserId + ")", 
+                    __instance.GetComponent<PlayerStats>().HurtPlayer(new PlayerStats.HitInfo(500f,
+                        __instance.GetComponent<NicknameSync>().MyNick + " (" + __instance.GetComponent<CharacterClassManager>().UserId + ")",
                         DamageTypes.Scp106, __instance.GetComponent<QueryProcessor>().PlayerId), ply);
                 }
                 else

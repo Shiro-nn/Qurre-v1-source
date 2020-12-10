@@ -1,7 +1,6 @@
 ﻿#pragma warning disable SA1313
 using System.Collections.Generic;
 using HarmonyLib;
-using NorthwoodLib.Pools;
 using Qurre.API.Events;
 using Qurre.Events;
 using UnityEngine;
@@ -18,7 +17,7 @@ namespace Qurre.Patches.Events.PlayeR
                     return false;
                 var sIL = new List<ItemType>();
                 foreach (ItemType item in __instance.Classes.SafeGet(classid).startItems) sIL.Add(item);
-                 var cRE = new RoleChangeEvent(ReferenceHub.GetHub(ply), classid, sIL, lite, escape);
+                var cRE = new RoleChangeEvent(ReferenceHub.GetHub(ply), classid, sIL, lite, escape);
                 Player.rolechange(cRE);
                 lite = cRE.IsSavePos;
                 escape = cRE.IsEscaped;

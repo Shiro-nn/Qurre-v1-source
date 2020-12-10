@@ -334,7 +334,7 @@ namespace Qurre.API.Events
     }
     public class LeaveEvent : JoinEvent
     {
-        public LeaveEvent(ReferenceHub player) : base(player) {}
+        public LeaveEvent(ReferenceHub player) : base(player) { }
     }
     public class RechargeWeaponEvent : EventArgs
     {
@@ -454,7 +454,7 @@ namespace Qurre.API.Events
     }
     public class StoppingMedicalUsingEvent : UsingMedicalEvent
     {
-        public StoppingMedicalUsingEvent(ReferenceHub player, ItemType item, float cooldown, bool isAllowed = true) : base(player, item, cooldown, isAllowed){}
+        public StoppingMedicalUsingEvent(ReferenceHub player, ItemType item, float cooldown, bool isAllowed = true) : base(player, item, cooldown, isAllowed) { }
         public new float Cooldown => base.Cooldown;
     }
     public class SyncDataEvent : EventArgs

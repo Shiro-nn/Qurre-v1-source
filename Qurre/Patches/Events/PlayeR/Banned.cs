@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using Qurre.API.Events;
-
 namespace Qurre.Patches.Events.PlayeR
 {
     [HarmonyPatch(typeof(BanHandler), nameof(BanHandler.IssueBan))]

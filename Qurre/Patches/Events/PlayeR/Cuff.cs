@@ -34,29 +34,21 @@ namespace Qurre.Patches.Events.PlayeR
                         if (team2 == Team.CHI || team2 == Team.CDP)
                             flag = true;
                         if (team2 == Team.RSC && ConfigFile.ServerConfig.GetBool("mtf_can_cuff_researchers"))
-                        {
                             flag = true;
-                        }
                         break;
                     case Team.CHI:
                         if (team2 == Team.MTF || team2 == Team.RSC)
                             flag = true;
                         if (team2 == Team.CDP && ConfigFile.ServerConfig.GetBool("ci_can_cuff_class_d"))
-                        {
                             flag = true;
-                        }
                         break;
                     case Team.RSC:
                         if (team2 == Team.CHI || team2 == Team.CDP)
-                        {
                             flag = true;
-                        }
                         break;
                     case Team.CDP:
                         if (team2 == Team.MTF || team2 == Team.RSC)
-                        {
                             flag = true;
-                        }
                         break;
                 }
                 if (!flag)

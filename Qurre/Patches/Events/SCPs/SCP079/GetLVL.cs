@@ -1,8 +1,5 @@
-﻿#pragma warning disable SA1313
-#pragma warning disable CS0618
-using HarmonyLib;
+﻿using HarmonyLib;
 using static Qurre.API.Events.SCP079;
-
 namespace Qurre.Patches.Events.SCPs.SCP079
 {
     [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.TargetLevelChanged))]
