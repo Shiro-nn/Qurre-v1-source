@@ -43,9 +43,6 @@
     <Reference Include="Assembly-CSharp-firstpass">
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>..\..\Assembly-CSharp_publicized.dll</HintPath>
-    </Reference>
     <Reference Include="BouncyCastle.Crypto">
       <HintPath>..\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
@@ -363,8 +360,8 @@
     <Compile Include="Patches\Events\MAP\LCZDecontamination.cs" />
     <Compile Include="Patches\Events\PlayeR\Banned.cs" />
     <Compile Include="Patches\Events\PlayeR\BanAndKick.cs" />
-    <Compile Include="Patches\Events\PlayeR\InteractGenerator.cs" />
     <Compile Include="Patches\Events\PlayeR\Speak.cs" />
+    <Compile Include="Patches\Events\PlayeR\InteractGenerator.cs" />
     <Compile Include="Patches\Events\PlayeR\TeslaTrigger.cs" />
     <Compile Include="Patches\Events\PlayeR\ThrowGrenade.cs" />
     <Compile Include="Patches\Events\PlayeR\SyncData.cs" />

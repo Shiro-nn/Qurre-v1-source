@@ -3,7 +3,6 @@ using Scp914;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
 namespace Qurre.API.Events
 {
     #region scp914

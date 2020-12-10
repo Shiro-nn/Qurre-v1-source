@@ -3,10 +3,6 @@ namespace Qurre.Events.modules
 {
     public static class Event
     {
-        /// <typeparam name="T">Event arg type.</typeparam>
-        /// <param name="ev">Source event.</param>
-        /// <param name="arg">Event arg.</param>
-        /// <exception cref="ArgumentNullException">Event or its arg is null.</exception>
         public static void invoke<T>(this main.AllEvents<T> ev, T arg)
             where T : EventArgs
         {
@@ -22,12 +18,10 @@ namespace Qurre.Events.modules
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"umm, method '{handler.Method.Name}' of class '{handler.Method.ReflectedType.FullName}' threw an exception. Event: {eventName}\n{ex}");
+                    Log.Error($"umm, method '{handler.Method.Name}' of class '{handler.Method.ReflectedType?.FullName}' threw an exception. Event: {eventName}\n{ex}");
                 }
             }
         }
-        /// <param name="ev">Source event.</param>
-        /// <exception cref="ArgumentNullException">Event is null.</exception>
         public static void invoke(this main.AllEvents ev)
         {
             if (ev == null)

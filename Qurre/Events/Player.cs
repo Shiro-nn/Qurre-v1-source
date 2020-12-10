@@ -1,4 +1,4 @@
-using Qurre.API.Events;
+﻿using Qurre.API.Events;
 using Qurre.Events.modules;
 using static Qurre.Events.modules.main;
 namespace Qurre.Events

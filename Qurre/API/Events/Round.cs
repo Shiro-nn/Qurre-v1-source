@@ -1,7 +1,6 @@
 ﻿using Respawning;
 using System;
 using System.Collections.Generic;
-
 namespace Qurre.API.Events
 {
     public class CheckEvent : EventArgs

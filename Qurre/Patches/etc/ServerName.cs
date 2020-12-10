@@ -11,14 +11,11 @@ namespace Qurre.Patches.etc
 			{
 				bool del = false;
 				string[] spearator = { "<color=#00000000>" };
-				string[] strlist = ServerConsole._serverName.Split(spearator, 2,
-					   System.StringSplitOptions.RemoveEmptyEntries);
+				string[] strlist = ServerConsole._serverName.Split(spearator, 2, System.StringSplitOptions.RemoveEmptyEntries);
 				foreach (string s in strlist)
 				{
 					if (del)
-					{
 						ServerConsole._serverName = ServerConsole._serverName.Replace(s, "").Replace("<color=#00000000>", "");
-					}
 					del = true;
 				}
 			}

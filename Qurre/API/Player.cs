@@ -7,7 +7,6 @@ using System.Reflection;
 using UnityEngine;
 using static QurreModLoader.umm;
 using Hints;
-
 namespace Qurre.API
 {
 	public static class Player

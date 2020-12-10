@@ -14,7 +14,7 @@ namespace Qurre.API
 	{
 		public static int roundtime = 0;
 		private static ReferenceHub host;
-		private static Inventory  hinv;
+		private static Inventory hinv;
 		private static Broadcast bc;
 		private static DecontaminationController dc;
 		private static List<Room> rms = new List<Room>();

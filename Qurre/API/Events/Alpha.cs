@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-
 namespace Qurre.API.Events.Alpha
 {
     public class StartEvent : StopEvent

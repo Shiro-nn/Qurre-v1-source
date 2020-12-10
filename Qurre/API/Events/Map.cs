@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
 namespace Qurre.API.Events
 {
     #region Main

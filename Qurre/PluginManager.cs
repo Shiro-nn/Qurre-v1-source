@@ -1,4 +1,4 @@
-using HarmonyLib;
+﻿using HarmonyLib;
 using MEC;
 using QurreModLoader;
 using System;
@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-
 namespace Qurre
 {
 	public class PluginManager
@@ -24,7 +23,6 @@ namespace Qurre
 		public static string ManagedAssembliesDirectory { get; private set; } = Path.Combine(Path.Combine(Environment.CurrentDirectory, "SCPSL_Data"), "Managed");
 		public static string ConfigsPath { get; internal set; }
 		private static Harmony hInstance;
-
 		public static IEnumerator<float> LoadPlugins()
 		{
 			if (!Directory.Exists(PluginsDirectory))
@@ -95,7 +93,6 @@ namespace Qurre
 			return false;
 		}
 		private static List<Assembly> localLoaded = new List<Assembly>();
-
 		public static void LoadPlugin(string mod)
 		{
 			Log.Info($"Loading {mod}");
@@ -137,7 +134,6 @@ namespace Qurre
 				Log.Error($"Error while initalizing {mod}!\n{exception}");
 			}
 		}
-
 		public static void Enable()
 		{
 			foreach (Plugin plugin in plugins)
@@ -152,7 +148,6 @@ namespace Qurre
 				}
 			}
 		}
-
 		public static void Reload()
 		{
 			foreach (Plugin plugin in plugins)
@@ -167,7 +162,6 @@ namespace Qurre
 				}
 			}
 		}
-
 		public static void Disable()
 		{
 			foreach (Plugin plugin in plugins)
@@ -182,7 +176,6 @@ namespace Qurre
 				}
 			}
 		}
-
 		public static void ReloadPlugins()
 		{
 			try
@@ -253,8 +246,8 @@ namespace Qurre
 						Planid = 4;
 						Plan = "Platinum";
 						Log.Custom("Qurre plan: Platinum", "Plan", ConsoleColor.White);
-                    }
-                    else
+					}
+					else
 					{
 						Log.Custom("Qurre plan: Lite", "Plan", ConsoleColor.Magenta);
 					}

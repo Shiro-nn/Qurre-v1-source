@@ -1,13 +1,9 @@
-using Assets._Scripts.Dissonance;
+﻿using Assets._Scripts.Dissonance;
 using Grenades;
 using Qurre.API.Objects;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-
 namespace Qurre.API.Events
 {
     public class BannedEvent : EventArgs
