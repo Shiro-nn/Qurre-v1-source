@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-using static Qurre.API.Events.SCP079;
+using static Qurre.API.Events.Scp079;
 namespace Qurre.Patches.Events.SCPs.SCP079
 {
     [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.TargetLevelChanged))]
@@ -9,7 +9,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
         {
             try
             {
-                var ev = new GetLVLEvent(ReferenceHub.GetHub(__instance.gameObject), __instance.NetworkcurLvl - 1, newLvl);
+                var ev = new GetLvlEvent(ReferenceHub.GetHub(__instance.gameObject), __instance.NetworkcurLvl - 1, newLvl);
                 Qurre.Events.SCPs.SCP079.getLVL(ev);
                 newLvl = ev.NewLevel;
                 return ev.IsAllowed;

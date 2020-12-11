@@ -1,6 +1,6 @@
 ﻿using Qurre.Events.modules;
 using static Qurre.API.Events.SCP049;
-using static Qurre.API.Events.SCP079;
+using static Qurre.API.Events.Scp079;
 using static Qurre.API.Events.SCP096;
 using static Qurre.API.Events.SCP106;
 using static Qurre.API.Events.SCP914;
@@ -55,12 +55,12 @@ namespace Qurre.Events
         {
             public static event AllEvents<GeneratorActivateEvent> GeneratorActivate;
             public static event AllEvents<RecontainEvent> Recontain;
-            public static event AllEvents<GetEXPEvent> GetEXP;
-            public static event AllEvents<GetLVLEvent> GetLVL;
+            public static event AllEvents<GetExpEvent> GetEXP;
+            public static event AllEvents<GetLvlEvent> GetLVL;
             public static void generatoractivate(GeneratorActivateEvent ev) => GeneratorActivate.invoke(ev);
             public static void recontain(RecontainEvent ev) => Recontain.invoke(ev);
-            public static void getEXP(GetEXPEvent ev) => GetEXP.invoke(ev);
-            public static void getLVL(GetLVLEvent ev) => GetLVL.invoke(ev);
+            public static void getEXP(GetExpEvent ev) => GetEXP.invoke(ev);
+            public static void getLVL(GetLvlEvent ev) => GetLVL.invoke(ev);
         }
         #endregion
         #region SCP049

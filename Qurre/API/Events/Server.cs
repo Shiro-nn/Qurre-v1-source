@@ -2,28 +2,28 @@
 using System.Reflection;
 namespace Qurre.API.Events
 {
-    public class SendingRAEvent : EventArgs
+    public class SendingRaEvent : EventArgs
     {
         private string returnMessage;
-        public SendingRAEvent(CommandSender commandSender, ReferenceHub sender, string message, string prefix = "", bool isAllowed = true)
+        public SendingRaEvent(CommandSender commandSender, ReferenceHub sender, string message, string prefix = "", bool isAllowed = true)
         {
             CommandSender = commandSender;
             Sender = sender;
             Message = message;
             IsAllowed = isAllowed;
             if (prefix == "")
-                pref = Assembly.GetCallingAssembly().GetName().Name;
+                Pref = Assembly.GetCallingAssembly().GetName().Name;
             else
-                pref = prefix;
+                Pref = prefix;
         }
         public CommandSender CommandSender { get; }
         public ReferenceHub Sender { get; }
         public string Message { get; }
-        public string pref;
+        public string Pref;
         public string ReplyMessage
         {
             get => returnMessage;
-            set => returnMessage = $"{pref}#{value}";
+            set => returnMessage = $"{Pref}#{value}";
         }
         public bool Success { get; set; } = true;
         public bool IsAllowed { get; set; }

@@ -10,7 +10,7 @@ namespace Qurre
 {
 	public class PluginManager
 	{
-		public static readonly List<Plugin> plugins = new List<Plugin>();
+		public static readonly List<Plugin> Plugins = new List<Plugin>();
 		public const string Version = "1.0.0";
 		public static string Plan { get; private set; } = "Lite";
 		public static int Planid { get; private set; } = 1;
@@ -125,7 +125,7 @@ namespace Qurre
 						continue;
 					}
 
-					plugins.Add(p);
+					Plugins.Add(p);
 					Log.Info($"{type.FullName} loaded");
 				}
 			}
@@ -136,7 +136,7 @@ namespace Qurre
 		}
 		public static void Enable()
 		{
-			foreach (Plugin plugin in plugins)
+			foreach (Plugin plugin in Plugins)
 			{
 				try
 				{
@@ -144,13 +144,13 @@ namespace Qurre
 				}
 				catch (Exception exception)
 				{
-					Log.Error($"Plugin {plugin.name} threw an exception while enabling\n{exception}");
+					Log.Error($"Plugin {plugin.Name} threw an exception while enabling\n{exception}");
 				}
 			}
 		}
 		public static void Reload()
 		{
-			foreach (Plugin plugin in plugins)
+			foreach (Plugin plugin in Plugins)
 			{
 				try
 				{
@@ -158,13 +158,13 @@ namespace Qurre
 				}
 				catch (Exception exception)
 				{
-					Log.Error($"Plugin {plugin.name} threw an exception while reloading\n{exception}");
+					Log.Error($"Plugin {plugin.Name} threw an exception while reloading\n{exception}");
 				}
 			}
 		}
 		public static void Disable()
 		{
-			foreach (Plugin plugin in plugins)
+			foreach (Plugin plugin in Plugins)
 			{
 				try
 				{
@@ -172,7 +172,7 @@ namespace Qurre
 				}
 				catch (Exception exception)
 				{
-					Log.Error($"Plugin {plugin.name} threw an exception while disabling\n{exception}");
+					Log.Error($"Plugin {plugin.Name} threw an exception while disabling\n{exception}");
 				}
 			}
 		}
@@ -183,7 +183,7 @@ namespace Qurre
 				Log.Info($"Reloading Plugins...");
 				Disable();
 				Reload();
-				plugins.Clear();
+				Plugins.Clear();
 				UnPatchMethods();
 
 				Timing.RunCoroutine(LoadPlugins());

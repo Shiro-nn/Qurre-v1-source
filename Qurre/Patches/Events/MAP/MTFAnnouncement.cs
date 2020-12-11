@@ -15,7 +15,7 @@ namespace Qurre.Patches.Events.MAP
             {
                 int scpsLeft = Player.GetHubs().Where(player => player.GetTeam() == Team.SCP && player.GetRole() != RoleType.Scp0492).Count();
                 string[] unitInformations = regular.Split('-');
-                var ev = new MTFAnnouncementEvent(scpsLeft, unitInformations[0], int.Parse(unitInformations[1]));
+                var ev = new MtfAnnouncementEvent(scpsLeft, unitInformations[0], int.Parse(unitInformations[1]));
                 Qurre.Events.Map.mtfAnnouncement(ev);
                 regular = $"{ev.UnitName}-{ev.UnitNumber}";
                 return ev.IsAllowed;
