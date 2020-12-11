@@ -18,7 +18,7 @@ namespace Qurre.Patches.Events.PlayeR
                 {
                     if (allHub.Value.characterClassManager.CurClass == RoleType.Spectator)
                         continue;
-                    foreach (TeslaGate teslaGate in __instance.TeslaGates())
+                    foreach (TeslaGate teslaGate in __instance?.TeslaGates())
                     {
                         if (!teslaGate.PlayerInRange(allHub.Value) || teslaGate.InProgress)
                             continue;

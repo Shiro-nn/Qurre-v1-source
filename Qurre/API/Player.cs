@@ -568,20 +568,21 @@ namespace Qurre.API
 			{
 				NetworkConnection connectionToClient = ply.GetComponent<NetworkIdentity>().connectionToClient;
 				if (ply != target)
-				{
 					connectionToClient.Send(objectDestroyMessage, 0);
-				}
 				object[] param = new object[] { component, connectionToClient };
 				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
 			}
 		}
 		public static void ShowHint(string text, float duration = 1f)
 		{
-			ReferenceHub.LocalHub.hints.Show(new TextHint(text, new HintParameter[]
-			{
-				new StringHintParameter("")
-			}, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
+			ReferenceHub.LocalHub.hints.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
 		}
 		public static void PlayReloadAnimation(List<ReferenceHub> players) { foreach (ReferenceHub refHub in ReferenceHub.GetAllHubs().Values) { foreach (ReferenceHub ply in players) { refHub.weaponManager.RpcReload(0); } } }
+		public static void BodyDelete(this ReferenceHub player)
+		{
+			foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
+				if (doll.owner.PlayerId == player.queryProcessor.PlayerId)
+					NetworkServer.Destroy(doll.gameObject);
+		}
 	}
 }

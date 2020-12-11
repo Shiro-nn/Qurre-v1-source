@@ -39,6 +39,7 @@ namespace Qurre.Events
         public static event AllEvents<TeslaTriggerEvent> TeslaTrigger;
         public static event AllEvents<InteractGeneratorEvent> InteractGenerator;
         public static event AllEvents<SpeakEvent> Speak;
+        public static event AllEvents<SpawnEvent> Spawn;
         public static void banned(BannedEvent ev) => Banned.invoke(ev);
         public static void ban(BanEvent ev) => Ban.invoke(ev);
         public static void kick(KickEvent ev) => Kick.invoke(ev);
@@ -73,5 +74,6 @@ namespace Qurre.Events
         public static void teslaTrigger(TeslaTriggerEvent ev) => TeslaTrigger.invoke(ev);
         public static void interactGenerator(InteractGeneratorEvent ev) => InteractGenerator.invoke(ev);
         public static void speak(SpeakEvent ev) => Speak.invoke(ev);
+        public static void spawn(SpawnEvent ev) => Spawn.invoke(ev);
     }
 }

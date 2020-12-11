@@ -501,4 +501,18 @@ namespace Qurre.API.Events
         public bool IsInHurtingRange { get; set; }
         public bool IsTriggerable { get; set; }
     }
+    public class SpawnEvent : EventArgs
+    {
+        public SpawnEvent(ReferenceHub player, RoleType roleType, Vector3 position, float rotationY)
+        {
+            Player = player;
+            RoleType = roleType;
+            Position = position;
+            RotationY = rotationY;
+        }
+        public ReferenceHub Player { get; private set; }
+        public RoleType RoleType { get; private set; }
+        public Vector3 Position { get; set; }
+        public float RotationY { get; set; }
+    }
 }

@@ -360,6 +360,7 @@
     <Compile Include="Patches\Events\MAP\LCZDecontamination.cs" />
     <Compile Include="Patches\Events\PlayeR\Banned.cs" />
     <Compile Include="Patches\Events\PlayeR\BanAndKick.cs" />
+    <Compile Include="Patches\Events\PlayeR\Spawn.cs" />
     <Compile Include="Patches\Events\PlayeR\Speak.cs" />
     <Compile Include="Patches\Events\PlayeR\InteractGenerator.cs" />
     <Compile Include="Patches\Events\PlayeR\TeslaTrigger.cs" />
