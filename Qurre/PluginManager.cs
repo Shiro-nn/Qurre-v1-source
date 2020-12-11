@@ -144,7 +144,7 @@ namespace Qurre
 				}
 				catch (Exception exception)
 				{
-					Log.Error($"Plugin {plugin.Name} threw an exception while enabling\n{exception}");
+					Log.Error($"Plugin {plugin.name} threw an exception while enabling\n{exception}");
 				}
 			}
 		}
@@ -158,7 +158,7 @@ namespace Qurre
 				}
 				catch (Exception exception)
 				{
-					Log.Error($"Plugin {plugin.Name} threw an exception while reloading\n{exception}");
+					Log.Error($"Plugin {plugin.name} threw an exception while reloading\n{exception}");
 				}
 			}
 		}
@@ -172,7 +172,7 @@ namespace Qurre
 				}
 				catch (Exception exception)
 				{
-					Log.Error($"Plugin {plugin.Name} threw an exception while disabling\n{exception}");
+					Log.Error($"Plugin {plugin.name} threw an exception while disabling\n{exception}");
 				}
 			}
 		}
