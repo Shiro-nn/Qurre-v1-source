@@ -12,7 +12,7 @@ namespace Qurre.API
 {
 	public static class Map
 	{
-		public static int roundtime = 0;
+		public static int Roundtime = 0;
 		private static ReferenceHub host;
 		private static Inventory hinv;
 		private static Broadcast bc;
@@ -61,7 +61,7 @@ namespace Qurre.API
 				return bc;
 			}
 		}
-		internal static DecontaminationController DecontaminationLCZ
+		internal static DecontaminationController DecontaminationLcz
 		{
 			get
 			{
@@ -203,11 +203,11 @@ namespace Qurre.API
 
 			return hub.gameObject;
 		}
-		public static void ActivateSCP914() => Scp914Machine.singleton.RpcActivate(NetworkTime.time);
-		public static void CallCICar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
-		public static void CallMTFHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
-		public static void PlayCIEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
-		public static void ContainSCP106(ReferenceHub executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().CallRpcContain106(executor.gameObject);
+		public static void ActivateScp914() => Scp914Machine.singleton.RpcActivate(NetworkTime.time);
+		public static void CallCiCar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
+		public static void CallMtfHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
+		public static void PlayCiEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
+		public static void ContainScp106(ReferenceHub executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().CallRpcContain106(executor.gameObject);
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
 		public static void SetFemurBreakerState(bool enabled) => Object.FindObjectOfType<LureSubjectContainer>().SetState(enabled);
 		public static void RemoveTeslaGates() { foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) { NetworkServer.Destroy(teslaGate.gameObject); } }

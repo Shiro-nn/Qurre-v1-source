@@ -4,7 +4,7 @@ using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
-using static Qurre.API.Events.SCP079;
+using static Qurre.API.Events.Scp079;
 namespace Qurre.Patches.Events.PlayeR
 {
     [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.HurtPlayer))]

@@ -10,8 +10,13 @@ namespace Qurre
 {
 	public class PluginManager
 	{
+<<<<<<< HEAD
 		public static readonly List<Plugin> plugins = new List<Plugin>();
 		public const string Version = "1.0.1";
+=======
+		public static readonly List<Plugin> Plugins = new List<Plugin>();
+		public const string Version = "1.0.0";
+>>>>>>> 5ad90713bfe2d60644606aff8380b4ef8b0a4280
 		public static string Plan { get; private set; } = "Lite";
 		public static int Planid { get; private set; } = 1;
 		private static string domen = "localhost"; //qurre.store
@@ -125,7 +130,7 @@ namespace Qurre
 						continue;
 					}
 
-					plugins.Add(p);
+					Plugins.Add(p);
 					Log.Info($"{type.FullName} loaded");
 				}
 			}
@@ -136,7 +141,7 @@ namespace Qurre
 		}
 		public static void Enable()
 		{
-			foreach (Plugin plugin in plugins)
+			foreach (Plugin plugin in Plugins)
 			{
 				try
 				{
@@ -150,7 +155,7 @@ namespace Qurre
 		}
 		public static void Reload()
 		{
-			foreach (Plugin plugin in plugins)
+			foreach (Plugin plugin in Plugins)
 			{
 				try
 				{
@@ -164,7 +169,7 @@ namespace Qurre
 		}
 		public static void Disable()
 		{
-			foreach (Plugin plugin in plugins)
+			foreach (Plugin plugin in Plugins)
 			{
 				try
 				{
@@ -183,7 +188,7 @@ namespace Qurre
 				Log.Info($"Reloading Plugins...");
 				Disable();
 				Reload();
-				plugins.Clear();
+				Plugins.Clear();
 				UnPatchMethods();
 
 				Timing.RunCoroutine(LoadPlugins());

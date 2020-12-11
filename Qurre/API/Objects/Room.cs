@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+
 namespace Qurre.API.Objects
 {
 	public class Room

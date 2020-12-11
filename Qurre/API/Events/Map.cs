@@ -5,9 +5,9 @@ using UnityEngine;
 namespace Qurre.API.Events
 {
     #region Main
-    public class LCZDeconEvent : EventArgs
+    public class LczDeconEvent : EventArgs
     {
-        public LCZDeconEvent(bool isAllowed = true) => IsAllowed = isAllowed;
+        public LczDeconEvent(bool isAllowed = true) => IsAllowed = isAllowed;
         public bool IsAllowed { get; set; }
     }
     public class AnnouncementDecontaminationEvent : EventArgs
@@ -27,9 +27,9 @@ namespace Qurre.API.Events
         public bool IsGlobal { get; set; }
         public bool IsAllowed { get; set; }
     }
-    public class MTFAnnouncementEvent : EventArgs
+    public class MtfAnnouncementEvent : EventArgs
     {
-        public MTFAnnouncementEvent(int scpsLeft, string unitName, int unitNumber, bool isAllowed = true)
+        public MtfAnnouncementEvent(int scpsLeft, string unitName, int unitNumber, bool isAllowed = true)
         {
             ScpsLeft = scpsLeft;
             UnitName = unitName;

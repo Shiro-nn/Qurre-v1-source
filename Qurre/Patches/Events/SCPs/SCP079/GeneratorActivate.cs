@@ -1,6 +1,6 @@
 ﻿#pragma warning disable SA1313
 using HarmonyLib;
-using static Qurre.API.Events.SCP079;
+using static Qurre.API.Events.Scp079;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP079
 {

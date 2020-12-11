@@ -1,4 +1,4 @@
-﻿namespace Qurre
+namespace Qurre
 {
 	public abstract class Plugin
 	{
