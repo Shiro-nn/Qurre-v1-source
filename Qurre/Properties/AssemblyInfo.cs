@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Qurre")]
-[assembly: AssemblyDescription("Framework for SCP:SL servers with unique functions & api")]
+[assembly: AssemblyDescription("framework for scpsl")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Qurre Team")]
 [assembly: AssemblyProduct("Qurre")]

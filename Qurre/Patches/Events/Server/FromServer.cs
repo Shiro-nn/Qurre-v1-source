@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.Server
         {
             try
             {
-                var ev = new SendingRaEvent(new BotSender(), API.Map.Host, cmd);
+                var ev = new SendingRAEvent(new BotSender(), API.Map.Host, cmd);
                 Qurre.Events.Server.sendingra(ev);
                 return ev.IsAllowed;
             }

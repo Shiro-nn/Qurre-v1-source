@@ -2,7 +2,7 @@
 using System;
 using HarmonyLib;
 using UnityEngine;
-using static Qurre.API.Events.Scp079;
+using static Qurre.API.Events.SCP079;
 namespace Qurre.Patches.Events.SCPs.SCP079
 {
     [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.CallRpcGainExp))]
@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
         {
             try
             {
-                var ev = new GetExpEvent(ReferenceHub.GetHub(__instance.gameObject), type, (float)details);
+                var ev = new GetEXPEvent(ReferenceHub.GetHub(__instance.gameObject), type, (float)details);
                 switch (type)
                 {
                     case ExpGainType.KillAssist:

@@ -7,14 +7,14 @@ namespace Qurre.Events
     public static class Map
     {
         #region main
-        public static event AllEvents<LczDeconEvent> LCZDecon;
+        public static event AllEvents<LCZDeconEvent> LCZDecon;
         public static event AllEvents<AnnouncementDecontaminationEvent> AnnouncementDecontaminationZDecon;
-        public static event AllEvents<MtfAnnouncementEvent> MTFAnnouncement;
+        public static event AllEvents<MTFAnnouncementEvent> MTFAnnouncement;
         public static event AllEvents<NewBloodEvent> NewBlood;
         public static event AllEvents<NewDecalEvent> NewDecal;
-        public static void lczdecon(LczDeconEvent ev) => LCZDecon.invoke(ev);
+        public static void lczdecon(LCZDeconEvent ev) => LCZDecon.invoke(ev);
         public static void announcementdecontamination(AnnouncementDecontaminationEvent ev) => AnnouncementDecontaminationZDecon.invoke(ev);
-        public static void mtfAnnouncement(MtfAnnouncementEvent ev) => MTFAnnouncement.invoke(ev);
+        public static void mtfAnnouncement(MTFAnnouncementEvent ev) => MTFAnnouncement.invoke(ev);
         public static void newblood(NewBloodEvent ev) => NewBlood.invoke(ev);
         public static void newdecal(NewDecalEvent ev) => NewDecal.invoke(ev);
         #endregion

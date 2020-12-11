@@ -10,7 +10,7 @@ namespace Qurre.Patches.Events.MAP
     {
         private static bool Prefix()
         {
-            var ev = new LczDeconEvent();
+            var ev = new LCZDeconEvent();
             Qurre.Events.Map.lczdecon(ev);
             return ev.IsAllowed;
         }

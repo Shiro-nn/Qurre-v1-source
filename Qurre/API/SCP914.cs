@@ -5,7 +5,7 @@ using UnityEngine;
 using Utils.ConfigHandler;
 namespace Qurre.API
 {
-	public class Scp914
+	public class SCP914
 	{
 		public static void KnobState(Scp914Knob scp914Knob) => Scp914Machine.singleton.knobState = scp914Knob;
 		public static Scp914Knob KnobState() => Scp914Machine.singleton.knobState;

@@ -20,13 +20,13 @@ namespace Qurre.Patches.Events.Server
                     ReferenceHub send;
                     try { send = API.Player.Get(sende.SenderId) ?? API.Map.Host; }
                     catch { send = API.Map.Host; }
-                    var ev = new SendingRaEvent(sende, send, str);
+                    var ev = new SendingRAEvent(sende, send, str);
                     Qurre.Events.Server.sendingra(ev);
                     return ev.IsAllowed;
                 }
                 catch
                 {
-                    var ev = new SendingRaEvent(sende, API.Map.Host, str);
+                    var ev = new SendingRAEvent(sende, API.Map.Host, str);
                     Qurre.Events.Server.sendingra(ev);
                     return ev.IsAllowed;
                 }

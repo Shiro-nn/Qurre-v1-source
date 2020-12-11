@@ -6,9 +6,9 @@ namespace Qurre.Events
 {
     public static class Server
     {
-        public static event AllEvents<SendingRaEvent> SendingRA;
+        public static event AllEvents<SendingRAEvent> SendingRA;
         public static event AllEvents<SendingConsoleEvent> SendingConsole;
-        public static void sendingra(SendingRaEvent ev) => SendingRA.invoke(ev);
+        public static void sendingra(SendingRAEvent ev) => SendingRA.invoke(ev);
         public static void sendingconsole(SendingConsoleEvent ev) => SendingConsole?.Invoke(ev);
         public static class Report
         {

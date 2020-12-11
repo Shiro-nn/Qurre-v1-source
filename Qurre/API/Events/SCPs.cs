@@ -168,7 +168,7 @@ namespace Qurre.API.Events
     }
     #endregion
     #region scp079
-    public class Scp079
+    public class SCP079
     {
         public class GeneratorActivateEvent : EventArgs
         {
@@ -183,9 +183,9 @@ namespace Qurre.API.Events
             }
             public ReferenceHub Target { get; }
         }
-        public class GetExpEvent : EventArgs
+        public class GetEXPEvent : EventArgs
         {
-            public GetExpEvent(ReferenceHub player, ExpGainType type, float amount, bool isAllowed = true)
+            public GetEXPEvent(ReferenceHub player, ExpGainType type, float amount, bool isAllowed = true)
             {
                 Player = player;
                 Type = type;
@@ -197,9 +197,9 @@ namespace Qurre.API.Events
             public float Amount { get; set; }
             public bool IsAllowed { get; set; }
         }
-        public class GetLvlEvent : EventArgs
+        public class GetLVLEvent : EventArgs
         {
-            public GetLvlEvent(ReferenceHub player, int oldLevel, int newLevel, bool isAllowed = true)
+            public GetLVLEvent(ReferenceHub player, int oldLevel, int newLevel, bool isAllowed = true)
             {
                 Player = player;
                 OldLevel = oldLevel;
