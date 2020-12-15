@@ -14,18 +14,22 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
+                if (__instance == null) return false;
                 foreach (KeyValuePair<GameObject, ReferenceHub> allHub in ReferenceHub.GetAllHubs())
                 {
                     if (allHub.Value.characterClassManager.CurClass == RoleType.Spectator)
                         continue;
                     foreach (TeslaGate teslaGate in __instance?.TeslaGates())
                     {
-                        if (!teslaGate.PlayerInRange(allHub.Value) || teslaGate.InProgress)
-                            continue;
-                        var ev = new TeslaTriggerEvent(ReferenceHub.GetHub(allHub.Key), teslaGate.PlayerInHurtRange(allHub.Key));
-                        Qurre.Events.Player.teslaTrigger(ev);
-                        if (ev.IsTriggerable)
-                            teslaGate.ServerSideCode();
+                        if (teslaGate != null)
+                        {
+                            if (!teslaGate.PlayerInRange(allHub.Value) || teslaGate.InProgress)
+                                continue;
+                            var ev = new TeslaTriggerEvent(ReferenceHub.GetHub(allHub.Key), teslaGate.PlayerInHurtRange(allHub.Key));
+                            Qurre.Events.Player.teslaTrigger(ev);
+                            if (ev.IsTriggerable)
+                                teslaGate.ServerSideCode();
+                        }
                     }
                 }
                 return false;
