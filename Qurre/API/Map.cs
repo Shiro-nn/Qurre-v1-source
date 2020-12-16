@@ -238,14 +238,14 @@ namespace Qurre.API
 			NetworkServer.Spawn(room.Transform.gameObject);
 		}
 		public static int GetMaxPlayers()
-        {
+        	{
 			CustomNetworkManager nm = new CustomNetworkManager();
 			return nm.maxConnections;
-        }
+       		}
 		public static void SetMaxPlayers(int amount)
-        {
+        	{
 			CustomNetworkManager nm = new CustomNetworkManager();
-            nm.maxConnections = amount;
+            		nm.maxConnections = amount;
 		}
 		public static void DisableDecontamination(bool value) => DecontaminationController.Singleton.disableDecontamination = value;
 		public static void PlayIntercomSound(bool start)
