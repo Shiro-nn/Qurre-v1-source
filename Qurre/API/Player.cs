@@ -588,8 +588,8 @@ namespace Qurre.API
 		{
 			List<string> gameObjects = new List<string>();
 			foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>()) { if (Vector3.Distance(obj.transform.position, player.GetPosition()) <= range && !obj.name.Contains("mixamorig") && !obj.name.Contains("Pos")) { gameObjects.Add(obj.name.Trim() + "\n"); } }
-            return gameObjects;
-        }
+            		return gameObjects;
+        	}
 		public static void PlaySCP106TeleportAnimation(this ReferenceHub player) { foreach (ReferenceHub hub in ReferenceHub.GetAllHubs().Values) { foreach (ReferenceHub ply in GetHubs()) { if (player.GetPlayerId() == ply.GetPlayerId()) { continue; } hub.scp106PlayerScript.RpcTeleportAnimation(); } } }
 		public static void ShakeScreen(float time) => ExplosionCameraShake.singleton.Shake(time);
 	}
