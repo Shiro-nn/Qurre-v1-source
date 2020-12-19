@@ -5,11 +5,10 @@ namespace Qurre.API.Events
     public class SendingRAEvent : EventArgs
     {
         private string returnMessage;
-        public SendingRAEvent(CommandSender commandSender, ReferenceHub sender, string message, string prefix = "", bool isAllowed = true)
+        public SendingRAEvent(CommandSender commandSender, string command, string prefix = "", bool isAllowed = true)
         {
             CommandSender = commandSender;
-            Sender = sender;
-            Message = message;
+            Command = command;
             IsAllowed = isAllowed;
             if (prefix == "")
                 pref = Assembly.GetCallingAssembly().GetName().Name;
@@ -17,8 +16,7 @@ namespace Qurre.API.Events
                 pref = prefix;
         }
         public CommandSender CommandSender { get; }
-        public ReferenceHub Sender { get; }
-        public string Message { get; }
+        public string Command { get; }
         public string pref;
         public string ReplyMessage
         {

@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.Server
         {
             try
             {
-                var ev = new SendingRAEvent(new BotSender(), API.Map.Host, cmd);
+                var ev = new SendingRAEvent(new BotSender(), cmd);
                 Qurre.Events.Server.sendingra(ev);
                 return ev.IsAllowed;
             }
@@ -25,15 +25,8 @@ namespace Qurre.Patches.Events.Server
         }
         public class BotSender : CommandSender
         {
-            public override void RaReply(string text, bool success, bool logToConsole, string overrideDisplay)
-            {
-                ServerConsole.AddLog(text, ConsoleColor.Gray);
-            }
-
-            public override void Print(string text)
-            {
-                ServerConsole.AddLog(text, ConsoleColor.Gray);
-            }
+            public override void RaReply(string text, bool success, bool logToConsole, string overrideDisplay) => ServerConsole.AddLog(text, ConsoleColor.Gray);
+            public override void Print(string text) => ServerConsole.AddLog(text, ConsoleColor.Gray);
             public BotSender() { }
             public override string SenderId => "SERVER CONSOLE";
             public override string Nickname => "SERVER CONSOLE";
