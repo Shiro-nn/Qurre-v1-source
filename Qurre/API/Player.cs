@@ -512,7 +512,7 @@ namespace Qurre.API
 			MethodInfo info = type.GetMethod(methodName, flags);
 			info?.Invoke(null, param);
 		}
-		public static void ChangeModel(this ReferenceHub player, RoleType newModel, List<ReferenceHub> newList)
+		public static void ChangeModel(this ReferenceHub player, RoleType newModel)
 		{
 			GameObject gameObject = player.gameObject;
 			CharacterClassManager ccm = gameObject.GetComponent<CharacterClassManager>();
@@ -523,12 +523,12 @@ namespace Qurre.API
 			{
 				netId = identity.netId
 			};
-			foreach (ReferenceHub pl in newList)
+			foreach (ReferenceHub ply in GetHubs())
 			{
-				if (pl.GetPlayerId() == player.GetPlayerId())
+				if (ply.GetPlayerId() == player.GetPlayerId())
 					continue;
 
-				GameObject gameObject2 = pl.gameObject;
+				GameObject gameObject2 = ply.gameObject;
 				NetworkConnection playerCon = gameObject2.GetComponent<NetworkIdentity>().connectionToClient;
 				playerCon.Send(destroyMessage, 0);
 				object[] parameters = new object[] { identity, playerCon };
@@ -577,12 +577,20 @@ namespace Qurre.API
 		{
 			ReferenceHub.LocalHub.hints.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
 		}
-		public static void PlayReloadAnimation(List<ReferenceHub> players) { foreach (ReferenceHub refHub in ReferenceHub.GetAllHubs().Values) { foreach (ReferenceHub ply in players) { refHub.weaponManager.RpcReload(0); } } }
+		public static void PlayReloadAnimation(this ReferenceHub player) { foreach (ReferenceHub refHub in ReferenceHub.GetAllHubs().Values) { foreach (ReferenceHub ply in GetHubs()) { if (player.GetPlayerId() == ply.GetPlayerId()) { continue; } refHub.weaponManager.RpcReload(0); } } }
 		public static void BodyDelete(this ReferenceHub player)
 		{
 			foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
 				if (doll.owner.PlayerId == player.queryProcessor.PlayerId)
 					NetworkServer.Destroy(doll.gameObject);
 		}
+		public static List<string> GetGameObjectsInRange(this ReferenceHub player,float range)
+		{
+			List<string> gameObjects = new List<string>();
+			foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>()) { if (Vector3.Distance(obj.transform.position, player.GetPosition()) <= range && !obj.name.Contains("mixamorig") && !obj.name.Contains("Pos")) { gameObjects.Add(obj.name.Trim() + "\n"); } }
+            		return gameObjects;
+        	}
+		public static void PlaySCP106TeleportAnimation(this ReferenceHub player) { foreach (ReferenceHub hub in ReferenceHub.GetAllHubs().Values) { foreach (ReferenceHub ply in GetHubs()) { if (player.GetPlayerId() == ply.GetPlayerId()) { continue; } hub.scp106PlayerScript.RpcTeleportAnimation(); } } }
+		public static void ShakeScreen(float time) => ExplosionCameraShake.singleton.Shake(time);
 	}
 }

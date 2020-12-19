@@ -237,5 +237,29 @@ namespace Qurre.API
 			room.Transform.rotation = rotation;
 			NetworkServer.Spawn(room.Transform.gameObject);
 		}
+		public static int GetMaxPlayers()
+        	{
+			CustomNetworkManager nm = new CustomNetworkManager();
+			return nm.maxConnections;
+       		}
+		public static void SetMaxPlayers(int amount)
+        	{
+			CustomNetworkManager nm = new CustomNetworkManager();
+            		nm.maxConnections = amount;
+		}
+		public static void DisableDecontamination(bool value) => DecontaminationController.Singleton.disableDecontamination = value;
+		public static void PlayIntercomSound(bool start)
+		{
+			PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
+		}
+		public static void PlaceBlood(Vector3 position, int type, float f)
+		{
+			PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, f);
+		}
+		public static void PlayAmbientSound(int id)
+		{
+			PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
+		}
+
 	}
 }
