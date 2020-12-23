@@ -319,25 +319,25 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\Cassie.cs" />
     <Compile Include="API\Alpha.cs" />
-    <Compile Include="API\Round.cs" />
+    <Compile Include="API\Cassie.cs" />
     <Compile Include="API\Events\Alpha.cs" />
-    <Compile Include="API\Events\Player.cs" />
     <Compile Include="API\Events\Map.cs" />
-    <Compile Include="API\Events\SCPs.cs" />
+    <Compile Include="API\Events\Player.cs" />
     <Compile Include="API\Events\Round.cs" />
+    <Compile Include="API\Events\SCPs.cs" />
     <Compile Include="API\Events\Server.cs" />
-    <Compile Include="API\Objects\GeneratorStatus.cs" />
-    <Compile Include="API\SCP914.cs" />
-    <Compile Include="API\Scp079.cs" />
-    <Compile Include="API\Objects\GlobalBadge.cs" />
-    <Compile Include="API\Objects\ZoneType.cs" />
-    <Compile Include="API\Objects\Side.cs" />
-    <Compile Include="API\Player.cs" />
-    <Compile Include="API\Map.cs" />
     <Compile Include="API\Item.cs" />
+    <Compile Include="API\Map.cs" />
+    <Compile Include="API\Objects\GeneratorStatus.cs" />
+    <Compile Include="API\Objects\GlobalBadge.cs" />
     <Compile Include="API\Objects\Room.cs" />
+    <Compile Include="API\Objects\Side.cs" />
+    <Compile Include="API\Objects\ZoneType.cs" />
+    <Compile Include="API\Player.cs" />
+    <Compile Include="API\Round.cs" />
+    <Compile Include="API\Scp079.cs" />
+    <Compile Include="API\SCP914.cs" />
     <Compile Include="Events\Alpha.cs" />
     <Compile Include="Events\Player.cs" />
     <Compile Include="Events\Map.cs" />

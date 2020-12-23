@@ -13,7 +13,9 @@ namespace Qurre.Patches.Events.Server
         {
             try
             {
-                var ev = new SendingRAEvent(new BotSender(), cmd);
+                char[] MyChar = { '/' };
+                string ncmd = cmd.TrimStart(MyChar);
+                var ev = new SendingRAEvent(new BotSender(), ncmd);
                 Qurre.Events.Server.sendingra(ev);
                 return ev.IsAllowed;
             }
