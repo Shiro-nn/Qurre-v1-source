@@ -1,4 +1,4 @@
-﻿using Qurre.API.Objects;
+using Qurre.API.Objects;
 using Mirror;
 using System;
 using System.Collections.Generic;
@@ -536,26 +536,6 @@ namespace Qurre.API
 			}
 			ccm.CurClass = FirstRole;
 		}
-		public static void SizeModel(this ReferenceHub player, Vector3 size)
-		{
-			GameObject target = player.gameObject;
-			NetworkIdentity identity = target.GetComponent<NetworkIdentity>();
-			target.transform.localScale = size;
-
-			ObjectDestroyMessage destroyMessage = default;
-			destroyMessage.netId = identity.netId;
-			foreach (GameObject ply in PlayerManager.players)
-			{
-				if (ply == target)
-					continue;
-
-				NetworkConnection playerCon = ply.GetComponent<NetworkIdentity>().connectionToClient;
-				playerCon.Send(destroyMessage, 0);
-
-				object[] parameters = new object[] { identity, playerCon };
-				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", parameters);
-			}
-		}
 		public static void SizeCamera(this ReferenceHub player, Vector3 size)
 		{
 			GameObject target = player.gameObject;
@@ -577,20 +557,72 @@ namespace Qurre.API
 		{
 			ReferenceHub.LocalHub.hints.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
 		}
-		public static void PlayReloadAnimation(this ReferenceHub player) { foreach (ReferenceHub refHub in ReferenceHub.GetAllHubs().Values) { foreach (ReferenceHub ply in GetHubs()) { if (player.GetPlayerId() == ply.GetPlayerId()) { continue; } refHub.weaponManager.RpcReload(0); } } }
 		public static void BodyDelete(this ReferenceHub player)
 		{
 			foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
 				if (doll.owner.PlayerId == player.queryProcessor.PlayerId)
 					NetworkServer.Destroy(doll.gameObject);
 		}
-		public static List<string> GetGameObjectsInRange(this ReferenceHub player,float range)
+		public static List<string> GetGameObjectsInRange(this ReferenceHub player, float range)
 		{
 			List<string> gameObjects = new List<string>();
 			foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>()) { if (Vector3.Distance(obj.transform.position, player.GetPosition()) <= range && !obj.name.Contains("mixamorig") && !obj.name.Contains("Pos")) { gameObjects.Add(obj.name.Trim() + "\n"); } }
-            		return gameObjects;
+			return gameObjects;
+		}
+		public static void Reconnect(this ReferenceHub player)
+		{
+			GameObject localPlayer = PlayerManager.localPlayer;
+			NetworkIdentity component = localPlayer.GetComponent<NetworkIdentity>();
+			ObjectDestroyMessage msg = default(ObjectDestroyMessage);
+			msg.netId = component.netId;
+			NetworkConnection connectionToClient = player.gameObject.GetComponent<NetworkIdentity>().connectionToClient;
+			if (!(player.gameObject == localPlayer))
+			{
+				connectionToClient.Send(msg, 0);
+				object[] param = new object[]
+				{
+					component,
+					connectionToClient
+				};
+				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
+			}
+		}
+		public static void ShowHitmark(this ReferenceHub player)
+		{
+			foreach (ReferenceHub hub in ReferenceHub.GetAllHubs().Values)
+			{
+				foreach (ReferenceHub player2 in GetHubs())
+				{
+					if (player.playerId == player2.playerId)
+						continue;
+				}
+				hub.weaponManager.CallRpcConfirmShot(true, 13);
+			}
+		}
+		public static void Bilnk(this ReferenceHub player) => player.GetComponent<Scp173PlayerScript>().CallRpcBlinkTime();
+		public static void PlayNeckSnapSound(this ReferenceHub player) => player.GetComponent<Scp173PlayerScript>().CallRpcSyncAudio();
+		public static void PlayFallSound(this ReferenceHub player) => player.falldamage.CallRpcDoSound();
+		public static void Redirect(this ReferenceHub player, float timeOffset, ushort port) => player.playerStats.CallRpcRoundrestartRedirect(timeOffset, port);
+		public static void Teleport(this ReferenceHub player, Vector3 position, float rotation = 0f, bool unstuck = false) => player.playerMovementSync.OverridePosition(position, rotation, unstuck);
+		public static Vector3 Get106Portal(this ReferenceHub player)
+		{
+			if (!player.GetComponent<Scp106PlayerScript>().iAm106)
+			{
+				return Vector3.zero;
+			}
+			return player.GetComponent<Scp106PlayerScript>().NetworkportalPosition;
+		}
+		public static void PlayReloadAnimation(this ReferenceHub player, sbyte weapon = 0) => player.weaponManager.CallRpcReload(weapon);
+		public static void Play106TeleportAnimation(this ReferenceHub player) => player.scp106PlayerScript.CallRpcTeleportAnimation();
+		public static void Play106ContainAnimation(this ReferenceHub player) => player.scp106PlayerScript.CallRpcContainAnimation();
+		public static void Create106Portal(this ReferenceHub player) => player.scp106PlayerScript.CallCmdMakePortal();
+		public static void Use106Portal(this ReferenceHub player) => player.scp106PlayerScript.CallCmdUsePortal();
+		public static void PersonalClearBroadcasts(this ReferenceHub player)
+        	{
+			if(player.GetConnection() != null)
+            		{
+				GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(player.GetConnection());
+            		}
         	}
-		public static void PlaySCP106TeleportAnimation(this ReferenceHub player) { foreach (ReferenceHub hub in ReferenceHub.GetAllHubs().Values) { foreach (ReferenceHub ply in GetHubs()) { if (player.GetPlayerId() == ply.GetPlayerId()) { continue; } hub.scp106PlayerScript.RpcTeleportAnimation(); } } }
-		public static void ShakeScreen(float time) => ExplosionCameraShake.singleton.Shake(time);
 	}
 }
