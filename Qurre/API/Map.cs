@@ -1,4 +1,4 @@
-﻿using Qurre.API.Objects;
+using Qurre.API.Objects;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -126,7 +126,7 @@ namespace Qurre.API
 		public static void SpawnRagdoll(RoleType role, string name, Vector3 position, Quaternion rotation, string ownerID, string ownerNickname, int playerID) => PlayerManager.localPlayer.GetComponent<RagdollManager>().SpawnRagdoll(new Vector3(position.x, position.y, position.z), rotation, new Vector3(0, 0, 0), (int)role, new PlayerStats.HitInfo(), false, ownerID, ownerNickname, playerID);
 		public static GameObject SpawnBrokenRagdoll(RoleType role, Vector3 position, Vector3 rotation, Vector3 scale)
 		{
-			GameObject ragdoll = UnityEngine.Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Ragdoll_" + ((int)role).ToString()));
+			GameObject ragdoll = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Ragdoll_" + ((int)role).ToString()));
 			ragdoll.transform.position = position;
 			ragdoll.transform.eulerAngles = rotation;
 			ragdoll.transform.localScale = scale;
@@ -203,15 +203,14 @@ namespace Qurre.API
 
 			return hub.gameObject;
 		}
-		public static void ActivateSCP914() => Scp914Machine.singleton.RpcActivate(NetworkTime.time);
 		public static void CallCICar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
 		public static void CallMTFHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
 		public static void PlayCIEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
 		public static void ContainSCP106(ReferenceHub executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().CallRpcContain106(executor.gameObject);
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
 		public static void SetFemurBreakerState(bool enabled) => Object.FindObjectOfType<LureSubjectContainer>().SetState(enabled);
-		public static void RemoveTeslaGates() { foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) { NetworkServer.Destroy(teslaGate.gameObject); } }
-		public static void RemoveDoors() { foreach (Door dr in drs) { NetworkServer.Destroy(dr.gameObject); } }
+		public static void RemoveTeslaGates() { foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) { Object.Destroy(teslaGate.gameObject); } }
+		public static void RemoveDoors() { foreach (Door dr in drs) { Object.Destroy(dr.gameObject); } }
 		public static void SetElevatorsMovingSpeed(float newSpeed) { foreach (Lift lft in lfs) { lft.movingSpeed = newSpeed; } }
 		public static void SetIntercomSpeaker(ReferenceHub player)
 		{
@@ -230,36 +229,27 @@ namespace Qurre.API
 				}
 			}
 		}
-		public static void CreateRoom(Room room, Vector3 position, Vector3 scale, Quaternion rotation)
-		{
-			room.Transform.position = position;
-			room.Transform.localScale = scale;
-			room.Transform.rotation = rotation;
-			NetworkServer.Spawn(room.Transform.gameObject);
-		}
 		public static int GetMaxPlayers()
-        	{
+		{
 			CustomNetworkManager nm = new CustomNetworkManager();
 			return nm.maxConnections;
-       		}
+		}
 		public static void SetMaxPlayers(int amount)
-        	{
+		{
 			CustomNetworkManager nm = new CustomNetworkManager();
-            		nm.maxConnections = amount;
+			nm.maxConnections = amount;
 		}
 		public static void DisableDecontamination(bool value) => DecontaminationController.Singleton.disableDecontamination = value;
-		public static void PlayIntercomSound(bool start)
+		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
+		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);
+		public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
+		public static void Shake()
 		{
-			PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
+			AlphaWarheadController host = AlphaWarheadController.Host;
+			if (host != null)
+			{
+				host.CallRpcShake(true);
+			}
 		}
-		public static void PlaceBlood(Vector3 position, int type, float f)
-		{
-			PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, f);
-		}
-		public static void PlayAmbientSound(int id)
-		{
-			PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
-		}
-
 	}
 }
