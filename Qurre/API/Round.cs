@@ -1,4 +1,4 @@
-﻿using GameCore;
+using GameCore;
 using Respawning;
 using Respawning.NamingRules;
 using System;
@@ -29,5 +29,14 @@ namespace Qurre.API
                 unitNamingRule.AddCombination(text, (SpawnableTeamType)team);
             }
         }
+        public static void RenameUnit(Team team, int id, string newName)
+        {
+            RespawnManager.Singleton.NamingManager.AllUnitNames[id] = new SyncUnit
+            {
+                SpawnableTeam = (byte)team,
+                UnitName = newName
+            };
+        }
+        public static void ForceTeamRespawn(bool isCI) => RespawnManager.Singleton.ForceSpawnTeam(isCI ? SpawnableTeamType.ChaosInsurgency : SpawnableTeamType.NineTailedFox);
     }
 }
