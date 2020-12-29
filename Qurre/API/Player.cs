@@ -599,7 +599,7 @@ namespace Qurre.API
 				hub.weaponManager.CallRpcConfirmShot(true, 13);
 			}
 		}
-		public static void Bilnk(this ReferenceHub player) => player.GetComponent<Scp173PlayerScript>().CallRpcBlinkTime();
+		public static void Blink(this ReferenceHub player) => player.GetComponent<Scp173PlayerScript>().CallRpcBlinkTime();
 		public static void PlayNeckSnapSound(this ReferenceHub player) => player.GetComponent<Scp173PlayerScript>().CallRpcSyncAudio();
 		public static void PlayFallSound(this ReferenceHub player) => player.falldamage.CallRpcDoSound();
 		public static void Redirect(this ReferenceHub player, float timeOffset, ushort port) => player.playerStats.CallRpcRoundrestartRedirect(timeOffset, port);
