@@ -1,5 +1,6 @@
 ﻿using Assets._Scripts.Dissonance;
 using Grenades;
+using Interactables.Interobjects.DoorUtils;
 using Qurre.API.Objects;
 using System;
 using System.Collections.Generic;
@@ -233,14 +234,14 @@ namespace Qurre.API.Events
     }
     public class InteractDoorEvent : EventArgs
     {
-        public InteractDoorEvent(ReferenceHub player, Door door, bool isAllowed = true)
+        public InteractDoorEvent(ReferenceHub player, DoorVariant door, bool isAllowed = true)
         {
             Player = player;
             Door = door;
             IsAllowed = isAllowed;
         }
         public ReferenceHub Player { get; }
-        public Door Door { get; set; }
+        public DoorVariant Door { get; set; }
         public bool IsAllowed { get; set; }
     }
     public class InteractGeneratorEvent : EventArgs

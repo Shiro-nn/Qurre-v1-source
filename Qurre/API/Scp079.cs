@@ -25,17 +25,17 @@ namespace Qurre.API
 			player.scp079PlayerScript.NetworkmaxMana = amount;
 			player.scp079PlayerScript.levels[player.Lvl()].maxMana = amount;
 		}
-		public static SyncListString GetLockedDoors(this ReferenceHub player) => player.scp079PlayerScript.lockedDoors;
-		public static void SetLockedDoors(this ReferenceHub player, SyncListString lockedDoors) => player.scp079PlayerScript.lockedDoors = lockedDoors;
-		public static void AddLockedDoor(this ReferenceHub player, string doorName)
+		public static SyncListUInt GetLockedDoors(this ReferenceHub player) => player.scp079PlayerScript.lockedDoors;
+		public static void SetLockedDoors(this ReferenceHub player, SyncListUInt lockedDoors) => player.scp079PlayerScript.lockedDoors = lockedDoors;
+		public static void AddLockedDoor(this ReferenceHub player, uint doorID)
 		{
-			if (!player.scp079PlayerScript.lockedDoors.Contains(doorName))
-				player.scp079PlayerScript.lockedDoors.Add(doorName);
+			if (!player.scp079PlayerScript.lockedDoors.Contains(doorID))
+				player.scp079PlayerScript.lockedDoors.Add(doorID);
 		}
-		public static void RemoveLockedDoor(this ReferenceHub player, string doorName)
+		public static void RemoveLockedDoor(this ReferenceHub player, uint doorID)
 		{
-			if (player.scp079PlayerScript.lockedDoors.Contains(doorName))
-				player.scp079PlayerScript.lockedDoors.Remove(doorName);
+			if (player.scp079PlayerScript.lockedDoors.Contains(doorID))
+				player.scp079PlayerScript.lockedDoors.Remove(doorID);
 		}
 		public static string Speaker(this ReferenceHub player) => player.scp079PlayerScript.Speaker;
 		public static Camera079 Camera(this ReferenceHub player) => player.scp079PlayerScript.currentCamera;

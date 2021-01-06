@@ -2,61 +2,48 @@
 using System;
 using System.Linq;
 using HarmonyLib;
+using Interactables.Interobjects.DoorUtils;
 using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.PlayeR
 {
-	[HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.CallCmdOpenDoor), typeof(GameObject))]
+	[HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.ServerInteract), new Type[] { typeof(ReferenceHub), typeof(byte) })]
 	internal static class InteractDoor
 	{
-		public static bool Prefix(PlayerInteract __instance, GameObject doorId)
+		private static bool Prefix(DoorVariant __instance, ReferenceHub ply, byte colliderId)
 		{
-			Door door = doorId.GetComponent<Door>();
-			var ev = new InteractDoorEvent(ReferenceHub.GetHub(__instance.gameObject), door);
-
 			try
 			{
-				if (!__instance.RateLimit().CanExecute() ||
-					(__instance.InteractCuff().CufferId > 0 && !DisarmedInteract()) ||
-					doorId == null ||
-					(__instance.CCMPI().CurClass == RoleType.None || __instance.CCMPI().CurClass == RoleType.Spectator))
-					return false;
-				__instance.OnInteract();
-				if (__instance.ServerRolesInteract().BypassMode)
+				var ev = new InteractDoorEvent(ReferenceHub.GetHub(__instance.gameObject), __instance, false);
+				bool boolean = false;
+				if (__instance.ActiveLocks != 0)
 				{
-					ev.IsAllowed = true;
-				}
-				else if (string.Equals(door.permissionLevel, "CHCKPOINT_ACC", StringComparison.OrdinalIgnoreCase) &&
-					__instance.GetComponent<CharacterClassManager>().Classes.SafeGet(__instance.GetComponent<CharacterClassManager>().CurClass).team == Team.SCP)
-				{
-					ev.IsAllowed = true;
-				}
-				else
-				{
-					Item item = __instance.InteractInv().GetItemByID(__instance.InteractInv().curItem);
-					if (string.IsNullOrEmpty(door.permissionLevel))
+					DoorLockMode DLM = DoorLockUtils.GetMode((DoorLockReason)__instance.ActiveLocks);
+					if ((!DLM.HasFlagFast(DoorLockMode.CanClose) || !DLM.HasFlagFast(DoorLockMode.CanOpen)) && (!DLM.HasFlagFast(DoorLockMode.ScpOverride) || ply.characterClassManager.CurRole.team != Team.SCP) && (DLM == DoorLockMode.FullLock || (__instance.TargetState && !DLM.HasFlagFast(DoorLockMode.CanClose)) || (!__instance.TargetState && !DLM.HasFlagFast(DoorLockMode.CanOpen))))
 					{
-						ev.IsAllowed = !door.locked;
-					}
-					else if (item != null && item.permissions.Contains(door.permissionLevel))
-					{
-						ev.IsAllowed = !door.locked;
-					}
-					else
 						ev.IsAllowed = false;
+						boolean = true;
+					}
+				}
+				if (__instance.AllowInteracting(ply, colliderId))
+				{
+					if (ply.characterClassManager.CurClass == RoleType.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.curItem, ply)) ev.IsAllowed = true;
+					else ev.IsAllowed = false;
 				}
 				Qurre.Events.Player.interactdoor(ev);
-
-
-				if (!ev.IsAllowed)
+				if (ev.IsAllowed)
 				{
-					__instance.RpcDenied(doorId);
-					return false;
+					__instance.NetworkTargetState = !__instance.TargetState;
+					__instance._triggerPlayer(ply);
 				}
-
-				door.ChangeState();
-
+				else if (boolean)
+					__instance.LockBypassDenied(ply, colliderId);
+				else
+				{
+					__instance.PermissionsDenied(ply, colliderId);
+					DoorEvents.TriggerAction(__instance, DoorAction.AccessDenied, ply);
+				}
 				return false;
 			}
 			catch (Exception e)

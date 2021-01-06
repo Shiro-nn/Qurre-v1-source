@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using GameCore;
 using HarmonyLib;
 using LightContainmentZoneDecontamination;
+using MapGeneration;
 using Mirror;
 using UnityEngine;
 using static Qurre.API.Events.SCP106;

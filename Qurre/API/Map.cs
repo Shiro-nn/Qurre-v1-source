@@ -8,6 +8,8 @@ using Mirror;
 using RemoteAdmin;
 using Scp914;
 using Respawning;
+using Interactables.Interobjects.DoorUtils;
+
 namespace Qurre.API
 {
 	public static class Map
@@ -18,7 +20,7 @@ namespace Qurre.API
 		private static Broadcast bc;
 		private static DecontaminationController dc;
 		private static List<Room> rms = new List<Room>();
-		private static List<Door> drs = new List<Door>();
+		private static List<DoorVariant> drs = new List<DoorVariant>();
 		private static List<Lift> lfs = new List<Lift>();
 		private static List<TeslaGate> tgs = new List<TeslaGate>();
 		public static ReferenceHub Host
@@ -80,12 +82,12 @@ namespace Qurre.API
 				return rms;
 			}
 		}
-		public static List<Door> Doors
+		public static List<DoorVariant> Doors
 		{
 			get
 			{
 				if (drs == null || drs.Count == 0)
-					drs = Object.FindObjectsOfType<Door>().ToList();
+					drs = Object.FindObjectsOfType<DoorVariant>().ToList();
 				return drs;
 			}
 		}
@@ -139,7 +141,7 @@ namespace Qurre.API
 			grenade.transform.position = position;
 			NetworkServer.Spawn(grenade);
 		}
-		public static GameObject SpawnWorkstation(bool isTabletConnected, Vector3 position, Vector3 rotation, Vector3 scale)
+		/*public static GameObject SpawnWorkstation(bool isTabletConnected, Vector3 position, Vector3 rotation, Vector3 scale)
 		{
 			GameObject bench = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Work Station"));
 			Offset offset = new Offset();
@@ -151,7 +153,7 @@ namespace Qurre.API
 			bench.GetComponent<WorkStation>().NetworkisTabletConnected = isTabletConnected;
 			NetworkServer.Spawn(bench);
 			return bench;
-		}
+		}*/
 		public static GameObject SpawnItem(ItemType itemType, Vector3 position, Vector3 rotation, Vector3 scale)
 		{
 			Pickup yesnt = PlayerManager.localPlayer.GetComponent<Inventory>().SetPickup((ItemType)itemType, -4.656647E+11f, position, Quaternion.identity, 0, 0, 0);
@@ -210,7 +212,7 @@ namespace Qurre.API
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
 		public static void SetFemurBreakerState(bool enabled) => Object.FindObjectOfType<LureSubjectContainer>().SetState(enabled);
 		public static void RemoveTeslaGates() { foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) { Object.Destroy(teslaGate.gameObject); } }
-		public static void RemoveDoors() { foreach (Door dr in drs) { Object.Destroy(dr.gameObject); } }
+		public static void RemoveDoors() { foreach (DoorVariant dr in drs) { Object.Destroy(dr.gameObject); } }
 		public static void SetElevatorsMovingSpeed(float newSpeed) { foreach (Lift lft in lfs) { lft.movingSpeed = newSpeed; } }
 		public static void SetIntercomSpeaker(ReferenceHub player)
 		{
