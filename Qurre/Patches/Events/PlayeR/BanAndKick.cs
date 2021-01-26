@@ -24,14 +24,14 @@ namespace Qurre.Patches.Events.PlayeR
                 try
                 {
                     if (ConfigFile.ServerConfig.GetBool("online_mode", false))
-                        userId = targetPlayer.GetUserId();
+                        userId = targetPlayer.UserId();
                 }
                 catch { return false; }
                 string umm = (duration > 0) ? Plugin.Config.GetString("Qurre_banned", "banned") : Plugin.Config.GetString("Qurre_kicked", "kicked");
                 string message = Plugin.Config.GetString("Qurre_BanOrKick_msg", $"You have been %bok%.").Replace("%bok%", umm);
                 if (!string.IsNullOrEmpty(reason))
                     message = $"{message} {Plugin.Config.GetString("Qurre_reason", "Reason")}: {reason}";
-                if (!IsVerified() || !targetPlayer.GetBypassMode())
+                if (!IsVerified() || !targetPlayer.BypassMode())
                 {
                     if (duration > 0)
                     {
@@ -42,9 +42,9 @@ namespace Qurre.Patches.Events.PlayeR
                         message = ev.FullMessage;
                         if (!ev.IsAllowed)
                             return false;
-                        string originalName = string.IsNullOrEmpty(targetPlayer.GetNickname())
+                        string originalName = string.IsNullOrEmpty(targetPlayer.Name())
                             ? "(no nick)"
-                            : targetPlayer.GetNickname();
+                            : targetPlayer.Name();
                         long issuanceTime = TimeBehaviour.CurrentTimestamp();
                         long banExpieryTime = TimeBehaviour.GetBanExpirationTime((uint)duration);
                         try
@@ -61,13 +61,13 @@ namespace Qurre.Patches.Events.PlayeR
                                         Reason = reason,
                                         Issuer = issuer,
                                     }, BanHandler.BanType.UserId);
-                                if (!string.IsNullOrEmpty(targetPlayer.GetUserId()))
+                                if (!string.IsNullOrEmpty(targetPlayer.UserId()))
                                 {
                                     BanHandler.IssueBan(
                                         new BanDetails
                                         {
                                             OriginalName = originalName,
-                                            Id = targetPlayer.GetUserId(),
+                                            Id = targetPlayer.UserId(),
                                             IssuanceTime = issuanceTime,
                                             Expires = banExpieryTime,
                                             Reason = reason,

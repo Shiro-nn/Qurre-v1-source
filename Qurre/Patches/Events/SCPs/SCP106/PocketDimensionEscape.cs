@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using GameCore;
 using HarmonyLib;
 using LightContainmentZoneDecontamination;
-using MapGeneration;
 using Mirror;
 using UnityEngine;
 using static Qurre.API.Events.SCP106;
@@ -71,7 +70,6 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                 }
                 if (!PocketDimensionTeleport.RefreshExit)
                     return false;
-                ImageGenerator.pocketDimensionGenerator.GenerateRandom();
                 return false;
             }
             catch (System.Exception e)

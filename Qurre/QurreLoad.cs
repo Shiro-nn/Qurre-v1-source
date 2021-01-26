@@ -9,14 +9,14 @@ namespace Qurre
             Log.Info($"Initializing Qurre...");
             if (!Directory.Exists(PluginManager.ConfigsDirectory))
             {
-                Log.Warn($"Cfg directory not found - creating: {PluginManager.ConfigsDirectory}");
+                Log.Warn($"Configs directory not found - creating: {PluginManager.ConfigsDirectory}");
                 Directory.CreateDirectory(PluginManager.ConfigsDirectory);
             }
-            PluginManager.ConfigsPath = Path.Combine(PluginManager.ConfigsDirectory, $"{QurreModLoader.ModLoader.Port}-cfg.yml");
+            PluginManager.ConfigsPath = Path.Combine(PluginManager.ConfigsDirectory, $"{QurreModLoader.ModLoader.Port}-config.yml");
             if (!File.Exists(PluginManager.ConfigsPath))
                 File.Create(PluginManager.ConfigsPath).Close();
             Plugin.Config = new YamlConfig(PluginManager.ConfigsPath);
-            Log.debug = Plugin.Config.GetBool("Qurre_debug", false);
+            Log.debug = Plugin.Config.GetBool("Qurre_debug", false) || Plugin.Config.GetBool("qurre_debug", false);
             CustomNetworkManager.Modded = true;
             Timing.RunCoroutine(PluginManager.LoadPlugins());
         }

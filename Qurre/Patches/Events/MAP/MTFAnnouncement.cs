@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.MAP
         {
             try
             {
-                int scpsLeft = Player.GetHubs().Where(player => player.GetTeam() == Team.SCP && player.GetRole() != RoleType.Scp0492).Count();
+                int scpsLeft = Player.GetHubs().Where(player => player.Team() == Team.SCP && player.Role() != RoleType.Scp0492).Count();
                 string[] unitInformations = regular.Split('-');
                 var ev = new MTFAnnouncementEvent(scpsLeft, unitInformations[0], int.Parse(unitInformations[1]));
                 Qurre.Events.Map.mtfAnnouncement(ev);

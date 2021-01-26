@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.Round
                     ServerConsole.AddLog($"umm, team {__instance.NextKnownTeam} is undefined", ConsoleColor.Red);
                 else
                 {
-                    List<ReferenceHub> list = Player.GetHubs().Where(p => p.GetRole() == RoleType.Spectator && !p.Overwatch()).ToList();
+                    List<ReferenceHub> list = Player.GetHubs().Where(p => p.Role() == RoleType.Spectator && !p.Overwatch()).ToList();
                     if (list.Count > 0)
                     {
                         RespawnTickets singleton = RespawnTickets.Singleton;

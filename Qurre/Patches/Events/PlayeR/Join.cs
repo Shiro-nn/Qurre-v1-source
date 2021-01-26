@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.PlayeR
                 if (!value || string.IsNullOrEmpty(__instance?.UserId))
                     return;
                 ReferenceHub player = ReferenceHub.GetHub(__instance.gameObject);
-                ServerConsole.AddLog($"Player {player?.GetNickname()} ({player?.GetUserId()}) ({player?.GetPlayerId()}) connected", ConsoleColor.Magenta);
+                ServerConsole.AddLog($"Player {player?.Name()} ({player?.UserId()}) ({player?.PlayerId()}) connected", ConsoleColor.Magenta);
                 Timing.CallDelayed(0.25f, () =>
                 {
                     if (player != null && player.IsMuted())

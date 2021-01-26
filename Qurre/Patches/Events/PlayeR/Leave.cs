@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.PlayeR
                 if (player == null || player.IsHost())
                     return;
                 var ev = new LeaveEvent(player);
-                ServerConsole.AddLog($"Player {ev.Player.GetNickname()} ({ev.Player.GetUserId()}) ({player?.GetPlayerId()}) disconnected", ConsoleColor.DarkMagenta);
+                ServerConsole.AddLog($"Player {ev.Player.Name()} ({ev.Player.UserId()}) ({player?.PlayerId()}) disconnected", ConsoleColor.DarkMagenta);
                 Qurre.Events.Player.leave(ev);
             }
             catch (Exception e)

@@ -84,7 +84,7 @@ namespace Qurre.Patches.Events.PlayeR
 					__instance.isDoorOpen = !__instance.isDoorOpen;
 					return false;
 				}
-				var boolean = player.GetBypassMode();
+				var boolean = player.BypassMode();
 				if (player.inventory.GetItemInHand().id > ItemType.KeycardJanitor)
 				{
 					var permissions = player.inventory.GetItemByID(player.inventory.curItem).permissions;

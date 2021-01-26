@@ -4,6 +4,8 @@
 	{
 		public static YamlConfig Config;
 		public abstract string name { get; }
+		public abstract string version { get; }
+		public abstract string creator { get; }
 		public abstract void Enable();
 		public abstract void Disable();
 		public abstract void Reload();
