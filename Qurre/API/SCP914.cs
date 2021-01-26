@@ -9,7 +9,6 @@ namespace Qurre.API
 	{
 		public static void KnobState(Scp914Knob scp914Knob) => Scp914Machine.singleton.knobState = scp914Knob;
 		public static Scp914Knob KnobState() => Scp914Machine.singleton.knobState;
-		public static void Start() => Scp914Machine.singleton.RpcActivate(NetworkTime.time);
 		public static bool IsWorking => Scp914Machine.singleton.working;
 		public static Dictionary<ItemType, Dictionary<Scp914Knob, ItemType[]>> Recipes() => Scp914Machine.singleton.recipesDict;
 		public static void Recipes(Dictionary<ItemType, Dictionary<Scp914Knob, ItemType[]>> recipes) => Scp914Machine.singleton.recipesDict = recipes;

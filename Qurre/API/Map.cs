@@ -122,7 +122,7 @@ namespace Qurre.API
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
 		}
 		public static IEnumerable<Room> GetRooms() => Rooms;
-		public static IEnumerable<ReferenceHub> HubsInRoom(this Room room) => ReferenceHub.GetAllHubs().Values.Where(player => !player.IsHost() && player.GetCurrentRoom().Name == room.Name);
+		public static IEnumerable<ReferenceHub> HubsInRoom(this Room room) => ReferenceHub.GetAllHubs().Values.Where(player => !player.IsHost() && player.CurrentRoom().Name == room.Name);
 		public static int ActivatedGenerators => Generator079.mainGenerator.totalVoltage;
 		public static void TurnOffLights(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
 		public static void SpawnRagdoll(RoleType role, string name, Vector3 position, Quaternion rotation, string ownerID, string ownerNickname, int playerID) => PlayerManager.localPlayer.GetComponent<RagdollManager>().SpawnRagdoll(new Vector3(position.x, position.y, position.z), rotation, new Vector3(0, 0, 0), (int)role, new PlayerStats.HitInfo(), false, ownerID, ownerNickname, playerID);
@@ -213,8 +213,9 @@ namespace Qurre.API
 		public static void SetFemurBreakerState(bool enabled) => Object.FindObjectOfType<LureSubjectContainer>().SetState(enabled);
 		public static void RemoveTeslaGates() { foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) { Object.Destroy(teslaGate.gameObject); } }
 		public static void RemoveDoors() { foreach (DoorVariant dr in drs) { Object.Destroy(dr.gameObject); } }
-		public static void SetElevatorsMovingSpeed(float newSpeed) { foreach (Lift lft in lfs) { lft.movingSpeed = newSpeed; } }
-		public static void SetIntercomSpeaker(ReferenceHub player)
+        public static void SetLiftMovingSpeed(float Speed) { foreach (Lift lft in lfs) { lft.movingSpeed = Speed; } }
+
+        public static void SetIntercomSpeaker(ReferenceHub player)
 		{
 			if (player != null)
 			{
@@ -244,14 +245,88 @@ namespace Qurre.API
 		public static void DisableDecontamination(bool value) => DecontaminationController.Singleton.disableDecontamination = value;
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
 		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);
-		public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
-		public static void Shake()
+        public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
+
+        public static void PlayChaosSound()
+        {
+            RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
+        }
+		public static void SetLightsIntensivity(float intensive)
 		{
-			AlphaWarheadController host = AlphaWarheadController.Host;
-			if (host != null)
+			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
 			{
-				host.CallRpcShake(true);
+				Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
+				if (component != null && component.type == Scp079Interactable.InteractableType.LightController)
+				{
+					flickerableLightController.ServerSetLightIntensity(intensive);
+				}
 			}
 		}
+
+		public static void SetLightsIntensivity(float intensive, ZoneType zone)
+		{
+			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<global::FlickerableLightController>())
+			{
+				Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
+				if (component != null && component.type == Scp079Interactable.InteractableType.LightController && component.currentZonesAndRooms.Count != 0)
+				{
+					string b;
+					switch (zone)
+					{
+						case ZoneType.LightContainment:
+							b = "LightRooms";
+							break;
+						case ZoneType.HeavyContainment:
+							b = "HeavyRooms";
+							break;
+						case ZoneType.Entrance:
+							b = "EntranceRooms";
+							break;
+						case ZoneType.Surface:
+							if (component.optionalObject.transform.position.y > 900f)
+							{
+								flickerableLightController.ServerSetLightIntensity(intensive);
+							}
+							return;
+						default:
+							Log.Debug("Map: Tryed to use UNDEFINED zone");
+							return;
+					}
+					if (component.currentZonesAndRooms[0].currentZone == b)
+					{
+						flickerableLightController.ServerSetLightIntensity(intensive);
+					}
+				}
+			}
+		}
+
+        public static void SetLightsIntensivity(float intensive, string room)
+        {
+            foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
+            {
+                Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
+                if (component != null && component.type == Scp079Interactable.InteractableType.LightController && component.currentZonesAndRooms.Count != 0 && component.currentZonesAndRooms[0].currentRoom.Contains(room))
+                {
+                    flickerableLightController.ServerSetLightIntensity(intensive);
+                }
+            }
+        }
+
+		public static void Shake()
+        {
+            AlphaWarheadController host = AlphaWarheadController.Host;
+            if (host != null)
+            {
+                host.CallRpcShake(true);
+            }
+        }
+		public static void ActivateSCP914()
+		{
+			Scp914Machine.singleton.RpcActivate(NetworkTime.time);
+		}
+		public static void ActivateSCP914(float time)
+        {
+            Scp914Machine.singleton.RpcActivate(time);
+        }
 	}
 }
