@@ -2,12 +2,13 @@ using Qurre.API.Objects;
 using Mirror;
 using System;
 using System.Collections.Generic;
-using MEC;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using static QurreModLoader.umm;
 using Hints;
+using MEC;
+
 namespace Qurre.API
 {
 	public static class Player
@@ -26,52 +27,48 @@ namespace Qurre.API
 		public static Dictionary<int, ReferenceHub> IdHubs = new Dictionary<int, ReferenceHub>();
 		public static Dictionary<string, ReferenceHub> StrHubs = new Dictionary<string, ReferenceHub>();
 		public static IEnumerable<ReferenceHub> GetHubs() => ReferenceHub.GetAllHubs().Values.Where(h => !h.IsHost());
-		public static string UserId(this ReferenceHub player) => player.characterClassManager.UserId;
+		public static string GetUserId(this ReferenceHub player) => player.characterClassManager.UserId;
 		public static void SetUserId(this ReferenceHub player, string newId) => player.characterClassManager.NetworkSyncedUserId = newId;
-		public static int PlayerId(this ReferenceHub player) => player.queryProcessor.PlayerId;
+		public static int GetPlayerId(this ReferenceHub player) => player.queryProcessor.PlayerId;
 		public static void SetPlayerId(this ReferenceHub player, int newId) => player.queryProcessor.NetworkPlayerId = newId;
 		public static bool Overwatch(this ReferenceHub player) => player.serverRoles.OverwatchEnabled();
-		public static void SetOverwatch(this ReferenceHub player, bool enable) => player.serverRoles.CallTargetSetOverwatch(player.networkIdentity.connectionToClient, enable);
+		public static void Overwatch(this ReferenceHub player, bool over) => player.serverRoles.CallTargetSetOverwatch(player.networkIdentity.connectionToClient, over);
 		public static bool IsScp(this ReferenceHub hub) => hub.characterClassManager.IsAnyScp();
-        public static bool IsNTF(this ReferenceHub hub)
-        {
-            switch (hub.Role())
-            {
-                case RoleType.NtfCadet:
-                case RoleType.NtfScientist:
-                case RoleType.NtfLieutenant:
-                case RoleType.NtfCommander:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-		public static bool IsHuman(this ReferenceHub hub) => hub.characterClassManager.IsHuman();
-        public static bool IsAlive(this ReferenceHub hub) => hub.characterClassManager.IsAlive;
-		public static RoleType Role(this ReferenceHub player) => player.characterClassManager.CurClass;
-		public static void ChangeRole(this ReferenceHub player, RoleType role) => player.characterClassManager.SetPlayersClass(role, player.gameObject);
-		public static void ChangeRole(this ReferenceHub player, RoleType role, bool keepPosition, bool keepHP)
+		public static bool IsNTF(this ReferenceHub hub)
 		{
-			if (keepPosition && !keepHP)
+			switch (hub.GetRole())
 			{
-				player.characterClassManager.NetworkCurClass = role;
-				player.playerStats.SetHPAmount(player.characterClassManager.Classes.SafeGet(player.Role()).maxHP);
+				case RoleType.NtfCadet:
+				case RoleType.NtfScientist:
+				case RoleType.NtfLieutenant:
+				case RoleType.NtfCommander:
+					return true;
+				default:
+					return false;
 			}
-			else if (keepPosition && keepHP)
+		}
+		public static bool IsHuman(this ReferenceHub hub) => hub.characterClassManager.IsHuman();
+		public static bool IsAlive(this ReferenceHub hub) => hub.characterClassManager.IsAlive;
+		public static RoleType GetRole(this ReferenceHub player) => player.characterClassManager.CurClass;
+		public static void SetRole(this ReferenceHub player, RoleType newRole) => player.characterClassManager.SetPlayersClass(newRole, player.gameObject);
+		public static void SetRole(this ReferenceHub player, RoleType newRole, bool keepPosition)
+		{
+			if (keepPosition)
 			{
-				player.characterClassManager.NetworkCurClass = role;
+				player.characterClassManager.NetworkCurClass = newRole;
+				player.playerStats.SetHPAmount(player.characterClassManager.Classes.SafeGet(player.GetRole()).maxHP);
 			}
 			else
-				ChangeRole(player, role);
+				SetRole(player, newRole);
 		}
-		public static Vector3 Position(this ReferenceHub player) => player.playerMovementSync.transform.position;
-		public static Vector2 Rotations(this ReferenceHub player) => player.playerMovementSync.NetworkRotationSync;
-		public static Vector3 RotationVector(this ReferenceHub player) => player.characterClassManager.transform.forward;
+		public static Vector3 GetPosition(this ReferenceHub player) => player.playerMovementSync.transform.position;
+		public static Vector2 GetRotations(this ReferenceHub player) => player.playerMovementSync.NetworkRotationSync;
+		public static Vector3 GetRotationVector(this ReferenceHub player) => player.characterClassManager.transform.forward;
 		public static void SetPosition(this ReferenceHub player, float x, float y, float z) => player.playerMovementSync.OverridePosition(new Vector3(x, y, z), player.transform.rotation.eulerAngles.y);
 		public static void SetPosition(this ReferenceHub player, Vector3 position) => player.SetPosition(position.x, position.y, position.z);
 		public static void SetRotation(this ReferenceHub player, Vector2 rotations) => player.SetRotation(rotations.x, rotations.y);
 		public static void SetRotation(this ReferenceHub player, float x, float y) => player.playerMovementSync.NetworkRotationSync = new Vector2(x, y);
-		public static UserGroup Group(this ReferenceHub player) => player.serverRoles.UserGroup();
+		public static UserGroup GetGroup(this ReferenceHub player) => player.serverRoles.UserGroup();
 		public static void SetGroupColor(this ReferenceHub player, string color) => player.serverRoles.SetColor(color);
 		public static void SetGroupName(this ReferenceHub player, string name) => player.serverRoles.SetText(name);
 		public static void SetGroup(this ReferenceHub player, string name, string color, bool show)
@@ -112,13 +109,13 @@ namespace Qurre.API
 				player.serverRoles.SetGroup(ug, false, false, show);
 			}
 
-			if (ServerStatic.GetPermissionsHandler()._members().ContainsKey(player.UserId()))
+			if (ServerStatic.GetPermissionsHandler()._members().ContainsKey(player.GetUserId()))
 			{
-				ServerStatic.GetPermissionsHandler()._members()[player.UserId()] = rankName;
+				ServerStatic.GetPermissionsHandler()._members()[player.GetUserId()] = rankName;
 			}
 			else
 			{
-				ServerStatic.GetPermissionsHandler()._members().Add(player.UserId(), rankName);
+				ServerStatic.GetPermissionsHandler()._members().Add(player.GetUserId(), rankName);
 			}
 		}
 		public static void SetGroup(this ReferenceHub player, UserGroup userGroup) => player.serverRoles.SetGroup(userGroup, false, false, false);
@@ -145,10 +142,10 @@ namespace Qurre.API
 				Type = BadgeType
 			};
 		}
-		public static string Name(this ReferenceHub player) => player.nicknameSync.Network_myNickSync;
-		public static void SetName(this ReferenceHub player, string name)
+		public static string GetNickname(this ReferenceHub player) => player.nicknameSync.Network_myNickSync;
+		public static void SetNickname(this ReferenceHub player, string nickname)
 		{
-			player.nicknameSync.Network_myNickSync = name;
+			player.nicknameSync.Network_myNickSync = nickname;
 			MEC.Timing.RunCoroutine(BlinkTag(player));
 		}
 
@@ -168,20 +165,19 @@ namespace Qurre.API
 		{
 			sender.RaReply((pluginName ?? Assembly.GetCallingAssembly().GetName().Name) + "#" + message, success, true, string.Empty);
 		}
-        public static void Broadcast(this ReferenceHub player, ushort time, string message, Broadcast.BroadcastFlags flag = 0) => Map.BroadcastComponent.TargetAddElement(player.scp079PlayerScript.connectionToClient, message, time, flag);
-		public static void DelayedBroadcast(this ReferenceHub player, ushort time, float delay, string message, Broadcast.BroadcastFlags flag = 0) => Timing.CallDelayed(delay, () => Map.BroadcastComponent.TargetAddElement(player.scp079PlayerScript.connectionToClient, message, time, flag));
+		public static void Broadcast(this ReferenceHub player, ushort time, string message, Broadcast.BroadcastFlags flag = 0) => Map.BroadcastComponent.TargetAddElement(player.scp079PlayerScript.connectionToClient, message, time, flag);
 		public static void ClearBroadcasts(this ReferenceHub player) => Map.BroadcastComponent.TargetClearElements(player.scp079PlayerScript.connectionToClient);
-		public static Team Team(this ReferenceHub player) => player.Role().Team();
-		public static Team Team(this RoleType roleType)
+		public static Team GetTeam(this ReferenceHub player) => player.GetRole().GetTeam();
+		public static Team GetTeam(this RoleType roleType)
 		{
 			switch (roleType)
 			{
 				case RoleType.ChaosInsurgency:
-					return global::Team.CHI;
+					return Team.CHI;
 				case RoleType.Scientist:
-					return global::Team.RSC;
+					return Team.RSC;
 				case RoleType.ClassD:
-					return global::Team.CDP;
+					return Team.CDP;
 				case RoleType.Scp049:
 				case RoleType.Scp93953:
 				case RoleType.Scp93989:
@@ -190,41 +186,41 @@ namespace Qurre.API
 				case RoleType.Scp096:
 				case RoleType.Scp106:
 				case RoleType.Scp173:
-					return global::Team.SCP;
+					return Team.SCP;
 				case RoleType.Spectator:
-					return global::Team.RIP;
+					return Team.RIP;
 				case RoleType.FacilityGuard:
 				case RoleType.NtfCadet:
 				case RoleType.NtfLieutenant:
 				case RoleType.NtfCommander:
 				case RoleType.NtfScientist:
-					return global::Team.MTF;
+					return Team.MTF;
 				case RoleType.Tutorial:
-					return global::Team.TUT;
+					return Team.TUT;
 				default:
-					return global::Team.RIP;
+					return Team.RIP;
 			}
 		}
-		public static Side Side(this RoleType type) => type.Team().Side();
-		public static Side Side(this Team team)
+		public static Side GetSide(this RoleType type) => type.GetTeam().GetSide();
+		public static Side GetSide(this Team team)
 		{
 			switch (team)
 			{
-				case global::Team.SCP:
-					return Objects.Side.SCP;
-				case global::Team.MTF:
-				case global::Team.RSC:
-					return Objects.Side.MTF;
-				case global::Team.CHI:
-				case global::Team.CDP:
-					return Objects.Side.CHAOS;
-				case global::Team.TUT:
-					return Objects.Side.TUTORIAL;
-				case global::Team.RIP:
-				default: return Objects.Side.NONE;
+				case Team.SCP:
+					return Side.SCP;
+				case Team.MTF:
+				case Team.RSC:
+					return Side.MTF;
+				case Team.CHI:
+				case Team.CDP:
+					return Side.CHAOS;
+				case Team.TUT:
+					return Side.TUTORIAL;
+				case Team.RIP:
+				default: return Side.NONE;
 			}
 		}
-		public static Side Side(this ReferenceHub hub) => hub.Team().Side();
+		public static Side GetSide(this ReferenceHub hub) => hub.GetTeam().GetSide();
 		public static ReferenceHub Get(this GameObject player) => ReferenceHub.GetHub(player);
 		public static ReferenceHub Get(int playerId)
 		{
@@ -233,7 +229,7 @@ namespace Qurre.API
 
 			foreach (ReferenceHub hub in GetHubs())
 			{
-				if (hub.PlayerId() == playerId)
+				if (hub.GetPlayerId() == playerId)
 				{
 					IdHubs.Add(playerId, hub);
 
@@ -259,7 +255,7 @@ namespace Qurre.API
 				{
 					foreach (ReferenceHub player in GetHubs())
 					{
-						if (player.UserId() == args)
+						if (player.GetUserId() == args)
 						{
 							playerFound = player;
 						}
@@ -275,15 +271,15 @@ namespace Qurre.API
 
 					foreach (ReferenceHub player in GetHubs())
 					{
-						if (!player.Name().ToLower().Contains(args.ToLower()))
+						if (!player.GetNickname().ToLower().Contains(args.ToLower()))
 							continue;
 
 						if (str1.Length < maxNameLength)
 						{
 							int nameDifference;
 							int x = maxNameLength - str1.Length;
-							int y = maxNameLength - player.Name().Length;
-							string str2 = player.Name();
+							int y = maxNameLength - player.GetNickname().Length;
+							string str2 = player.GetNickname();
 							for (int i = 0; i < x; i++) str1 += "z";
 							for (int i = 0; i < y; i++) str2 += "z";
 							int n = str1.Length;
@@ -320,9 +316,9 @@ namespace Qurre.API
 				return null;
 			}
 		}
-		public static Room CurrentRoom(this ReferenceHub player)
+		public static Room GetCurrentRoom(this ReferenceHub player)
 		{
-			Vector3 playerPos = player.Position();
+			Vector3 playerPos = player.GetPosition();
 			Vector3 end = playerPos - new Vector3(0f, 10f, 0f);
 			bool flag = Physics.Linecast(playerPos, end, out RaycastHit raycastHit, -84058629);
 
@@ -352,9 +348,9 @@ namespace Qurre.API
 		public static void IntercomUnmute(this ReferenceHub player) => player.characterClassManager.NetworkIntercomMuted = false;
 		public static bool IsIntercomMuted(this ReferenceHub player) => player.characterClassManager.NetworkIntercomMuted;
 		public static bool IsHost(this ReferenceHub player) => player.characterClassManager.IsHost;
-		public static bool GodMode(this ReferenceHub player) => player.characterClassManager.GodMode;
+		public static bool GetGodMode(this ReferenceHub player) => player.characterClassManager.GodMode;
 		public static void SetGodMode(this ReferenceHub player, bool enable) => player.characterClassManager.GodMode = enable;
-		public static float HP(this ReferenceHub player) => player.playerStats.Health;
+		public static float GetHP(this ReferenceHub player) => player.playerStats.Health;
 		public static void SetHP(this ReferenceHub player, float amount) => player.playerStats.Health = amount;
 		public static void AddHP(this ReferenceHub player, float amount) => player.playerStats.Health += amount;
 		public static void Heal(this ReferenceHub player, float amount) => player.playerStats.Health = Mathf.Clamp(player.playerStats.Health + amount, 1, player.playerStats.maxHP);
@@ -363,15 +359,15 @@ namespace Qurre.API
 		{
 			player.playerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, player.queryProcessor.PlayerId), player.gameObject);
 		}
-		public static float MaxHP(this ReferenceHub player) => player.playerStats.maxHP;
+		public static float GetMaxHP(this ReferenceHub player) => player.playerStats.maxHP;
 		public static void SetMaxHP(this ReferenceHub player, float amount) => player.playerStats.maxHP = (int)amount;
-		public static float AHP(this ReferenceHub player) => player.playerStats.unsyncedArtificialHealth;
+		public static float GetAHP(this ReferenceHub player) => player.playerStats.unsyncedArtificialHealth;
 		public static void SetAHP(this ReferenceHub player, float amount) => player.playerStats.unsyncedArtificialHealth = amount;
 		public static void AddAHP(this ReferenceHub player, float amount) => player.playerStats.unsyncedArtificialHealth += amount;
-		public static float MaxAHP(this ReferenceHub player) => player.playerStats.maxArtificialHealth;
+		public static float GetMaxAHP(this ReferenceHub player) => player.playerStats.maxArtificialHealth;
 		public static float SetMaxAHP(this ReferenceHub player, int amount) => player.playerStats.maxArtificialHealth = amount;
-		public static List<Inventory.SyncItemInfo> Items(this ReferenceHub player) => player.inventory.items.ToList();
-		public static Inventory.SyncItemInfo CurrentItem(this ReferenceHub player) => player.inventory.GetItemInHand();
+		public static List<Inventory.SyncItemInfo> GetAllItems(this ReferenceHub player) => player.inventory.items.ToList();
+		public static Inventory.SyncItemInfo GetCurrentItem(this ReferenceHub player) => player.inventory.GetItemInHand();
 		public static void SetCurrentItem(this ReferenceHub player, ItemType itemType) => player.inventory.SetCurItem(itemType);
 		public static void AddItem(this ReferenceHub player, ItemType itemType, float duration = float.NegativeInfinity, int sight = 0, int barrel = 0, int other = 0) =>
 			player.inventory.AddNewItem(itemType, duration, sight, barrel, other);
@@ -379,7 +375,7 @@ namespace Qurre.API
 		public static void AddItem(this ReferenceHub player, Inventory.SyncItemInfo item) => player.inventory.AddNewItem(item.id, item.durability, item.modSight, item.modBarrel, item.modOther);
 		public static void DropItem(this ReferenceHub player, Inventory.SyncItemInfo item)
 		{
-			player.inventory.SetPickup(item.id, item.durability, player.Position(), player.inventory.camera.transform.rotation, item.modSight, item.modBarrel, item.modOther);
+			player.inventory.SetPickup(item.id, item.durability, player.GetPosition(), player.inventory.camera.transform.rotation, item.modSight, item.modBarrel, item.modOther);
 			player.inventory.items.Remove(item);
 		}
 		public static void RemoveItem(this ReferenceHub player, Inventory.SyncItemInfo item) => player.inventory.items.Remove(item);
@@ -404,7 +400,7 @@ namespace Qurre.API
 			if (handcuffs.CufferId < 0 &&
 				player.inventory.items.Any((Inventory.SyncItemInfo item) => item.id == ItemType.Disarmer) &&
 				Vector3.Distance(player.transform.position, target.transform.position) <= 130f)
-				handcuffs.NetworkCufferId = player.PlayerId();
+				handcuffs.NetworkCufferId = player.GetPlayerId();
 		}
 		public static void Uncuff(this ReferenceHub player) => player.handcuffs.NetworkCufferId = -1;
 		public static bool IsHandCuffed(this ReferenceHub player) => player.handcuffs.CufferId != -1;
@@ -419,30 +415,30 @@ namespace Qurre.API
 				player.transform.localScale = new Vector3(x, y, z);
 
 				foreach (ReferenceHub target in GetHubs())
-					SendSpawnMessage?.Invoke(null, new object[] { player.GetComponent<NetworkIdentity>(), target.Connection() });
+					SendSpawnMessage?.Invoke(null, new object[] { player.GetComponent<NetworkIdentity>(), target.GetConnection() });
 			}
 			catch (Exception exception)
 			{
 				Log.Error($"SetScale error: {exception}");
 			}
 		}
-		public static Vector3 Scale(this ReferenceHub player) => player.transform.localScale;
-		public static NetworkConnection Connection(this ReferenceHub player) => player.scp079PlayerScript.connectionToClient;
+		public static Vector3 GetScale(this ReferenceHub player) => player.transform.localScale;
+		public static NetworkConnection GetConnection(this ReferenceHub player) => player.scp079PlayerScript.connectionToClient;
 		public static void Disconnect(this ReferenceHub player, string reason = null) => ServerConsole.Disconnect(player.gameObject, string.IsNullOrEmpty(reason) ? "" : reason);
 		public static void Kill(this ReferenceHub player, DamageTypes.DamageType damageType = default) => player.playerStats.HurtPlayer(new PlayerStats.HitInfo(-1f, "WORLD", damageType, 0), player.gameObject);
-		public static IEnumerable<ReferenceHub> GetHubs(this Team team) => GetHubs().Where(player => player.Team() == team);
-		public static IEnumerable<ReferenceHub> GetHubs(this RoleType role) => GetHubs().Where(player => player.Role() == role);
-		public static string GroupName(this ReferenceHub player) => ServerStatic.GetPermissionsHandler()._members()[player.UserId()];
-		public static bool BypassMode(this ReferenceHub player) => player.serverRoles.BypassMode;
-		public static void SetBypassMode(this ReferenceHub player, bool status) => player.serverRoles.BypassMode = status;
-		public static void ConsoleMessage(this ReferenceHub player, string message, string color)
+		public static IEnumerable<ReferenceHub> GetHubs(this Team team) => GetHubs().Where(player => player.GetTeam() == team);
+		public static IEnumerable<ReferenceHub> GetHubs(this RoleType role) => GetHubs().Where(player => player.GetRole() == role);
+		public static string GetGroupName(this ReferenceHub player) => ServerStatic.GetPermissionsHandler()._members()[player.GetUserId()];
+		public static bool GetBypassMode(this ReferenceHub player) => player.serverRoles.BypassMode;
+		public static void SetBypassMode(this ReferenceHub player, bool isEnabled) => player.serverRoles.BypassMode = isEnabled;
+		public static void SendConsoleMessage(this ReferenceHub player, string message, string color)
 		{
-			player.characterClassManager.TargetConsolePrint(player.Connection(), message, color);
+			player.characterClassManager.TargetConsolePrint(player.GetConnection(), message, color);
 		}
 		public static void SetFriendlyFire(this ReferenceHub player, bool value) => player.weaponManager.GetShootPermission(player.characterClassManager, value);
-		public static string BadgeName(this ReferenceHub rh) => rh.serverRoles.UserGroup().BadgeText;
-		public static bool IsCuffed(this ReferenceHub rh) => rh.CufferId() != -1;
-		public static int CufferId(this ReferenceHub rh) => rh.handcuffs.NetworkCufferId;
+		public static string GetBadgeName(this ReferenceHub rh) => rh.serverRoles.UserGroup().BadgeText;
+		public static bool IsCuffed(this ReferenceHub rh) => rh.GetCufferId() != -1;
+		public static int GetCufferId(this ReferenceHub rh) => rh.handcuffs.NetworkCufferId;
 		public static void SetCufferId(this ReferenceHub rh, int id) => rh.handcuffs.NetworkCufferId = id;
 		public static Stamina Stamina(this ReferenceHub rh) => rh.fpc.staminaController();
 
@@ -525,7 +521,7 @@ namespace Qurre.API
 			GameObject gameObject = player.gameObject;
 			CharacterClassManager ccm = gameObject.GetComponent<CharacterClassManager>();
 			NetworkIdentity identity = gameObject.GetComponent<NetworkIdentity>();
-			RoleType FirstRole = player.Role();
+			RoleType FirstRole = player.GetRole();
 			ccm.CurClass = newModel;
 			ObjectDestroyMessage destroyMessage = new ObjectDestroyMessage
 			{
@@ -533,7 +529,7 @@ namespace Qurre.API
 			};
 			foreach (ReferenceHub ply in GetHubs())
 			{
-				if (ply.PlayerId() == player.PlayerId())
+				if (ply.GetPlayerId() == player.GetPlayerId())
 					continue;
 
 				GameObject gameObject2 = ply.gameObject;
@@ -574,7 +570,7 @@ namespace Qurre.API
 		public static List<string> GetGameObjectsInRange(this ReferenceHub player, float range)
 		{
 			List<string> gameObjects = new List<string>();
-			foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>()) { if (Vector3.Distance(obj.transform.position, player.Position()) <= range && !obj.name.Contains("mixamorig") && !obj.name.Contains("Pos")) { gameObjects.Add(obj.name.Trim() + "\n"); } }
+			foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>()) { if (Vector3.Distance(obj.transform.position, player.GetPosition()) <= range && !obj.name.Contains("mixamorig") && !obj.name.Contains("Pos")) { gameObjects.Add(obj.name.Trim() + "\n"); } }
 			return gameObjects;
 		}
 		public static void Reconnect(this ReferenceHub player)
@@ -625,18 +621,18 @@ namespace Qurre.API
 		public static void Play106ContainAnimation(this ReferenceHub player) => player.scp106PlayerScript.CallRpcContainAnimation();
 		public static void Create106Portal(this ReferenceHub player) => player.scp106PlayerScript.CallCmdMakePortal();
 		public static void Use106Portal(this ReferenceHub player) => player.scp106PlayerScript.CallCmdUsePortal();
-        public static void PersonalClearBroadcasts(this ReferenceHub player)
-        {
-            if (player.Connection() != null)
-            {
-                GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(player.Connection());
-            }
-        }
+		public static void PersonalClearBroadcasts(this ReferenceHub player)
+		{
+			if (player.GetConnection() != null)
+			{
+				GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(player.GetConnection());
+			}
+		}
 		public static void DelayedPersonalClearBroadcasts(this ReferenceHub player, float delay)
 		{
-			if (player.Connection() != null)
+			if (player.GetConnection() != null)
 			{
-				Timing.CallDelayed(delay, () => GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(player.Connection()));
+				Timing.CallDelayed(delay, () => GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(player.GetConnection()));
 			}
 		}
 	}

@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 ReferenceHub attacker = ReferenceHub.GetHub(__instance.gameObject);
                 ReferenceHub target = ReferenceHub.GetHub(go);
-                if ((target != null && (target.Role() != RoleType.Spectator || target.GodMode() || target.IsHost())) || attacker == null)
+                if ((target != null && (target.GetRole() != RoleType.Spectator || target.GetGodMode() || target.IsHost())) || attacker == null)
                     return;
                 var ev = new DiedEvent(ReferenceHub.GetHub(__instance.gameObject), target, info);
                 Qurre.Events.Player.died(ev);

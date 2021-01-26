@@ -20,7 +20,7 @@ namespace Qurre.Patches.Events.PlayeR
                 ReferenceHub target = ReferenceHub.GetHub(go);
                 if (target == null || target.IsHost())
                     return true;
-                if (info.GetDamageType() == DamageTypes.Recontainment && target.Role() == RoleType.Scp079)
+                if (info.GetDamageType() == DamageTypes.Recontainment && target.GetRole() == RoleType.Scp079)
                 {
                     Qurre.Events.SCPs.SCP079.recontain(new RecontainEvent(target));
                     var eventArgs = new DiedEvent(null, target, info);
@@ -35,7 +35,7 @@ namespace Qurre.Patches.Events.PlayeR
                 info = ev.HitInformations;
                 if (!ev.IsAllowed)
                     return false;
-                if (!ev.Target.GodMode() && (ev.Amount == -1 || ev.Amount >= ev.Target.HP() + ev.Target.MaxAHP()))
+                if (!ev.Target.GetGodMode() && (ev.Amount == -1 || ev.Amount >= ev.Target.GetHP() + ev.Target.GetMaxAHP()))
                 {
                     var dE = new DyingEvent(ev.Attacker, ev.Target, ev.HitInformations);
                     Qurre.Events.Player.dying(dE);

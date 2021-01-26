@@ -14,7 +14,7 @@ namespace Qurre
 		public const string Version = "1.0.7";
 		public static string Plan { get; private set; } = "Lite";
 		public static int Planid { get; private set; } = 1;
-		private static string Domen = "localhost"; //qurre.store
+		private static string domen = "localhost"; //qurre.store
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
 		public static string PluginsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Plugins");
@@ -34,9 +34,9 @@ namespace Qurre
 			{
 				LoadDependencies();
 			}
-			catch (Exception exception)
+			catch (Exception ex)
 			{
-				ServerConsole.AddLog(exception.ToString(), ConsoleColor.Red);
+				ServerConsole.AddLog(ex.ToString(), ConsoleColor.Red);
 			}
 			//CheckPlan();
 
@@ -46,12 +46,12 @@ namespace Qurre
 
 			List<string> mods = Directory.GetFiles(PluginsDirectory).ToList();
 
-			foreach (string Mod in mods)
+			foreach (string mod in mods)
 			{
-				if (Mod.EndsWith("Qurre.dll"))
+				if (mod.EndsWith("Qurre.dll"))
 					continue;
 
-				LoadPlugin(Mod);
+				LoadPlugin(mod);
 			}
 
 			Enable();
@@ -93,12 +93,12 @@ namespace Qurre
 			return false;
 		}
 		private static List<Assembly> localLoaded = new List<Assembly>();
-		public static void LoadPlugin(string Mod)
+		public static void LoadPlugin(string mod)
 		{
-			Log.Info($"Loading {Mod}");
+			Log.Info($"Loading {mod}");
 			try
 			{
-				byte[] file = ModLoader.ReadFile(Mod);
+				byte[] file = ModLoader.ReadFile(mod);
 				Assembly assembly = Assembly.Load(file);
 
 				foreach (Type type in assembly.GetTypes())
@@ -129,9 +129,9 @@ namespace Qurre
 					Log.Info($"{type.FullName} loaded");
 				}
 			}
-			catch (Exception exception)
+			catch (Exception ex)
 			{
-				Log.Error($"Error while initalizing {Mod}!\n{exception}");
+				Log.Error($"Error while initalizing {mod}!\n{ex}");
 			}
 		}
 		public static void Enable()
@@ -141,10 +141,11 @@ namespace Qurre
 				try
 				{
 					plugin.Enable();
+					Log.Info($"Plugin written by {plugin.Developer} enabled. v{plugin.Version}");
 				}
-				catch (Exception exception)
+				catch (Exception ex)
 				{
-					Log.Error($"Plugin {plugin.Name} threw an exception while enabling\n{exception}");
+					Log.Error($"Plugin {plugin.Name} threw an exception while enabling\n{ex}");
 				}
 			}
 		}
@@ -156,9 +157,9 @@ namespace Qurre
 				{
 					plugin.Reload();
 				}
-				catch (Exception exception)
+				catch (Exception ex)
 				{
-					Log.Error($"Plugin {plugin.Name} threw an exception while reloading\n{exception}");
+					Log.Error($"Plugin {plugin.Name} threw an exception while reloading\n{ex}");
 				}
 			}
 		}
@@ -170,9 +171,9 @@ namespace Qurre
 				{
 					plugin.Disable();
 				}
-				catch (Exception exception)
+				catch (Exception ex)
 				{
-					Log.Error($"Plugin {plugin.Name} threw an exception while disabling\n{exception}");
+					Log.Error($"Plugin {plugin.Name} threw an exception while disabling\n{ex}");
 				}
 			}
 		}
@@ -188,9 +189,9 @@ namespace Qurre
 
 				Timing.RunCoroutine(LoadPlugins());
 			}
-			catch (Exception exception)
+			catch (Exception ex)
 			{
-				Log.Error($"umm, error in reloading.\n{exception}");
+				Log.Error($"umm, error in reloading.\n{ex}");
 			}
 		}
 		private static void PatchMethods()
@@ -201,9 +202,9 @@ namespace Qurre
 				hInstance.PatchAll();
 				Log.Info("Harmony successfully Patching");
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Log.Error($"Harmony Patching threw an error:\n{e}");
+				Log.Error($"Harmony Patching threw an error:\n{ex}");
 			}
 		}
 		private static void UnPatchMethods()
@@ -213,16 +214,16 @@ namespace Qurre
 				hInstance.UnpatchAll(null);
 				Log.Info("Harmony successfully UnPatching");
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Log.Error($"Harmony UnPatching threw an error:\n{e}");
+				Log.Error($"Harmony UnPatching threw an error:\n{ex}");
 			}
 		}
 		private static void CheckPlan()
 		{
 			try
 			{
-				var url = $"http://{Domen}/check";
+				var url = $"http://{domen}/check";
 				var req = System.Net.WebRequest.Create(url);
 				var resp = req.GetResponse();
 				using (var sr = new System.IO.StreamReader(resp.GetResponseStream()))
@@ -253,9 +254,9 @@ namespace Qurre
 					}
 				}
 			}
-			catch (Exception e)
+			catch (Exception ex)
 			{
-				Log.Error($"Plan checking threw an error:\n{e}");
+				Log.Error($"Plan checking threw an error:\n{ex}");
 			}
 		}
 	}
