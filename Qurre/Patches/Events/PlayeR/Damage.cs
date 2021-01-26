@@ -35,7 +35,7 @@ namespace Qurre.Patches.Events.PlayeR
                 info = ev.HitInformations;
                 if (!ev.IsAllowed)
                     return false;
-                if (!ev.Target.GodMod() && (ev.Amount == -1 || ev.Amount >= ev.Target.HP() + ev.Target.MaxAHP()))
+                if (!ev.Target.GodMode() && (ev.Amount == -1 || ev.Amount >= ev.Target.HP() + ev.Target.MaxAHP()))
                 {
                     var dE = new DyingEvent(ev.Attacker, ev.Target, ev.HitInformations);
                     Qurre.Events.Player.dying(dE);

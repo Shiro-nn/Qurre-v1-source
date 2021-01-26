@@ -10,11 +10,10 @@ namespace Qurre
 {
 	public class PluginManager
 	{
-        public static readonly List<Plugin> Plugins = new List<Plugin>();
-
-		public const string Version = "1.0.0";
-        public static int PlanId { get; private set; } = 1;
+		public static readonly List<Plugin> plugins = new List<Plugin>();
+		public const string Version = "1.0.7";
 		public static string Plan { get; private set; } = "Lite";
+		public static int Planid { get; private set; } = 1;
 		private static string Domen = "localhost"; //qurre.store
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -47,12 +46,12 @@ namespace Qurre
 
 			List<string> mods = Directory.GetFiles(PluginsDirectory).ToList();
 
-			foreach (string mod in mods)
+			foreach (string Mod in mods)
 			{
-				if (mod.EndsWith("Qurre.dll"))
+				if (Mod.EndsWith("Qurre.dll"))
 					continue;
 
-				LoadPlugin(mod);
+				LoadPlugin(Mod);
 			}
 
 			Enable();
@@ -94,12 +93,12 @@ namespace Qurre
 			return false;
 		}
 		private static List<Assembly> localLoaded = new List<Assembly>();
-		public static void LoadPlugin(string mod)
+		public static void LoadPlugin(string Mod)
 		{
-			Log.Info($"Loading {mod}");
+			Log.Info($"Loading {Mod}");
 			try
 			{
-				byte[] file = ModLoader.ReadFile(mod);
+				byte[] file = ModLoader.ReadFile(Mod);
 				Assembly assembly = Assembly.Load(file);
 
 				foreach (Type type in assembly.GetTypes())
@@ -126,18 +125,18 @@ namespace Qurre
 						continue;
 					}
 
-					Plugins.Add(p);
+					plugins.Add(p);
 					Log.Info($"{type.FullName} loaded");
 				}
 			}
 			catch (Exception exception)
 			{
-				Log.Error($"Error while initalizing {mod}!\n{exception}");
+				Log.Error($"Error while initalizing {Mod}!\n{exception}");
 			}
 		}
 		public static void Enable()
 		{
-			foreach (Plugin plugin in Plugins)
+			foreach (Plugin plugin in plugins)
 			{
 				try
 				{
@@ -145,13 +144,13 @@ namespace Qurre
 				}
 				catch (Exception exception)
 				{
-					Log.Error($"Plugin {plugin.name} threw an exception while enabling\n{exception}");
+					Log.Error($"Plugin {plugin.Name} threw an exception while enabling\n{exception}");
 				}
 			}
 		}
 		public static void Reload()
 		{
-			foreach (Plugin plugin in Plugins)
+			foreach (Plugin plugin in plugins)
 			{
 				try
 				{
@@ -159,13 +158,13 @@ namespace Qurre
 				}
 				catch (Exception exception)
 				{
-					Log.Error($"Plugin {plugin.name} threw an exception while reloading\n{exception}");
+					Log.Error($"Plugin {plugin.Name} threw an exception while reloading\n{exception}");
 				}
 			}
 		}
 		public static void Disable()
 		{
-			foreach (Plugin plugin in Plugins)
+			foreach (Plugin plugin in plugins)
 			{
 				try
 				{
@@ -173,7 +172,7 @@ namespace Qurre
 				}
 				catch (Exception exception)
 				{
-					Log.Error($"Plugin {plugin.name} threw an exception while disabling\n{exception}");
+					Log.Error($"Plugin {plugin.Name} threw an exception while disabling\n{exception}");
 				}
 			}
 		}
@@ -184,7 +183,7 @@ namespace Qurre
 				Log.Info($"Reloading Plugins...");
 				Disable();
 				Reload();
-				Plugins.Clear();
+				plugins.Clear();
 				UnPatchMethods();
 
 				Timing.RunCoroutine(LoadPlugins());
@@ -207,18 +206,18 @@ namespace Qurre
 				Log.Error($"Harmony Patching threw an error:\n{e}");
 			}
 		}
-        private static void UnPatchMethods()
-        {
-            try
-            {
-                hInstance.UnpatchAll(null);
-                Log.Info("Harmony successfully UnPatching");
-            }
-            catch (Exception e)
-            {
-                Log.Error($"Harmony UnPatching threw an error:\n{e}");
-            }
-        }
+		private static void UnPatchMethods()
+		{
+			try
+			{
+				hInstance.UnpatchAll(null);
+				Log.Info("Harmony successfully UnPatching");
+			}
+			catch (Exception e)
+			{
+				Log.Error($"Harmony UnPatching threw an error:\n{e}");
+			}
+		}
 		private static void CheckPlan()
 		{
 			try
@@ -232,19 +231,19 @@ namespace Qurre
 					var a = response.Split(':')[1].Substring(1).Split('<')[0];
 					if (a == "2")
 					{
-						PlanId = 2;
+						Planid = 2;
 						Plan = "Premium";
 						Log.Custom("Qurre plan: Premium", "Plan", ConsoleColor.Green);
 					}
 					else if (a == "3")
 					{
-						PlanId = 3;
+						Planid = 3;
 						Plan = "Gold";
 						Log.Custom("Qurre plan: Gold", "Plan", ConsoleColor.Yellow);
 					}
 					else if (a == "4")
 					{
-						PlanId = 4;
+						Planid = 4;
 						Plan = "Platinum";
 						Log.Custom("Qurre plan: Platinum", "Plan", ConsoleColor.White);
 					}
