@@ -2,6 +2,7 @@ using Qurre.API.Objects;
 using Mirror;
 using System;
 using System.Collections.Generic;
+using MEC;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -30,30 +31,32 @@ namespace Qurre.API
 		public static int PlayerId(this ReferenceHub player) => player.queryProcessor.PlayerId;
 		public static void SetPlayerId(this ReferenceHub player, int newId) => player.queryProcessor.NetworkPlayerId = newId;
 		public static bool Overwatch(this ReferenceHub player) => player.serverRoles.OverwatchEnabled();
-		public static void Overwatch(this ReferenceHub player, bool enable) => player.serverRoles.CallTargetSetOverwatch(player.networkIdentity.connectionToClient, enable);
+		public static void SetOverwatch(this ReferenceHub player, bool enable) => player.serverRoles.CallTargetSetOverwatch(player.networkIdentity.connectionToClient, enable);
 		public static bool IsScp(this ReferenceHub hub) => hub.characterClassManager.IsAnyScp();
-		public static bool IsNTF(this ReferenceHub hub)
-		{
-			switch (hub.Role())
-			{
-				case RoleType.NtfCadet:
-				case RoleType.NtfScientist:
-				case RoleType.NtfLieutenant:
-				case RoleType.NtfCommander:
-					return true;
-				default:
-					return false;
-			}
-		}
+        public static bool IsNTF(this ReferenceHub hub)
+        {
+            switch (hub.Role())
+            {
+                case RoleType.NtfCadet:
+                case RoleType.NtfScientist:
+                case RoleType.NtfLieutenant:
+                case RoleType.NtfCommander:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+		public static bool IsHuman(this ReferenceHub hub) => hub.characterClassManager.IsHuman();
+        public static bool IsAlive(this ReferenceHub hub) => hub.characterClassManager.IsAlive;
 		public static RoleType Role(this ReferenceHub player) => player.characterClassManager.CurClass;
 		public static void ChangeRole(this ReferenceHub player, RoleType role) => player.characterClassManager.SetPlayersClass(role, player.gameObject);
 		public static void ChangeRole(this ReferenceHub player, RoleType role, bool keepPosition, bool keepHP)
 		{
-            if (keepPosition && !keepHP)
-            {
-                player.characterClassManager.NetworkCurClass = role;
-                player.playerStats.SetHPAmount(player.characterClassManager.Classes.SafeGet(player.Role()).maxHP);
-            }
+			if (keepPosition && !keepHP)
+			{
+				player.characterClassManager.NetworkCurClass = role;
+				player.playerStats.SetHPAmount(player.characterClassManager.Classes.SafeGet(player.Role()).maxHP);
+			}
 			else if (keepPosition && keepHP)
 			{
 				player.characterClassManager.NetworkCurClass = role;
@@ -165,7 +168,8 @@ namespace Qurre.API
 		{
 			sender.RaReply((pluginName ?? Assembly.GetCallingAssembly().GetName().Name) + "#" + message, success, true, string.Empty);
 		}
-		public static void Broadcast(this ReferenceHub player, ushort time, string message, Broadcast.BroadcastFlags flag = 0) => Map.BroadcastComponent.TargetAddElement(player.scp079PlayerScript.connectionToClient, message, time, flag);
+        public static void Broadcast(this ReferenceHub player, ushort time, string message, Broadcast.BroadcastFlags flag = 0) => Map.BroadcastComponent.TargetAddElement(player.scp079PlayerScript.connectionToClient, message, time, flag);
+		public static void DelayedBroadcast(this ReferenceHub player, ushort time, float delay, string message, Broadcast.BroadcastFlags flag = 0) => Timing.CallDelayed(delay, () => Map.BroadcastComponent.TargetAddElement(player.scp079PlayerScript.connectionToClient, message, time, flag));
 		public static void ClearBroadcasts(this ReferenceHub player) => Map.BroadcastComponent.TargetClearElements(player.scp079PlayerScript.connectionToClient);
 		public static Team Team(this ReferenceHub player) => player.Role().Team();
 		public static Team Team(this RoleType roleType)
@@ -348,8 +352,8 @@ namespace Qurre.API
 		public static void IntercomUnmute(this ReferenceHub player) => player.characterClassManager.NetworkIntercomMuted = false;
 		public static bool IsIntercomMuted(this ReferenceHub player) => player.characterClassManager.NetworkIntercomMuted;
 		public static bool IsHost(this ReferenceHub player) => player.characterClassManager.IsHost;
-		public static bool GodMod(this ReferenceHub player) => player.characterClassManager.GodMode;
-		public static void SetGodMod(this ReferenceHub player, bool enable) => player.characterClassManager.GodMode = enable;
+		public static bool GodMode(this ReferenceHub player) => player.characterClassManager.GodMode;
+		public static void SetGodMode(this ReferenceHub player, bool enable) => player.characterClassManager.GodMode = enable;
 		public static float HP(this ReferenceHub player) => player.playerStats.Health;
 		public static void SetHP(this ReferenceHub player, float amount) => player.playerStats.Health = amount;
 		public static void AddHP(this ReferenceHub player, float amount) => player.playerStats.Health += amount;
@@ -557,10 +561,10 @@ namespace Qurre.API
 				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
 			}
 		}
-        public static void ShowHint(string text, float duration = 1f)
-        {
-            ReferenceHub.LocalHub.hints.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
-        }
+		public static void ShowHint(string text, float duration = 1f)
+		{
+			ReferenceHub.LocalHub.hints.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
+		}
 		public static void BodyDelete(this ReferenceHub player)
 		{
 			foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
@@ -628,5 +632,12 @@ namespace Qurre.API
                 GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(player.Connection());
             }
         }
+		public static void DelayedPersonalClearBroadcasts(this ReferenceHub player, float delay)
+		{
+			if (player.Connection() != null)
+			{
+				Timing.CallDelayed(delay, () => GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(player.Connection()));
+			}
+		}
 	}
 }

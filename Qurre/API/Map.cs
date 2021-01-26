@@ -14,8 +14,8 @@ namespace Qurre.API
 {
 	public static class Map
 	{
-		public static int roundtime = 0;
-		private static ReferenceHub host;
+        private static int roundtime = 0;
+        private static ReferenceHub host;
 		private static Inventory hinv;
 		private static Broadcast bc;
 		private static DecontaminationController dc;
@@ -124,7 +124,18 @@ namespace Qurre.API
 		public static IEnumerable<Room> GetRooms() => Rooms;
 		public static IEnumerable<ReferenceHub> HubsInRoom(this Room room) => ReferenceHub.GetAllHubs().Values.Where(player => !player.IsHost() && player.CurrentRoom().Name == room.Name);
 		public static int ActivatedGenerators => Generator079.mainGenerator.totalVoltage;
-		public static void TurnOffLights(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
+
+        public static int Roundtime { get => roundtime; set => roundtime = value; }
+        public static ReferenceHub Host1 { get => host; set => host = value; }
+        public static Inventory Hinv { get => hinv; set => hinv = value; }
+        public static Broadcast Bc { get => bc; set => bc = value; }
+        public static DecontaminationController Dc { get => dc; set => dc = value; }
+        public static List<Room> Rms { get => rms; set => rms = value; }
+        public static List<DoorVariant> Drs { get => drs; set => drs = value; }
+        public static List<Lift> Lfs { get => lfs; set => lfs = value; }
+        public static List<TeslaGate> Tgs { get => tgs; set => tgs = value; }
+
+        public static void TurnOffLights(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
 		public static void SpawnRagdoll(RoleType role, string name, Vector3 position, Quaternion rotation, string ownerID, string ownerNickname, int playerID) => PlayerManager.localPlayer.GetComponent<RagdollManager>().SpawnRagdoll(new Vector3(position.x, position.y, position.z), rotation, new Vector3(0, 0, 0), (int)role, new PlayerStats.HitInfo(), false, ownerID, ownerNickname, playerID);
 		public static GameObject SpawnBrokenRagdoll(RoleType role, Vector3 position, Vector3 rotation, Vector3 scale)
 		{
@@ -213,9 +224,9 @@ namespace Qurre.API
 		public static void SetFemurBreakerState(bool enabled) => Object.FindObjectOfType<LureSubjectContainer>().SetState(enabled);
 		public static void RemoveTeslaGates() { foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) { Object.Destroy(teslaGate.gameObject); } }
 		public static void RemoveDoors() { foreach (DoorVariant dr in drs) { Object.Destroy(dr.gameObject); } }
-        public static void SetLiftMovingSpeed(float Speed) { foreach (Lift lft in lfs) { lft.movingSpeed = Speed; } }
+		public static void SetLiftMovingSpeed(float Speed) { foreach (Lift lft in lfs) { lft.movingSpeed = Speed; } }
 
-        public static void SetIntercomSpeaker(ReferenceHub player)
+		public static void SetIntercomSpeaker(ReferenceHub player)
 		{
 			if (player != null)
 			{
@@ -245,12 +256,12 @@ namespace Qurre.API
 		public static void DisableDecontamination(bool value) => DecontaminationController.Singleton.disableDecontamination = value;
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
 		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);
-        public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
+		public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
 
-        public static void PlayChaosSound()
-        {
-            RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
-        }
+		public static void PlayChaosSound()
+		{
+			RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
+		}
 		public static void SetLightsIntensivity(float intensive)
 		{
 			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
@@ -300,33 +311,33 @@ namespace Qurre.API
 			}
 		}
 
-        public static void SetLightsIntensivity(float intensive, string room)
-        {
-            foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
-            {
-                Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
-                if (component != null && component.type == Scp079Interactable.InteractableType.LightController && component.currentZonesAndRooms.Count != 0 && component.currentZonesAndRooms[0].currentRoom.Contains(room))
-                {
-                    flickerableLightController.ServerSetLightIntensity(intensive);
-                }
-            }
-        }
+		public static void SetLightsIntensivity(float intensive, string room)
+		{
+			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
+			{
+				Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
+				if (component != null && component.type == Scp079Interactable.InteractableType.LightController && component.currentZonesAndRooms.Count != 0 && component.currentZonesAndRooms[0].currentRoom.Contains(room))
+				{
+					flickerableLightController.ServerSetLightIntensity(intensive);
+				}
+			}
+		}
 
 		public static void Shake()
-        {
-            AlphaWarheadController host = AlphaWarheadController.Host;
-            if (host != null)
-            {
-                host.CallRpcShake(true);
-            }
-        }
+		{
+			AlphaWarheadController host = AlphaWarheadController.Host;
+			if (host != null)
+			{
+				host.CallRpcShake(true);
+			}
+		}
 		public static void ActivateSCP914()
 		{
 			Scp914Machine.singleton.RpcActivate(NetworkTime.time);
 		}
 		public static void ActivateSCP914(float time)
-        {
-            Scp914Machine.singleton.RpcActivate(time);
-        }
+		{
+			Scp914Machine.singleton.RpcActivate(time);
+		}
 	}
 }
