@@ -17,7 +17,7 @@ namespace Qurre.Patches.Events.Alpha
                 __instance.doorsOpen = false;
                 if ((AWC_resumeScenario() != -1 || __instance.scenarios_start[AWC_startScenario()].SumTime() != (double)__instance.timeToDetonation) && (AWC_resumeScenario() == -1 || __instance.scenarios_resume[AWC_resumeScenario()].SumTime() != (double)__instance.timeToDetonation))
                     return false;
-                var ev = new StartEvent(Map.Host);
+                var ev = new AlphaStartEvent(Map.Host);
                 Qurre.Events.Alpha.starting(ev);
                 if (!ev.IsAllowed)
                     return false;

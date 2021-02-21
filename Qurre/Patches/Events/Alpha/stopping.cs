@@ -17,7 +17,7 @@ namespace Qurre.Patches.Events.Alpha
                     return false;
                 if (__instance.timeToDetonation <= 15.0 && disabler != null)
                     __instance.GetComponent<PlayerStats>().TargetAchieve(disabler.GetComponent<NetworkIdentity>().connectionToClient, "thatwasclose");
-                var ev = new StopEvent(API.Player.Get(disabler) ?? API.Map.Host);
+                var ev = new AlphaStopEvent(API.Player.Get(disabler) ?? API.Map.Host);
                 Qurre.Events.Alpha.stopping(ev);
                 return ev.IsAllowed && !API.Alpha.IsLocked;
             }

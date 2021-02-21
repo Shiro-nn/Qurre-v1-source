@@ -24,7 +24,7 @@ namespace Qurre.Patches.Events.Alpha
                 if ((QurreModLoader.umm.AWC_resumeScenario() == -1 && AlphaWarheadController.Host.scenarios_start[QurreModLoader.umm.AWC_startScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation) ||
                     (QurreModLoader.umm.AWC_resumeScenario() != -1 && AlphaWarheadController.Host.scenarios_resume[QurreModLoader.umm.AWC_resumeScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation))
                 {
-                    var ev = new StartEvent(Player.Get(__instance.gameObject) ?? API.Map.Host);
+                    var ev = new AlphaStartEvent(Player.Get(__instance.gameObject) ?? API.Map.Host);
                     Qurre.Events.Alpha.starting(ev);
                     if (!ev.IsAllowed)
                         return false;

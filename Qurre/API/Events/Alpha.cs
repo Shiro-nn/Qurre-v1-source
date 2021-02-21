@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 namespace Qurre.API.Events
 {
-    public class StartEvent : StopEvent
+    public class AlphaStartEvent : AlphaStopEvent
     {
-        public StartEvent(Player player, bool isAllowed = true)
+        public AlphaStartEvent(Player player, bool isAllowed = true)
             : base(player, isAllowed)
         {
         }
     }
-    public class StopEvent : EventArgs
+    public class AlphaStopEvent : EventArgs
     {
-        public StopEvent(Player player, bool isAllowed = true)
+        public AlphaStopEvent(Player player, bool isAllowed = true)
         {
             Player = player ?? API.Map.Host;
             IsAllowed = isAllowed;
@@ -19,9 +19,9 @@ namespace Qurre.API.Events
         public Player Player { get; }
         public bool IsAllowed { get; set; }
     }
-    public class EnablePanelEvent : EventArgs
+    public class EnableAlphaPanelEvent : EventArgs
     {
-        public EnablePanelEvent(Player player, List<string> permissions, bool isAllowed = true)
+        public EnableAlphaPanelEvent(Player player, List<string> permissions, bool isAllowed = true)
         {
             Player = player;
             Permissions = permissions;
