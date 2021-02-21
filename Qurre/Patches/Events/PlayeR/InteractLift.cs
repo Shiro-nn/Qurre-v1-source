@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.PlayeR
                 {
                     if (__instance.ChckDis(lIft.door.transform.position))
                     {
-                        var ev = new InteractLiftEvent(API.Player.Get(__instance.gameObject), lIft);
+                        var ev = new InteractLiftEvent(API.Player.Get(__instance.gameObject), lIft, lift);
                         Qurre.Events.Player.interactLift(ev);
                         if (!ev.IsAllowed)
                             return false;

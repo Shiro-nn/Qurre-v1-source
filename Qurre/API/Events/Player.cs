@@ -260,14 +260,16 @@ namespace Qurre.API.Events
     }
     public class InteractLiftEvent : EventArgs
     {
-        public InteractLiftEvent(Player player, Lift.Elevator elevator, bool isAllowed = true)
+        public InteractLiftEvent(Player player, Lift.Elevator elevator, Lift lift, bool isAllowed = true)
         {
             Player = player;
             Elevator = elevator;
+            Lift = lift;
             IsAllowed = isAllowed;
         }
         public Player Player { get; }
         public Lift.Elevator Elevator { get; }
+        public Lift Lift { get; }
         public bool IsAllowed { get; set; }
     }
     public class InteractLockerEvent : EventArgs

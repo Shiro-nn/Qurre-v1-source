@@ -5,11 +5,13 @@ namespace Qurre.API.Events
     public class SendingRAEvent : EventArgs
     {
         private string returnMessage;
-        public SendingRAEvent(CommandSender commandSender, Player player, string command, string prefix = "", bool isAllowed = true)
+        public SendingRAEvent(CommandSender commandSender, Player player, string command, string name, string[] args, string prefix = "", bool isAllowed = true)
         {
             CommandSender = commandSender;
             Player = player;
             Command = command;
+            Name = name;
+            Args = args;
             IsAllowed = isAllowed;
             if (prefix == "")
                 pref = Assembly.GetCallingAssembly().GetName().Name;
@@ -19,6 +21,8 @@ namespace Qurre.API.Events
         public CommandSender CommandSender { get; }
         public Player Player { get; }
         public string Command { get; }
+        public string Name { get; }
+        public string[] Args { get; }
         public string pref;
         public string ReplyMessage
         {
@@ -33,6 +37,8 @@ namespace Qurre.API.Events
         public SendingConsoleEvent(
             Player player,
             string message,
+            string name,
+            string[] args,
             bool isEncrypted,
             string returnMessage = "",
             string color = "white",
@@ -40,6 +46,8 @@ namespace Qurre.API.Events
         {
             Player = player;
             Message = message;
+            Name = name;
+            Args = args;
             IsEncrypted = isEncrypted;
             ReturnMessage = returnMessage;
             Color = color;
@@ -47,6 +55,8 @@ namespace Qurre.API.Events
         }
         public Player Player { get; }
         public string Message { get; }
+        public string Name { get; }
+        public string[] Args { get; }
         public bool IsEncrypted { get; private set; }
         public string ReturnMessage { get; set; }
         public string Color { get; set; }
