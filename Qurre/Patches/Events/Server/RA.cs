@@ -3,6 +3,7 @@ using HarmonyLib;
 using Qurre.API.Events;
 using RemoteAdmin;
 using System;
+using System.Linq;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.Server
 {
@@ -13,7 +14,10 @@ namespace Qurre.Patches.Events.Server
 		{
 			try
 			{
-				var ev = new SendingRAEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Round.Host : (API.Player.Get(sender.SenderId) ?? API.Round.Host), q);
+				string[] allarguments = q.Split(' ');
+				string name = allarguments[0].ToLower();
+				string[] args = allarguments.Skip(1).ToArray();
+				var ev = new SendingRAEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Round.Host : (API.Player.Get(sender.SenderId) ?? API.Round.Host), q, name, args);
 				PreauthStopwatch().Restart();
 				IdleMode.SetIdleMode(false);
 				if (q == "REQUEST_DATA PLAYER_LIST SILENT")
