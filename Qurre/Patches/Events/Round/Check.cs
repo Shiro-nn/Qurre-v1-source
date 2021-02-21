@@ -89,7 +89,7 @@ namespace Qurre.Patches.Events.Round
                     if (count <= 1)
                         instance.RoundSummary_roundEnded(true);
                 }
-                var ev = new CheckEvent((RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Draw, instance.RoundSummary_roundEnded());
+                var ev = new CheckEvent((RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Draw, list, instance.RoundSummary_roundEnded());
                 if (mtf_team > 0)
                     if (RoundSummary.escaped_ds == 0 && RoundSummary.escaped_scientists != 0)
                         ev.LeadingTeam = (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.FacilityForces;

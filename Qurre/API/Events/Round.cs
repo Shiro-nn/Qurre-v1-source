@@ -5,13 +5,15 @@ namespace Qurre.API.Events
 {
     public class CheckEvent : EventArgs
     {
-        public CheckEvent(RoundSummary.LeadingTeam leadingTeam, bool isRoundEnd, bool isAllowed = true)
+        public CheckEvent(RoundSummary.LeadingTeam leadingTeam, RoundSummary.SumInfo_ClassList classList, bool isRoundEnd, bool isAllowed = true)
         {
             LeadingTeam = leadingTeam;
+            ClassList = classList;
             IsRoundEnd = isRoundEnd;
             IsAllowed = isAllowed;
         }
         public RoundSummary.LeadingTeam LeadingTeam { get; set; }
+        public RoundSummary.SumInfo_ClassList ClassList { get; set; }
         public bool IsRoundEnd { get; set; }
         public bool IsAllowed { get; set; }
     }
