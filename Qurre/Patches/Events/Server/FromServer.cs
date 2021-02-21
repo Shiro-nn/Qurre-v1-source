@@ -13,8 +13,10 @@ namespace Qurre.Patches.Events.Server
         {
             try
             {
-                string ncmd = query;
-                var ev = new SendingConsoleEvent(API.Round.Host, ncmd, encrypted, "", "white", true);
+                string[] allarguments = query.Split(' ');
+                string name = allarguments[0].ToLower();
+                string[] args = allarguments.Skip(1).ToArray();
+                var ev = new SendingConsoleEvent(API.Round.Host, query, name, args, encrypted, "", "white", true);
                 Qurre.Events.Server.sendingconsole(ev);
                 if (!string.IsNullOrEmpty(ev.ReturnMessage))
                 {

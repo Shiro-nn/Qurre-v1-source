@@ -1,5 +1,6 @@
 ﻿#pragma warning disable SA1313
 using System;
+using System.Linq;
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
@@ -8,16 +9,17 @@ namespace Qurre.Patches.Events.Server
     [HarmonyPatch(typeof(RemoteAdmin.QueryProcessor), nameof(RemoteAdmin.QueryProcessor.ProcessGameConsoleQuery), new Type[] { typeof(string), typeof(bool) })]
     internal static class Console_
     {
-        private static bool Prefix(RemoteAdmin.QueryProcessor __instance, ref string query, bool encrypted)
+        private static bool Prefix(RemoteAdmin.QueryProcessor __instance, string query, bool encrypted)
         {
             try
             {
-                if (query == null) query = "";
-                string str = query;
+                string[] allarguments = query.Split(' ');
+                string name = allarguments[0].ToLower();
+                string[] args = allarguments.Skip(1).ToArray();
                 Player send;
                 try { send = Player.Get(__instance.gameObject) ?? API.Map.Host; } catch { send = API.Map.Host; }
                 if (send == null) send = Map.Host;
-                var ev = new SendingConsoleEvent(send, str, encrypted);
+                var ev = new SendingConsoleEvent(send, query, name, args, encrypted);
                 Qurre.Events.Server.sendingconsole(ev);
                 if (ev.ReturnMessage != "") __instance.GCT.SendToClient(__instance.connectionToClient, ev.ReturnMessage, ev.Color);
                 return ev.IsAllowed;
