@@ -7,7 +7,7 @@ namespace Qurre.Events.modules
         internal static void Load()
         {
             SceneManager.sceneUnloaded += SceneUnloaded;
-            MapGeneration.SeedSynchronizer.OnMapGenerated += Map.OnGenerated;
+            MapGeneration.SeedSynchronizer.OnMapGenerated += Map.generated;
             Round.WaitingForPlayers += WaitingForPlayers;
             Player.RoleChange += ChangeRole;
         }
