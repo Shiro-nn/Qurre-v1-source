@@ -5,9 +5,10 @@ using CustomPlayerEffects;
 using Grenades;
 using HarmonyLib;
 using UnityEngine;
-using static Qurre.API.Events.Grenade;
+using Qurre.API.Events;
 using GameCore;
 using static QurreModLoader.umm;
+using Qurre.API;
 namespace Qurre.Patches.Events.MAP.grenade
 {
     [HarmonyPatch(typeof(FlashGrenade), nameof(FlashGrenade.ServersideExplosion))]
@@ -17,7 +18,7 @@ namespace Qurre.Patches.Events.MAP.grenade
         {
             try
             {
-                Dictionary<ReferenceHub, float> players = new Dictionary<ReferenceHub, float>();
+                Dictionary<Player, float> players = new Dictionary<Player, float>();
                 foreach (GameObject gameObject in PlayerManager.players)
                 {
                     Vector3 position = __instance.transform.position;
@@ -35,10 +36,10 @@ namespace Qurre.Patches.Events.MAP.grenade
                                 __instance.powerOverDot.Evaluate(Vector3.Dot(hub.PlayerCameraReference.forward, (hub.PlayerCameraReference.position - position).normalized));
                     byte b = (byte)Mathf.Clamp(Mathf.RoundToInt(num * 10f * __instance.maximumDuration), 1, 255);
                     if (b >= effect.Intensity && num > 0f)
-                        players.Add(ReferenceHub.GetHub(gameObject), num);
+                        players.Add(Player.Get(gameObject), num);
                 }
-                ExplodeEvent ev = new ExplodeEvent(ReferenceHub.GetHub(__instance.throwerGameObject), players, false, __instance.gameObject);
-                Qurre.Events.Map.Grenade.explode(ev);
+                GrenadeExplodeEvent ev = new GrenadeExplodeEvent(Player.Get(__instance.throwerGameObject), players, false, __instance.gameObject);
+                Qurre.Events.Map.grenadeexplode(ev);
                 return ev.IsAllowed;
             }
             catch (Exception e)
@@ -56,22 +57,20 @@ namespace Qurre.Patches.Events.MAP.grenade
             try
             {
                 Vector3 vec = __instance.transform.position;
-                Dictionary<ReferenceHub, float> players = new Dictionary<ReferenceHub, float>();
+                Dictionary<Player, float> players = new Dictionary<Player, float>();
                 foreach (GameObject gameObject in PlayerManager.players)
                 {
                     if (ServerConsole.FriendlyFire || !(gameObject != __instance.throwerGameObject) || gameObject.GetComponent<WeaponManager>().GetShootPermission(__instance.throwerTeam, false))
                     {
                         PlayerStats PlSt = gameObject.GetComponent<PlayerStats>();
-                        if (PlSt == null || !PlSt.ccm.InWorld)
-                            continue;
+                        if (PlSt == null || !PlSt.ccm.InWorld) continue;
                         float fl = __instance.damageOverDistance.Evaluate(Vector3.Distance(vec, PlSt.transform.position)) * (PlSt.ccm.IsHuman() ?
                             ConfigFile.ServerConfig.GetFloat("human_grenade_multiplier", 0.7f) : ConfigFile.ServerConfig.GetFloat("scp_grenade_multiplier", 1f));
-                        if (fl > __instance.absoluteDamageFalloff)
-                            players.Add(ReferenceHub.GetHub(gameObject), fl);
+                        if (fl > __instance.absoluteDamageFalloff) players.Add(Player.Get(gameObject), fl);
                     }
                 }
-                var ev = new ExplodeEvent(ReferenceHub.GetHub(__instance.throwerGameObject), players, true, __instance.gameObject);
-                Qurre.Events.Map.Grenade.explode(ev);
+                var ev = new GrenadeExplodeEvent(Player.Get(__instance.throwerGameObject), players, true, __instance.gameObject);
+                Qurre.Events.Map.grenadeexplode(ev);
                 return ev.IsAllowed;
             }
             catch (Exception e)

@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 namespace Qurre.API.Events
 {
-    #region Main
     public class LCZDeconEvent : EventArgs
     {
         public LCZDeconEvent(bool isAllowed = true) => IsAllowed = isAllowed;
@@ -43,7 +42,7 @@ namespace Qurre.API.Events
     }
     public class NewBloodEvent : EventArgs
     {
-        public NewBloodEvent(ReferenceHub player, Vector3 position, int type, float multiplier, bool isAllowed = true)
+        public NewBloodEvent(Player player, Vector3 position, int type, float multiplier, bool isAllowed = true)
         {
             Player = player;
             Position = position;
@@ -51,7 +50,7 @@ namespace Qurre.API.Events
             Multiplier = multiplier;
             IsAllowed = isAllowed;
         }
-        public ReferenceHub Player { get; }
+        public Player Player { get; }
         public Vector3 Position { get; set; }
         public int Type { get; set; }
         public float Multiplier { get; set; }
@@ -59,7 +58,7 @@ namespace Qurre.API.Events
     }
     public class NewDecalEvent : EventArgs
     {
-        public NewDecalEvent(ReferenceHub owner, Vector3 position, Quaternion rotation, int type, bool isAllowed = true)
+        public NewDecalEvent(Player owner, Vector3 position, Quaternion rotation, int type, bool isAllowed = true)
         {
             Owner = owner;
             Position = position;
@@ -67,33 +66,27 @@ namespace Qurre.API.Events
             Type = type;
             IsAllowed = isAllowed;
         }
-        public ReferenceHub Owner { get; }
+        public Player Owner { get; }
         public Vector3 Position { get; set; }
         public Quaternion Rotation { get; set; }
         public int Type { get; set; }
         public bool IsAllowed { get; set; }
     }
-    #endregion
-    #region Grenade
-    public class Grenade
+    public class GrenadeExplodeEvent : EventArgs
     {
-        public class ExplodeEvent : EventArgs
+        public GrenadeExplodeEvent(Player thrower, Dictionary<Player, float> targetToDamages, bool isFrag, GameObject grenade, bool isAllowed = true)
         {
-            public ExplodeEvent(ReferenceHub thrower, Dictionary<ReferenceHub, float> targetToDamages, bool isFrag, GameObject grenade, bool isAllowed = true)
-            {
-                Thrower = thrower ?? Map.Host;
-                TargetToDamages = targetToDamages;
-                IsFrag = isFrag;
-                Grenade = grenade;
-                IsAllowed = isAllowed;
-            }
-            public ReferenceHub Thrower { get; }
-            public Dictionary<ReferenceHub, float> TargetToDamages { get; }
-            public List<ReferenceHub> Targets => TargetToDamages.Keys.ToList();
-            public bool IsFrag { get; }
-            public GameObject Grenade { get; }
-            public bool IsAllowed { get; set; }
+            Thrower = thrower ?? Map.Host;
+            TargetToDamages = targetToDamages;
+            IsFrag = isFrag;
+            Grenade = grenade;
+            IsAllowed = isAllowed;
         }
+        public Player Thrower { get; }
+        public Dictionary<Player, float> TargetToDamages { get; }
+        public List<Player> Targets => TargetToDamages.Keys.ToList();
+        public bool IsFrag { get; }
+        public GameObject Grenade { get; }
+        public bool IsAllowed { get; set; }
     }
-    #endregion
 }

@@ -13,16 +13,16 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                if (!value || string.IsNullOrEmpty(__instance?.UserId))
-                    return;
-                ReferenceHub player = ReferenceHub.GetHub(__instance.gameObject);
-                ServerConsole.AddLog($"Player {player?.GetNickname()} ({player?.GetUserId()}) ({player?.GetPlayerId()}) connected", ConsoleColor.Magenta);
+                if (!value || string.IsNullOrEmpty(__instance?.UserId)) return;
+                Player player = new Player(ReferenceHub.GetHub(__instance.gameObject));
+                Player.Dictionary.Add(__instance.gameObject, player);
+                ServerConsole.AddLog($"Player {player?.Nickname} ({player?.UserId}) ({player?.Id}) connected. iP: {player?.IP}", ConsoleColor.Magenta);
                 Timing.CallDelayed(0.25f, () =>
                 {
-                    if (player != null && player.IsMuted())
-                        player.characterClassManager.SetDirtyBit(1UL);
+                    if (player != null && player.Muted)
+                        player.CharacterClassManager.SetDirtyBit(1UL);
                 });
-                var ev = new JoinEvent(ReferenceHub.GetHub(__instance.gameObject));
+                var ev = new JoinEvent(player);
                 Qurre.Events.Player.join(ev);
             }
             catch (Exception e)

@@ -3,20 +3,23 @@ using System;
 using System.Linq;
 using HarmonyLib;
 using Qurre.API.Events;
-using Console = GameCore.Console;
+using RemoteAdmin;
 namespace Qurre.Patches.Events.Server
 {
-    [HarmonyPatch(typeof(Console), nameof(Console.TypeCommand), new Type[] { typeof(string), typeof(CommandSender) })]
+    [HarmonyPatch(typeof(QueryProcessor), "ProcessGameConsoleQuery", new Type[] { typeof(string), typeof(bool) })]
     internal static class FromServer
     {
-        private static bool Prefix(string cmd)
+        private static bool Prefix(QueryProcessor __instance, string query, bool encrypted)
         {
             try
             {
-                char[] MyChar = { '/' };
-                string ncmd = cmd.TrimStart(MyChar);
-                var ev = new SendingRAEvent(new BotSender(), ncmd);
-                Qurre.Events.Server.sendingra(ev);
+                string ncmd = query;
+                var ev = new SendingConsoleEvent(API.Round.Host, ncmd, encrypted, "", "white", true);
+                Qurre.Events.Server.sendingconsole(ev);
+                if (!string.IsNullOrEmpty(ev.ReturnMessage))
+                {
+                    __instance.GCT.SendToClient(__instance.connectionToClient, ev.ReturnMessage, ev.Color);
+                }
                 return ev.IsAllowed;
             }
             catch (Exception e)
@@ -24,17 +27,6 @@ namespace Qurre.Patches.Events.Server
                 Log.Error($"umm, error in patching Server.FromServer:\n{e}\n{e.StackTrace}");
                 return true;
             }
-        }
-        public class BotSender : CommandSender
-        {
-            public override void RaReply(string text, bool success, bool logToConsole, string overrideDisplay) => ServerConsole.AddLog(text, ConsoleColor.Gray);
-            public override void Print(string text) => ServerConsole.AddLog(text, ConsoleColor.Gray);
-            public BotSender() { }
-            public override string SenderId => "SERVER CONSOLE";
-            public override string Nickname => "SERVER CONSOLE";
-            public override ulong Permissions => ServerStatic.GetPermissionsHandler().FullPerm;
-            public override byte KickPower => byte.MaxValue;
-            public override bool FullPermissions => true;
         }
     }
 }

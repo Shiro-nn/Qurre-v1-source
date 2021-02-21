@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                 {
                     if (QurreModLoader.umm.Pocket_type(__instance) == PocketDimensionTeleport.PDTeleportType.Killer)
                     {
-                        var ev = new PocketDimensionFailEscapeEvent(ReferenceHub.GetHub(other.gameObject), __instance);
+                        var ev = new PocketDimensionFailEscapeEvent(API.Player.Get(other.gameObject), __instance);
                         Qurre.Events.SCPs.SCP106.pocketdimensionfailescape(ev);
                         if (!ev.IsAllowed)
                             return false;
@@ -63,7 +63,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                     vec.y += 2f;
                     PlayerMovementSync PMS = other.GetComponent<PlayerMovementSync>();
                     PMS.AddSafeTime(2f);
-                    var ev = new PocketDimensionEscapeEvent(ReferenceHub.GetHub(PMS.gameObject), vec);
+                    var ev = new PocketDimensionEscapeEvent(API.Player.Get(PMS.gameObject), vec);
                     Qurre.Events.SCPs.SCP106.pocketdimensionescape(ev);
                     PMS.OverridePosition(vec, 0.0f, false);
                     __instance.RemoveCorrosionEffect(other.gameObject);

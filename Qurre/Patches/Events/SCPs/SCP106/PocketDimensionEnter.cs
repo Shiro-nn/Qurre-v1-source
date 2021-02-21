@@ -59,7 +59,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                         if (boolean)
                             script.RpcGainExp(ExpGainType.PocketAssist, ccm.CurClass);
                     }
-                    var ev = new PocketDimensionEnterEvent(ReferenceHub.GetHub(ply), Vector3.down * 1998.5f);
+                    var ev = new PocketDimensionEnterEvent(API.Player.Get(ply), Vector3.down * 1998.5f);
                     Qurre.Events.SCPs.SCP106.pocketdimensionenter(ev);
                     if (!ev.IsAllowed)
                         return false;

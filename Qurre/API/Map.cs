@@ -15,7 +15,7 @@ namespace Qurre.API
 	public static class Map
 	{
 		public static int roundtime = 0;
-		private static ReferenceHub host;
+		private static Player host;
 		private static Inventory hinv;
 		private static Broadcast bc;
 		private static DecontaminationController dc;
@@ -23,7 +23,7 @@ namespace Qurre.API
 		private static List<DoorVariant> drs = new List<DoorVariant>();
 		private static List<Lift> lfs = new List<Lift>();
 		private static List<TeslaGate> tgs = new List<TeslaGate>();
-		public static ReferenceHub Host
+		public static Player Host
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Qurre.API
 			get
 			{
 				if (hinv == null)
-					hinv = Player.Get(PlayerManager.localPlayer).inventory;
+					hinv = Player.Get(PlayerManager.localPlayer).Inventory;
 				return hinv;
 			}
 		}
@@ -50,8 +50,7 @@ namespace Qurre.API
 			set
 			{
 				ServerConsole.FriendlyFire = value;
-				foreach (ReferenceHub hub in Player.GetHubs())
-					hub.SetFriendlyFire(value);
+				foreach (Player pl in Player.List) pl.FriendlyFire = value;
 			}
 		}
 		internal static Broadcast BroadcastComponent
@@ -122,7 +121,7 @@ namespace Qurre.API
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
 		}
 		public static IEnumerable<Room> GetRooms() => Rooms;
-		public static IEnumerable<ReferenceHub> HubsInRoom(this Room room) => ReferenceHub.GetAllHubs().Values.Where(player => !player.IsHost() && player.GetCurrentRoom().Name == room.Name);
+		public static IEnumerable<Player> HubsInRoom(this Room room) => Player.List.Where(x => !x.IsHost && x.CurrentRoom.Name == room.Name);
 		public static int ActivatedGenerators => Generator079.mainGenerator.totalVoltage;
 		public static void TurnOffLights(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
 		public static void SpawnRagdoll(RoleType role, string name, Vector3 position, Quaternion rotation, string ownerID, string ownerNickname, int playerID) => PlayerManager.localPlayer.GetComponent<RagdollManager>().SpawnRagdoll(new Vector3(position.x, position.y, position.z), rotation, new Vector3(0, 0, 0), (int)role, new PlayerStats.HitInfo(), false, ownerID, ownerNickname, playerID);

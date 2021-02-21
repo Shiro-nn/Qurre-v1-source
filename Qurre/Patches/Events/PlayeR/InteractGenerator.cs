@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.PlayeR
 		{
 			try
 			{
-				var player = ReferenceHub.GetHub(person);
+				var player = Player.Get(person);
 				switch (command)
 				{
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Tablet:
@@ -59,8 +59,8 @@ namespace Qurre.Patches.Events.PlayeR
 		{
 			try
 			{
-				var player = ReferenceHub.GetHub(person);
-				if (player.inventory == null || QurreModLoader.umm.Gen_doorAnimationCooldown(__instance) > 0f || QurreModLoader.umm.Gen_deniedCooldown(__instance) > 0f) return false;
+				var player = Player.Get(person);
+				if (player.Inventory == null || QurreModLoader.umm.Gen_doorAnimationCooldown(__instance) > 0f || QurreModLoader.umm.Gen_deniedCooldown(__instance) > 0f) return false;
 				if (__instance.isDoorUnlocked)
 				{
 					var allow = true;
@@ -84,10 +84,10 @@ namespace Qurre.Patches.Events.PlayeR
 					__instance.isDoorOpen = !__instance.isDoorOpen;
 					return false;
 				}
-				var boolean = player.GetBypassMode();
-				if (player.inventory.GetItemInHand().id > ItemType.KeycardJanitor)
+				var boolean = player.BypassMode;
+				if (player.Inventory.GetItemInHand().id > ItemType.KeycardJanitor)
 				{
-					var permissions = player.inventory.GetItemByID(player.inventory.curItem).permissions;
+					var permissions = player.Inventory.GetItemByID(player.Inventory.curItem).permissions;
 					foreach (var t in permissions)
 						if (t == "ARMORY_LVL_2")
 							boolean = true;

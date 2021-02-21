@@ -38,7 +38,7 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                         return false;
                     if (target.characterClassManager.CurClass != RoleType.Spectator)
                         return false;
-                    var ev = new FinishRecallEvent(ReferenceHub.GetHub(__instance.Hub.gameObject), ReferenceHub.GetHub(target.gameObject));
+                    var ev = new FinishRecallEvent(API.Player.Get(__instance.Hub.gameObject), API.Player.Get(target.gameObject));
                     Qurre.Events.SCPs.SCP049.finishrecall(ev);
                     if (!ev.IsAllowed)
                         return false;
@@ -80,7 +80,7 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                     if (Vector3.Distance(telo.transform.position, __instance.Hub.PlayerCameraReference.transform.position) >=
                         PlayableScps.Scp049.ReviveDistance * 1.3f)
                         return false;
-                    var ev = new StartRecallEvent(ReferenceHub.GetHub(__instance.Hub.gameObject), ReferenceHub.GetHub(target.gameObject));
+                    var ev = new StartRecallEvent(API.Player.Get(__instance.Hub.gameObject), API.Player.Get(target.gameObject));
                     Qurre.Events.SCPs.SCP049.startrecall(ev);
                     if (!ev.IsAllowed)
                         return false;

@@ -34,7 +34,7 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                 }
                 var ev = new UpgradeEvent(__instance, QurreModLoader.umm.Scp914_players(__instance).Select(player => Player.Get(player.gameObject)).ToList(), QurreModLoader.umm.Scp914_items(__instance), __instance.knobState);
                 Qurre.Events.SCPs.SCP914.upgrade(ev);
-                var players = ev.Players.Select(player => player.characterClassManager).ToList();
+                var players = ev.Players.Select(player => player.CharacterClassManager).ToList();
                 __instance.MoveObjects(ev.Items, players);
                 if (ev.IsAllowed)
                     __instance.UpgradeObjects(ev.Items, players);

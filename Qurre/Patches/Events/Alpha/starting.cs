@@ -1,5 +1,6 @@
 ﻿#pragma warning disable SA1118
 using HarmonyLib;
+using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 namespace Qurre.Patches.Events.Alpha
@@ -23,7 +24,7 @@ namespace Qurre.Patches.Events.Alpha
                 if ((QurreModLoader.umm.AWC_resumeScenario() == -1 && AlphaWarheadController.Host.scenarios_start[QurreModLoader.umm.AWC_startScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation) ||
                     (QurreModLoader.umm.AWC_resumeScenario() != -1 && AlphaWarheadController.Host.scenarios_resume[QurreModLoader.umm.AWC_resumeScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation))
                 {
-                    var ev = new StartEvent(ReferenceHub.GetHub(__instance.gameObject) ?? API.Map.Host);
+                    var ev = new StartEvent(Player.Get(__instance.gameObject) ?? API.Map.Host);
                     Qurre.Events.Alpha.starting(ev);
                     if (!ev.IsAllowed)
                         return false;

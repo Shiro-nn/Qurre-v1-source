@@ -17,8 +17,7 @@ namespace Qurre
 		}
 		public static void Debug(string message)
 		{
-			if (!debug)
-				return;
+			if (!debug) return;
 			Assembly assembly = Assembly.GetCallingAssembly();
 			ServerConsole.AddLog($"[DEBUG] [{assembly.GetName().Name}] {message}", ConsoleColor.DarkGreen);
 		}

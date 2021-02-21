@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.Round
                     ServerConsole.AddLog($"umm, team {__instance.NextKnownTeam} is undefined", ConsoleColor.Red);
                 else
                 {
-                    List<ReferenceHub> list = Player.GetHubs().Where(p => p.GetRole() == RoleType.Spectator && !p.Overwatch()).ToList();
+                    List<Player> list = Player.List.Where(p => p.Role == RoleType.Spectator && !p.Overwatch).ToList();
                     if (list.Count > 0)
                     {
                         RespawnTickets singleton = RespawnTickets.Singleton;
@@ -35,21 +35,21 @@ namespace Qurre.Patches.Events.Round
                         }
                         int avsp = Mathf.Min(tick, spawnableTeam.MaxWaveSize);
                         if (__instance.RespawnManager_prioritySpawn())
-                            list = list.OrderBy(item => item.characterClassManager.DeathTime).ToList();
+                            list = list.OrderBy(item => item.CharacterClassManager.DeathTime).ToList();
                         else
                             list.ShuffleList();
-                        List<ReferenceHub> twolist = new List<ReferenceHub>();
+                        List<Player> twolist = new List<Player>();
                         var ev = new TeamRespawnEvent(list, avsp, __instance.NextKnownTeam);
                         Qurre.Events.Round.teamrespawn(ev);
                         while (list.Count > avsp)
                             list.RemoveAt(list.Count - 1);
                         list.ShuffleList();
-                        foreach (ReferenceHub targ in list)
+                        foreach (Player targ in list)
                         {
                             try
                             {
                                 RoleType classid = spawnableTeam.ClassQueue[Mathf.Min(twolist.Count, spawnableTeam.ClassQueue.Length - 1)];
-                                targ.characterClassManager.SetPlayersClass(classid, targ.gameObject);
+                                targ.CharacterClassManager.SetPlayersClass(classid, targ.GameObject);
                                 twolist.Add(targ);
                             }
                             catch { }
@@ -60,10 +60,10 @@ namespace Qurre.Patches.Events.Round
                             if (UnitNamingRules.TryGetNamingRule(__instance.NextKnownTeam, out UnitNamingRule rule))
                             {
                                 rule.GenerateNew(__instance.NextKnownTeam, out string regular);
-                                foreach (ReferenceHub rh in twolist)
+                                foreach (Player pl in twolist)
                                 {
-                                    rh.characterClassManager.NetworkCurSpawnableTeamType = (byte)__instance.NextKnownTeam;
-                                    rh.characterClassManager.NetworkCurUnitName = regular;
+                                    pl.CharacterClassManager.NetworkCurSpawnableTeamType = (byte)__instance.NextKnownTeam;
+                                    pl.CharacterClassManager.NetworkCurUnitName = regular;
                                 }
                                 rule.PlayEntranceAnnouncement(regular);
                             }

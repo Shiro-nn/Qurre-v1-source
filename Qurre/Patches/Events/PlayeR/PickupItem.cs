@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                var ev = new PickupItemEvent(ReferenceHub.GetHub(__instance.ItemSearchCompletor_Hub().gameObject), __instance.ItemSearchCompletor_TargetPickup());
+                var ev = new PickupItemEvent(API.Player.Get(__instance.ItemSearchCompletor_Hub().gameObject), __instance.ItemSearchCompletor_TargetPickup());
                 Qurre.Events.Player.pickupItem(ev);
                 return ev.IsAllowed;
             }

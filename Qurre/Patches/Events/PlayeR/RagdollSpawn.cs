@@ -13,8 +13,8 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                var ev = new RagdollSpawnEvent(ragdollInfo.PlayerId == 0 ? null : ReferenceHub.GetHub(ragdollInfo.PlayerId),
-                    ReferenceHub.GetHub(__instance.gameObject), pos, rot, (RoleType)classId, ragdollInfo, allowRecall, ownerID, ownerNick, playerId);
+                var ev = new RagdollSpawnEvent(ragdollInfo.PlayerId == 0 ? null : API.Player.Get(ragdollInfo.PlayerId),
+                    API.Player.Get(__instance.gameObject), pos, rot, (RoleType)classId, ragdollInfo, allowRecall, ownerID, ownerNick, playerId);
                 Qurre.Events.Player.ragdollSpawn(ev);
                 pos = ev.Position;
                 rot = ev.Rotation;

@@ -15,7 +15,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                 if (!__instance.RateLimit().CanExecute(true))
                     return false;
                 bool rayCastHit = Physics.Raycast(new Ray(__instance.transform.position, -__instance.transform.up), out RaycastHit raycastHit, 10f, __instance.teleportPlacementMask);
-                var ev = new PortalCreateEvent(ReferenceHub.GetHub(__instance.gameObject), raycastHit.point - Vector3.up);
+                var ev = new PortalCreateEvent(API.Player.Get(__instance.gameObject), raycastHit.point - Vector3.up);
                 Qurre.Events.SCPs.SCP106.portalcreate(ev);
                 Debug.DrawRay(__instance.transform.position, -__instance.transform.up, Color.red, 10f);
                 if (ev.IsAllowed && __instance.iAm106 && !__instance.goingViaThePortal && rayCastHit)

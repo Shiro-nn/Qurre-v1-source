@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.PlayeR
                 foreach (Inventory.SyncItemInfo item in __instance.items)
                     if (item.uniq == i)
                         newi = item;
-                var ev = new ItemChangeEvent(ReferenceHub.GetHub(__instance.gameObject), old, newi);
+                var ev = new ItemChangeEvent(API.Player.Get(__instance.gameObject), old, newi);
                 Player.itemchange(ev);
                 oI = __instance.GetItemIndex();
                 if (oI != -1)

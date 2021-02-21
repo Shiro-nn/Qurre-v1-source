@@ -12,12 +12,16 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                ReferenceHub player = ReferenceHub.GetHub(__instance.gameObject);
-                if (player == null || player.IsHost())
+                Player player = Player.Get(__instance);
+                if (player == null || player.IsHost)
                     return;
                 var ev = new LeaveEvent(player);
-                ServerConsole.AddLog($"Player {ev.Player.GetNickname()} ({ev.Player.GetUserId()}) ({player?.GetPlayerId()}) disconnected", ConsoleColor.DarkMagenta);
+                ServerConsole.AddLog($"Player {ev.Player.Nickname} ({ev.Player.UserId}) ({player?.Id}) disconnected", ConsoleColor.DarkMagenta);
                 Qurre.Events.Player.leave(ev);
+
+                if (Player.Dictionary.ContainsKey(player.GameObject)) Player.Dictionary.Remove(player.GameObject);
+                if (Player.IdPlayers.ContainsKey(player.Id)) Player.IdPlayers.Remove(player.Id);
+                if (player.UserId != null) if (Player.UserIDPlayers.ContainsKey(player.UserId)) Player.UserIDPlayers.Remove(player.UserId);
             }
             catch (Exception e)
             {

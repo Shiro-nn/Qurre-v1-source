@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.PlayeR
                     if (__instance.usableItems[i].inventoryID == __instance.CAWI_hub().inventory.curItem &&
                         __instance.usableCooldowns[i] <= 0.0)
                     {
-                        var ev = new UsingMedicalEvent(ReferenceHub.GetHub(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
+                        var ev = new UsingMedicalEvent(API.Player.Get(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
                         Qurre.Events.Player.usingMedical(ev);
                         __instance.cooldown = ev.Cooldown;
                         if (ev.IsAllowed)

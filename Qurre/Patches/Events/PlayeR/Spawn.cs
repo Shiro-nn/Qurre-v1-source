@@ -68,7 +68,7 @@ namespace Qurre.Patches.Events.PlayeR
                                 sP = __instance.DeathPosition;
                                 rotY = 0f;
                             }
-                            var ev = new SpawnEvent(ReferenceHub.GetHub(__instance.gameObject), __instance.CurClass, sP, rotY);
+                            var ev = new SpawnEvent(API.Player.Get(__instance.gameObject), __instance.CurClass, sP, rotY);
                             Qurre.Events.Player.spawn(ev);
                             __instance._pms().OnPlayerClassChange(ev.Position, ev.RotationY);
                         }

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using Qurre.API;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.PlayeR
 {
@@ -9,7 +10,7 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                var ev = new GroupChangeEvent(ReferenceHub.GetHub(__instance.gameObject), group);
+                var ev = new GroupChangeEvent(Player.Get(__instance.gameObject), group);
                 Qurre.Events.Player.groupchange(ev);
                 return ev.IsAllowed;
             }

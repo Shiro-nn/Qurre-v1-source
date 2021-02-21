@@ -19,7 +19,7 @@ namespace Qurre.Patches.Events.PlayeR
                 {
                     if (__instance.usableItems[i].inventoryID == __instance.CAWI_hub().inventory.curItem && __instance.usableItems[i].cancelableTime > 0f)
                     {
-                        var ev = new StoppingMedicalUsingEvent(ReferenceHub.GetHub(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
+                        var ev = new StoppingMedicalUsingEvent(API.Player.Get(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
                         Qurre.Events.Player.stoppingMedicalUsing(ev);
                         __instance.CAWI_cancel(ev.IsAllowed);
                     }

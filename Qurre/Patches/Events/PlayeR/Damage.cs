@@ -16,31 +16,26 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 if (go == null)
                     return true;
-                ReferenceHub attacker = ReferenceHub.GetHub(info.IsPlayer ? info.RHub.gameObject : __instance.gameObject);
-                ReferenceHub target = ReferenceHub.GetHub(go);
-                if (target == null || target.IsHost())
-                    return true;
-                if (info.GetDamageType() == DamageTypes.Recontainment && target.GetRole() == RoleType.Scp079)
+                Player attacker = Player.Get(info.IsPlayer ? info.RHub.gameObject : __instance.gameObject);
+                Player target = Player.Get(go);
+                if (target == null || target.IsHost) return true;
+                if (info.GetDamageType() == DamageTypes.Recontainment && target.Role == RoleType.Scp079)
                 {
                     Qurre.Events.SCPs.SCP079.recontain(new RecontainEvent(target));
                     var eventArgs = new DiedEvent(null, target, info);
                     Qurre.Events.Player.died(eventArgs);
                 }
-                if (attacker == null || attacker.IsHost())
-                    return true;
+                if (attacker == null || attacker.IsHost) return true;
                 var ev = new DamageEvent(attacker, target, info);
-                if (ev.Target.IsHost())
-                    return true;
+                if (ev.Target.IsHost) return true;
                 Qurre.Events.Player.damage(ev);
                 info = ev.HitInformations;
-                if (!ev.IsAllowed)
-                    return false;
-                if (!ev.Target.GetGodMode() && (ev.Amount == -1 || ev.Amount >= ev.Target.GetHP() + ev.Target.GetMaxAHP()))
+                if (!ev.IsAllowed) return false;
+                if (!ev.Target.GodMode && (ev.Amount == -1 || ev.Amount >= ev.Target.HP + ev.Target.MaxAHP))
                 {
                     var dE = new DyingEvent(ev.Attacker, ev.Target, ev.HitInformations);
                     Qurre.Events.Player.dying(dE);
-                    if (!dE.IsAllowed)
-                        return false;
+                    if (!dE.IsAllowed) return false;
                 }
                 return true;
             }

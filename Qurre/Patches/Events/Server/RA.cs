@@ -6,14 +6,14 @@ using System;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.Server
 {
-	[HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery), new Type[] { typeof(string), typeof(CommandSender) })]
-	internal static class RA
+	[HarmonyPatch(typeof(CommandProcessor), "ProcessQuery", new Type[] { typeof(string), typeof(CommandSender) })]
+	internal static class RemoteAdminCommand
 	{
-		private static bool Prefix(ref string q, ref CommandSender sender)
+		private static bool Prefix(string q, CommandSender sender)
 		{
 			try
 			{
-				var ev = new SendingRAEvent(sender, q);
+				var ev = new SendingRAEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Round.Host : (API.Player.Get(sender.SenderId) ?? API.Round.Host), q);
 				PreauthStopwatch().Restart();
 				IdleMode.SetIdleMode(false);
 				if (q == "REQUEST_DATA PLAYER_LIST SILENT")

@@ -18,8 +18,8 @@ namespace Qurre.Patches.Events.PlayeR
                     return false;
                 var sIL = new List<ItemType>();
                 foreach (ItemType item in __instance.Classes.SafeGet(classid).startItems) sIL.Add(item);
-                var cRE = new RoleChangeEvent(ReferenceHub.GetHub(ply), classid, sIL, lite, escape);
-                if (cRE.NewRole == RoleType.Spectator) cRE.Player.inventory.ServerDropAll();
+                var cRE = new RoleChangeEvent(API.Player.Get(ply), classid, sIL, lite, escape);
+                if (cRE.NewRole == RoleType.Spectator) cRE.Player.DropItems();
                 Player.rolechange(cRE);
                 lite = cRE.IsSavePos;
                 escape = cRE.IsEscaped;
@@ -28,7 +28,7 @@ namespace Qurre.Patches.Events.PlayeR
                 classid = cRE.NewRole;
                 if (escape)
                 {
-                    var eE = new EscapeEvent(ReferenceHub.GetHub(ply), classid);
+                    var eE = new EscapeEvent(API.Player.Get(ply), classid);
                     Player.escape(eE);
                     if (!eE.IsAllowed)
                         return false;

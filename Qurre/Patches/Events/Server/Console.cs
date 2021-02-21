@@ -1,6 +1,7 @@
 ﻿#pragma warning disable SA1313
 using System;
 using HarmonyLib;
+using Qurre.API;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.Server
 {
@@ -13,9 +14,9 @@ namespace Qurre.Patches.Events.Server
             {
                 if (query == null) query = "";
                 string str = query;
-                ReferenceHub send;
-                try { send = ReferenceHub.GetHub(__instance.gameObject) ?? API.Map.Host; } catch { send = API.Map.Host; }
-                if (send == null) send = API.Map.Host;
+                Player send;
+                try { send = Player.Get(__instance.gameObject) ?? API.Map.Host; } catch { send = API.Map.Host; }
+                if (send == null) send = Map.Host;
                 var ev = new SendingConsoleEvent(send, str, encrypted);
                 Qurre.Events.Server.sendingconsole(ev);
                 if (ev.ReturnMessage != "") __instance.GCT.SendToClient(__instance.connectionToClient, ev.ReturnMessage, ev.Color);

@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 if (healAnimation == (ConsumableAndWearableItems.HealAnimation)ConsumableAndWearableItems.HealAnimation.DequipMedicalItem)
                 {
-                    var ev = new UsedMedicalEvent(ReferenceHub.GetHub(__instance.gameObject), __instance.usableItems[mid].inventoryID);
+                    var ev = new UsedMedicalEvent(API.Player.Get(__instance.gameObject), __instance.usableItems[mid].inventoryID);
                     Qurre.Events.Player.usedMedical(ev);
                 }
             }

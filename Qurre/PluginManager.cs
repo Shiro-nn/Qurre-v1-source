@@ -11,7 +11,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public const string Version = "1.0.7";
+		public const string Version = "1.1.0";
 		public static string Plan { get; private set; } = "Lite";
 		public static int Planid { get; private set; } = 1;
 		private static string domen = "localhost"; //qurre.store
@@ -48,12 +48,9 @@ namespace Qurre
 
 			foreach (string mod in mods)
 			{
-				if (mod.EndsWith("Qurre.dll"))
-					continue;
-
+				if (mod.EndsWith("Qurre.dll")) continue;
 				LoadPlugin(mod);
 			}
-
 			Enable();
 		}
 		private static void LoadDependencies()

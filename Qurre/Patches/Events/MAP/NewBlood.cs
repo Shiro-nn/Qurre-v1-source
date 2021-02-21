@@ -11,7 +11,7 @@ namespace Qurre.Patches.Events.MAP
         {
             try
             {
-                var ev = new NewBloodEvent(ReferenceHub.GetHub(__instance.gameObject), pos, type, f);
+                var ev = new NewBloodEvent(API.Player.Get(__instance.gameObject), pos, type, f);
                 Qurre.Events.Map.newblood(ev);
                 pos = ev.Position;
                 type = ev.Type;
@@ -35,7 +35,7 @@ namespace Qurre.Patches.Events.MAP
                 if (isBlood)
                 {
                     int bt = QurreModLoader.umm.Weapon_hub(__instance).characterClassManager.Classes.SafeGet(QurreModLoader.umm.Weapon_hub(__instance).characterClassManager.CurClass).bloodType;
-                    var ev = new NewBloodEvent(ReferenceHub.GetHub(__instance.gameObject), pos, bt, 1);
+                    var ev = new NewBloodEvent(API.Player.Get(__instance.gameObject), pos, bt, 1);
                     pos = ev.Position;
                     QurreModLoader.umm.Weapon_hub(__instance).characterClassManager.Classes.SafeGet(QurreModLoader.umm.Weapon_hub(__instance).characterClassManager.CurClass).bloodType = ev.Type;
                     Qurre.Events.Map.newblood(ev);
@@ -43,7 +43,7 @@ namespace Qurre.Patches.Events.MAP
                 }
                 else
                 {
-                    var ev = new NewDecalEvent(ReferenceHub.GetHub(__instance.gameObject), pos, rot, type);
+                    var ev = new NewDecalEvent(API.Player.Get(__instance.gameObject), pos, rot, type);
                     Qurre.Events.Map.newdecal(ev);
                     pos = ev.Position;
                     rot = ev.Rotation;

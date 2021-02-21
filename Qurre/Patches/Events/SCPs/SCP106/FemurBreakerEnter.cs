@@ -25,7 +25,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                         if (CCM.Classes.SafeGet(CCM.CurClass).team != Team.SCP &&
                             CCM.CurClass != RoleType.Spectator && !CCM.GodMode)
                         {
-                            var ev = new FemurBreakerEnterEvent(ReferenceHub.GetHub(Stats.gameObject));
+                            var ev = new FemurBreakerEnterEvent(API.Player.Get(Stats.gameObject));
                             Qurre.Events.SCPs.SCP106.femurbreakerenter(ev);
                             if (ev.IsAllowed)
                             {

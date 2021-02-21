@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
@@ -25,7 +26,7 @@ namespace Qurre.Patches.Events.Alpha
                     return false;
                 var list = new List<string>();
                 list.Add("CONT_LVL_3");
-                var ev = new EnablePanelEvent(ReferenceHub.GetHub(__instance.gameObject), list);
+                var ev = new EnablePanelEvent(Player.Get(__instance.gameObject), list);
                 Qurre.Events.Alpha.enablepanel(ev);
                 if (ev.IsAllowed && itemById.permissions.Intersect(ev.Permissions).Any())
                 {

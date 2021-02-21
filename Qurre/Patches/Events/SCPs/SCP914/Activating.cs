@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                         (QurreModLoader.umm.InteractCuff(__instance).CufferId > 0 && !QurreModLoader.umm.DisarmedInteract()) ||
                         (Scp914Machine.singleton.working || !__instance.ChckDis(Scp914Machine.singleton.button.position)))
                     return false;
-                var ev = new ActivatingEvent(ReferenceHub.GetHub(__instance.gameObject), 0);
+                var ev = new ActivatingEvent(API.Player.Get(__instance.gameObject), 0);
                 Qurre.Events.SCPs.SCP914.activating(ev);
                 if (ev.IsAllowed)
                 {

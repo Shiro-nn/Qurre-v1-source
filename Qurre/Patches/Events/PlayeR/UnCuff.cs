@@ -1,6 +1,7 @@
 ﻿#pragma warning disable SA1313
 using System;
 using HarmonyLib;
+using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
@@ -13,16 +14,16 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                foreach (ReferenceHub target in API.Player.GetHubs())
+                foreach (Player target in Player.List)
                 {
                     if (target == null)
                         continue;
-                    if (target.handcuffs.NetworkCufferId == __instance.MyReferenceHub.queryProcessor.PlayerId)
+                    if (target.CufferId == __instance.MyReferenceHub.queryProcessor.PlayerId)
                     {
-                        var ev = new UnCuffEvent(ReferenceHub.GetHub(__instance.gameObject), target);
+                        var ev = new UnCuffEvent(Player.Get(__instance.gameObject), target);
                         Qurre.Events.Player.unCuff(ev);
                         if (ev.IsAllowed)
-                            target.handcuffs.NetworkCufferId = -1;
+                            target.CufferId = -1;
                         break;
                     }
                 }
@@ -48,12 +49,12 @@ namespace Qurre.Patches.Events.PlayeR
                             .Classes.SafeGet(__instance.MyReferenceHub.characterClassManager.CurClass).team ==
                         Team.SCP))
                     return false;
-                var p = ReferenceHub.GetHub(target);
-                var ev = new UnCuffEvent(ReferenceHub.GetHub(__instance.gameObject), p); ;
+                var p = API.Player.Get(target);
+                var ev = new UnCuffEvent(API.Player.Get(__instance.gameObject), p); ;
                 Qurre.Events.Player.unCuff(ev);
                 if (!ev.IsAllowed)
                     return false;
-                p.handcuffs.NetworkCufferId = -1;
+                p.CufferId = -1;
                 return false;
             }
             catch (Exception e)

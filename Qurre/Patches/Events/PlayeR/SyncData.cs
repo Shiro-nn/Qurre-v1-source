@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                var ev = new SyncDataEvent(ReferenceHub.GetHub(__instance.gameObject), v2, state);
+                var ev = new SyncDataEvent(API.Player.Get(__instance.gameObject), v2, state);
                 Qurre.Events.Player.syncData(ev);
                 return ev.IsAllowed;
             }

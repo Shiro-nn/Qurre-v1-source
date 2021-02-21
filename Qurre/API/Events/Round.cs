@@ -29,13 +29,13 @@ namespace Qurre.API.Events
     }
     public class TeamRespawnEvent : EventArgs
     {
-        public TeamRespawnEvent(List<ReferenceHub> players, int maxRespAmount, SpawnableTeamType nextKnownTeam)
+        public TeamRespawnEvent(List<Player> players, int maxRespAmount, SpawnableTeamType nextKnownTeam)
         {
             Players = players;
             MaxRespAmount = maxRespAmount;
             NextKnownTeam = nextKnownTeam;
         }
-        public List<ReferenceHub> Players { get; }
+        public List<Player> Players { get; }
         public int MaxRespAmount { get; set; }
         public SpawnableTeamType NextKnownTeam { get; set; }
     }

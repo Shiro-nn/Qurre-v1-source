@@ -17,7 +17,7 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                     Scp914Machine.singleton.working || !__instance.ChckDis(Scp914Machine.singleton.knob.position) ||
                     Math.Abs(Scp914Machine.singleton.curKnobCooldown) > 0.001f)
                     return false;
-                var ev = new ChangeKnobEvent(ReferenceHub.GetHub(__instance.gameObject), Scp914Machine.singleton.knobState + 1);
+                var ev = new ChangeKnobEvent(API.Player.Get(__instance.gameObject), Scp914Machine.singleton.knobState + 1);
                 Qurre.Events.SCPs.SCP914.changeknob(ev);
                 if (ev.IsAllowed)
                 {

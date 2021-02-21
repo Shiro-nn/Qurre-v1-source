@@ -12,11 +12,10 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                ReferenceHub attacker = ReferenceHub.GetHub(__instance.gameObject);
-                ReferenceHub target = ReferenceHub.GetHub(go);
-                if ((target != null && (target.GetRole() != RoleType.Spectator || target.GetGodMode() || target.IsHost())) || attacker == null)
-                    return;
-                var ev = new DiedEvent(ReferenceHub.GetHub(__instance.gameObject), target, info);
+                Player attacker = Player.Get(__instance.gameObject);
+                Player target = Player.Get(go);
+                if ((target != null && (target.Role != RoleType.Spectator || target.GodMode || target.IsHost)) || attacker == null) return;
+                var ev = new DiedEvent(Player.Get(__instance.gameObject), target, info);
                 Qurre.Events.Player.died(ev);
                 info = ev.HitInfo;
             }

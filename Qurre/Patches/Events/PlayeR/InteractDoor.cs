@@ -15,7 +15,7 @@ namespace Qurre.Patches.Events.PlayeR
 		{
 			try
 			{
-				var ev = new InteractDoorEvent(ReferenceHub.GetHub(__instance.gameObject), __instance, false);
+				var ev = new InteractDoorEvent(API.Player.Get(__instance.gameObject), __instance, false);
 				bool boolean = false;
 				if (__instance.ActiveLocks != 0)
 				{

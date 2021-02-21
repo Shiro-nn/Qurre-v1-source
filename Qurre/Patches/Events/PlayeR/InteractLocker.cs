@@ -31,7 +31,7 @@ namespace Qurre.Patches.Events.PlayeR
                 string accessToken = singleton.lockers[lockerId].chambers[chamberNumber].accessToken;
                 Item item = __instance.InteractInv().GetItemByID(__instance.InteractInv().curItem);
                 var ev = new InteractLockerEvent(
-                    ReferenceHub.GetHub(__instance.gameObject),
+                    API.Player.Get(__instance.gameObject),
                     singleton.lockers[lockerId],
                     singleton.lockers[lockerId].chambers[chamberNumber],
                     lockerId,

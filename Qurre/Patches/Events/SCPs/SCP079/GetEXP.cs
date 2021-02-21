@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
         {
             try
             {
-                var ev = new GetEXPEvent(ReferenceHub.GetHub(__instance.gameObject), type, (float)details);
+                var ev = new GetEXPEvent(API.Player.Get(__instance.gameObject), type, (float)details);
                 switch (type)
                 {
                     case ExpGainType.KillAssist:

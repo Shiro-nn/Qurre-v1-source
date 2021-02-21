@@ -11,7 +11,7 @@ namespace Qurre.Patches.Events.SCPs.SCP096
         {
             try
             {
-                var ev = new CalmDownEvent(__instance, ReferenceHub.GetHub(__instance.Hub.gameObject));
+                var ev = new CalmDownEvent(__instance, API.Player.Get(__instance.Hub.gameObject));
                 Qurre.Events.SCPs.SCP096.calmdown(ev);
                 return ev.IsAllowed;
             }

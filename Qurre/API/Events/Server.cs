@@ -5,9 +5,10 @@ namespace Qurre.API.Events
     public class SendingRAEvent : EventArgs
     {
         private string returnMessage;
-        public SendingRAEvent(CommandSender commandSender, string command, string prefix = "", bool isAllowed = true)
+        public SendingRAEvent(CommandSender commandSender, Player player, string command, string prefix = "", bool isAllowed = true)
         {
             CommandSender = commandSender;
+            Player = player;
             Command = command;
             IsAllowed = isAllowed;
             if (prefix == "")
@@ -16,6 +17,7 @@ namespace Qurre.API.Events
                 pref = prefix;
         }
         public CommandSender CommandSender { get; }
+        public Player Player { get; }
         public string Command { get; }
         public string pref;
         public string ReplyMessage
@@ -29,7 +31,7 @@ namespace Qurre.API.Events
     public class SendingConsoleEvent : EventArgs
     {
         public SendingConsoleEvent(
-            ReferenceHub player,
+            Player player,
             string message,
             bool isEncrypted,
             string returnMessage = "",
@@ -43,7 +45,7 @@ namespace Qurre.API.Events
             Color = color;
             IsAllowed = isAllowed;
         }
-        public ReferenceHub Player { get; }
+        public Player Player { get; }
         public string Message { get; }
         public bool IsEncrypted { get; private set; }
         public string ReturnMessage { get; set; }
@@ -54,7 +56,7 @@ namespace Qurre.API.Events
     {
         public class CheaterEvent : EventArgs
         {
-            public CheaterEvent(ReferenceHub sender, ReferenceHub target, int port, string reason, bool isAllowed = true)
+            public CheaterEvent(Player sender, Player target, int port, string reason, bool isAllowed = true)
             {
                 Sender = sender;
                 Target = target;
@@ -62,23 +64,23 @@ namespace Qurre.API.Events
                 Reason = reason;
                 IsAllowed = isAllowed;
             }
-            public ReferenceHub Sender { get; }
-            public ReferenceHub Target { get; }
+            public Player Sender { get; }
+            public Player Target { get; }
             public int Port { get; }
             public string Reason { get; set; }
             public bool IsAllowed { get; set; }
         }
         public class LocalEvent : EventArgs
         {
-            public LocalEvent(ReferenceHub issuer, ReferenceHub target, string reason, bool isAllowed = true)
+            public LocalEvent(Player issuer, Player target, string reason, bool isAllowed = true)
             {
                 Issuer = issuer;
                 Target = target;
                 Reason = reason;
                 IsAllowed = isAllowed;
             }
-            public ReferenceHub Issuer { get; }
-            public ReferenceHub Target { get; }
+            public Player Issuer { get; }
+            public Player Target { get; }
             public string Reason { get; set; }
             public bool IsAllowed { get; set; }
         }

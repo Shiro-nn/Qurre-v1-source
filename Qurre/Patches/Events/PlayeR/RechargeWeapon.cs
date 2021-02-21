@@ -20,7 +20,7 @@ namespace Qurre.Patches.Events.PlayeR
                     QurreModLoader.umm.Weapon_hub(__instance).inventory.items[iI].durability >=
                     (double)__instance.weapons[__instance.curWeapon].maxAmmo)
                     return false;
-                var ev = new RechargeWeaponEvent(ReferenceHub.GetHub(__instance.gameObject), animationOnly);
+                var ev = new RechargeWeaponEvent(API.Player.Get(__instance.gameObject), animationOnly);
                 Qurre.Events.Player.rechargeWeapon(ev);
                 return ev.IsAllowed;
             }

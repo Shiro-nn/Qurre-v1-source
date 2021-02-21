@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 if (!__instance.RateLimit().CanExecute(true) || Intercom.AdminSpeaking)
                     return false;
-                var ev = new IcomSpeakEvent(player ? ReferenceHub.GetHub(__instance.gameObject) : null);
+                var ev = new IcomSpeakEvent(player ? API.Player.Get(__instance.gameObject) : null);
                 if (player)
                 {
                     if (!__instance.ServerAllowToSpeak())

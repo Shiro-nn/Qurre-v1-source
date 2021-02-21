@@ -8,7 +8,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
     {
         private static bool Prefix(CharacterClassManager __instance)
         {
-            var ev = new ContainEvent(ReferenceHub.GetHub(__instance.gameObject));
+            var ev = new ContainEvent(API.Player.Get(__instance.gameObject));
             Qurre.Events.SCPs.SCP106.contain(ev);
             return ev.IsAllowed;
         }

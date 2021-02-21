@@ -54,7 +54,7 @@ namespace Qurre.Patches.Events.PlayeR
                 if (!flag)
                     return false;
                 __instance.ClearTarget();
-                var ev = new CuffEvent(ReferenceHub.GetHub(__instance.gameObject), ReferenceHub.GetHub(target));
+                var ev = new CuffEvent(API.Player.Get(__instance.gameObject), API.Player.Get(target));
                 Qurre.Events.Player.cuff(ev);
                 if (!ev.IsAllowed)
                     return false;

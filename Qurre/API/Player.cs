@@ -8,11 +8,338 @@ using UnityEngine;
 using static QurreModLoader.umm;
 using Hints;
 using MEC;
-
+using Grenades;
+using CustomPlayerEffects;
+using RemoteAdmin;
 namespace Qurre.API
 {
-	public static class Player
+	public class Player
 	{
+		private ReferenceHub rh;
+		public Player(ReferenceHub RH) => rh = RH;
+		public Player(GameObject gameObject) => rh = ReferenceHub.GetHub(gameObject);
+		public static Dictionary<GameObject, Player> Dictionary { get; } = new Dictionary<GameObject, Player>();
+		public static Dictionary<int, Player> IdPlayers = new Dictionary<int, Player>();
+		public static Dictionary<string, Player> UserIDPlayers = new Dictionary<string, Player>();
+		public static IEnumerable<Player> List => Dictionary.Values;
+		public ReferenceHub ReferenceHub
+		{
+			get => rh;
+			private set
+			{
+				if (value == null) throw new NullReferenceException("Player's ReferenceHub cannot be null!");
+				rh = value;
+				GameObject = value.gameObject;
+				Ammo = value.ammoBox;
+				HintDisplay = value.hints;
+				Inventory = value.inventory;
+				CameraTransform = value.PlayerCameraReference;
+				GrenadeManager = value.GetComponent<GrenadeManager>();
+				GameConsoleTransmission = value.GetComponent<GameConsoleTransmission>();
+			}
+		}
+		public GameObject GameObject { get; private set; }
+		public AmmoBox Ammo { get; private set; }
+		public HintDisplay HintDisplay { get; private set; }
+		public Inventory Inventory { get; private set; }
+		public Transform CameraTransform { get; private set; }
+		public GrenadeManager GrenadeManager { get; private set; }
+		public GameConsoleTransmission GameConsoleTransmission { get; private set; }
+		public NetworkIdentity NetworkIdentity => rh.networkIdentity;
+		public Handcuffs Handcuffs => rh.handcuffs;
+		public ServerRoles ServerRoles => rh.serverRoles;
+		public CharacterClassManager CharacterClassManager => rh.characterClassManager;
+		public WeaponManager WeaponManager => rh.weaponManager;
+		public AnimationController AnimationController => rh.animationController;
+		public PlayerStats PlayerStats => rh.playerStats;
+		public Scp079PlayerScript Scp079PlayerScript => rh.scp079PlayerScript;
+		public QueryProcessor QueryProcessor => rh.queryProcessor;
+		public PlayerEffectsController PlayerEffectsController => rh.playerEffectsController;
+		public NicknameSync NicknameSync => rh.nicknameSync;
+		public int Id
+		{
+			get => rh.queryProcessor.NetworkPlayerId;
+			set => rh.queryProcessor.NetworkPlayerId = value;
+		}
+		public string UserId
+		{
+			get => CharacterClassManager.UserId;
+			set => CharacterClassManager.NetworkSyncedUserId = value;
+		}
+		public string CustomUserId
+		{
+			get => CharacterClassManager.UserId2;
+			set => CharacterClassManager.UserId2 = value;
+		}
+		public string DisplayNickname
+		{
+			get => rh.nicknameSync.Network_displayName;
+			set => rh.nicknameSync.Network_displayName = value;
+		}
+		public string Nickname => rh.nicknameSync.Network_myNickSync;
+		public bool DoNotTrack => ServerRoles.DoNotTrack;
+		public bool RemoteAdminAccess => ServerRoles.RemoteAdmin;
+		public bool Overwatch
+		{
+			get => ServerRoles.OverwatchEnabled();
+			set => ServerRoles.CallTargetSetOverwatch(NetworkIdentity.connectionToClient, value);
+		}
+		public int CufferId
+		{
+			get => Handcuffs.NetworkCufferId;
+			set => Handcuffs.NetworkCufferId = value;
+		}
+		public bool IsCuffed => CufferId != -1;
+		public Vector3 Position
+		{
+			get => rh.playerMovementSync.GetRealPosition();
+			set => rh.playerMovementSync.OverridePosition(value, 0f);
+		}
+		public Vector2 Rotations
+		{
+			get => rh.playerMovementSync.NetworkRotationSync;
+			set => rh.playerMovementSync.NetworkRotationSync = value;
+		}
+		public Vector3 Rotation
+		{
+			get => rh.PlayerCameraReference.forward;
+			set => rh.PlayerCameraReference.forward = value;
+		}
+		public Vector3 Scale
+		{
+			get => rh.transform.localScale;
+			set
+			{
+				try
+				{
+					rh.transform.localScale = value;
+					foreach (Player target in List) SendSpawnMessage?.Invoke(null, new object[] { ReferenceHub.characterClassManager.netIdentity, target.Connection });
+				}
+				catch (Exception ex)
+				{
+					Log.Error($"Scale error: {ex}");
+				}
+			}
+		}
+		public GameObject LookingAt
+		{
+			get
+			{
+				if (!Physics.Raycast(rh.PlayerCameraReference.transform.position, rh.PlayerCameraReference.transform.forward, out RaycastHit raycastthit, 100f))
+					return null;
+				return raycastthit.transform.gameObject;
+			}
+		}
+		public Team Team => GetTeam(Role);
+		public Side Side => GetSide(Team);
+		public RoleType Role
+		{
+			get => CharacterClassManager.NetworkCurClass;
+			set => SetRole(value);
+		}
+		public bool IsReloading => WeaponManager.IsReloading();
+		public bool IsZooming => WeaponManager.NetworksyncZoomed;
+		public PlayerMovementState MoveState => AnimationController.MoveState;
+		public bool IsJumping => AnimationController.curAnim == 2;
+		public string IP => NetworkIdentity.connectionToClient.address;
+		public NetworkConnection Connection => Scp079PlayerScript.connectionToClient;
+		public bool IsHost => CharacterClassManager.IsHost;
+		public bool FriendlyFire
+		{
+			set => WeaponManager.GetShootPermission(CharacterClassManager, value);
+		}
+		public bool BypassMode
+		{
+			get => ServerRoles.BypassMode;
+			set => ServerRoles.BypassMode = value;
+		}
+		public bool Muted
+		{
+			get => CharacterClassManager.NetworkMuted;
+			set => CharacterClassManager.NetworkMuted = value;
+		}
+		public bool IntercomMuted
+		{
+			get => CharacterClassManager.NetworkIntercomMuted;
+			set => CharacterClassManager.NetworkIntercomMuted = value;
+		}
+		public bool GodMode
+		{
+			get => CharacterClassManager.GodMode;
+			set => CharacterClassManager.GodMode = value;
+		}
+		public float HP
+		{
+			get => PlayerStats.Health;
+			set
+			{
+				if (value > MaxHP) MaxHP = (int)value;
+			}
+		}
+		public int MaxHP
+		{
+			get => PlayerStats.maxHP;
+			set => PlayerStats.maxHP = value;
+		}
+		public float AHP
+		{
+			get => PlayerStats.unsyncedArtificialHealth;
+			set
+			{
+				PlayerStats.unsyncedArtificialHealth = value;
+				if (value > MaxAHP) MaxAHP = (int)value;
+			}
+		}
+		public int MaxAHP
+		{
+			get => PlayerStats.maxArtificialHealth;
+			set => PlayerStats.maxArtificialHealth = value;
+		}
+		public Inventory.SyncItemInfo CurrentItem
+		{
+			get => Inventory.GetItemInHand();
+			set => Inventory.SetCurItem(value.id);
+		}
+		public List<Inventory.SyncItemInfo> AllItems => Inventory.items.ToList();
+		public int CurrentItemIndex => Inventory.GetItemIndex();
+		public Stamina Stamina => rh.fpc.staminaController();
+		public float StaminaUsage
+		{
+			get => rh.fpc.staminaController().StaminaUse * 100;
+			set => rh.fpc.staminaController().StaminaUse = (value / 100f);
+		}
+		public string GroupName
+		{
+			get => ServerStatic.GetPermissionsHandler()._members().TryGetValue(UserId, out string groupName) ? groupName : null;
+			set => ServerStatic.GetPermissionsHandler()._members()[UserId] = value;
+		}
+		public Room CurrentRoom
+		{
+			get
+			{
+				Vector3 playerPos = Position;
+				Vector3 end = playerPos - new Vector3(0f, 10f, 0f);
+				bool flag = Physics.Linecast(playerPos, end, out RaycastHit raycastHit, -84058629);
+				if (!flag || raycastHit.transform == null) return null;
+				Transform transform = raycastHit.transform;
+				while (transform.parent != null && transform.parent.parent != null) transform = transform.parent;
+				foreach (Room room in Map.Rooms.Where(x => x.Position == transform.position)) return room;
+				return new Room { Name = transform.name, Position = transform.position, Transform = transform };
+			}
+		}
+		public CommandSender Sender
+		{
+			get
+			{
+				if (IsHost) return _scs;
+				return QueryProcessor._sender();
+			}
+		}
+		public bool GlobalRemoteAdmin => ServerRoles.RemoteAdminMode == ServerRoles.AccessMode.GlobalAccess;
+		public UserGroup Group
+		{
+			get => ServerRoles.UserGroup();
+			set => ServerRoles.SetGroup(value, false, false, value.Cover);
+		}
+		public string RoleColor
+		{
+			get => ServerRoles.NetworkMyColor;
+			set => ServerRoles.SetColor(value);
+		}
+		public string RoleName
+		{
+			get => ServerRoles.NetworkMyText;
+			set => ServerRoles.SetText(value);
+		}
+		public string UnitName
+		{
+			get => CharacterClassManager.NetworkCurUnitName;
+			set => CharacterClassManager.NetworkCurUnitName = value;
+		}
+		public float AliveTime => CharacterClassManager.AliveTime;
+		public long DeathTime
+		{
+			get => CharacterClassManager.DeathTime;
+			set => CharacterClassManager.DeathTime = value;
+		}
+
+		public int Ping => Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer.Peers[Connection.connectionId].Ping;
+		public static IEnumerable<Player> Get(Team team) => List.Where(player => player.Team == team);
+		public static IEnumerable<Player> Get(RoleType role) => List.Where(player => player.Role == role);
+		public static Player Get(CommandSender sender) => Get(sender.SenderId);
+		public static Player Get(ReferenceHub referenceHub) => referenceHub == null ? null : Get(referenceHub.gameObject);
+		public static Player Get(GameObject gameObject)
+		{
+			if (gameObject == null) return null;
+			Dictionary.TryGetValue(gameObject, out Player player);
+			return player;
+		}
+		public static Player Get(int playerId)
+		{
+			if (IdPlayers.ContainsKey(playerId)) return IdPlayers[playerId];
+			foreach (Player pl in List.Where(x => x.Id == playerId))
+			{
+				IdPlayers.Add(playerId, pl);
+				return pl;
+			}
+			return null;
+		}
+		public static Player Get(string args)
+		{
+			try
+			{
+				if (UserIDPlayers.ContainsKey(args)) return UserIDPlayers[args];
+				Player playerFound = null;
+				if (short.TryParse(args, out short playerId)) return Get(playerId);
+				if (args.EndsWith("@steam") || args.EndsWith("@discord") || args.EndsWith("@northwood") || args.EndsWith("@patreon"))
+					foreach (Player pl in List.Where(x => x.UserId == args)) playerFound = pl;
+				else
+				{
+					if (args == "WORLD" || args == "SCP-018" || args == "SCP-575" || args == "SCP-207") return null;
+					int maxNameLength = 31, lastnameDifference = 31;
+					string str1 = args.ToLower();
+					foreach (Player pl in List)
+					{
+						if (!pl.Nickname.ToLower().Contains(args.ToLower())) continue;
+						if (str1.Length < maxNameLength)
+						{
+							int nameDifference;
+							int x = maxNameLength - str1.Length;
+							int y = maxNameLength - pl.Nickname.Length;
+							string str2 = pl.Nickname;
+							for (int i = 0; i < x; i++) str1 += "z";
+							for (int i = 0; i < y; i++) str2 += "z";
+							int n = str1.Length;
+							int m = str2.Length;
+							int[,] d = new int[n + 1, m + 1];
+							if (n == 0) nameDifference = m;
+							if (m == 0) nameDifference = n;
+							for (int i = 1; i <= n; i++)
+								for (int j = 1; j <= m; j++)
+								{
+									int cost = (str2[j - 1] == str1[i - 1]) ? 0 : 1;
+									d[i, j] = Math.Min(
+										Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
+										d[i - 1, j - 1] + cost);
+								}
+							nameDifference = d[n, m];
+							if (nameDifference < lastnameDifference)
+							{
+								lastnameDifference = nameDifference;
+								playerFound = pl;
+							}
+						}
+					}
+				}
+				if (playerFound != null) UserIDPlayers.Add(args, playerFound);
+				return playerFound;
+			}
+			catch (Exception exception)
+			{
+				Log.Error($"GetPlayer error: {exception}");
+				return null;
+			}
+		}
 		private static MethodInfo sendSpawnMessage;
 		public static MethodInfo SendSpawnMessage
 		{
@@ -24,153 +351,236 @@ namespace Qurre.API
 				return sendSpawnMessage;
 			}
 		}
-		public static Dictionary<int, ReferenceHub> IdHubs = new Dictionary<int, ReferenceHub>();
-		public static Dictionary<string, ReferenceHub> StrHubs = new Dictionary<string, ReferenceHub>();
-		public static IEnumerable<ReferenceHub> GetHubs() => ReferenceHub.GetAllHubs().Values.Where(h => !h.IsHost());
-		public static string GetUserId(this ReferenceHub player) => player.characterClassManager.UserId;
-		public static void SetUserId(this ReferenceHub player, string newId) => player.characterClassManager.NetworkSyncedUserId = newId;
-		public static int GetPlayerId(this ReferenceHub player) => player.queryProcessor.PlayerId;
-		public static void SetPlayerId(this ReferenceHub player, int newId) => player.queryProcessor.NetworkPlayerId = newId;
-		public static bool Overwatch(this ReferenceHub player) => player.serverRoles.OverwatchEnabled();
-		public static void Overwatch(this ReferenceHub player, bool over) => player.serverRoles.CallTargetSetOverwatch(player.networkIdentity.connectionToClient, over);
-		public static bool IsScp(this ReferenceHub hub) => hub.characterClassManager.IsAnyScp();
-		public static bool IsNTF(this ReferenceHub hub)
+		public void RAMessage(string message, bool success = true, string pluginName = null) =>
+			Sender.RaReply((pluginName ?? Assembly.GetCallingAssembly().GetName().Name) + "#" + message, success, true, string.Empty);
+		public void SendConsoleMessage(string message, string color) => CharacterClassManager.TargetConsolePrint(Connection, message, color);
+		public void RaLogin()
 		{
-			switch (hub.GetRole())
-			{
-				case RoleType.NtfCadet:
-				case RoleType.NtfScientist:
-				case RoleType.NtfLieutenant:
-				case RoleType.NtfCommander:
-					return true;
-				default:
-					return false;
-			}
+			ServerRoles.RemoteAdmin = true;
+			ServerRoles.Permissions = ServerRoles._globalPerms();
+			ServerRoles.RemoteAdminMode = GlobalRemoteAdmin ? ServerRoles.AccessMode.GlobalAccess : ServerRoles.AccessMode.PasswordOverride;
+			ServerRoles.TargetOpenRemoteAdmin(Connection, false);
 		}
-		public static bool IsHuman(this ReferenceHub hub) => hub.characterClassManager.IsHuman();
-		public static bool IsAlive(this ReferenceHub hub) => hub.characterClassManager.IsAlive;
-		public static RoleType GetRole(this ReferenceHub player) => player.characterClassManager.CurClass;
-		public static void SetRole(this ReferenceHub player, RoleType newRole) => player.characterClassManager.SetPlayersClass(newRole, player.gameObject);
-		public static void SetRole(this ReferenceHub player, RoleType newRole, bool keepPosition)
+
+		public void RaLogout()
 		{
-			if (keepPosition)
-			{
-				player.characterClassManager.NetworkCurClass = newRole;
-				player.playerStats.SetHPAmount(player.characterClassManager.Classes.SafeGet(player.GetRole()).maxHP);
-			}
-			else
-				SetRole(player, newRole);
+			ServerRoles.RemoteAdmin = false;
+			ServerRoles.RemoteAdminMode = ServerRoles.AccessMode.LocalAccess;
+			ServerRoles.TargetCloseRemoteAdmin(Connection);
 		}
-		public static Vector3 GetPosition(this ReferenceHub player) => player.playerMovementSync.transform.position;
-		public static Vector2 GetRotations(this ReferenceHub player) => player.playerMovementSync.NetworkRotationSync;
-		public static Vector3 GetRotationVector(this ReferenceHub player) => player.characterClassManager.transform.forward;
-		public static void SetPosition(this ReferenceHub player, float x, float y, float z) => player.playerMovementSync.OverridePosition(new Vector3(x, y, z), player.transform.rotation.eulerAngles.y);
-		public static void SetPosition(this ReferenceHub player, Vector3 position) => player.SetPosition(position.x, position.y, position.z);
-		public static void SetRotation(this ReferenceHub player, Vector2 rotations) => player.SetRotation(rotations.x, rotations.y);
-		public static void SetRotation(this ReferenceHub player, float x, float y) => player.playerMovementSync.NetworkRotationSync = new Vector2(x, y);
-		public static UserGroup GetGroup(this ReferenceHub player) => player.serverRoles.UserGroup();
-		public static void SetGroupColor(this ReferenceHub player, string color) => player.serverRoles.SetColor(color);
-		public static void SetGroupName(this ReferenceHub player, string name) => player.serverRoles.SetText(name);
-		public static void SetGroup(this ReferenceHub player, string name, string color, bool show)
+		public void ExecuteCommand(string command, bool RA = true) => GameCore.Console.singleton.TypeCommand(RA ? "/" : "" + command, Sender);
+		public void OpenReportWindow(string text) => GameConsoleTransmission.SendToClient(Connection, "[REPORTING] " + text, "white");
+		public void RemoveDisplayInfo(PlayerInfoArea playerInfo) => NicknameSync.Network_playerInfoToShow &= ~playerInfo;
+		public void AddDisplayInfo(PlayerInfoArea playerInfo) => NicknameSync.Network_playerInfoToShow |= playerInfo;
+		public void DimScreen()
 		{
-			UserGroup ug = new UserGroup()
+			var component = RoundSummary.singleton;
+			var writer = NetworkWriterPool.GetWriter();
+			var msg = new RpcMessage
 			{
-				BadgeColor = color,
-				BadgeText = name,
-				HiddenByDefault = !show,
-				Cover = show
+				netId = component.netId,
+				componentIndex = component.ComponentIndex,
+				functionHash = typeof(RoundSummary).FullName.GetStableHashCode() * 503 + "RpcDimScreen".GetStableHashCode(),
+				payload = writer.ToArraySegment()
 			};
-
-			player.serverRoles.SetGroup(ug, false, false, show);
+			Connection.Send(msg);
+			NetworkWriterPool.Recycle(writer);
 		}
-		public static void SetGroup(this ReferenceHub player, string name, string color, bool show, string rankName)
+		public void ShakeScreen(bool achieve = false)
 		{
-			if (ServerStatic.GetPermissionsHandler().GetAllGroups().ContainsKey(rankName))
+			var component = AlphaWarheadController.Host;
+			var writer = NetworkWriterPool.GetWriter();
+			writer.WriteBoolean(achieve);
+			var msg = new RpcMessage
 			{
-				ServerStatic.GetPermissionsHandler().GetGroup(rankName).BadgeColor = color;
-				ServerStatic.GetPermissionsHandler().GetGroup(rankName).BadgeText = name;
-				ServerStatic.GetPermissionsHandler().GetGroup(rankName).HiddenByDefault = !show;
-				ServerStatic.GetPermissionsHandler().GetGroup(rankName).Cover = show;
-
-
-				player.serverRoles.SetGroup(ServerStatic.GetPermissionsHandler().GetGroup(rankName), false, false, show);
-			}
-			else
-			{
-				UserGroup ug = new UserGroup()
-				{
-					BadgeColor = color,
-					BadgeText = name,
-					HiddenByDefault = !show,
-					Cover = show
-				};
-
-				ServerStatic.GetPermissionsHandler().GetAllGroups().Add(rankName, ug);
-				player.serverRoles.SetGroup(ug, false, false, show);
-			}
-
-			if (ServerStatic.GetPermissionsHandler()._members().ContainsKey(player.GetUserId()))
-			{
-				ServerStatic.GetPermissionsHandler()._members()[player.GetUserId()] = rankName;
-			}
-			else
-			{
-				ServerStatic.GetPermissionsHandler()._members().Add(player.GetUserId(), rankName);
-			}
-		}
-		public static void SetGroup(this ReferenceHub player, UserGroup userGroup) => player.serverRoles.SetGroup(userGroup, false, false, false);
-		public static GlobalBadge GetGlobalBadge(this ReferenceHub player)
-		{
-			string token = player.serverRoles.NetworkGlobalBadge;
-			if (string.IsNullOrEmpty(token)) { return null; }
-			Dictionary<string, string> dictionary = (from rwr in token.Split(new string[]
-		   {
-						   "<br>"
-		  }, StringSplitOptions.None)
-													 select rwr.Split(new string[]
-													 {
-						   ": "
-													 }, StringSplitOptions.None)).ToDictionary((string[] split) => split[0], (string[] split) => split[1]);
-
-			int BadgeType = 0;
-			if (int.TryParse(dictionary["Badge type"], out int type)) { BadgeType = type; }
-
-			return new GlobalBadge
-			{
-				BadgeText = dictionary["Badge text"],
-				BadgeColor = dictionary["Badge color"],
-				Type = BadgeType
+				netId = component.netId,
+				componentIndex = component.ComponentIndex,
+				functionHash = typeof(AlphaWarheadController).FullName.GetStableHashCode() * 503 + "RpcShake".GetStableHashCode(),
+				payload = writer.ToArraySegment()
 			};
+			Connection.Send(msg);
+			NetworkWriterPool.Recycle(writer);
 		}
-		public static string GetNickname(this ReferenceHub player) => player.nicknameSync.Network_myNickSync;
-		public static void SetNickname(this ReferenceHub player, string nickname)
+		public void PlaceBlood(Vector3 pos, int type = 1, float size = 2f)
 		{
-			player.nicknameSync.Network_myNickSync = nickname;
-			MEC.Timing.RunCoroutine(BlinkTag(player));
+			var component = CharacterClassManager;
+			var writer = NetworkWriterPool.GetWriter();
+			writer.WriteVector3(pos);
+			writer.WritePackedInt32(type);
+			writer.WriteSingle(size);
+			var msg = new RpcMessage
+			{
+				netId = component.netId,
+				componentIndex = component.ComponentIndex,
+				functionHash = typeof(CharacterClassManager).FullName.GetStableHashCode() * 503 + "RpcPlaceBlood".GetStableHashCode(),
+				payload = writer.ToArraySegment()
+			};
+			Connection.Send(msg);
+			NetworkWriterPool.Recycle(writer);
 		}
-
-		private static IEnumerator<float> BlinkTag(ReferenceHub player)
+		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => CharacterClassManager.SetPlayersClass(newRole, GameObject, lite, escape);
+		public void Broadcast(ushort time, string message, Broadcast.BroadcastFlags flag = 0) => Map.BroadcastComponent.TargetAddElement(Scp079PlayerScript.connectionToClient, message, time, flag);
+		public void ClearBroadcasts(float delay = 0f)
 		{
-			yield return MEC.Timing.WaitForOneFrame;
-
-			player.HideTag();
-
-			yield return MEC.Timing.WaitForOneFrame;
-
-			player.ShowTag();
+			if (Connection != null) Timing.CallDelayed(delay, () => GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(Connection));
 		}
-		private static void HideTag(this ReferenceHub player) => player.characterClassManager.CallCmdRequestHideTag();
-		private static void ShowTag(this ReferenceHub player, bool isGlobal = false) => player.characterClassManager.CallCmdRequestShowTag(isGlobal);
-		public static void RAMessage(this CommandSender sender, string message, bool success = true, string pluginName = null)
+		public void Damage(int amount, DamageTypes.DamageType damageType) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, QueryProcessor.PlayerId), GameObject);
+		public void AddItem(ItemType itemType, float duration = float.NegativeInfinity, int sight = 0, int barrel = 0, int other = 0) =>
+			Inventory.AddNewItem(itemType, duration, sight, barrel, other);
+		public void AddItem(ItemType itemType) => Inventory.AddNewItem(itemType);
+		public void AddItem(Inventory.SyncItemInfo item) => Inventory.AddNewItem(item.id, item.durability, item.modSight, item.modBarrel, item.modOther);
+		public void DropItem(Inventory.SyncItemInfo item)
 		{
-			sender.RaReply((pluginName ?? Assembly.GetCallingAssembly().GetName().Name) + "#" + message, success, true, string.Empty);
+			Inventory.SetPickup(item.id, item.durability, Position, Inventory.camera.transform.rotation, item.modSight, item.modBarrel, item.modOther);
+			Inventory.items.Remove(item);
 		}
-		public static void Broadcast(this ReferenceHub player, ushort time, string message, Broadcast.BroadcastFlags flag = 0) => Map.BroadcastComponent.TargetAddElement(player.scp079PlayerScript.connectionToClient, message, time, flag);
-		public static void ClearBroadcasts(this ReferenceHub player) => Map.BroadcastComponent.TargetClearElements(player.scp079PlayerScript.connectionToClient);
-		public static Team GetTeam(this ReferenceHub player) => player.GetRole().GetTeam();
-		public static Team GetTeam(this RoleType roleType)
+		public void DropItems() => Inventory.ServerDropAll();
+		public bool HasItem(ItemType targetItem)
 		{
-			switch (roleType)
+			foreach (Inventory.SyncItemInfo item in Inventory.items.Where(x => x.id == targetItem)) return true;
+			return false;
+		}
+		public void RemoveItem(Inventory.SyncItemInfo item) => Inventory.items.Remove(item);
+		public void RemoveItem() => Inventory.items.Remove(ReferenceHub.inventory.GetItemInHand());
+		public void SetInventory(List<Inventory.SyncItemInfo> items)
+		{
+			ClearInventory();
+			foreach (Inventory.SyncItemInfo item in items) Inventory.AddNewItem(item.id, item.durability, item.modSight, item.modBarrel, item.modOther);
+		}
+		public void ClearInventory() => Inventory.items.Clear();
+		public void Ban(int duration, string reason, string issuer = "API") => PlayerManager.localPlayer.GetComponent<BanPlayer>().BanUser(GameObject, duration, reason, issuer, false);
+		public void Kick(string reason, string issuer = "API") => Ban(0, reason, issuer);
+		public void Handcuff(Player player)
+		{
+			if (Handcuffs == null) { return; }
+			if (Handcuffs.CufferId < 0 &&
+				player.Inventory.items.Any((Inventory.SyncItemInfo item) => item.id == ItemType.Disarmer) &&
+				Vector3.Distance(player.Position, Position) <= 130f)
+				Handcuffs.NetworkCufferId = player.Id;
+		}
+		public void Uncuff() => Handcuffs.NetworkCufferId = -1;
+		public void Disconnect(string reason = null) => ServerConsole.Disconnect(GameObject, string.IsNullOrEmpty(reason) ? "" : reason);
+		public void Kill(DamageTypes.DamageType damageType = default) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(-1f, "WORLD", damageType, 0), GameObject);
+		public void ChangeModel(RoleType newModel)
+		{
+			GameObject gameObject = GameObject;
+			CharacterClassManager ccm = gameObject.GetComponent<CharacterClassManager>();
+			NetworkIdentity identity = gameObject.GetComponent<NetworkIdentity>();
+			RoleType FirstRole = Role;
+			ccm.CurClass = newModel;
+			ObjectDestroyMessage destroyMessage = new ObjectDestroyMessage { netId = identity.netId };
+			foreach (Player pl in List)
+			{
+				if (pl.Id == Id) continue;
+				GameObject gameObject2 = pl.GameObject;
+				NetworkConnection playerCon = gameObject2.GetComponent<NetworkIdentity>().connectionToClient;
+				playerCon.Send(destroyMessage, 0);
+				object[] parameters = new object[] { identity, playerCon };
+				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", parameters);
+			}
+			ccm.CurClass = FirstRole;
+		}
+		public void SizeCamera(Vector3 size)
+		{
+			GameObject target = GameObject;
+			NetworkIdentity component = target.GetComponent<NetworkIdentity>();
+			target.transform.localScale = size;
+			ObjectDestroyMessage objectDestroyMessage = default;
+			objectDestroyMessage.netId = component.netId;
+			foreach (GameObject ply in PlayerManager.players)
+			{
+				NetworkConnection connectionToClient = ply.GetComponent<NetworkIdentity>().connectionToClient;
+				if (ply != target) connectionToClient.Send(objectDestroyMessage, 0);
+				object[] param = new object[] { component, connectionToClient };
+				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
+			}
+		}
+		public bool GetEffectActive<T>() where T : PlayerEffect
+		{
+			if (PlayerEffectsController.AllEffects.TryGetValue(typeof(T), out PlayerEffect playerEffect)) return playerEffect.Enabled;
+			return false;
+		}
+		public void DisableAllEffects()
+		{
+			foreach (KeyValuePair<Type, PlayerEffect> effect in PlayerEffectsController.AllEffects) if (effect.Value.Enabled) effect.Value.ServerDisable();
+		}
+		public void DisableEffect<T>() where T : PlayerEffect => PlayerEffectsController.DisableEffect<T>();
+		public void DisableEffect(EffectType effect)
+		{
+			if (TryGetEffect(effect, out var pEffect)) pEffect.ServerDisable();
+		}
+		public void EnableEffect<T>(float duration = 0f, bool addDurationIfActive = false) where T : PlayerEffect => PlayerEffectsController.EnableEffect<T>(duration, addDurationIfActive);
+		public bool EnableEffect(string effect, float duration = 0f, bool addDurationIfActive = false) => PlayerEffectsController.EnableByString(effect, duration, addDurationIfActive);
+		public void EnableEffect(EffectType effect, float duration = 0f, bool addDurationIfActive = false)
+		{
+			if (TryGetEffect(effect, out var pEffect)) PlayerEffectsController.EnableEffect(pEffect, duration, addDurationIfActive);
+		}
+		public PlayerEffect GetEffect(EffectType effect)
+		{
+			var type = effect.Type();
+			PlayerEffectsController.AllEffects.TryGetValue(type, out var pEffect);
+			return pEffect;
+		}
+		public bool TryGetEffect(EffectType effect, out PlayerEffect playerEffect)
+		{
+			playerEffect = GetEffect(effect);
+			return playerEffect != null;
+		}
+		public byte GetEffectIntensity<T>() where T : PlayerEffect
+		{
+			if (PlayerEffectsController.AllEffects.TryGetValue(typeof(T), out PlayerEffect playerEffect)) return playerEffect.Intensity;
+			throw new ArgumentException("The given type is invalid.");
+		}
+		public void ChangeEffectIntensity<T>(byte intensity) where T : PlayerEffect => PlayerEffectsController.ChangeEffectIntensity<T>(intensity);
+		public void ChangeEffectIntensity(string effect, byte intensity, float duration = 0) => PlayerEffectsController.ChangeByString(effect, intensity, duration);
+		public void ShowHint(string text, float duration = 1f) =>
+			HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
+		public void BodyDelete()
+		{
+			foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>().Where(x => x.owner.PlayerId == QueryProcessor.PlayerId)) NetworkServer.Destroy(doll.gameObject);
+		}
+		public List<string> GetGameObjectsInRange(float range)
+		{
+			List<string> gameObjects = new List<string>();
+			foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>()) { if (Vector3.Distance(obj.transform.position, Position) <= range && !obj.name.Contains("mixamorig") && !obj.name.Contains("Pos")) { gameObjects.Add(obj.name.Trim() + "\n"); } }
+			return gameObjects;
+		}
+		public void Reconnect()
+		{
+			GameObject localPlayer = PlayerManager.localPlayer;
+			NetworkIdentity component = localPlayer.GetComponent<NetworkIdentity>();
+			ObjectDestroyMessage msg = default(ObjectDestroyMessage);
+			msg.netId = component.netId;
+			NetworkConnection connectionToClient = GameObject.GetComponent<NetworkIdentity>().connectionToClient;
+			if (GameObject != localPlayer)
+			{
+				connectionToClient.Send(msg, 0);
+				object[] param = new object[] { component, connectionToClient };
+				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
+			}
+		}
+		public static void ShowHitmark()
+		{
+			foreach (Player pl in List) pl.WeaponManager.CallRpcConfirmShot(true, 13);
+		}
+		public void Blink() => rh.GetComponent<Scp173PlayerScript>().CallRpcBlinkTime();
+		public void PlayNeckSnapSound() => rh.GetComponent<Scp173PlayerScript>().CallRpcSyncAudio();
+		public void PlayFallSound() => rh.falldamage.CallRpcDoSound();
+		public void Redirect(float timeOffset, ushort port) => PlayerStats.CallRpcRoundrestartRedirect(timeOffset, port);
+		public Vector3 Get106Portal()
+		{
+			if (!rh.GetComponent<Scp106PlayerScript>().iAm106) return Vector3.zero;
+			return rh.GetComponent<Scp106PlayerScript>().NetworkportalPosition;
+		}
+		public void PlayReloadAnimation(sbyte weapon = 0) => WeaponManager.CallRpcReload(weapon);
+		public void Play106TeleportAnimation() => rh.scp106PlayerScript.CallRpcTeleportAnimation();
+		public void Play106ContainAnimation() => rh.scp106PlayerScript.CallRpcContainAnimation();
+		public void Create106Portal() => rh.scp106PlayerScript.CallCmdMakePortal();
+		public void Use106Portal() => rh.scp106PlayerScript.CallCmdUsePortal();
+
+		private Team GetTeam(RoleType rt)
+		{
+			switch (rt)
 			{
 				case RoleType.ChaosInsurgency:
 					return Team.CHI;
@@ -201,8 +611,7 @@ namespace Qurre.API
 					return Team.RIP;
 			}
 		}
-		public static Side GetSide(this RoleType type) => type.GetTeam().GetSide();
-		public static Side GetSide(this Team team)
+		private Side GetSide(Team team)
 		{
 			switch (team)
 			{
@@ -218,421 +627,6 @@ namespace Qurre.API
 					return Side.TUTORIAL;
 				case Team.RIP:
 				default: return Side.NONE;
-			}
-		}
-		public static Side GetSide(this ReferenceHub hub) => hub.GetTeam().GetSide();
-		public static ReferenceHub Get(this GameObject player) => ReferenceHub.GetHub(player);
-		public static ReferenceHub Get(int playerId)
-		{
-			if (IdHubs.ContainsKey(playerId))
-				return IdHubs[playerId];
-
-			foreach (ReferenceHub hub in GetHubs())
-			{
-				if (hub.GetPlayerId() == playerId)
-				{
-					IdHubs.Add(playerId, hub);
-
-					return hub;
-				}
-			}
-
-			return null;
-		}
-		public static ReferenceHub Get(string args)
-		{
-			try
-			{
-				if (StrHubs.ContainsKey(args))
-					return StrHubs[args];
-
-				ReferenceHub playerFound = null;
-
-				if (short.TryParse(args, out short playerId))
-					return Get(playerId);
-
-				if (args.EndsWith("@steam") || args.EndsWith("@discord") || args.EndsWith("@northwood") || args.EndsWith("@patreon"))
-				{
-					foreach (ReferenceHub player in GetHubs())
-					{
-						if (player.GetUserId() == args)
-						{
-							playerFound = player;
-						}
-					}
-				}
-				else
-				{
-					if (args == "WORLD" || args == "SCP-018" || args == "SCP-575" || args == "SCP-207")
-						return null;
-
-					int maxNameLength = 31, lastnameDifference = 31;
-					string str1 = args.ToLower();
-
-					foreach (ReferenceHub player in GetHubs())
-					{
-						if (!player.GetNickname().ToLower().Contains(args.ToLower()))
-							continue;
-
-						if (str1.Length < maxNameLength)
-						{
-							int nameDifference;
-							int x = maxNameLength - str1.Length;
-							int y = maxNameLength - player.GetNickname().Length;
-							string str2 = player.GetNickname();
-							for (int i = 0; i < x; i++) str1 += "z";
-							for (int i = 0; i < y; i++) str2 += "z";
-							int n = str1.Length;
-							int m = str2.Length;
-							int[,] d = new int[n + 1, m + 1];
-							if (n == 0)
-								nameDifference = m;
-							if (m == 0)
-								nameDifference = n;
-							for (int i = 1; i <= n; i++)
-								for (int j = 1; j <= m; j++)
-								{
-									int cost = (str2[j - 1] == str1[i - 1]) ? 0 : 1;
-									d[i, j] = Math.Min(
-										Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
-										d[i - 1, j - 1] + cost);
-								}
-							nameDifference = d[n, m];
-							if (nameDifference < lastnameDifference)
-							{
-								lastnameDifference = nameDifference;
-								playerFound = player;
-							}
-						}
-					}
-				}
-				if (playerFound != null)
-					StrHubs.Add(args, playerFound);
-				return playerFound;
-			}
-			catch (Exception exception)
-			{
-				Log.Error($"GetPlayer error: {exception}");
-				return null;
-			}
-		}
-		public static Room GetCurrentRoom(this ReferenceHub player)
-		{
-			Vector3 playerPos = player.GetPosition();
-			Vector3 end = playerPos - new Vector3(0f, 10f, 0f);
-			bool flag = Physics.Linecast(playerPos, end, out RaycastHit raycastHit, -84058629);
-
-			if (!flag || raycastHit.transform == null)
-				return null;
-
-			Transform transform = raycastHit.transform;
-
-			while (transform.parent != null && transform.parent.parent != null)
-				transform = transform.parent;
-
-			foreach (Room room in Map.Rooms)
-				if (room.Position == transform.position)
-					return room;
-
-			return new Room
-			{
-				Name = transform.name,
-				Position = transform.position,
-				Transform = transform
-			};
-		}
-		public static void Mute(this ReferenceHub player) => player.characterClassManager.NetworkMuted = true;
-		public static void Unmute(this ReferenceHub player) => player.characterClassManager.NetworkMuted = false;
-		public static bool IsMuted(this ReferenceHub player) => player.characterClassManager.NetworkMuted;
-		public static void IntercomMute(this ReferenceHub player) => player.characterClassManager.NetworkIntercomMuted = true;
-		public static void IntercomUnmute(this ReferenceHub player) => player.characterClassManager.NetworkIntercomMuted = false;
-		public static bool IsIntercomMuted(this ReferenceHub player) => player.characterClassManager.NetworkIntercomMuted;
-		public static bool IsHost(this ReferenceHub player) => player.characterClassManager.IsHost;
-		public static bool GetGodMode(this ReferenceHub player) => player.characterClassManager.GodMode;
-		public static void SetGodMode(this ReferenceHub player, bool enable) => player.characterClassManager.GodMode = enable;
-		public static float GetHP(this ReferenceHub player) => player.playerStats.Health;
-		public static void SetHP(this ReferenceHub player, float amount) => player.playerStats.Health = amount;
-		public static void AddHP(this ReferenceHub player, float amount) => player.playerStats.Health += amount;
-		public static void Heal(this ReferenceHub player, float amount) => player.playerStats.Health = Mathf.Clamp(player.playerStats.Health + amount, 1, player.playerStats.maxHP);
-		public static void Heal(this ReferenceHub player) => player.playerStats.Health = player.playerStats.maxHP;
-		public static void Damage(this ReferenceHub player, int amount, DamageTypes.DamageType damageType)
-		{
-			player.playerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, player.queryProcessor.PlayerId), player.gameObject);
-		}
-		public static float GetMaxHP(this ReferenceHub player) => player.playerStats.maxHP;
-		public static void SetMaxHP(this ReferenceHub player, float amount) => player.playerStats.maxHP = (int)amount;
-		public static float GetAHP(this ReferenceHub player) => player.playerStats.unsyncedArtificialHealth;
-		public static void SetAHP(this ReferenceHub player, float amount) => player.playerStats.unsyncedArtificialHealth = amount;
-		public static void AddAHP(this ReferenceHub player, float amount) => player.playerStats.unsyncedArtificialHealth += amount;
-		public static float GetMaxAHP(this ReferenceHub player) => player.playerStats.maxArtificialHealth;
-		public static float SetMaxAHP(this ReferenceHub player, int amount) => player.playerStats.maxArtificialHealth = amount;
-		public static List<Inventory.SyncItemInfo> GetAllItems(this ReferenceHub player) => player.inventory.items.ToList();
-		public static Inventory.SyncItemInfo GetCurrentItem(this ReferenceHub player) => player.inventory.GetItemInHand();
-		public static void SetCurrentItem(this ReferenceHub player, ItemType itemType) => player.inventory.SetCurItem(itemType);
-		public static void AddItem(this ReferenceHub player, ItemType itemType, float duration = float.NegativeInfinity, int sight = 0, int barrel = 0, int other = 0) =>
-			player.inventory.AddNewItem(itemType, duration, sight, barrel, other);
-		public static void AddItem(this ReferenceHub player, ItemType itemType) => player.inventory.AddNewItem(itemType);
-		public static void AddItem(this ReferenceHub player, Inventory.SyncItemInfo item) => player.inventory.AddNewItem(item.id, item.durability, item.modSight, item.modBarrel, item.modOther);
-		public static void DropItem(this ReferenceHub player, Inventory.SyncItemInfo item)
-		{
-			player.inventory.SetPickup(item.id, item.durability, player.GetPosition(), player.inventory.camera.transform.rotation, item.modSight, item.modBarrel, item.modOther);
-			player.inventory.items.Remove(item);
-		}
-		public static void RemoveItem(this ReferenceHub player, Inventory.SyncItemInfo item) => player.inventory.items.Remove(item);
-		public static void SetInventory(this ReferenceHub player, List<Inventory.SyncItemInfo> items)
-		{
-			player.ClearInventory();
-
-			foreach (Inventory.SyncItemInfo item in items)
-				player.inventory.AddNewItem(item.id, item.durability, item.modSight, item.modBarrel, item.modOther);
-		}
-		public static void ClearInventory(this ReferenceHub player) => player.inventory.items.Clear();
-		public static bool IsReloading(this ReferenceHub player) => player.weaponManager.IsReloading();
-		public static bool IsZooming(this ReferenceHub player) => player.weaponManager.ZoomInProgress();
-		public static void Ban(this ReferenceHub player, int duration, string reason, string issuer = "API") => player.gameObject.Ban(duration, reason, issuer);
-		public static void Ban(this GameObject player, int duration, string reason, string issuer = "API") => PlayerManager.localPlayer.GetComponent<BanPlayer>().BanUser(player, duration, reason, issuer, false);
-		public static void Kick(this ReferenceHub player, string reason, string issuer = "API") => player.Ban(0, reason, issuer);
-		public static void Kick(this GameObject player, string reason, string issuer = "API") => player.Ban(0, reason, issuer);
-		public static void Handcuff(this ReferenceHub player, ReferenceHub target)
-		{
-			Handcuffs handcuffs = target.handcuffs;
-			if (handcuffs == null) { return; }
-			if (handcuffs.CufferId < 0 &&
-				player.inventory.items.Any((Inventory.SyncItemInfo item) => item.id == ItemType.Disarmer) &&
-				Vector3.Distance(player.transform.position, target.transform.position) <= 130f)
-				handcuffs.NetworkCufferId = player.GetPlayerId();
-		}
-		public static void Uncuff(this ReferenceHub player) => player.handcuffs.NetworkCufferId = -1;
-		public static bool IsHandCuffed(this ReferenceHub player) => player.handcuffs.CufferId != -1;
-		public static bool GetHandCuffer(this ReferenceHub player) => Get(player.handcuffs.CufferId);
-		public static string GetIpAddress(this ReferenceHub player) => player.queryProcessor._conns().address;
-		public static void SetScale(this ReferenceHub player, float scale) => player.SetScale(Vector3.one * scale);
-		public static void SetScale(this ReferenceHub player, Vector3 scale) => player.SetScale(scale.x, scale.y, scale.z);
-		public static void SetScale(this ReferenceHub player, float x, float y, float z)
-		{
-			try
-			{
-				player.transform.localScale = new Vector3(x, y, z);
-
-				foreach (ReferenceHub target in GetHubs())
-					SendSpawnMessage?.Invoke(null, new object[] { player.GetComponent<NetworkIdentity>(), target.GetConnection() });
-			}
-			catch (Exception exception)
-			{
-				Log.Error($"SetScale error: {exception}");
-			}
-		}
-		public static Vector3 GetScale(this ReferenceHub player) => player.transform.localScale;
-		public static NetworkConnection GetConnection(this ReferenceHub player) => player.scp079PlayerScript.connectionToClient;
-		public static void Disconnect(this ReferenceHub player, string reason = null) => ServerConsole.Disconnect(player.gameObject, string.IsNullOrEmpty(reason) ? "" : reason);
-		public static void Kill(this ReferenceHub player, DamageTypes.DamageType damageType = default) => player.playerStats.HurtPlayer(new PlayerStats.HitInfo(-1f, "WORLD", damageType, 0), player.gameObject);
-		public static IEnumerable<ReferenceHub> GetHubs(this Team team) => GetHubs().Where(player => player.GetTeam() == team);
-		public static IEnumerable<ReferenceHub> GetHubs(this RoleType role) => GetHubs().Where(player => player.GetRole() == role);
-		public static string GetGroupName(this ReferenceHub player) => ServerStatic.GetPermissionsHandler()._members()[player.GetUserId()];
-		public static bool GetBypassMode(this ReferenceHub player) => player.serverRoles.BypassMode;
-		public static void SetBypassMode(this ReferenceHub player, bool isEnabled) => player.serverRoles.BypassMode = isEnabled;
-		public static void SendConsoleMessage(this ReferenceHub player, string message, string color)
-		{
-			player.characterClassManager.TargetConsolePrint(player.GetConnection(), message, color);
-		}
-		public static void SetFriendlyFire(this ReferenceHub player, bool value) => player.weaponManager.GetShootPermission(player.characterClassManager, value);
-		public static string GetBadgeName(this ReferenceHub rh) => rh.serverRoles.UserGroup().BadgeText;
-		public static bool IsCuffed(this ReferenceHub rh) => rh.GetCufferId() != -1;
-		public static int GetCufferId(this ReferenceHub rh) => rh.handcuffs.NetworkCufferId;
-		public static void SetCufferId(this ReferenceHub rh, int id) => rh.handcuffs.NetworkCufferId = id;
-		public static Stamina Stamina(this ReferenceHub rh) => rh.fpc.staminaController();
-
-		public static bool OfflineBan(
-		  string ip,
-		  string id,
-		  string Nick,
-		  int duration,
-		  string reason,
-		  string AdminNick)
-		{
-			Log.Info("[BAN] BAN OFFLINE USER: " + Nick + " ADMIN: " + AdminNick);
-			string str1 = "";
-			try
-			{
-				str1 = id;
-			}
-			catch
-			{
-				Log.Info("Failed during issue of User ID ban (1)!");
-			}
-			if (duration <= 0)
-				return true;
-			string str2 = string.IsNullOrEmpty(Nick) ? "(no nick)" : Nick;
-			long num = TimeBehaviour.CurrentTimestamp();
-			long banExpieryTime = TimeBehaviour.GetBanExpirationTime((uint)duration);
-			try
-			{
-				if (str1 != null)
-				{
-					Log.Info("[BAN] BAN OFFLINE NICK AND STEAMID");
-					BanHandler.IssueBan(new BanDetails()
-					{
-						OriginalName = str2,
-						Id = str1,
-						IssuanceTime = num,
-						Expires = banExpieryTime,
-						Reason = reason,
-						Issuer = AdminNick
-					}, BanHandler.BanType.UserId);
-				}
-			}
-			catch
-			{
-				Log.Info("Failed during issue of User ID ban (2)!");
-				return false;
-			}
-			try
-			{
-				if (!string.IsNullOrEmpty(ip))
-				{
-					Log.Info("[BAN] BAN OFFLINE IP");
-					BanHandler.IssueBan(new BanDetails()
-					{
-						OriginalName = str2,
-						Id = ip,
-						IssuanceTime = num,
-						Expires = banExpieryTime,
-						Reason = reason,
-						Issuer = AdminNick
-					}, BanHandler.BanType.IP);
-				}
-			}
-			catch
-			{
-				Log.Info("Failed during issue of IP ban!");
-				return false;
-			}
-			return true;
-		}
-		public static void InvokeStaticMethod(this Type type, string methodName, object[] param)
-		{
-			BindingFlags flags = BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic |
-								 BindingFlags.Static | BindingFlags.Public;
-			MethodInfo info = type.GetMethod(methodName, flags);
-			info?.Invoke(null, param);
-		}
-		public static void ChangeModel(this ReferenceHub player, RoleType newModel)
-		{
-			GameObject gameObject = player.gameObject;
-			CharacterClassManager ccm = gameObject.GetComponent<CharacterClassManager>();
-			NetworkIdentity identity = gameObject.GetComponent<NetworkIdentity>();
-			RoleType FirstRole = player.GetRole();
-			ccm.CurClass = newModel;
-			ObjectDestroyMessage destroyMessage = new ObjectDestroyMessage
-			{
-				netId = identity.netId
-			};
-			foreach (ReferenceHub ply in GetHubs())
-			{
-				if (ply.GetPlayerId() == player.GetPlayerId())
-					continue;
-
-				GameObject gameObject2 = ply.gameObject;
-				NetworkConnection playerCon = gameObject2.GetComponent<NetworkIdentity>().connectionToClient;
-				playerCon.Send(destroyMessage, 0);
-				object[] parameters = new object[] { identity, playerCon };
-				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", parameters);
-			}
-			ccm.CurClass = FirstRole;
-		}
-		public static void SizeCamera(this ReferenceHub player, Vector3 size)
-		{
-			GameObject target = player.gameObject;
-			NetworkIdentity component = target.GetComponent<NetworkIdentity>();
-			target.transform.localScale = size;
-
-			ObjectDestroyMessage objectDestroyMessage = default;
-			objectDestroyMessage.netId = component.netId;
-			foreach (GameObject ply in PlayerManager.players)
-			{
-				NetworkConnection connectionToClient = ply.GetComponent<NetworkIdentity>().connectionToClient;
-				if (ply != target)
-					connectionToClient.Send(objectDestroyMessage, 0);
-				object[] param = new object[] { component, connectionToClient };
-				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
-			}
-		}
-		public static void ShowHint(string text, float duration = 1f)
-		{
-			ReferenceHub.LocalHub.hints.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
-		}
-		public static void BodyDelete(this ReferenceHub player)
-		{
-			foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>())
-				if (doll.owner.PlayerId == player.queryProcessor.PlayerId)
-					NetworkServer.Destroy(doll.gameObject);
-		}
-		public static List<string> GetGameObjectsInRange(this ReferenceHub player, float range)
-		{
-			List<string> gameObjects = new List<string>();
-			foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>()) { if (Vector3.Distance(obj.transform.position, player.GetPosition()) <= range && !obj.name.Contains("mixamorig") && !obj.name.Contains("Pos")) { gameObjects.Add(obj.name.Trim() + "\n"); } }
-			return gameObjects;
-		}
-		public static void Reconnect(this ReferenceHub player)
-		{
-			GameObject localPlayer = PlayerManager.localPlayer;
-			NetworkIdentity component = localPlayer.GetComponent<NetworkIdentity>();
-			ObjectDestroyMessage msg = default(ObjectDestroyMessage);
-			msg.netId = component.netId;
-			NetworkConnection connectionToClient = player.gameObject.GetComponent<NetworkIdentity>().connectionToClient;
-			if (!(player.gameObject == localPlayer))
-			{
-				connectionToClient.Send(msg, 0);
-				object[] param = new object[]
-				{
-					component,
-					connectionToClient
-				};
-				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
-			}
-		}
-		public static void ShowHitmark(this ReferenceHub player)
-		{
-			foreach (ReferenceHub hub in ReferenceHub.GetAllHubs().Values)
-			{
-				foreach (ReferenceHub player2 in GetHubs())
-				{
-					if (player.playerId == player2.playerId)
-						continue;
-				}
-				hub.weaponManager.CallRpcConfirmShot(true, 13);
-			}
-		}
-		public static void Blink(this ReferenceHub player) => player.GetComponent<Scp173PlayerScript>().CallRpcBlinkTime();
-		public static void PlayNeckSnapSound(this ReferenceHub player) => player.GetComponent<Scp173PlayerScript>().CallRpcSyncAudio();
-		public static void PlayFallSound(this ReferenceHub player) => player.falldamage.CallRpcDoSound();
-		public static void Redirect(this ReferenceHub player, float timeOffset, ushort port) => player.playerStats.CallRpcRoundrestartRedirect(timeOffset, port);
-		public static void Teleport(this ReferenceHub player, Vector3 position, float rotation = 0f, bool unstuck = false) => player.playerMovementSync.OverridePosition(position, rotation, unstuck);
-		public static Vector3 Get106Portal(this ReferenceHub player)
-		{
-			if (!player.GetComponent<Scp106PlayerScript>().iAm106)
-			{
-				return Vector3.zero;
-			}
-			return player.GetComponent<Scp106PlayerScript>().NetworkportalPosition;
-		}
-		public static void PlayReloadAnimation(this ReferenceHub player, sbyte weapon = 0) => player.weaponManager.CallRpcReload(weapon);
-		public static void Play106TeleportAnimation(this ReferenceHub player) => player.scp106PlayerScript.CallRpcTeleportAnimation();
-		public static void Play106ContainAnimation(this ReferenceHub player) => player.scp106PlayerScript.CallRpcContainAnimation();
-		public static void Create106Portal(this ReferenceHub player) => player.scp106PlayerScript.CallCmdMakePortal();
-		public static void Use106Portal(this ReferenceHub player) => player.scp106PlayerScript.CallCmdUsePortal();
-		public static void PersonalClearBroadcasts(this ReferenceHub player)
-		{
-			if (player.GetConnection() != null)
-			{
-				GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(player.GetConnection());
-			}
-		}
-		public static void DelayedPersonalClearBroadcasts(this ReferenceHub player, float delay)
-		{
-			if (player.GetConnection() != null)
-			{
-				Timing.CallDelayed(delay, () => GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(player.GetConnection()));
 			}
 		}
 	}

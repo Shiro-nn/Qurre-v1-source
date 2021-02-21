@@ -9,7 +9,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
         {
             try
             {
-                var ev = new GetLVLEvent(ReferenceHub.GetHub(__instance.gameObject), __instance.NetworkcurLvl - 1, newLvl);
+                var ev = new GetLVLEvent(API.Player.Get(__instance.gameObject), __instance.NetworkcurLvl - 1, newLvl);
                 Qurre.Events.SCPs.SCP079.getLVL(ev);
                 newLvl = ev.NewLevel;
                 return ev.IsAllowed;
