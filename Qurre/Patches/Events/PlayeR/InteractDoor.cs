@@ -8,49 +8,60 @@ using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.PlayeR
 {
-	[HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.ServerInteract), new Type[] { typeof(ReferenceHub), typeof(byte) })]
-	internal static class InteractDoor
-	{
-		private static bool Prefix(DoorVariant __instance, ReferenceHub ply, byte colliderId)
-		{
-			try
-			{
-				var ev = new InteractDoorEvent(API.Player.Get(__instance.gameObject), __instance, false);
-				bool boolean = false;
-				if (__instance.ActiveLocks != 0)
-				{
-					DoorLockMode DLM = DoorLockUtils.GetMode((DoorLockReason)__instance.ActiveLocks);
-					if ((!DLM.HasFlagFast(DoorLockMode.CanClose) || !DLM.HasFlagFast(DoorLockMode.CanOpen)) && (!DLM.HasFlagFast(DoorLockMode.ScpOverride) || ply.characterClassManager.CurRole.team != Team.SCP) && (DLM == DoorLockMode.FullLock || (__instance.TargetState && !DLM.HasFlagFast(DoorLockMode.CanClose)) || (!__instance.TargetState && !DLM.HasFlagFast(DoorLockMode.CanOpen))))
-					{
-						ev.IsAllowed = false;
-						boolean = true;
-					}
-				}
-				if (__instance.AllowInteracting(ply, colliderId))
-				{
-					if (ply.characterClassManager.CurClass == RoleType.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.curItem, ply)) ev.IsAllowed = true;
-					else ev.IsAllowed = false;
-				}
-				Qurre.Events.Player.interactdoor(ev);
-				if (ev.IsAllowed)
-				{
-					__instance.NetworkTargetState = !__instance.TargetState;
-					__instance._triggerPlayer(ply);
-				}
-				else if (boolean)
-					__instance.LockBypassDenied(ply, colliderId);
-				else
-				{
-					__instance.PermissionsDenied(ply, colliderId);
-					DoorEvents.TriggerAction(__instance, DoorAction.AccessDenied, ply);
-				}
-				return false;
-			}
-			catch (Exception e)
-			{
-				Log.Error($"umm, error in patching PlayeR.InteractDoor:\n{e}\n{e.StackTrace}");
-				return true;
-			}
-		}
-	}
+    [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.ServerInteract), new Type[] { typeof(ReferenceHub), typeof(byte) })]
+    internal static class InteractDoor
+    {
+        private static bool Prefix(DoorVariant __instance, ReferenceHub ply, byte colliderId)
+        {
+            try
+            {
+                var ev = new InteractDoorEvent(API.Player.Get(ply), __instance, false);
+                var Bypass = false;
+                var Interact = false;
+                if (__instance.ActiveLocks != 0)
+                {
+                    DoorLockMode mode = DoorLockUtils.GetMode((DoorLockReason)__instance.ActiveLocks);
+                    if ((!mode.HasFlagFast(DoorLockMode.CanClose)
+                            || !mode.HasFlagFast(DoorLockMode.CanOpen))
+                        && (!mode.HasFlagFast(DoorLockMode.ScpOverride)
+                            || ply.characterClassManager.CurRole.team != 0)
+                        && (mode == DoorLockMode.FullLock
+                            || (__instance.TargetState
+                                && !mode.HasFlagFast(DoorLockMode.CanClose))
+                            || (!__instance.TargetState
+                                && !mode.HasFlagFast(DoorLockMode.CanOpen))))
+                    {
+                        ev.IsAllowed = false;
+                        Bypass = true;
+                    }
+                }
+                if (!Bypass && (Interact = __instance.AllowInteracting(ply, colliderId)))
+                {
+                    if (ply.characterClassManager.CurClass == RoleType.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.curItem, ply)) ev.IsAllowed = true;
+                    else ev.IsAllowed = false;
+                }
+                Qurre.Events.Player.interactdoor(ev);
+                if (ev.IsAllowed && Interact)
+                {
+                    __instance.NetworkTargetState = !__instance.TargetState;
+                    __instance._triggerPlayer(ply);
+                }
+                else if (Bypass)
+                {
+                    __instance.LockBypassDenied(ply, colliderId);
+                }
+                else if (Interact)
+                {
+                    __instance.PermissionsDenied(ply, colliderId);
+                    DoorEvents.TriggerAction(__instance, DoorAction.AccessDenied, ply);
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"umm, error in patching PlayeR.InteractDoor:\n{e}\n{e.StackTrace}");
+                return true;
+            }
+        }
+    }
 }
