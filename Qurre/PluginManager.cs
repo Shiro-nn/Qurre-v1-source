@@ -11,7 +11,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public const string Version = "1.1.0";
+		public static Version Version { get; } = new Version(1, 1, 1);
 		public static string Plan { get; private set; } = "Lite";
 		public static int Planid { get; private set; } = 1;
 		private static string domen = "localhost"; //qurre.store
@@ -122,6 +122,12 @@ namespace Qurre
 						continue;
 					}
 
+					if (Version < p.NeededQurreVersion)
+					{
+						Log.Warn($"Plugin {p.Name} not loaded. Requires Qurre version at least {p.NeededQurreVersion}, your version: {Version}");
+						continue;
+					}
+
 					plugins.Add(p);
 					Log.Info($"{type.FullName} loaded");
 				}
@@ -153,6 +159,7 @@ namespace Qurre
 				try
 				{
 					plugin.Reload();
+					Log.Info($"Plugin {plugin.Name} reloaded.");
 				}
 				catch (Exception ex)
 				{
@@ -167,6 +174,7 @@ namespace Qurre
 				try
 				{
 					plugin.Disable();
+					Log.Info($"Plugin {plugin.Name} disabled.");
 				}
 				catch (Exception ex)
 				{

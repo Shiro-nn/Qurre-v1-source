@@ -48,5 +48,10 @@ namespace Qurre.API
 			get => AlphaWarheadController.Alpha_isLocked();
 			set => AlphaWarheadController.Alpha_isLocked(value);
 		}
+		public static int Cooldown
+		{
+			get => AlphaWarheadController.cooldown;
+			set => AlphaWarheadController.cooldown = value;
+		}
 	}
 }

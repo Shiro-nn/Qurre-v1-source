@@ -79,6 +79,7 @@
     <Compile Include="API\Events\Server.cs" />
     <Compile Include="API\Item.cs" />
     <Compile Include="API\Map.cs" />
+    <Compile Include="API\Objects\RoomType.cs" />
     <Compile Include="API\Objects\EffectType.cs" />
     <Compile Include="API\Objects\GeneratorStatus.cs" />
     <Compile Include="API\Objects\Room.cs" />

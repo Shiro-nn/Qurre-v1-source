@@ -23,15 +23,15 @@ namespace Qurre.API
         }
         public static void Restart() => Map.Host.PlayerStats.Roundrestart();
         public static void Start() => CharacterClassManager.ForceRoundStart();
-        public static void AddUnit(Team team, string text)
+        public static void AddUnit(SpawnableTeamType team, string text)
         {
             UnitNamingRule unitNamingRule;
-            if (UnitNamingRules.AllNamingRules.TryGetValue((SpawnableTeamType)team, out unitNamingRule))
+            if (UnitNamingRules.AllNamingRules.TryGetValue(team, out unitNamingRule))
             {
-                unitNamingRule.AddCombination(text, (SpawnableTeamType)team);
+                unitNamingRule.AddCombination(text, team);
             }
         }
-        public static void RenameUnit(Team team, int id, string newName)
+        public static void RenameUnit(SpawnableTeamType team, int id, string newName)
         {
             RespawnManager.Singleton.NamingManager.AllUnitNames[id] = new SyncUnit
             {

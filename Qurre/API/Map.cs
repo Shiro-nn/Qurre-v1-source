@@ -140,19 +140,6 @@ namespace Qurre.API
 			grenade.transform.position = position;
 			NetworkServer.Spawn(grenade);
 		}
-		/*public static GameObject SpawnWorkstation(bool isTabletConnected, Vector3 position, Vector3 rotation, Vector3 scale)
-		{
-			GameObject bench = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Work Station"));
-			Offset offset = new Offset();
-			offset.position = position;
-			offset.rotation = rotation;
-			offset.scale = Vector3.one;
-			bench.transform.localScale = scale;
-			bench.GetComponent<WorkStation>().Networkposition = offset;
-			bench.GetComponent<WorkStation>().NetworkisTabletConnected = isTabletConnected;
-			NetworkServer.Spawn(bench);
-			return bench;
-		}*/
 		public static GameObject SpawnItem(ItemType itemType, Vector3 position, Vector3 rotation, Vector3 scale)
 		{
 			Pickup yesnt = PlayerManager.localPlayer.GetComponent<Inventory>().SetPickup((ItemType)itemType, -4.656647E+11f, position, Quaternion.identity, 0, 0, 0);
