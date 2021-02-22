@@ -23,15 +23,15 @@ namespace Qurre.API
         }
         public static void Restart() => Map.Host.PlayerStats.Roundrestart();
         public static void Start() => CharacterClassManager.ForceRoundStart();
-        public static void AddUnit(SpawnableTeamType team, string text)
+        public static void AddUnit(TeamUnitType team, string text)
         {
             UnitNamingRule unitNamingRule;
-            if (UnitNamingRules.AllNamingRules.TryGetValue(team, out unitNamingRule))
+            if (UnitNamingRules.AllNamingRules.TryGetValue((SpawnableTeamType)team, out unitNamingRule))
             {
-                unitNamingRule.AddCombination(text, team);
+                unitNamingRule.AddCombination(text, (SpawnableTeamType)team);
             }
         }
-        public static void RenameUnit(SpawnableTeamType team, int id, string newName)
+        public static void RenameUnit(TeamUnitType team, int id, string newName)
         {
             RespawnManager.Singleton.NamingManager.AllUnitNames[id] = new SyncUnit
             {
@@ -55,6 +55,16 @@ namespace Qurre.API
                 if (host == null || host.ReferenceHub == null) host = new Player(PlayerManager.localPlayer);
                 return host;
             }
+        }
+        public enum TeamUnitType : byte
+        {
+            None,
+            ChaosInsurgency,
+            NineTailedFox,
+            ClassD,
+            Scientist,
+            Scp,
+            Tutorial
         }
     }
 }
