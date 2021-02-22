@@ -410,10 +410,7 @@ namespace Qurre.API
 		}
 		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => CharacterClassManager.SetPlayersClass(newRole, GameObject, lite, escape);
 		public void Broadcast(ushort time, string message, Broadcast.BroadcastFlags flag = 0) => Map.BroadcastComponent.TargetAddElement(Scp079PlayerScript.connectionToClient, message, time, flag);
-		public void ClearBroadcasts()
-		{
-			if (Connection != null) GameObject.Find("Host").GetComponent<Broadcast>().TargetClearElements(Connection);
-		}
+		public void ClearBroadcasts() => Map.BroadcastComponent.TargetClearElements(Scp079PlayerScript.connectionToClient);
 		public void Damage(int amount, DamageTypes.DamageType damageType) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, QueryProcessor.PlayerId), GameObject);
 		public void AddItem(ItemType itemType, float duration = float.NegativeInfinity, int sight = 0, int barrel = 0, int other = 0) =>
 			Inventory.AddNewItem(itemType, duration, sight, barrel, other);

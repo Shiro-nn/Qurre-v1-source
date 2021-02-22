@@ -138,7 +138,7 @@ namespace Qurre
 				try
 				{
 					plugin.Enable();
-					Log.Info($"Plugin written by {plugin.Developer} enabled. v{plugin.Version}");
+					Log.Info($"Plugin {plugin.Name} written by {plugin.Developer} enabled. v{plugin.Version}");
 				}
 				catch (Exception ex)
 				{

@@ -4,9 +4,10 @@ using System.Linq;
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
+using RemoteAdmin;
 namespace Qurre.Patches.Events.Server
 {
-    [HarmonyPatch(typeof(RemoteAdmin.QueryProcessor), nameof(RemoteAdmin.QueryProcessor.ProcessGameConsoleQuery), new Type[] { typeof(string), typeof(bool) })]
+    [HarmonyPatch(typeof(QueryProcessor), "ProcessGameConsoleQuery", new Type[] { typeof(string), typeof(bool) })]
     internal static class Console_
     {
         private static bool Prefix(RemoteAdmin.QueryProcessor __instance, string query, bool encrypted)
