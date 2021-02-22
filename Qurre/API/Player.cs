@@ -29,22 +29,15 @@ namespace Qurre.API
 			{
 				if (value == null) throw new NullReferenceException("Player's ReferenceHub cannot be null!");
 				rh = value;
-				GameObject = value.gameObject;
-				Ammo = value.ammoBox;
-				HintDisplay = value.hints;
-				Inventory = value.inventory;
-				CameraTransform = value.PlayerCameraReference;
-				GrenadeManager = value.GetComponent<GrenadeManager>();
-				GameConsoleTransmission = value.GetComponent<GameConsoleTransmission>();
 			}
 		}
-		public GameObject GameObject { get; private set; }
-		public AmmoBox Ammo { get; private set; }
-		public HintDisplay HintDisplay { get; private set; }
-		public Inventory Inventory { get; private set; }
-		public Transform CameraTransform { get; private set; }
-		public GrenadeManager GrenadeManager { get; private set; }
-		public GameConsoleTransmission GameConsoleTransmission { get; private set; }
+		public GrenadeManager GrenadeManager => rh.GetComponent<GrenadeManager>();
+		public GameConsoleTransmission GameConsoleTransmission => rh.GetComponent<GameConsoleTransmission>();
+		public GameObject GameObject => rh.gameObject;
+		public AmmoBox Ammo => rh.ammoBox;
+		public HintDisplay HintDisplay => rh.hints;
+		public Transform CameraTransform => rh.PlayerCameraReference;
+		public Inventory Inventory => rh.inventory;
 		public NetworkIdentity NetworkIdentity => rh.networkIdentity;
 		public Handcuffs Handcuffs => rh.handcuffs;
 		public ServerRoles ServerRoles => rh.serverRoles;
@@ -144,10 +137,7 @@ namespace Qurre.API
 		public string IP => NetworkIdentity.connectionToClient.address;
 		public NetworkConnection Connection => Scp079PlayerScript.connectionToClient;
 		public bool IsHost => CharacterClassManager.IsHost;
-		public bool FriendlyFire
-		{
-			set => WeaponManager.GetShootPermission(CharacterClassManager, value);
-		}
+		public bool FriendlyFire { get; set; }
 		public bool BypassMode
 		{
 			get => ServerRoles.BypassMode;
