@@ -343,7 +343,11 @@ namespace Qurre.API
 		}
 		public void RAMessage(string message, bool success = true, string pluginName = null) =>
 			Sender.RaReply((pluginName ?? Assembly.GetCallingAssembly().GetName().Name) + "#" + message, success, true, string.Empty);
-		public void SendConsoleMessage(string message, string color) => CharacterClassManager.TargetConsolePrint(Connection, message, color);
+		public void SendConsoleMessage(string message, string color)
+		{
+			try { CharacterClassManager.TargetConsolePrint(Connection, message, color); }
+			catch { rh.GetComponent<GameConsoleTransmission>().SendToClient(Connection, message, color); }
+		}
 		public void RaLogin()
 		{
 			ServerRoles.RemoteAdmin = true;

@@ -16,7 +16,8 @@ namespace Qurre
             if (!File.Exists(PluginManager.ConfigsPath))
             {
                 File.Create(PluginManager.ConfigsPath).Close();
-                File.WriteAllText(PluginManager.ConfigsPath, "Qurre_debug: false\nQurre_spawn_blood: true\nQurre_banned: banned\nQurre_kicked: kicked" +
+                File.WriteAllText(PluginManager.ConfigsPath, "Qurre_debug: false\nQurre_logging: true\nQurre_all_logging: false\nQurre_console_anti_flood: true" +
+                    "\nQurre_spawn_blood: true\nQurre_banned: banned\nQurre_kicked: kicked" +
                     "\nQurre_BanOrKick_msg: You have been %bok%.\nQurre_reason: Reason");
             }
             Plugin.Config = new YamlConfig(PluginManager.ConfigsPath);

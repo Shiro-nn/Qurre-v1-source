@@ -27,7 +27,16 @@ namespace Qurre.API.Events
         public string ReplyMessage
         {
             get => returnMessage;
-            set => returnMessage = $"{pref}#{value}";
+            set
+            {
+                if(pref == "") pref = Assembly.GetCallingAssembly().GetName().Name;
+                returnMessage = $"{pref}#{value}";
+            }
+        }
+        public string Prefix
+        {
+            get => pref;
+            set => pref = value;
         }
         public bool Success { get; set; } = true;
         public bool IsAllowed { get; set; }

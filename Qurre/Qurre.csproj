@@ -99,6 +99,7 @@
     <Compile Include="Events\modules\Event.cs" />
     <Compile Include="Events\modules\main.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Patches\etc\Console.cs" />
     <Compile Include="Patches\etc\FriendlyFire.cs" />
     <Compile Include="Patches\etc\ServerName.cs" />
     <Compile Include="Patches\Events\Alpha\EnablePanel.cs" />

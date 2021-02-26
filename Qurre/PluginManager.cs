@@ -11,15 +11,16 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 1, 1);
+		public static Version Version { get; } = new Version(1, 1, 2);
 		public static string Plan { get; private set; } = "Lite";
 		public static int Planid { get; private set; } = 1;
-		private static string domen = "localhost"; //qurre.store
+		private static string Domen { get; } = "localhost"; //qurre.store
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
 		public static string PluginsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Plugins");
 		public static string LoadedDependenciesDirectory { get; private set; } = Path.Combine(PluginsDirectory, "dependencies");
 		public static string ConfigsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Configs");
+		public static string LogsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Logs");
 		public static string ManagedAssembliesDirectory { get; private set; } = Path.Combine(Path.Combine(Environment.CurrentDirectory, "SCPSL_Data"), "Managed");
 		public static string ConfigsPath { get; internal set; }
 		private static Harmony hInstance;
@@ -228,7 +229,7 @@ namespace Qurre
 		{
 			try
 			{
-				var url = $"http://{domen}/check";
+				var url = $"http://{Domen}/check";
 				var req = System.Net.WebRequest.Create(url);
 				var resp = req.GetResponse();
 				using (var sr = new System.IO.StreamReader(resp.GetResponseStream()))
