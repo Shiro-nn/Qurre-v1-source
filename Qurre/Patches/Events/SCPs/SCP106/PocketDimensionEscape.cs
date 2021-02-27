@@ -7,6 +7,7 @@ using MapGeneration;
 using Mirror;
 using UnityEngine;
 using static Qurre.API.Events.SCP106;
+using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
     [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnTriggerEnter))]
@@ -17,11 +18,10 @@ namespace Qurre.Patches.Events.SCPs.SCP106
             try
             {
                 NetworkIdentity NI = other.GetComponent<NetworkIdentity>();
-                if (!(NI != null))
-                    return false;
-                if (QurreModLoader.umm.Pocket_type(__instance) == PocketDimensionTeleport.PDTeleportType.Killer || BlastDoor.OneDoor.isClosed)
+                if (NI == null) return false;
+                if (__instance.Pocket_type() == PocketDimensionTeleport.PDTeleportType.Killer || BlastDoor.OneDoor.isClosed)
                 {
-                    if (QurreModLoader.umm.Pocket_type(__instance) == PocketDimensionTeleport.PDTeleportType.Killer)
+                    if (__instance.Pocket_type() == PocketDimensionTeleport.PDTeleportType.Killer)
                     {
                         var ev = new PocketDimensionFailEscapeEvent(API.Player.Get(other.gameObject), __instance);
                         Qurre.Events.SCPs.SCP106.pocketdimensionfailescape(ev);
@@ -30,9 +30,9 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                     }
                     NI.GetComponent<PlayerStats>().HurtPlayer(new PlayerStats.HitInfo(999990f, "WORLD", DamageTypes.Pocket, 0), other.gameObject);
                 }
-                else if (QurreModLoader.umm.Pocket_type(__instance) == PocketDimensionTeleport.PDTeleportType.Exit)
+                else if (__instance.Pocket_type() == PocketDimensionTeleport.PDTeleportType.Exit)
                 {
-                    QurreModLoader.umm.Pocket_tp(__instance).Clear();
+                    __instance.Pocket_tp()?.Clear();
                     bool flag = false;
                     DecontaminationController.DecontaminationPhase[] dP = DecontaminationController.Singleton.DecontaminationPhases;
                     if (DecontaminationController.GetServerTime > dP[dP.Length - 2].TimeTrigger)
@@ -43,23 +43,23 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                         foreach (GameObject gO in GameObject.FindGameObjectsWithTag("RoomID"))
                         {
                             if (gO.GetComponent<Rid>() != null && cfg.Contains(gO.GetComponent<Rid>().id))
-                                QurreModLoader.umm.Pocket_tp(__instance).Add(gO.transform.position);
+                                __instance.Pocket_tp()?.Add(gO.transform.position);
                         }
                         if (cfg.Contains("PORTAL"))
                         {
                             foreach (Scp106PlayerScript script in Object.FindObjectsOfType<Scp106PlayerScript>())
                             {
                                 if (script.portalPosition != Vector3.zero)
-                                    QurreModLoader.umm.Pocket_tp(__instance).Add(script.portalPosition);
+                                    __instance.Pocket_tp()?.Add(script.portalPosition);
                             }
                         }
                     }
-                    if (QurreModLoader.umm.Pocket_tp(__instance) == null || QurreModLoader.umm.Pocket_tp(__instance).Count == 0)
+                    if (__instance.Pocket_tp() == null || __instance.Pocket_tp()?.Count == 0)
                     {
                         foreach (GameObject gO in GameObject.FindGameObjectsWithTag("PD_EXIT"))
-                            QurreModLoader.umm.Pocket_tp(__instance).Add(gO.transform.position);
+                            __instance.Pocket_tp()?.Add(gO.transform.position);
                     }
-                    Vector3 vec = QurreModLoader.umm.Pocket_tp(__instance)[Random.Range(0, QurreModLoader.umm.Pocket_tp(__instance).Count)];
+                    Vector3 vec = __instance.Pocket_tp()[Random.Range(0, __instance.Pocket_tp().Count)];
                     vec.y += 2f;
                     PlayerMovementSync PMS = other.GetComponent<PlayerMovementSync>();
                     PMS.AddSafeTime(2f);

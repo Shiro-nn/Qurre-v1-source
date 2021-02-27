@@ -60,6 +60,7 @@ namespace Qurre.Patches.Events.PlayeR
 			try
 			{
 				var player = Player.Get(person);
+				if (player == null) return false;
 				if (player.Inventory == null || QurreModLoader.umm.Gen_doorAnimationCooldown(__instance) > 0f || QurreModLoader.umm.Gen_deniedCooldown(__instance) > 0f) return false;
 				if (__instance.isDoorUnlocked)
 				{

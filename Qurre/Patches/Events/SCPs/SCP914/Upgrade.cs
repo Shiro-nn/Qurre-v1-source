@@ -6,6 +6,7 @@ using Mirror;
 using UnityEngine;
 using Qurre.API;
 using static Qurre.API.Events.SCP914;
+using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP914
 {
     [HarmonyPatch(typeof(Scp914Machine), nameof(Scp914Machine.ProcessItems))]
@@ -18,21 +19,21 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                 if (!NetworkServer.active)
                     return true;
                 Collider[] colliderArray = Physics.OverlapBox(__instance.intake.position, __instance.inputSize / 2f);
-                QurreModLoader.umm.Scp914_players(__instance).Clear();
-                QurreModLoader.umm.Scp914_items(__instance).Clear();
+                __instance.Scp914_players().Clear();
+                __instance.Scp914_items().Clear();
                 foreach (Collider collider in colliderArray)
                 {
                     CharacterClassManager plrs = collider.GetComponent<CharacterClassManager>();
                     if (plrs != null)
-                        QurreModLoader.umm.Scp914_players(__instance).Add(plrs);
+                        __instance.Scp914_players().Add(plrs);
                     else
                     {
                         Pickup picks = collider.GetComponent<Pickup>();
                         if (picks != null)
-                            QurreModLoader.umm.Scp914_items(__instance).Add(picks);
+                            __instance.Scp914_items().Add(picks);
                     }
                 }
-                var ev = new UpgradeEvent(__instance, QurreModLoader.umm.Scp914_players(__instance).Select(player => Player.Get(player.gameObject)).ToList(), QurreModLoader.umm.Scp914_items(__instance), __instance.knobState);
+                var ev = new UpgradeEvent(__instance, __instance.Scp914_players().Select(player => Player.Get(player.gameObject)).ToList(), __instance.Scp914_items(), __instance.knobState);
                 Qurre.Events.SCPs.SCP914.upgrade(ev);
                 var players = ev.Players.Select(player => player.CharacterClassManager).ToList();
                 __instance.MoveObjects(ev.Items, players);
