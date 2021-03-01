@@ -46,7 +46,7 @@ namespace Qurre
 			}
 			var log = Path.Combine(PluginManager.LogsDirectory, $"{QurreModLoader.ModLoader.Port}-log.txt");
 			if (!File.Exists(log)) File.Create(log).Close();
-			File.AppendAllText(log, $"{message}\n");
+			File.AppendAllText(log, $"[{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}] {message}\n");
 		}
 		internal static void AllLogsTxt(object message)
         {
@@ -59,7 +59,7 @@ namespace Qurre
 				}
 				var log = Path.Combine(PluginManager.LogsDirectory, $"{QurreModLoader.ModLoader.Port}-all-logs.txt");
 				if (!File.Exists(log)) File.Create(log).Close();
-				File.AppendAllText(log, $"{message}\n");
+				File.AppendAllText(log, $"[{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}] {message}\n");
 			}
 		}
 	}

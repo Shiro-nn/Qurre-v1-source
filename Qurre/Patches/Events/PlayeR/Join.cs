@@ -15,7 +15,12 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 if (!value || string.IsNullOrEmpty(__instance?.UserId)) return;
                 Player player = new Player(ReferenceHub.GetHub(__instance.gameObject));
-                Player.Dictionary.Add(__instance.gameObject, player);
+                try
+                {
+                    if (!Player.Dictionary.ContainsKey(__instance.gameObject)) Player.Dictionary.Add(__instance.gameObject, player);
+                    else Player.Dictionary[__instance.gameObject] = player;
+                }
+                catch { }
                 ServerConsole.AddLog($"Player {player?.Nickname} ({player?.UserId}) ({player?.Id}) connected. iP: {player?.IP}", ConsoleColor.Magenta);
                 Timing.CallDelayed(0.25f, () =>
                 {

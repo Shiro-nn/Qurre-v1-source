@@ -16,6 +16,8 @@ namespace Qurre.API
 	public class Player
 	{
 		private ReferenceHub rh;
+		private GameObject go;
+		private string ui;
 		public Player(ReferenceHub RH) => rh = RH;
 		public Player(GameObject gameObject) => rh = ReferenceHub.GetHub(gameObject);
 		public static Dictionary<GameObject, Player> Dictionary { get; } = new Dictionary<GameObject, Player>();
@@ -29,11 +31,20 @@ namespace Qurre.API
 			{
 				if (value == null) throw new NullReferenceException("Player's ReferenceHub cannot be null!");
 				rh = value;
+				go = value.gameObject;
+				ui = value.characterClassManager.UserId;
 			}
 		}
 		public GrenadeManager GrenadeManager => rh.GetComponent<GrenadeManager>();
 		public GameConsoleTransmission GameConsoleTransmission => rh.GetComponent<GameConsoleTransmission>();
-		public GameObject GameObject => rh.gameObject;
+		public GameObject GameObject
+		{
+			get
+			{
+				if (rh == null || rh.gameObject == null) return go;
+				else return rh.gameObject;
+			}
+		}
 		public AmmoBox Ammo => rh.ammoBox;
 		public HintDisplay HintDisplay => rh.hints;
 		public Transform CameraTransform => rh.PlayerCameraReference;
@@ -56,7 +67,16 @@ namespace Qurre.API
 		}
 		public string UserId
 		{
-			get => CharacterClassManager.UserId;
+			get
+			{
+				string _ = CharacterClassManager.UserId;
+				if (_.Contains("@"))
+                {
+					ui = _;
+					return _;
+				}
+				else return ui;
+			}
 			set => CharacterClassManager.NetworkSyncedUserId = value;
 		}
 		public string CustomUserId
