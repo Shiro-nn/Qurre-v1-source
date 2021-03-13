@@ -17,6 +17,7 @@ namespace Qurre.Patches.Events.PlayeR
                 if (item == null) return true;
                 var ev = new PickupItemEvent(API.Player.Get(__instance.ItemSearchCompletor_Hub().gameObject), item);
                 Qurre.Events.Player.pickupItem(ev);
+                if (!ev.IsAllowed) __instance.ItemSearchCompletor_TargetPickup().InUse = false;
                 return ev.IsAllowed;
             }
             catch (Exception e)
