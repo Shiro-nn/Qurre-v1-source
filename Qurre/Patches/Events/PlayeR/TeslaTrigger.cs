@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using HarmonyLib;
+using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
@@ -25,10 +26,9 @@ namespace Qurre.Patches.Events.PlayeR
                         {
                             if (!teslaGate.PlayerInRange(allHub.Value) || teslaGate.InProgress)
                                 continue;
-                            var ev = new TeslaTriggerEvent(API.Player.Get(allHub.Key), teslaGate.PlayerInHurtRange(allHub.Key));
+                            var ev = new TeslaTriggerEvent(Player.Get(allHub.Key), teslaGate.PlayerInHurtRange(allHub.Key));
                             Qurre.Events.Player.teslaTrigger(ev);
-                            if (ev.IsTriggerable)
-                                teslaGate.ServerSideCode();
+                            if (ev.Triggerable) teslaGate.ServerSideCode();
                         }
                     }
                 }

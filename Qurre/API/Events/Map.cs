@@ -6,17 +6,17 @@ namespace Qurre.API.Events
 {
     public class LCZDeconEvent : EventArgs
     {
-        public LCZDeconEvent(bool isAllowed = true) => IsAllowed = isAllowed;
-        public bool IsAllowed { get; set; }
+        public LCZDeconEvent(bool allowed = true) => Allowed = allowed;
+        public bool Allowed { get; set; }
     }
     public class AnnouncementDecontaminationEvent : EventArgs
     {
         private int id;
-        public AnnouncementDecontaminationEvent(int announcementId, bool isGlobal, bool isAllowed = true)
+        public AnnouncementDecontaminationEvent(int announcementId, bool isGlobal, bool allowed = true)
         {
             Id = announcementId;
             IsGlobal = isGlobal;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public int Id
         {
@@ -24,69 +24,69 @@ namespace Qurre.API.Events
             set => id = Mathf.Clamp(value, 0, 6);
         }
         public bool IsGlobal { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class MTFAnnouncementEvent : EventArgs
     {
-        public MTFAnnouncementEvent(int scpsLeft, string unitName, int unitNumber, bool isAllowed = true)
+        public MTFAnnouncementEvent(int scpsLeft, string unitName, int unitNumber, bool allowed = true)
         {
             ScpsLeft = scpsLeft;
             UnitName = unitName;
             UnitNumber = unitNumber;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public int ScpsLeft { get; }
         public string UnitName { get; set; }
         public int UnitNumber { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class NewBloodEvent : EventArgs
     {
-        public NewBloodEvent(Player player, Vector3 position, int type, float multiplier, bool isAllowed = true)
+        public NewBloodEvent(Player player, Vector3 position, int type, float multiplier, bool allowed = true)
         {
             Player = player;
             Position = position;
             Type = type;
             Multiplier = multiplier;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public Vector3 Position { get; set; }
         public int Type { get; set; }
         public float Multiplier { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class NewDecalEvent : EventArgs
     {
-        public NewDecalEvent(Player owner, Vector3 position, Quaternion rotation, int type, bool isAllowed = true)
+        public NewDecalEvent(Player owner, Vector3 position, Quaternion rotation, int type, bool allowed = true)
         {
             Owner = owner;
             Position = position;
             Rotation = rotation;
             Type = type;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Owner { get; }
         public Vector3 Position { get; set; }
         public Quaternion Rotation { get; set; }
         public int Type { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class GrenadeExplodeEvent : EventArgs
     {
-        public GrenadeExplodeEvent(Player thrower, Dictionary<Player, float> targetToDamages, bool isFrag, GameObject grenade, bool isAllowed = true)
+        public GrenadeExplodeEvent(Player thrower, Dictionary<Player, float> targetToDamages, bool isFrag, GameObject grenade, bool allowed = true)
         {
-            Thrower = thrower ?? Map.Host;
+            Thrower = thrower ?? Server.Host;
             TargetToDamages = targetToDamages;
             IsFrag = isFrag;
             Grenade = grenade;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Thrower { get; }
         public Dictionary<Player, float> TargetToDamages { get; }
         public List<Player> Targets => TargetToDamages.Keys.ToList();
         public bool IsFrag { get; }
         public GameObject Grenade { get; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
 }

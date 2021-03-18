@@ -14,8 +14,7 @@ namespace Qurre.Patches.Events.Round
     [HarmonyPatch(typeof(RoundSummary), nameof(RoundSummary.Start))]
     internal static class Check
     {
-        private static readonly MethodInfo
-            CustomProcess = SymbolExtensions.GetMethodInfo(() => ProcessServerSide(null));
+        private static readonly MethodInfo CustomProcess = SymbolExtensions.GetMethodInfo(() => ProcessServerSide(null));
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
             var codes = new List<CodeInstruction>(instr);
@@ -75,20 +74,16 @@ namespace Qurre.Patches.Events.Round
                 int mtf_team = list.mtf_and_guards + list.scientists;
                 int d_team = list.chaos_insurgents + list.class_ds;
                 int scp_team = list.scps_except_zombies + list.zombies;
-                if (list.class_ds == 0 && mtf_team == 0)
-                    instance.RoundSummary_roundEnded(true);
+                if (list.class_ds == 0 && mtf_team == 0) instance.RoundSummary_roundEnded(true);
                 else
                 {
                     int count = 0;
-                    if (mtf_team > 0)
-                        ++count;
-                    if (d_team > 0)
-                        ++count;
-                    if (scp_team > 0)
-                        ++count;
-                    if (count <= 1)
-                        instance.RoundSummary_roundEnded(true);
+                    if (mtf_team > 0) ++count;
+                    if (d_team > 0) ++count;
+                    if (scp_team > 0) ++count;
+                    if (count <= 1) instance.RoundSummary_roundEnded(true);
                 }
+                instance.RoundSummary_roundEnded(API.Round.ForceEnd);
                 var ev = new CheckEvent((RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Draw, list, instance.RoundSummary_roundEnded());
                 if (mtf_team > 0)
                     if (RoundSummary.escaped_ds == 0 && RoundSummary.escaped_scientists != 0)
@@ -96,7 +91,7 @@ namespace Qurre.Patches.Events.Round
                     else
                         ev.LeadingTeam = RoundSummary.escaped_ds != 0 ? (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.ChaosInsurgency : (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Anomalies;
                 Qurre.Events.Round.check(ev);
-                instance.RoundSummary_roundEnded(ev.IsAllowed);
+                instance.RoundSummary_roundEnded(ev.RoundEnd || API.Round.ForceEnd);
                 if (instance.RoundSummary_roundEnded())
                 {
                     byte i1;

@@ -25,7 +25,7 @@ namespace Qurre.Patches.Events.Server
 				Qurre.Events.Server.sendingra(ev);
 				if (!string.IsNullOrEmpty(ev.ReplyMessage))
 					sender.RaReply(ev.ReplyMessage, ev.Success, true, string.Empty);
-				return ev.IsAllowed;
+				return ev.Allowed;
 			}
 			catch (Exception e)
 			{

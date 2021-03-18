@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.MAP
                 pos = ev.Position;
                 type = ev.Type;
                 f = ev.Multiplier;
-                return ev.IsAllowed && Plugin.Config.GetBool("Qurre_spawn_blood", true);
+                return ev.Allowed && Plugin.Config.GetBool("Qurre_spawn_blood", true);
             }
             catch (System.Exception e)
             {
@@ -39,7 +39,7 @@ namespace Qurre.Patches.Events.MAP
                     pos = ev.Position;
                     QurreModLoader.umm.Weapon_hub(__instance).characterClassManager.Classes.SafeGet(QurreModLoader.umm.Weapon_hub(__instance).characterClassManager.CurClass).bloodType = ev.Type;
                     Qurre.Events.Map.newblood(ev);
-                    return ev.IsAllowed && Plugin.Config.GetBool("Qurre_spawn_blood", true);
+                    return ev.Allowed && Plugin.Config.GetBool("Qurre_spawn_blood", true);
                 }
                 else
                 {
@@ -48,7 +48,7 @@ namespace Qurre.Patches.Events.MAP
                     pos = ev.Position;
                     rot = ev.Rotation;
                     type = ev.Type;
-                    return ev.IsAllowed;
+                    return ev.Allowed;
                 }
             }
             catch (System.Exception e)

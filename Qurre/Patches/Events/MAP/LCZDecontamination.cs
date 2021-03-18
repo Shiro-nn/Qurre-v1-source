@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.MAP
         {
             var ev = new LCZDeconEvent();
             Qurre.Events.Map.lczdecon(ev);
-            return ev.IsAllowed;
+            return ev.Allowed;
         }
     }
 }

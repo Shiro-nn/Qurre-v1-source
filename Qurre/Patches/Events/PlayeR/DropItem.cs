@@ -13,16 +13,13 @@ namespace Qurre.Patches.Events.PlayeR
             try
             {
                 if (!__instance.RateLimit().CanExecute(true) || itemInventoryIndex < 0 ||
-                    itemInventoryIndex >= __instance.items.Count)
-                    return false;
+                    itemInventoryIndex >= __instance.items.Count) return false;
                 Inventory.SyncItemInfo item = __instance.items[itemInventoryIndex];
-                if (__instance.items[itemInventoryIndex].id != item.id)
-                    return false;
+                if (__instance.items[itemInventoryIndex].id != item.id) return false;
                 var ev = new DroppingItemEvent(API.Player.Get(__instance.gameObject), item);
                 Qurre.Events.Player.droppingItem(ev);
                 item = ev.Item;
-                if (!ev.IsAllowed)
-                    return false;
+                if (!ev.Allowed) return false;
                 Pickup pick = __instance.SetPickup(item.id, item.durability, __instance.transform.position, __instance.camera.transform.rotation, item.modSight, item.modBarrel, item.modOther);
                 __instance.items.RemoveAt(itemInventoryIndex);
                 var ev1 = new DropItemEvent(API.Player.Get(__instance.gameObject), pick);

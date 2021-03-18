@@ -18,7 +18,7 @@ namespace Qurre.Patches.Events.MAP
                 var ev = new MTFAnnouncementEvent(scpsLeft, unitInformations[0], int.Parse(unitInformations[1]));
                 Qurre.Events.Map.mtfAnnouncement(ev);
                 regular = $"{ev.UnitName}-{ev.UnitNumber}";
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (System.Exception e)
             {

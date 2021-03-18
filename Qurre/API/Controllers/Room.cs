@@ -1,12 +1,28 @@
-﻿using UnityEngine;
-namespace Qurre.API.Objects
+﻿using Qurre.API.Objects;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+namespace Qurre.API.Controllers
 {
     public class Room
     {
-        private ZoneType zone = ZoneType.Unspecified;
-        public string Name { get; set; }
-        public Transform Transform { get; set; }
-        public Vector3 Position { get; set; }
+        internal Room(GameObject gameObject)
+        {
+            GameObject = gameObject;
+            name = gameObject.name;
+            LightController = GameObject.GetComponentInChildren<FlickerableLightController>();
+            var info = gameObject.GetComponentInChildren<RoomInformation>();
+            RoomInformationType = info.CurrentRoomType;
+        }
+        internal FlickerableLightController LightController { get; set; }
+        public void LightsOff(float duration) => LightController.ServerFlickerLights(duration);
+        public void SetLightIntensity(float intensity) => LightController.ServerSetLightIntensity(intensity);
+        public GameObject GameObject { get; }
+        public Transform Transform => GameObject.transform;
+        public Vector3 Position => GameObject.transform.position;
+        public string Name => name;
+        public List<Door> Doors { get; } = new List<Door>();
+        public List<Player> Players => Player.List.Where(x => !x.IsHost && x.Room.Name == Name).ToList();
         public ZoneType Zone
         {
             get
@@ -137,5 +153,8 @@ namespace Qurre.API.Objects
                 }
             }
         }
+        private ZoneType zone = ZoneType.Unspecified;
+        internal string name;
+        public RoomInformation.RoomType RoomInformationType { get; }
     }
 }

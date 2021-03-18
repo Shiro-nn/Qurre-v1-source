@@ -51,13 +51,11 @@ namespace Qurre.Patches.Events.PlayeR
                             flag = true;
                         break;
                 }
-                if (!flag)
-                    return false;
+                if (!flag) return false;
                 __instance.ClearTarget();
                 var ev = new CuffEvent(API.Player.Get(__instance.gameObject), API.Player.Get(target));
                 Qurre.Events.Player.cuff(ev);
-                if (!ev.IsAllowed)
-                    return false;
+                if (!ev.Allowed) return false;
                 handcuffs.NetworkCufferId = __instance.MyReferenceHub.queryProcessor.PlayerId;
                 return false;
             }

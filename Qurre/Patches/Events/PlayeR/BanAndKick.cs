@@ -20,12 +20,8 @@ namespace Qurre.Patches.Events.PlayeR
                 string userId = null;
                 string address = user.GetComponent<NetworkIdentity>().connectionToClient.address;
                 Player targetPlayer = Player.Get(user);
-                Player issuerPlayer = Player.Get(issuer) ?? Map.Host;
-                try
-                {
-                    if (ConfigFile.ServerConfig.GetBool("online_mode", false))
-                        userId = targetPlayer.UserId;
-                }
+                Player issuerPlayer = Player.Get(issuer) ?? API.Server.Host;
+                try { if (ConfigFile.ServerConfig.GetBool("online_mode", false)) userId = targetPlayer.UserId; }
                 catch { return false; }
                 string umm = (duration > 0) ? Plugin.Config.GetString("Qurre_banned", "banned") : Plugin.Config.GetString("Qurre_kicked", "kicked");
                 string message = Plugin.Config.GetString("Qurre_BanOrKick_msg", $"You have been %bok%.").Replace("%bok%", umm);
@@ -40,8 +36,7 @@ namespace Qurre.Patches.Events.PlayeR
                         duration = ev.Duration;
                         reason = ev.Reason;
                         message = ev.FullMessage;
-                        if (!ev.IsAllowed)
-                            return false;
+                        if (!ev.Allowed) return false;
                         string originalName = string.IsNullOrEmpty(targetPlayer.Nickname)
                             ? "(no nick)"
                             : targetPlayer.Nickname;
@@ -101,8 +96,7 @@ namespace Qurre.Patches.Events.PlayeR
                         Qurre.Events.Player.kick(ev);
                         reason = ev.Reason;
                         message = ev.FullMessage;
-                        if (!ev.IsAllowed)
-                            return false;
+                        if (!ev.Allowed) return false;
                     }
                 }
                 ServerConsole.Disconnect(targetPlayer.GameObject, message);

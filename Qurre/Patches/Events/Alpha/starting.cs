@@ -15,19 +15,16 @@ namespace Qurre.Patches.Events.Alpha
                 if (!QurreModLoader.umm.RateLimit(__instance).CanExecute(true) || (QurreModLoader.umm.InteractCuff(__instance).CufferId > 0 && !QurreModLoader.umm.DisarmedInteract()))
                     return false;
                 GameObject gameObject = GameObject.Find("OutsitePanelScript");
-                if (!__instance.ChckDis(gameObject.transform.position) || !AlphaWarheadOutsitePanel.nukeside.enabled)
-                    return false;
-                if (!gameObject.GetComponent<AlphaWarheadOutsitePanel>().keycardEntered || Recontainer079.isLocked)
-                    return false;
+                if (!__instance.ChckDis(gameObject.transform.position) || !AlphaWarheadOutsitePanel.nukeside.enabled) return false;
+                if (!gameObject.GetComponent<AlphaWarheadOutsitePanel>().keycardEntered || Recontainer079.isLocked) return false;
                 AlphaWarheadController.Host.doorsOpen = false;
                 ServerLogs.AddLog(ServerLogs.Modules.Warhead, "Countdown started.", ServerLogs.ServerLogType.GameEvent);
                 if ((QurreModLoader.umm.AWC_resumeScenario() == -1 && AlphaWarheadController.Host.scenarios_start[QurreModLoader.umm.AWC_startScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation) ||
                     (QurreModLoader.umm.AWC_resumeScenario() != -1 && AlphaWarheadController.Host.scenarios_resume[QurreModLoader.umm.AWC_resumeScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation))
                 {
-                    var ev = new AlphaStartEvent(Player.Get(__instance.gameObject) ?? API.Map.Host);
+                    var ev = new AlphaStartEvent(Player.Get(__instance.gameObject) ?? API.Server.Host);
                     Qurre.Events.Alpha.starting(ev);
-                    if (!ev.IsAllowed)
-                        return false;
+                    if (!ev.Allowed) return false;
                     AlphaWarheadController.Host.NetworkinProgress = true;
                 }
                 __instance.OnInteract();

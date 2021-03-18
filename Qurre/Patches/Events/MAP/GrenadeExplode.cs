@@ -40,7 +40,7 @@ namespace Qurre.Patches.Events.MAP.grenade
                 }
                 GrenadeExplodeEvent ev = new GrenadeExplodeEvent(Player.Get(__instance.throwerGameObject), players, false, __instance.gameObject);
                 Qurre.Events.Map.grenadeexplode(ev);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (Exception e)
             {
@@ -71,7 +71,7 @@ namespace Qurre.Patches.Events.MAP.grenade
                 }
                 var ev = new GrenadeExplodeEvent(Player.Get(__instance.throwerGameObject), players, true, __instance.gameObject);
                 Qurre.Events.Map.grenadeexplode(ev);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (Exception e)
             {

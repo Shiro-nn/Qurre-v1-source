@@ -1,6 +1,6 @@
 ﻿#pragma warning disable SA1313
 using HarmonyLib;
-using static Qurre.API.Events.SCP096;
+using Qurre.API.Events;
 using Scp096 = PlayableScps.Scp096;
 namespace Qurre.Patches.Events.SCPs.SCP096
 {
@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.SCPs.SCP096
             {
                 var ev = new EnrageEvent(__instance, API.Player.Get(__instance.Hub.gameObject));
                 Qurre.Events.SCPs.SCP096.enrage(ev);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (System.Exception e)
             {

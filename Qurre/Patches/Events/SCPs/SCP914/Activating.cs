@@ -2,7 +2,7 @@
 using HarmonyLib;
 using Mirror;
 using Scp914;
-using static Qurre.API.Events.SCP914;
+using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP914
 {
     [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.CallCmdUse914))]
@@ -18,7 +18,7 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                     return false;
                 var ev = new ActivatingEvent(API.Player.Get(__instance.gameObject), 0);
                 Qurre.Events.SCPs.SCP914.activating(ev);
-                if (ev.IsAllowed)
+                if (ev.Allowed)
                 {
                     Scp914Machine.singleton.RpcActivate(NetworkTime.time + ev.Duration);
                     __instance.OnInteract();

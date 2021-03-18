@@ -35,7 +35,7 @@ namespace Qurre.Patches.Events.Round
                         }
                         int avsp = Mathf.Min(tick, spawnableTeam.MaxWaveSize);
                         if (__instance.RespawnManager_prioritySpawn())
-                            list = list.OrderBy(item => item.CharacterClassManager.DeathTime).ToList();
+                            list = list.OrderBy(item => item.ClassManager.DeathTime).ToList();
                         else
                             list.ShuffleList();
                         List<Player> twolist = new List<Player>();
@@ -49,7 +49,7 @@ namespace Qurre.Patches.Events.Round
                             try
                             {
                                 RoleType classid = spawnableTeam.ClassQueue[Mathf.Min(twolist.Count, spawnableTeam.ClassQueue.Length - 1)];
-                                targ.CharacterClassManager.SetPlayersClass(classid, targ.GameObject);
+                                targ.ClassManager.SetPlayersClass(classid, targ.GameObject);
                                 twolist.Add(targ);
                             }
                             catch { }
@@ -62,8 +62,8 @@ namespace Qurre.Patches.Events.Round
                                 rule.GenerateNew(__instance.NextKnownTeam, out string regular);
                                 foreach (Player pl in twolist)
                                 {
-                                    pl.CharacterClassManager.NetworkCurSpawnableTeamType = (byte)__instance.NextKnownTeam;
-                                    pl.CharacterClassManager.NetworkCurUnitName = regular;
+                                    pl.ClassManager.NetworkCurSpawnableTeamType = (byte)__instance.NextKnownTeam;
+                                    pl.ClassManager.NetworkCurUnitName = regular;
                                 }
                                 rule.PlayEntranceAnnouncement(regular);
                             }

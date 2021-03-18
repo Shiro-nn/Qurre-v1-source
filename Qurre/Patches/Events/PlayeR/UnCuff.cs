@@ -22,8 +22,7 @@ namespace Qurre.Patches.Events.PlayeR
                     {
                         var ev = new UnCuffEvent(Player.Get(__instance.gameObject), target);
                         Qurre.Events.Player.unCuff(ev);
-                        if (ev.IsAllowed)
-                            target.CufferId = -1;
+                        if (ev.Allowed) target.CufferId = -1;
                         break;
                     }
                 }
@@ -49,11 +48,10 @@ namespace Qurre.Patches.Events.PlayeR
                             .Classes.SafeGet(__instance.MyReferenceHub.characterClassManager.CurClass).team ==
                         Team.SCP))
                     return false;
-                var p = API.Player.Get(target);
-                var ev = new UnCuffEvent(API.Player.Get(__instance.gameObject), p); ;
+                var p = Player.Get(target);
+                var ev = new UnCuffEvent(Player.Get(__instance.gameObject), p); ;
                 Qurre.Events.Player.unCuff(ev);
-                if (!ev.IsAllowed)
-                    return false;
+                if (!ev.Allowed) return false;
                 p.CufferId = -1;
                 return false;
             }

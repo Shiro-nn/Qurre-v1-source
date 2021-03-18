@@ -38,7 +38,7 @@ namespace Qurre.Patches.Events.PlayeR
                     chamberNumber,
                     string.IsNullOrEmpty(accessToken) || (item != null && item.permissions.Contains(accessToken)) || __instance.ServerRolesInteract().BypassMode);
                 Qurre.Events.Player.interactLocker(ev);
-                if (ev.IsAllowed)
+                if (ev.Allowed)
                 {
                     bool boolean = (singleton.openLockers[lockerId] & 1 << chamberNumber) != 1 << chamberNumber;
                     singleton.ModifyOpen(lockerId, chamberNumber, boolean);
@@ -56,8 +56,7 @@ namespace Qurre.Patches.Events.PlayeR
                     if (!string.IsNullOrEmpty(accessToken))
                         singleton.RpcChangeMaterial(lockerId, chamberNumber, false);
                 }
-                else
-                    singleton.RpcChangeMaterial(lockerId, chamberNumber, true);
+                else singleton.RpcChangeMaterial(lockerId, chamberNumber, true);
                 __instance.OnInteract();
                 return false;
             }

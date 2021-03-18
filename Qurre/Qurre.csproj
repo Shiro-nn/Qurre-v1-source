@@ -68,9 +68,27 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\Alpha.cs" />
+    <Compile Include="API\Controllers\Broadcast.cs" />
+    <Compile Include="API\Extensions.cs" />
+    <Compile Include="API\Controllers\Alpha.cs" />
     <Compile Include="API\Cassie.cs" />
-    <Compile Include="API\Effect.cs" />
+    <Compile Include="API\Controllers\Scp079.cs" />
+    <Compile Include="API\Controllers\WorkStation.cs" />
+    <Compile Include="API\Controllers\Tesla.cs" />
+    <Compile Include="API\Controllers\Scp173.cs" />
+    <Compile Include="API\Controllers\Scp106.cs" />
+    <Compile Include="API\Controllers\Scp096.cs" />
+    <Compile Include="API\Controllers\Ragdoll.cs" />
+    <Compile Include="API\Controllers\Heavy.cs" />
+    <Compile Include="API\Controllers\Generator.cs" />
+    <Compile Include="API\Controllers\Lift.cs" />
+    <Compile Include="API\Objects\GrenadeType.cs" />
+    <Compile Include="API\Objects\TeamUnitType.cs" />
+    <Compile Include="API\Objects\LiftType.cs" />
+    <Compile Include="API\Server.cs" />
+    <Compile Include="API\Controllers\Decontamination.cs" />
+    <Compile Include="API\Controllers\Door.cs" />
+    <Compile Include="API\Objects\Effect.cs" />
     <Compile Include="API\Events\Alpha.cs" />
     <Compile Include="API\Events\Map.cs" />
     <Compile Include="API\Events\Player.cs" />
@@ -79,16 +97,16 @@
     <Compile Include="API\Events\Server.cs" />
     <Compile Include="API\Item.cs" />
     <Compile Include="API\Map.cs" />
+    <Compile Include="API\Objects\DoorType.cs" />
     <Compile Include="API\Objects\RoomType.cs" />
     <Compile Include="API\Objects\EffectType.cs" />
     <Compile Include="API\Objects\GeneratorStatus.cs" />
-    <Compile Include="API\Objects\Room.cs" />
+    <Compile Include="API\Controllers\Room.cs" />
     <Compile Include="API\Objects\Side.cs" />
     <Compile Include="API\Objects\ZoneType.cs" />
     <Compile Include="API\Player.cs" />
     <Compile Include="API\Round.cs" />
-    <Compile Include="API\Scp079.cs" />
-    <Compile Include="API\Scp914.cs" />
+    <Compile Include="API\Controllers\Scp914.cs" />
     <Compile Include="Events\Alpha.cs" />
     <Compile Include="Events\modules\Etc.cs" />
     <Compile Include="Events\Player.cs" />
@@ -99,6 +117,14 @@
     <Compile Include="Events\modules\Event.cs" />
     <Compile Include="Events\modules\main.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Patches\Controllers\Scp914Controller.cs" />
+    <Compile Include="Patches\Controllers\Scp173Controller.cs" />
+    <Compile Include="Patches\Controllers\RagdollController.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp173\Blink.cs" />
+    <Compile Include="Patches\Controllers\GeneratorController.cs" />
+    <Compile Include="Patches\Controllers\LiftController.cs" />
+    <Compile Include="Patches\Controllers\DoorController.cs" />
+    <Compile Include="Patches\etc\NukeLock.cs" />
     <Compile Include="Patches\etc\Console.cs" />
     <Compile Include="Patches\etc\FriendlyFire.cs" />
     <Compile Include="Patches\etc\ServerName.cs" />
@@ -123,7 +149,6 @@
     <Compile Include="Patches\Events\PlayeR\UsedMedical.cs" />
     <Compile Include="Patches\Events\PlayeR\UsingMedical.cs" />
     <Compile Include="Patches\Events\PlayeR\StoppingMedicalUsing.cs" />
-    <Compile Include="Patches\Events\PlayeR\RagdollSpawn.cs" />
     <Compile Include="Patches\Events\PlayeR\Shoot.cs" />
     <Compile Include="Patches\Events\PlayeR\UnCuff.cs" />
     <Compile Include="Patches\Events\PlayeR\RechargeWeapon.cs" />
@@ -147,22 +172,22 @@
     <Compile Include="Patches\Events\Round\Restart.cs" />
     <Compile Include="Patches\Events\Round\Check.cs" />
     <Compile Include="Patches\Events\Round\Start.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP049\StartAndFinishRecall.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP079\GeneratorActivate.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP079\GetLVL.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP079\GetEXP.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP096\CalmDown.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP096\AddTarget.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP096\Enrage.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP106\PocketDimensionEscape.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP106\PocketDimensionEnter.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP106\FemurBreakerEnter.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP106\Contain.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP106\PortalCreate.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP106\PortalUsing.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP914\Activating.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP914\ChangeKnob.cs" />
-    <Compile Include="Patches\Events\SCPs\SCP914\Upgrade.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp049\StartAndFinishRecall.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\GeneratorActivate.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\GetLVL.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\GetEXP.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\CalmDown.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\AddTarget.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\Enrage.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp106\PocketDimensionEscape.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp106\PocketDimensionEnter.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp106\FemurBreakerEnter.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp106\Contain.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp106\PortalCreate.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp106\PortalUsing.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp914\Activating.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp914\ChangeKnob.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp914\Upgrade.cs" />
     <Compile Include="Patches\Events\Server\Console.cs" />
     <Compile Include="Patches\Events\Server\RA.cs" />
     <Compile Include="Patches\Events\Server\FromServer.cs" />
@@ -174,5 +199,6 @@
     <Compile Include="QurreLoad.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

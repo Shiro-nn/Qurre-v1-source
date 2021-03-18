@@ -12,19 +12,16 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                if (!__instance.RateLimit().CanExecute(true))
-                    return false;
-
+                if (!__instance.RateLimit().CanExecute(true)) return false;
                 for (int i = 0; i < __instance.usableItems.Length; ++i)
                 {
                     if (__instance.usableItems[i].inventoryID == __instance.CAWI_hub().inventory.curItem && __instance.usableItems[i].cancelableTime > 0f)
                     {
-                        var ev = new StoppingMedicalUsingEvent(API.Player.Get(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
-                        Qurre.Events.Player.stoppingMedicalUsing(ev);
-                        __instance.CAWI_cancel(ev.IsAllowed);
+                        var ev = new MedicalStoppingEvent(API.Player.Get(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
+                        Qurre.Events.Player.medicalStopping(ev);
+                        __instance.CAWI_cancel(ev.Allowed);
                     }
                 }
-
                 return false;
             }
             catch (Exception e)

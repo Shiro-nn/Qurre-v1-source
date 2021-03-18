@@ -22,7 +22,7 @@ namespace Qurre.Patches.Events.PlayeR
                     return false;
                 var ev = new RechargeWeaponEvent(API.Player.Get(__instance.gameObject), animationOnly);
                 Qurre.Events.Player.rechargeWeapon(ev);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (Exception e)
             {

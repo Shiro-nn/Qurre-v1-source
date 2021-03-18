@@ -1,10 +1,11 @@
 ﻿#pragma warning disable SA1313
 using System;
+using System.Linq;
 using CustomPlayerEffects;
 using HarmonyLib;
 using RemoteAdmin;
 using UnityEngine;
-using static Qurre.API.Events.SCP106;
+using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
@@ -61,13 +62,15 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                     }
                     var ev = new PocketDimensionEnterEvent(API.Player.Get(ply), Vector3.down * 1998.5f);
                     Qurre.Events.SCPs.SCP106.pocketdimensionenter(ev);
-                    if (!ev.IsAllowed)
-                        return false;
+                    if (!ev.Allowed) return false;
                     ply.GetComponent<PlayerMovementSync>().OverridePosition(ev.Position, 0f, true);
                     __instance.GetComponent<PlayerStats>().HurtPlayer(new PlayerStats.HitInfo(40f,
                         __instance.GetComponent<NicknameSync>().MyNick + " (" + __instance.GetComponent<CharacterClassManager>().UserId + ")",
                         DamageTypes.Scp106, __instance.GetComponent<QueryProcessor>().PlayerId), ply);
                 }
+                var pl = API.Player.Get(hub);
+                foreach (var larry in API.Player.List.Where(x => !x.Scp106Controller.PocketPlayers.Contains(pl)))
+                    larry.Scp106Controller.PocketPlayers.Remove(pl);
                 PlayerEffectsController effects = hub.playerEffectsController;
                 effects.GetEffect<Corroding>().IsInPd = true;
                 effects.EnableEffect<Corroding>(0.0f, false);

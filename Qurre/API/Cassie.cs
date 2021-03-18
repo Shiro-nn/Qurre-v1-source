@@ -2,7 +2,7 @@
 using Respawning;
 namespace Qurre.API
 {
-	public static class Cassie
+	public class Cassie
 	{
 		public static void Send(string msg, bool makeHold = false, bool makeNoise = false) => RespawnEffectsController.PlayCassieAnnouncement(msg, makeHold, makeNoise);
 		public static void DelayedSend(string msg, float delay, bool makeHold = false, bool makeNoise = false) =>

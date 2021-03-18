@@ -25,7 +25,7 @@ namespace Qurre.Patches.Events.PlayeR
                 Timing.CallDelayed(0.25f, () =>
                 {
                     if (player != null && player.Muted)
-                        player.CharacterClassManager.SetDirtyBit(1UL);
+                        player.ClassManager.SetDirtyBit(1UL);
                 });
                 var ev = new JoinEvent(player);
                 Qurre.Events.Player.join(ev);

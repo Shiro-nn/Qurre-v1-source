@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 var ev = new SyncDataEvent(API.Player.Get(__instance.gameObject), v2, state);
                 Qurre.Events.Player.syncData(ev);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (Exception e)
             {

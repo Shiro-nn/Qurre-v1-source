@@ -1,6 +1,7 @@
 ﻿#pragma warning disable SA1313
 using HarmonyLib;
-using static Qurre.API.Events.SCP079;
+using Qurre.API;
+using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP079
 {
@@ -13,7 +14,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
             {
                 if (__instance.Generator_prevFinish() || __instance.Generator_localTime() > 0.0)
                     return false;
-                var ev = new GeneratorActivateEvent(__instance);
+                var ev = new GeneratorActivateEvent(__instance.GetGenerator());
                 Qurre.Events.SCPs.SCP079.generatoractivate(ev);
                 __instance.Generator_prevFinish(true);
                 __instance.epsenRenderer.sharedMaterial = __instance.matLetGreen;

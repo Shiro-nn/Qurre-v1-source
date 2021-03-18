@@ -2,7 +2,7 @@
 using System;
 using HarmonyLib;
 using UnityEngine;
-using static Qurre.API.Events.SCP079;
+using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP079
 {
     [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.CallRpcGainExp))]
@@ -85,7 +85,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
                         return false;
                 }
                 Qurre.Events.SCPs.SCP079.getEXP(ev);
-                if (ev.IsAllowed && ev.Amount > 0)
+                if (ev.Allowed && ev.Amount > 0)
                 {
                     __instance.AddExperience(ev.Amount);
                     return false;

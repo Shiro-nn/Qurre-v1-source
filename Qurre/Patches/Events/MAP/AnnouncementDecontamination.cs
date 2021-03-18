@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.MAP
                 Qurre.Events.Map.announcementdecontamination(ev);
                 hard = ev.IsGlobal;
                 __instance.Set_DC_nextPhase(ev.Id);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (System.Exception e)
             {

@@ -2,7 +2,7 @@
 using System;
 using HarmonyLib;
 using Scp914;
-using static Qurre.API.Events.SCP914;
+using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP914
 {
     [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.CallCmdChange914Knob))]
@@ -19,7 +19,7 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                     return false;
                 var ev = new ChangeKnobEvent(API.Player.Get(__instance.gameObject), Scp914Machine.singleton.knobState + 1);
                 Qurre.Events.SCPs.SCP914.changeknob(ev);
-                if (ev.IsAllowed)
+                if (ev.Allowed)
                 {
                     Scp914Machine.singleton.NetworkknobState = ev.KnobSetting;
                     Scp914Machine.singleton.curKnobCooldown = Scp914Machine.singleton.knobCooldown;

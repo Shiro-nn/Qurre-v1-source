@@ -4,31 +4,28 @@ namespace Qurre.API.Events
 {
     public class AlphaStartEvent : AlphaStopEvent
     {
-        public AlphaStartEvent(Player player, bool isAllowed = true)
-            : base(player, isAllowed)
-        {
-        }
+        public AlphaStartEvent(Player player, bool allowed = true) : base(player, allowed) { }
     }
     public class AlphaStopEvent : EventArgs
     {
-        public AlphaStopEvent(Player player, bool isAllowed = true)
+        public AlphaStopEvent(Player player, bool allowed = true)
         {
-            Player = player ?? API.Map.Host;
-            IsAllowed = isAllowed;
+            Player = player ?? API.Server.Host;
+            Allowed = allowed;
         }
         public Player Player { get; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class EnableAlphaPanelEvent : EventArgs
     {
-        public EnableAlphaPanelEvent(Player player, List<string> permissions, bool isAllowed = true)
+        public EnableAlphaPanelEvent(Player player, List<string> permissions, bool allowed = true)
         {
             Player = player;
             Permissions = permissions;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public List<string> Permissions { get; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
 }

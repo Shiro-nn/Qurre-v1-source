@@ -28,7 +28,7 @@ namespace Qurre.Patches.Events.Alpha
                 list.Add("CONT_LVL_3");
                 var ev = new EnableAlphaPanelEvent(Player.Get(__instance.gameObject), list);
                 Qurre.Events.Alpha.enablepanel(ev);
-                if (ev.IsAllowed && itemById.permissions.Intersect(ev.Permissions).Any())
+                if (ev.Allowed && itemById.permissions.Intersect(ev.Permissions).Any())
                 {
                     gameObject.GetComponentInParent<AlphaWarheadOutsitePanel>().NetworkkeycardEntered = true;
                     __instance.OnInteract();

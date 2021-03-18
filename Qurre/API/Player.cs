@@ -7,18 +7,26 @@ using System.Reflection;
 using UnityEngine;
 using static QurreModLoader.umm;
 using Hints;
-using MEC;
 using Grenades;
 using CustomPlayerEffects;
 using RemoteAdmin;
+using Qurre.API.Controllers;
 namespace Qurre.API
 {
-	public class Player
+	public class Player : MonoBehaviour
 	{
 		private ReferenceHub rh;
 		private GameObject go;
 		private string ui;
-		public Player(ReferenceHub RH) => rh = RH;
+		public Player(ReferenceHub RH)
+		{
+			rh = RH;
+			Scp079Controller = new Scp079(this);
+			Scp096Controller = new Scp096(this);
+			Scp106Controller = new Scp106(this);
+			Scp173Controller = new Scp173(this);
+			Broadcasts = new ListBroadcasts(this);
+		}
 		public Player(GameObject gameObject) => rh = ReferenceHub.GetHub(gameObject);
 		public static Dictionary<GameObject, Player> Dictionary { get; } = new Dictionary<GameObject, Player>();
 		public static Dictionary<int, Player> IdPlayers = new Dictionary<int, Player>();
@@ -35,6 +43,11 @@ namespace Qurre.API
 				ui = value.characterClassManager.UserId;
 			}
 		}
+		public readonly Scp079 Scp079Controller;
+		public readonly Scp096 Scp096Controller;
+		public readonly Scp106 Scp106Controller;
+		public readonly Scp173 Scp173Controller;
+		public ListBroadcasts Broadcasts { get; }
 		public GrenadeManager GrenadeManager => rh.GetComponent<GrenadeManager>();
 		public GameConsoleTransmission GameConsoleTransmission => rh.GetComponent<GameConsoleTransmission>();
 		public GameObject GameObject
@@ -52,7 +65,7 @@ namespace Qurre.API
 		public NetworkIdentity NetworkIdentity => rh.networkIdentity;
 		public Handcuffs Handcuffs => rh.handcuffs;
 		public ServerRoles ServerRoles => rh.serverRoles;
-		public CharacterClassManager CharacterClassManager => rh.characterClassManager;
+		public CharacterClassManager ClassManager => rh.characterClassManager;
 		public WeaponManager WeaponManager => rh.weaponManager;
 		public AnimationController AnimationController => rh.animationController;
 		public PlayerStats PlayerStats => rh.playerStats;
@@ -69,20 +82,20 @@ namespace Qurre.API
 		{
 			get
 			{
-				string _ = CharacterClassManager.UserId;
+				string _ = ClassManager.UserId;
 				if (_.Contains("@"))
-                {
+				{
 					ui = _;
 					return _;
 				}
 				else return ui;
 			}
-			set => CharacterClassManager.NetworkSyncedUserId = value;
+			set => ClassManager.NetworkSyncedUserId = value;
 		}
 		public string CustomUserId
 		{
-			get => CharacterClassManager.UserId2;
-			set => CharacterClassManager.UserId2 = value;
+			get => ClassManager.UserId2;
+			set => ClassManager.UserId2 = value;
 		}
 		public string DisplayNickname
 		{
@@ -147,7 +160,7 @@ namespace Qurre.API
 		public Side Side => GetSide(Team);
 		public RoleType Role
 		{
-			get => CharacterClassManager.NetworkCurClass;
+			get => ClassManager.NetworkCurClass;
 			set => SetRole(value);
 		}
 		public bool IsReloading => WeaponManager.IsReloading();
@@ -156,7 +169,7 @@ namespace Qurre.API
 		public bool IsJumping => AnimationController.curAnim == 2;
 		public string IP => NetworkIdentity.connectionToClient.address;
 		public NetworkConnection Connection => Scp079PlayerScript.connectionToClient;
-		public bool IsHost => CharacterClassManager.IsHost;
+		public bool IsHost => ClassManager.IsHost;
 		public bool FriendlyFire { get; set; }
 		public bool BypassMode
 		{
@@ -165,18 +178,18 @@ namespace Qurre.API
 		}
 		public bool Muted
 		{
-			get => CharacterClassManager.NetworkMuted;
-			set => CharacterClassManager.NetworkMuted = value;
+			get => ClassManager.NetworkMuted;
+			set => ClassManager.NetworkMuted = value;
 		}
 		public bool IntercomMuted
 		{
-			get => CharacterClassManager.NetworkIntercomMuted;
-			set => CharacterClassManager.NetworkIntercomMuted = value;
+			get => ClassManager.NetworkIntercomMuted;
+			set => ClassManager.NetworkIntercomMuted = value;
 		}
 		public bool GodMode
 		{
-			get => CharacterClassManager.GodMode;
-			set => CharacterClassManager.GodMode = value;
+			get => ClassManager.GodMode;
+			set => ClassManager.GodMode = value;
 		}
 		public float HP
 		{
@@ -223,19 +236,14 @@ namespace Qurre.API
 			get => ServerStatic.GetPermissionsHandler()._members().TryGetValue(UserId, out string groupName) ? groupName : null;
 			set => ServerStatic.GetPermissionsHandler()._members()[UserId] = value;
 		}
-		public Room CurrentRoom
+		public Room Room
 		{
 			get
 			{
-				Vector3 playerPos = Position;
-				Vector3 end = playerPos - new Vector3(0f, 10f, 0f);
-				bool flag = Physics.Linecast(playerPos, end, out RaycastHit raycastHit, -84058629);
-				if (!flag || raycastHit.transform == null) return null;
-				Transform transform = raycastHit.transform;
-				while (transform.parent != null && transform.parent.parent != null) transform = transform.parent;
-				foreach (Room room in Map.Rooms.Where(x => x.Position == transform.position)) return room;
-				return new Room { Name = transform.name, Position = transform.position, Transform = transform };
+				if (Vector3.Distance(Vector3.up * -1997, Position) <= 50) return Extensions.GetRoom(RoomType.Pocket);
+				return Map.Rooms.FirstOrDefault(x => x.GameObject == ReferenceHub.localCurrentRoomEffects.CurRoom());
 			}
+			set => Position = value.Position;
 		}
 		public CommandSender Sender
 		{
@@ -263,14 +271,14 @@ namespace Qurre.API
 		}
 		public string UnitName
 		{
-			get => CharacterClassManager.NetworkCurUnitName;
-			set => CharacterClassManager.NetworkCurUnitName = value;
+			get => ClassManager.NetworkCurUnitName;
+			set => ClassManager.NetworkCurUnitName = value;
 		}
-		public float AliveTime => CharacterClassManager.AliveTime;
+		public float AliveTime => ClassManager.AliveTime;
 		public long DeathTime
 		{
-			get => CharacterClassManager.DeathTime;
-			set => CharacterClassManager.DeathTime = value;
+			get => ClassManager.DeathTime;
+			set => ClassManager.DeathTime = value;
 		}
 
 		public int Ping => Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer.Peers[Connection.connectionId].Ping;
@@ -365,7 +373,7 @@ namespace Qurre.API
 			Sender.RaReply((pluginName ?? Assembly.GetCallingAssembly().GetName().Name) + "#" + message, success, true, string.Empty);
 		public void SendConsoleMessage(string message, string color)
 		{
-			try { CharacterClassManager.TargetConsolePrint(Connection, message, color); }
+			try { ClassManager.TargetConsolePrint(Connection, message, color); }
 			catch { rh.GetComponent<GameConsoleTransmission>().SendToClient(Connection, message, color); }
 		}
 		public void RaLogin()
@@ -375,7 +383,6 @@ namespace Qurre.API
 			ServerRoles.RemoteAdminMode = GlobalRemoteAdmin ? ServerRoles.AccessMode.GlobalAccess : ServerRoles.AccessMode.PasswordOverride;
 			ServerRoles.TargetOpenRemoteAdmin(Connection, false);
 		}
-
 		public void RaLogout()
 		{
 			ServerRoles.RemoteAdmin = false;
@@ -417,7 +424,7 @@ namespace Qurre.API
 		}
 		public void PlaceBlood(Vector3 pos, int type = 1, float size = 2f)
 		{
-			var component = CharacterClassManager;
+			var component = ClassManager;
 			var writer = NetworkWriterPool.GetWriter();
 			writer.WriteVector3(pos);
 			writer.WritePackedInt32(type);
@@ -432,9 +439,14 @@ namespace Qurre.API
 			Connection.Send(msg);
 			NetworkWriterPool.Recycle(writer);
 		}
-		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => CharacterClassManager.SetPlayersClass(newRole, GameObject, lite, escape);
-		public void Broadcast(ushort time, string message, Broadcast.BroadcastFlags flag = 0) => Map.BroadcastComponent.TargetAddElement(Scp079PlayerScript.connectionToClient, message, time, flag);
-		public void ClearBroadcasts() => Map.BroadcastComponent.TargetClearElements(Scp079PlayerScript.connectionToClient);
+		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => ClassManager.SetPlayersClass(newRole, GameObject, lite, escape);
+		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)
+		{
+			var bc = new Controllers.Broadcast(this, message, time);
+			Broadcasts.Add(bc, instant);
+			return bc;
+		}
+		public void ClearBroadcasts() => Broadcasts.Clear();
 		public void Damage(int amount, DamageTypes.DamageType damageType) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, QueryProcessor.PlayerId), GameObject);
 		public void AddItem(ItemType itemType, float duration = float.NegativeInfinity, int sight = 0, int barrel = 0, int other = 0) =>
 			Inventory.AddNewItem(itemType, duration, sight, barrel, other);

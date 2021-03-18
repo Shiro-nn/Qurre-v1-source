@@ -20,7 +20,7 @@ namespace Qurre.Patches.Events.Server
                 var ev = new SendingConsoleEvent(Player.Get(__instance.gameObject), query, name, args, encrypted);
                 Qurre.Events.Server.sendingconsole(ev);
                 if (ev.ReturnMessage != "") __instance.GCT.SendToClient(__instance.connectionToClient, ev.ReturnMessage, ev.Color);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (Exception e)
             {

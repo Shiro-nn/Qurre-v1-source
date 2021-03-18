@@ -21,17 +21,16 @@ namespace Qurre.Patches.Events.PlayeR
                 var cRE = new RoleChangeEvent(API.Player.Get(ply), classid, sIL, lite, escape);
                 if (cRE.NewRole == RoleType.Spectator) cRE.Player.DropItems();
                 Player.rolechange(cRE);
-                lite = cRE.IsSavePos;
-                escape = cRE.IsEscaped;
+                lite = cRE.SavePos;
+                escape = cRE.Escaped;
                 if (classid != RoleType.Spectator && cRE.NewRole == RoleType.Spectator)
-                    Player.died(new DiedEvent(API.Map.Host, cRE.Player, new PlayerStats.HitInfo(-1, "Dedicated Server", DamageTypes.None, 0)));
+                    Player.dead(new DeadEvent(API.Server.Host, cRE.Player, new PlayerStats.HitInfo(-1, "Dedicated Server", DamageTypes.None, 0)));
                 classid = cRE.NewRole;
                 if (escape)
                 {
                     var eE = new EscapeEvent(API.Player.Get(ply), classid);
                     Player.escape(eE);
-                    if (!eE.IsAllowed)
-                        return false;
+                    if (!eE.Allowed) return false;
                     classid = eE.NewRole;
                 }
                 ply.GetComponent<CharacterClassManager>().SetClassIDAdv(classid, lite, escape);

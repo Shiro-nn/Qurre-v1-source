@@ -1,10 +1,11 @@
 ﻿#pragma warning disable SA1118
 using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
 using LightContainmentZoneDecontamination;
 using Mirror;
 using UnityEngine;
-using static Qurre.API.Events.SCP106;
+using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
@@ -26,9 +27,9 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                 {
                     if (type == PocketDimensionTeleport.PDTeleportType.Killer)
                     {
-                        var ev = new PocketDimensionFailEscapeEvent(API.Player.Get(other.gameObject), __instance);
+                        var ev = new PocketDimensionFailEscapeEvent(player, __instance);
                         Qurre.Events.SCPs.SCP106.pocketdimensionfailescape(ev);
-                        if (!ev.IsAllowed) return false;
+                        if (!ev.Allowed) return false;
                     }
                     player.Damage(9999, DamageTypes.Pocket);
                 }
@@ -56,13 +57,15 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                     if (player.Team == Team.SCP) type = PocketDimensionTeleport.PDTeleportType.Exit;
                     var ev = new PocketDimensionEscapeEvent(player, pos);
                     Qurre.Events.SCPs.SCP106.pocketdimensionescape(ev);
-                    if (!ev.IsAllowed) return false;
+                    if (!ev.Allowed) return false;
                     player.ReferenceHub.playerMovementSync.AddSafeTime(2f, false);
                     player.Position = pos;
                     __instance.RemoveCorrosionEffect(player.GameObject);
                     PlayerManager.localPlayer.GetComponent<PlayerStats>().TargetAchieve(component.connectionToClient, "larryisyourfriend");
                 }
                 if (PocketDimensionTeleport.RefreshExit) MapGeneration.ImageGenerator.pocketDimensionGenerator.GenerateRandom();
+                foreach (var larry in API.Player.List.Where(x => x.Scp106Controller.PocketPlayers.Contains(player)))
+                    larry.Scp106Controller.PocketPlayers.Remove(player);
                 return false;
             }
             catch (System.Exception e)

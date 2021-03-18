@@ -13,13 +13,13 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 var ev = new SpeakEvent(__instance, __instance.IntercomAsHuman, __instance.RadioAsHuman, __instance.MimicAs939, __instance.SCPChat, __instance.SpectatorChat);
                 Qurre.Events.Player.speak(ev);
-                __instance.SCPChat = ev.IsScpChat;
-                __instance.SpectatorChat = ev.IsRipChat;
-                __instance.IntercomAsHuman = ev.IsIntercom;
-                if (ev.IsMimicAs939) __instance.MimicAs939 = value;
+                __instance.SCPChat = ev.ScpChat;
+                __instance.SpectatorChat = ev.RipChat;
+                __instance.IntercomAsHuman = ev.Intercom;
+                if (ev.MimicAs939) __instance.MimicAs939 = value;
                 else __instance.MimicAs939 = false;
-                if (ev.IsRadio) __instance.RadioAsHuman = value;
-                return ev.IsAllowed;
+                if (ev.Radio) __instance.RadioAsHuman = value;
+                return ev.Allowed;
             }
             catch (Exception e)
             {

@@ -7,7 +7,12 @@ namespace Qurre.Patches.Events.Round
     {
         private static void Prefix(string q)
         {
-            if (q == "Waiting for players...") Qurre.Events.Round.waitingforplayers();
+            if (q == "Waiting for players...")
+            {
+                API.Map.AddObjects();
+                API.Round.CurrentRound++;
+                Qurre.Events.Round.waitingforplayers();
+            }
         }
     }
 }

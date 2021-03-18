@@ -12,24 +12,19 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                if (!__instance.RateLimit().CanExecute(true) || Intercom.AdminSpeaking)
-                    return false;
+                if (!__instance.RateLimit().CanExecute(true) || Intercom.AdminSpeaking) return false;
                 var ev = new IcomSpeakEvent(player ? API.Player.Get(__instance.gameObject) : null);
                 if (player)
                 {
-                    if (!__instance.ServerAllowToSpeak())
-                        return false;
+                    if (!__instance.ServerAllowToSpeak()) return false;
                     Qurre.Events.Player.icomSpeak(ev);
-                    if (ev.IsAllowed)
-                        Intercom.host.RequestTransmission(__instance.gameObject);
+                    if (ev.Allowed) Intercom.host.RequestTransmission(__instance.gameObject);
                 }
                 else
                 {
-                    if (!(Intercom.host.Networkspeaker == __instance.gameObject))
-                        return false;
+                    if (!(Intercom.host.Networkspeaker == __instance.gameObject)) return false;
                     Qurre.Events.Player.icomSpeak(ev);
-                    if (ev.IsAllowed)
-                        Intercom.host.RequestTransmission(null);
+                    if (ev.Allowed) Intercom.host.RequestTransmission(null);
                 }
                 return false;
             }

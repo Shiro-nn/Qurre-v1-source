@@ -1,9 +1,5 @@
 ﻿using Qurre.Events.modules;
-using static Qurre.API.Events.SCP049;
-using static Qurre.API.Events.SCP079;
-using static Qurre.API.Events.SCP096;
-using static Qurre.API.Events.SCP106;
-using static Qurre.API.Events.SCP914;
+using Qurre.API.Events;
 using static Qurre.Events.modules.main;
 namespace Qurre.Events
 {
@@ -18,6 +14,13 @@ namespace Qurre.Events
             public static void activating(ActivatingEvent ev) => Activating.invoke(ev);
             public static void changeknob(ChangeKnobEvent ev) => ChangeKnob.invoke(ev);
             public static void upgrade(UpgradeEvent ev) => Upgrade.invoke(ev);
+        }
+        #endregion
+        #region SCP173
+        public static class SCP173
+        {
+            public static event AllEvents<BlinkEvent> Blink;
+            public static void blink(BlinkEvent ev) => Blink.invoke(ev);
         }
         #endregion
         #region SCP106

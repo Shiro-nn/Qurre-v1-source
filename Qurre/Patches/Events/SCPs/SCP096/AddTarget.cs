@@ -1,7 +1,7 @@
 ﻿#pragma warning disable SA1313
 using HarmonyLib;
 using UnityEngine;
-using static Qurre.API.Events.SCP096;
+using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP096
 {
     [HarmonyPatch(typeof(PlayableScps.Scp096), nameof(PlayableScps.Scp096.AddTarget))]
@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.SCPs.SCP096
                 if (target == null) return true;
                 var ev = new AddTargetEvent(__instance, API.Player.Get(target));
                 Qurre.Events.SCPs.SCP096.addtarget(ev);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (System.Exception e)
             {
@@ -32,7 +32,7 @@ namespace Qurre.Patches.Events.SCPs.SCP096
             {
                 var ev = new AddTargetEvent(__instance, API.Player.Get(info.RHub));
                 Qurre.Events.SCPs.SCP096.addtarget(ev);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (System.Exception e)
             {

@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using HarmonyLib;
 using Interactables.Interobjects.DoorUtils;
+using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
@@ -15,7 +16,7 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                var ev = new InteractDoorEvent(API.Player.Get(ply), __instance, false);
+                var ev = new InteractDoorEvent(API.Player.Get(ply), __instance.GetDoor(), false);
                 var Bypass = false;
                 var Interact = false;
                 if (__instance.ActiveLocks != 0)
@@ -31,17 +32,17 @@ namespace Qurre.Patches.Events.PlayeR
                             || (!__instance.TargetState
                                 && !mode.HasFlagFast(DoorLockMode.CanOpen))))
                     {
-                        ev.IsAllowed = false;
+                        ev.Allowed = false;
                         Bypass = true;
                     }
                 }
                 if (!Bypass && (Interact = __instance.AllowInteracting(ply, colliderId)))
                 {
-                    if (ply.characterClassManager.CurClass == RoleType.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.curItem, ply)) ev.IsAllowed = true;
-                    else ev.IsAllowed = false;
+                    if (ply.characterClassManager.CurClass == RoleType.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.curItem, ply)) ev.Allowed = true;
+                    else ev.Allowed = false;
                 }
                 Qurre.Events.Player.interactdoor(ev);
-                if (ev.IsAllowed && Interact)
+                if (ev.Allowed && Interact)
                 {
                     __instance.NetworkTargetState = !__instance.TargetState;
                     __instance._triggerPlayer(ply);

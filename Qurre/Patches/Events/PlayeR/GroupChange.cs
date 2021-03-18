@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 var ev = new GroupChangeEvent(Player.Get(__instance.gameObject), group);
                 Qurre.Events.Player.groupchange(ev);
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (System.Exception e)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using HarmonyLib;
 using Mirror;
 using Qurre.API;
@@ -18,7 +19,7 @@ namespace Qurre.Patches.Events.PlayeR
 				switch (command)
 				{
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Tablet:
-						if (__instance.isTabletConnected || !__instance.isDoorOpen || QurreModLoader.umm.GenlocalTime(__instance) <= 0f || Generator079.mainGenerator.forcedOvercharge)
+						if (__instance.isTabletConnected || !__instance.isDoorOpen || QurreModLoader.umm.Generator_localTime(__instance) <= 0f || Generator079.mainGenerator.forcedOvercharge)
 							return false;
 						Inventory inv = person.GetComponent<Inventory>();
 						using (SyncList<Inventory.SyncItemInfo>.SyncListEnumerator SLE = inv.items.GetEnumerator())
@@ -28,10 +29,9 @@ namespace Qurre.Patches.Events.PlayeR
 								Inventory.SyncItemInfo inf = SLE.Current;
 								if (inf.id == ItemType.WeaponManagerTablet)
 								{
-									var ev = new InteractGeneratorEvent(player, __instance, GeneratorStatus.TabletInjected);
+									var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabletInjected);
 									Qurre.Events.Player.interactGenerator(ev);
-									if (ev.IsAllowed)
-										__instance.isTabletConnected = ev.IsAllowed;
+									if (ev.Allowed) __instance.isTabletConnected = ev.Allowed;
 									break;
 								}
 							}
@@ -39,9 +39,9 @@ namespace Qurre.Patches.Events.PlayeR
 						return false;
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Cancel:
 						if (!__instance.isTabletConnected) return false;
-						var ev1 = new InteractGeneratorEvent(player, __instance, GeneratorStatus.TabledEjected);
+						var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabledEjected);
 						Qurre.Events.Player.interactGenerator(ev1);
-						return ev1.IsAllowed;
+						return ev1.Allowed;
 				}
 				return true;
 			}
@@ -67,15 +67,15 @@ namespace Qurre.Patches.Events.PlayeR
 					var allow = true;
 					if (!__instance.isDoorOpen)
 					{
-						var ev = new InteractGeneratorEvent(player, __instance, GeneratorStatus.OpenDoor);
+						var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor);
 						Qurre.Events.Player.interactGenerator(ev);
-						allow = ev.IsAllowed;
+						allow = ev.Allowed;
 					}
 					else
 					{
-						var ev = new InteractGeneratorEvent(player, __instance, GeneratorStatus.CloseDoor);
+						var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.CloseDoor);
 						Qurre.Events.Player.interactGenerator(ev);
-						allow = ev.IsAllowed;
+						allow = ev.Allowed;
 					}
 					if (!allow)
 					{
@@ -89,13 +89,11 @@ namespace Qurre.Patches.Events.PlayeR
 				if (player.Inventory.GetItemInHand().id > ItemType.KeycardJanitor)
 				{
 					var permissions = player.Inventory.GetItemByID(player.Inventory.curItem).permissions;
-					foreach (var t in permissions)
-						if (t == "ARMORY_LVL_2")
-							boolean = true;
+					foreach (var t in permissions.Where(x => x == "ARMORY_LVL_2")) boolean = true;
 				}
-				var ev1 = new InteractGeneratorEvent(player, __instance, GeneratorStatus.TabledEjected, boolean);
+				var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabledEjected, boolean);
 				Qurre.Events.Player.interactGenerator(ev1);
-				if (ev1.IsAllowed)
+				if (ev1.Allowed)
 				{
 					__instance.isDoorUnlocked = true;
 					return false;

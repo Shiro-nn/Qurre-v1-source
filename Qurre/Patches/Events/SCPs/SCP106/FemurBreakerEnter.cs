@@ -2,7 +2,7 @@
 using HarmonyLib;
 using Mirror;
 using UnityEngine;
-using static Qurre.API.Events.SCP106;
+using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
@@ -27,7 +27,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                         {
                             var ev = new FemurBreakerEnterEvent(API.Player.Get(Stats.gameObject));
                             Qurre.Events.SCPs.SCP106.femurbreakerenter(ev);
-                            if (ev.IsAllowed)
+                            if (ev.Allowed)
                             {
                                 Stats.HurtPlayer(new PlayerStats.HitInfo(10000f, "WORLD", DamageTypes.Lure, 0), player);
                                 __instance.LureSubjectContainer().SetState(true);

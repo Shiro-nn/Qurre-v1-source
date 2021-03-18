@@ -2,7 +2,7 @@
 using HarmonyLib;
 using MEC;
 using UnityEngine;
-using static Qurre.API.Events.SCP106;
+using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
     [HarmonyPatch(typeof(Scp106PlayerScript), nameof(Scp106PlayerScript.CallCmdUsePortal))]
@@ -17,7 +17,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                 var ev = new PortalUsingEvent(API.Player.Get(__instance.gameObject), __instance.portalPosition);
                 Qurre.Events.SCPs.SCP106.portalusing(ev);
                 __instance.portalPosition = ev.PortalPosition;
-                if (!ev.IsAllowed)
+                if (!ev.Allowed)
                     return false;
                 if (__instance.iAm106 && __instance.portalPosition != Vector3.zero && !__instance.goingViaThePortal)
                     Timing.RunCoroutine(__instance._DoTeleportAnimation(), Segment.Update);

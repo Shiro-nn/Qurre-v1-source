@@ -1,6 +1,5 @@
 ﻿using Assets._Scripts.Dissonance;
 using Grenades;
-using Interactables.Interobjects.DoorUtils;
 using Qurre.API.Objects;
 using System;
 using System.Collections.Generic;
@@ -22,8 +21,8 @@ namespace Qurre.API.Events
     public class BanEvent : KickEvent
     {
         private int duration;
-        public BanEvent(Player target, Player issuer, int duration, string reason, string fullMessage, bool isAllowed = true)
-            : base(target, issuer, reason, fullMessage, isAllowed)
+        public BanEvent(Player target, Player issuer, int duration, string reason, string fullMessage, bool allowed = true)
+            : base(target, issuer, reason, fullMessage, allowed)
         {
             Duration = duration;
         }
@@ -32,8 +31,7 @@ namespace Qurre.API.Events
             get => duration;
             set
             {
-                if (duration == value)
-                    return;
+                if (duration == value) return;
                 duration = value;
             }
         }
@@ -42,22 +40,21 @@ namespace Qurre.API.Events
     {
         private Player target;
         private Player issuer;
-        private bool isAllowed;
-        public KickEvent(Player target, Player issuer, string reason, string fullMessage, bool isAllowed = true)
+        private bool _allowed;
+        public KickEvent(Player target, Player issuer, string reason, string fullMessage, bool allowed = true)
         {
             Target = target;
             Issuer = issuer;
             Reason = reason;
             FullMessage = fullMessage;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Target
         {
             get => target;
             set
             {
-                if (value == null || target == value)
-                    return;
+                if (value == null || target == value) return;
                 target = value;
             }
         }
@@ -66,49 +63,47 @@ namespace Qurre.API.Events
             get => issuer;
             set
             {
-                if (value == null || issuer == value)
-                    return;
+                if (value == null || issuer == value) return;
                 issuer = value;
             }
         }
         public string Reason { get; set; }
         public string FullMessage { get; set; }
-        public bool IsAllowed
+        public bool Allowed
         {
-            get => isAllowed;
+            get => _allowed;
             set
             {
-                if (isAllowed == value)
-                    return;
-                isAllowed = value;
+                if (_allowed == value) return;
+                _allowed = value;
             }
         }
     }
     public class KickedEvent : EventArgs
     {
-        public KickedEvent(Player player, string reason, bool isAllowed = true)
+        public KickedEvent(Player player, string reason, bool allowed = true)
         {
             Player = player;
             Reason = reason;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public string Reason { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class GroupChangeEvent : EventArgs
     {
-        public GroupChangeEvent(Player player, UserGroup newGroup, bool isAllowed = true)
+        public GroupChangeEvent(Player player, UserGroup newGroup, bool allowed = true)
         {
             Player = player;
             NewGroup = newGroup;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public UserGroup NewGroup { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
-    public class ItemChangeEvent : System.EventArgs
+    public class ItemChangeEvent : EventArgs
     {
         public ItemChangeEvent(Player player, Inventory.SyncItemInfo oldItem, Inventory.SyncItemInfo newItem)
         {
@@ -122,23 +117,23 @@ namespace Qurre.API.Events
     }
     public class RoleChangeEvent : EventArgs
     {
-        public RoleChangeEvent(Player player, RoleType newRole, List<ItemType> items, bool isSavePos, bool isEscaped)
+        public RoleChangeEvent(Player player, RoleType newRole, List<ItemType> items, bool savePos, bool escaped)
         {
             Player = player;
             NewRole = newRole;
             Items = items;
-            IsSavePos = isSavePos;
-            IsEscaped = isEscaped;
+            SavePos = savePos;
+            Escaped = escaped;
         }
         public Player Player { get; }
         public RoleType NewRole { get; set; }
         public List<ItemType> Items { get; }
-        public bool IsEscaped { get; set; }
-        public bool IsSavePos { get; set; }
+        public bool Escaped { get; set; }
+        public bool SavePos { get; set; }
     }
-    public class DiedEvent : EventArgs
+    public class DeadEvent : EventArgs
     {
-        public DiedEvent(Player killer, Player target, PlayerStats.HitInfo hitInfo)
+        public DeadEvent(Player killer, Player target, PlayerStats.HitInfo hitInfo)
         {
             Killer = killer;
             Target = target;
@@ -150,42 +145,42 @@ namespace Qurre.API.Events
     }
     public class EscapeEvent : EventArgs
     {
-        public EscapeEvent(Player player, RoleType newRole, bool isAllowed = true)
+        public EscapeEvent(Player player, RoleType newRole, bool allowed = true)
         {
             Player = player;
             NewRole = newRole;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public RoleType NewRole { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class CuffEvent : EventArgs
     {
-        public CuffEvent(Player cuffer, Player target, bool isAllowed = true)
+        public CuffEvent(Player cuffer, Player target, bool allowed = true)
         {
             Cuffer = cuffer;
             Target = target;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Cuffer { get; }
         public Player Target { get; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class UnCuffEvent : CuffEvent
     {
-        public UnCuffEvent(Player cuffer, Player target, bool isAllowed = true) : base(cuffer, target, isAllowed) { }
+        public UnCuffEvent(Player cuffer, Player target, bool allowed = true) : base(cuffer, target, allowed) { }
     }
     public class DamageEvent : EventArgs
     {
         private PlayerStats.HitInfo hitInformations;
         private DamageTypes.DamageType damageType = DamageTypes.None;
-        public DamageEvent(Player attacker, Player target, PlayerStats.HitInfo hitInformations, bool isAllowed = true)
+        public DamageEvent(Player attacker, Player target, PlayerStats.HitInfo hitInformations, bool allowed = true)
         {
             Attacker = attacker;
             Target = target;
             HitInformations = hitInformations;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Attacker { get; }
         public Player Target { get; }
@@ -211,21 +206,21 @@ namespace Qurre.API.Events
             get => hitInformations.Amount;
             set => hitInformations.Amount = value;
         }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
-    public class DyingEvent : EventArgs
+    public class DiesEvent : EventArgs
     {
-        public DyingEvent(Player killer, Player target, PlayerStats.HitInfo hitInfo, bool isAllowed = true)
+        public DiesEvent(Player killer, Player target, PlayerStats.HitInfo hitInfo, bool allowed = true)
         {
             Killer = killer;
             Target = target;
             HitInfo = hitInfo;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Killer { get; }
         public Player Target { get; }
         public PlayerStats.HitInfo HitInfo { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class InteractEvent : EventArgs
     {
@@ -234,83 +229,83 @@ namespace Qurre.API.Events
     }
     public class InteractDoorEvent : EventArgs
     {
-        public InteractDoorEvent(Player player, DoorVariant door, bool isAllowed = true)
+        public InteractDoorEvent(Player player, Controllers.Door door, bool allowed = true)
         {
             Player = player;
             Door = door;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
-        public DoorVariant Door { get; set; }
-        public bool IsAllowed { get; set; }
+        public Controllers.Door Door { get; set; }
+        public bool Allowed { get; set; }
     }
     public class InteractGeneratorEvent : EventArgs
     {
-        public InteractGeneratorEvent(Player player, Generator079 generator, GeneratorStatus status, bool isAllowed = true)
+        public InteractGeneratorEvent(Player player, Controllers.Generator generator, GeneratorStatus status, bool allowed = true)
         {
             Player = player;
             Generator = generator;
             Status = status;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
-        public Generator079 Generator { get; }
+        public Controllers.Generator Generator { get; }
         public GeneratorStatus Status { get; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class InteractLiftEvent : EventArgs
     {
-        public InteractLiftEvent(Player player, Lift.Elevator elevator, Lift lift, bool isAllowed = true)
+        public InteractLiftEvent(Player player, Lift.Elevator elevator, Controllers.Lift lift, bool allowed = true)
         {
             Player = player;
             Elevator = elevator;
             Lift = lift;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public Lift.Elevator Elevator { get; }
-        public Lift Lift { get; }
-        public bool IsAllowed { get; set; }
+        public Controllers.Lift Lift { get; }
+        public bool Allowed { get; set; }
     }
     public class InteractLockerEvent : EventArgs
     {
-        public InteractLockerEvent(Player player, Locker locker, LockerChamber lockerChamber, byte lockerId, byte chamberId, bool isAllowed)
+        public InteractLockerEvent(Player player, Locker locker, LockerChamber lockerChamber, byte lockerId, byte chamberId, bool allowed)
         {
             Player = player;
             Locker = locker;
             Chamber = lockerChamber;
             LockerId = lockerId;
             ChamberId = chamberId;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public Locker Locker { get; }
         public LockerChamber Chamber { get; }
         public byte LockerId { get; }
         public byte ChamberId { get; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class IcomSpeakEvent : EventArgs
     {
-        public IcomSpeakEvent(Player player, bool isAllowed = true)
+        public IcomSpeakEvent(Player player, bool allowed = true)
         {
             Player = player;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class DroppingItemEvent : EventArgs
     {
-        public DroppingItemEvent(Player player, Inventory.SyncItemInfo item, bool isAllowed = true)
+        public DroppingItemEvent(Player player, Inventory.SyncItemInfo item, bool allowed = true)
         {
             Player = player;
             Item = item;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public Inventory.SyncItemInfo Item { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class DropItemEvent : EventArgs
     {
@@ -324,11 +319,11 @@ namespace Qurre.API.Events
     }
     public class PickupItemEvent : DropItemEvent
     {
-        public PickupItemEvent(Player player, Pickup pickup, bool isAllowed = true) : base(player, pickup)
+        public PickupItemEvent(Player player, Pickup pickup, bool allowed = true) : base(player, pickup)
         {
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class JoinEvent : EventArgs
     {
@@ -341,103 +336,71 @@ namespace Qurre.API.Events
     }
     public class RechargeWeaponEvent : EventArgs
     {
-        public RechargeWeaponEvent(Player player, bool isAnimationOnly, bool isAllowed = true)
+        public RechargeWeaponEvent(Player player, bool animationOnly, bool allowed = true)
         {
             Player = player;
-            IsAnimationOnly = isAnimationOnly;
-            IsAllowed = isAllowed;
+            AnimationOnly = animationOnly;
+            Allowed = allowed;
         }
         public Player Player { get; }
-        public bool IsAnimationOnly { get; }
-        public bool IsAllowed { get; set; }
+        public bool AnimationOnly { get; }
+        public bool Allowed { get; set; }
     }
     public class ShootingEvent : EventArgs
     {
-        public ShootingEvent(Player shooter, GameObject target, Vector3 position, bool isAllowed = true)
+        public ShootingEvent(Player shooter, GameObject target, Vector3 position, bool allowed = true)
         {
             Shooter = shooter;
             Target = target;
             Position = position;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Shooter { get; }
         public GameObject Target { get; }
         public Vector3 Position { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class SpeakEvent : EventArgs
     {
-        public SpeakEvent(DissonanceUserSetup userSetup, bool isIcom, bool isRadio, bool isMimicAs939, bool isScpChat, bool isRipChat, bool isAllowed = true)
+        public SpeakEvent(DissonanceUserSetup userSetup, bool icom, bool radio, bool mimicAs939, bool scpChat, bool ripChat, bool allowed = true)
         {
             UserSetup = userSetup;
-            IsIntercom = isIcom;
-            IsRadio = isRadio;
-            IsMimicAs939 = isMimicAs939;
-            IsScpChat = isScpChat;
-            IsRipChat = isRipChat;
-            IsAllowed = isAllowed;
+            Intercom = icom;
+            Radio = radio;
+            MimicAs939 = mimicAs939;
+            ScpChat = scpChat;
+            RipChat = ripChat;
+            Allowed = allowed;
         }
         public DissonanceUserSetup UserSetup { get; }
-        public bool IsIntercom { get; }
-        public bool IsRadio { get; }
-        public bool IsMimicAs939 { get; }
-        public bool IsScpChat { get; }
-        public bool IsRipChat { get; }
-        public bool IsAllowed { get; set; }
+        public bool Intercom { get; }
+        public bool Radio { get; }
+        public bool MimicAs939 { get; }
+        public bool ScpChat { get; }
+        public bool RipChat { get; }
+        public bool Allowed { get; set; }
     }
     public class RagdollSpawnEvent : EventArgs
     {
-        private int playerId;
         public RagdollSpawnEvent(
             Player killer,
             Player owner,
-            Vector3 position,
-            Quaternion rotation,
-            RoleType roleType,
-            PlayerStats.HitInfo hitInfo,
-            bool isRecallAllowed,
-            string dissonanceId,
-            string playerName,
-            int playerId,
-            bool isAllowed = true)
+            Controllers.Ragdoll ragdoll,
+            bool allowed = true)
         {
             Killer = killer;
             Owner = owner;
-            Position = position;
-            Rotation = rotation;
-            RoleType = roleType;
-            HitInfo = hitInfo;
-            IsRecallAllowed = isRecallAllowed;
-            DissonanceId = dissonanceId;
-            PlayerNickname = playerName;
-            PlayerId = playerId;
-            IsAllowed = isAllowed;
+            Ragdoll = ragdoll;
+            Allowed = allowed;
         }
         public Player Killer { get; }
         public Player Owner { get; }
-        public Vector3 Position { get; set; }
-        public Quaternion Rotation { get; set; }
-        public RoleType RoleType { get; set; }
-        public PlayerStats.HitInfo HitInfo { get; set; }
-        public bool IsRecallAllowed { get; set; }
-        public string DissonanceId { get; set; }
-        public string PlayerNickname { get; set; }
-        public int PlayerId
-        {
-            get => playerId;
-            set
-            {
-                if (Player.Get(value) == null)
-                    return;
-
-                playerId = value;
-            }
-        }
-        public bool IsAllowed { get; set; }
+        public Controllers.Ragdoll Ragdoll { get; }
+        public bool Allowed { get; set; }
     }
-    public class UsedMedicalEvent : EventArgs
+    public class MedicalUsedEvent : EventArgs
     {
-        public UsedMedicalEvent(Player player, ItemType item)
+        public MedicalUsedEvent(Player player, ItemType item)
         {
             Player = player;
             Item = item;
@@ -445,64 +408,64 @@ namespace Qurre.API.Events
         public Player Player { get; }
         public ItemType Item { get; }
     }
-    public class UsingMedicalEvent : UsedMedicalEvent
+    public class MedicalUsingEvent : MedicalUsedEvent
     {
-        public UsingMedicalEvent(Player player, ItemType item, float cooldown, bool isAllowed = true) : base(player, item)
+        public MedicalUsingEvent(Player player, ItemType item, float cooldown, bool allowed = true) : base(player, item)
         {
             Cooldown = cooldown;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public float Cooldown { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
-    public class StoppingMedicalUsingEvent : UsingMedicalEvent
+    public class MedicalStoppingEvent : MedicalUsingEvent
     {
-        public StoppingMedicalUsingEvent(Player player, ItemType item, float cooldown, bool isAllowed = true) : base(player, item, cooldown, isAllowed) { }
+        public MedicalStoppingEvent(Player player, ItemType item, float cooldown, bool allowed = true) : base(player, item, cooldown, allowed) { }
         public new float Cooldown => base.Cooldown;
     }
     public class SyncDataEvent : EventArgs
     {
-        public SyncDataEvent(Player player, Vector2 speed, byte currentAnimation, bool isAllowed = true)
+        public SyncDataEvent(Player player, Vector2 speed, byte currentAnimation, bool allowed = true)
         {
             Player = player;
             Speed = speed;
             CurrentAnimation = currentAnimation;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public Vector2 Speed { get; }
         public byte CurrentAnimation { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class ThrowGrenadeEvent : EventArgs
     {
-        public ThrowGrenadeEvent(Player player, GrenadeManager grenadeManager, int id, bool isSlow, double fuseTime, bool isAllowed = true)
+        public ThrowGrenadeEvent(Player player, GrenadeManager grenadeManager, int id, bool slow, double fuseTime, bool allowed = true)
         {
             Player = player;
             GrenadeManager = grenadeManager;
             Id = id;
-            IsSlow = isSlow;
+            Slow = slow;
             FuseTime = fuseTime;
-            IsAllowed = isAllowed;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public GrenadeManager GrenadeManager { get; }
         public int Id { get; }
-        public bool IsSlow { get; set; }
+        public bool Slow { get; set; }
         public double FuseTime { get; set; }
-        public bool IsAllowed { get; set; }
+        public bool Allowed { get; set; }
     }
     public class TeslaTriggerEvent : EventArgs
     {
-        public TeslaTriggerEvent(Player player, bool isInHurtingRange, bool isTriggerable = true)
+        public TeslaTriggerEvent(Player player, bool inHurtingRange, bool triggerable = true)
         {
             Player = player;
-            IsInHurtingRange = isInHurtingRange;
-            IsTriggerable = isTriggerable;
+            InHurtingRange = inHurtingRange;
+            Triggerable = triggerable;
         }
         public Player Player { get; }
-        public bool IsInHurtingRange { get; set; }
-        public bool IsTriggerable { get; set; }
+        public bool InHurtingRange { get; set; }
+        public bool Triggerable { get; set; }
     }
     public class SpawnEvent : EventArgs
     {

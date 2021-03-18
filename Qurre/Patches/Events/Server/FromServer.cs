@@ -22,7 +22,7 @@ namespace Qurre.Patches.Events.Server
                 {
                     __instance.GCT.SendToClient(__instance.connectionToClient, ev.ReturnMessage, ev.Color);
                 }
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (Exception e)
             {

@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.PlayeR
                 var ev = new KickedEvent(API.Player.Get(player), message);
                 Qurre.Events.Player.kicked(ev);
                 message = ev.Reason;
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (Exception e)
             {

@@ -15,9 +15,9 @@ namespace Qurre.Patches.Events.PlayeR
                 var ev = new ThrowGrenadeEvent(API.Player.Get(__instance.gameObject), __instance, id, slowThrow, time);
                 Qurre.Events.Player.throwGrenade(ev);
                 id = ev.Id;
-                slowThrow = ev.IsSlow;
+                slowThrow = ev.Slow;
                 time = ev.FuseTime;
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (Exception e)
             {

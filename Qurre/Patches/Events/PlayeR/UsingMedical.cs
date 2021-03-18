@@ -23,10 +23,10 @@ namespace Qurre.Patches.Events.PlayeR
                     if (__instance.usableItems[i].inventoryID == __instance.CAWI_hub().inventory.curItem &&
                         __instance.usableCooldowns[i] <= 0.0)
                     {
-                        var ev = new UsingMedicalEvent(API.Player.Get(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
-                        Qurre.Events.Player.usingMedical(ev);
+                        var ev = new MedicalUsingEvent(API.Player.Get(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
+                        Qurre.Events.Player.medicalUsing(ev);
                         __instance.cooldown = ev.Cooldown;
-                        if (ev.IsAllowed)
+                        if (ev.Allowed)
                             Timing.RunCoroutine(__instance.UseMedicalItem(i), Segment.FixedUpdate);
                     }
                 }

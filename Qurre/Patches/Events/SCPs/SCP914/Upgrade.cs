@@ -5,7 +5,7 @@ using HarmonyLib;
 using Mirror;
 using UnityEngine;
 using Qurre.API;
-using static Qurre.API.Events.SCP914;
+using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP914
 {
@@ -35,9 +35,9 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                 }
                 var ev = new UpgradeEvent(__instance, __instance.Scp914_players().Select(player => Player.Get(player.gameObject)).ToList(), __instance.Scp914_items(), __instance.knobState);
                 Qurre.Events.SCPs.SCP914.upgrade(ev);
-                var players = ev.Players.Select(player => player.CharacterClassManager).ToList();
+                var players = ev.Players.Select(player => player.ClassManager).ToList();
                 __instance.MoveObjects(ev.Items, players);
-                if (ev.IsAllowed)
+                if (ev.Allowed)
                     __instance.UpgradeObjects(ev.Items, players);
                 return false;
             }

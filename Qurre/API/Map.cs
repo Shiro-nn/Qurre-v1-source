@@ -3,154 +3,59 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using LightContainmentZoneDecontamination;
 using Mirror;
 using RemoteAdmin;
-using Scp914;
 using Respawning;
 using Interactables.Interobjects.DoorUtils;
-
+using _door = Qurre.API.Controllers.Door;
+using _lift = Qurre.API.Controllers.Lift;
+using _ragdoll = Qurre.API.Controllers.Ragdoll;
+using _workStation = Qurre.API.Controllers.WorkStation;
+using Qurre.API.Controllers;
+using static QurreModLoader.umm;
 namespace Qurre.API
 {
-	public static class Map
+	public class Map
 	{
 		public static int roundtime = 0;
-		private static Player host;
-		private static Inventory hinv;
-		private static Broadcast bc;
-		private static DecontaminationController dc;
-		private static List<Room> rms = new List<Room>();
-		private static List<DoorVariant> drs = new List<DoorVariant>();
-		private static List<Lift> lfs = new List<Lift>();
-		private static List<TeslaGate> tgs = new List<TeslaGate>();
-		public static Player Host
+		public static Alpha Alpha { get; private set; } = new Alpha();
+		public static Decontamination DecontaminationLCZ { get; private set; } = new Decontamination();
+		public static Heavy Heavy { get; private set; } = new Heavy();
+		public static Controllers.Scp914 Scp914 { get; private set; } = new Controllers.Scp914();
+		public static List<_door> Doors { get; } = new List<_door>();
+		public static List<_lift> Lifts { get; } = new List<_lift>();
+		public static List<Generator> Generators { get; } = new List<Generator>();
+		public static List<_ragdoll> Ragdolls { get; } = new List<_ragdoll>();
+		public static List<Room> Rooms { get; } = new List<Room>();
+		public static List<Tesla> Teslas { get; } = new List<Tesla>();
+		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
+		public static Controllers.Broadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
-			get
-			{
-				if (host == null)
-					host = Player.Get(PlayerManager.localPlayer);
-				return host;
-			}
+			var bc = new Controllers.Broadcast(Server.Host, message, duration);
+			Server.Host.Broadcasts.Add(bc, instant);
+			return bc;
 		}
-		public static Inventory InventoryHost
-		{
-			get
-			{
-				if (hinv == null)
-					hinv = Player.Get(PlayerManager.localPlayer).Inventory;
-				return hinv;
-			}
-		}
-		public static bool FriendlyFire
-		{
-			get
-			{
-				return ServerConsole.FriendlyFire;
-			}
-			set
-			{
-				ServerConsole.FriendlyFire = value;
-				foreach (Player pl in Player.List) pl.FriendlyFire = value;
-			}
-		}
-		internal static Broadcast BroadcastComponent
-		{
-			get
-			{
-				if (bc == null)
-					bc = PlayerManager.localPlayer.GetComponent<Broadcast>();
-				return bc;
-			}
-		}
-		internal static DecontaminationController DecontaminationLCZ
-		{
-			get
-			{
-				if (dc == null)
-					dc = PlayerManager.localPlayer.GetComponent<DecontaminationController>();
-
-				return dc;
-			}
-		}
-		public static List<Room> Rooms
-		{
-			get
-			{
-				if (rms == null || rms.Count == 0)
-					rms = Object.FindObjectsOfType<Transform>().Where(transform => transform.CompareTag("Room")).Select(obj => new Room { Name = obj.name, Position = obj.position, Transform = obj }).ToList();
-				return rms;
-			}
-		}
-		public static List<DoorVariant> Doors
-		{
-			get
-			{
-				if (drs == null || drs.Count == 0)
-					drs = Object.FindObjectsOfType<DoorVariant>().ToList();
-				return drs;
-			}
-		}
-		public static List<Lift> Lifts
-		{
-			get
-			{
-				if (lfs == null || lfs.Count == 0)
-					lfs = Object.FindObjectsOfType<Lift>().ToList();
-				return lfs;
-			}
-		}
-		public static List<TeslaGate> TeslaGates
-		{
-			get
-			{
-				if (tgs == null || tgs.Count == 0)
-					tgs = Object.FindObjectsOfType<TeslaGate>().ToList();
-
-				return tgs;
-			}
-		}
-		public static Pickup ItemSpawn(ItemType itemType, float durability, Vector3 position, Quaternion rotation = default, int sight = 0, int barrel = 0, int other = 0)
-			=> InventoryHost.SetPickup(itemType, durability, position, rotation, sight, barrel, other);
-		public static void Broadcast(string message, ushort duration, Broadcast.BroadcastFlags flag = 0)
-			=> BroadcastComponent.RpcAddElement(message, duration, flag);
-		public static void ClearBroadcasts() => BroadcastComponent.RpcClearElements();
+		public static void ClearBroadcasts() => Server.Host.Broadcasts.Clear();
 		public static Vector3 GetRandomSpawnPoint(RoleType roleType)
 		{
 			GameObject randomPosition = Object.FindObjectOfType<SpawnpointManager>().GetRandomPosition(roleType);
-
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
 		}
-		public static IEnumerable<Room> GetRooms() => Rooms;
-		public static IEnumerable<Player> HubsInRoom(this Room room) => Player.List.Where(x => !x.IsHost && x.CurrentRoom.Name == room.Name);
-		public static int ActivatedGenerators => Generator079.mainGenerator.totalVoltage;
 		public static void TurnOffLights(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
-		public static void SpawnRagdoll(RoleType role, string name, Vector3 position, Quaternion rotation, string ownerID, string ownerNickname, int playerID) => PlayerManager.localPlayer.GetComponent<RagdollManager>().SpawnRagdoll(new Vector3(position.x, position.y, position.z), rotation, new Vector3(0, 0, 0), (int)role, new PlayerStats.HitInfo(), false, ownerID, ownerNickname, playerID);
-		public static GameObject SpawnBrokenRagdoll(RoleType role, Vector3 position, Vector3 rotation, Vector3 scale)
-		{
-			GameObject ragdoll = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Ragdoll_" + ((int)role).ToString()));
-			ragdoll.transform.position = position;
-			ragdoll.transform.eulerAngles = rotation;
-			ragdoll.transform.localScale = scale;
-			NetworkServer.Spawn(ragdoll);
-			return ragdoll;
-		}
 		public static void SpawnGrenade(string grenadeType, Vector3 position)
 		{
 			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));
 			grenade.transform.position = position;
 			NetworkServer.Spawn(grenade);
 		}
-		public static GameObject SpawnItem(ItemType itemType, Vector3 position, Vector3 rotation, Vector3 scale)
+		public static void Explode(Vector3 position, GrenadeType grenadeType = GrenadeType.Grenade, Player player = null)
 		{
-			Pickup yesnt = PlayerManager.localPlayer.GetComponent<Inventory>().SetPickup((ItemType)itemType, -4.656647E+11f, position, Quaternion.identity, 0, 0, 0);
-
-			GameObject gameObject = yesnt.gameObject;
-			gameObject.transform.localScale = scale;
-			gameObject.transform.eulerAngles = rotation;
-
-			NetworkServer.UnSpawn(gameObject);
-			NetworkServer.Spawn(yesnt.gameObject);
-			return yesnt.gameObject;
+			if (player == null) player = Server.Host;
+			var component = player.GrenadeManager;
+			var component2 = Object.Instantiate(component.availableGrenades[(int)grenadeType].grenadeInstance).GetComponent<Grenades.Grenade>();
+			component2.Grenade_FullInitData(component, position, Quaternion.identity, Vector3.zero, Vector3.zero, Team.RIP);
+			component2.NetworkfuseTime = 0.10000000149011612;
+			NetworkServer.Spawn(component2.gameObject);
 		}
 		public static GameObject SpawnBot(RoleType role, string name, float health, Vector3 position, Vector3 rotation, Vector3 scale)
 		{
@@ -191,54 +96,30 @@ namespace Qurre.API
 
 			return hub.gameObject;
 		}
-		public static void CallCICar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
-		public static void CallMTFHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
-		public static void PlayCIEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
 		public static void ContainSCP106(ReferenceHub executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().CallRpcContain106(executor.gameObject);
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
 		public static void SetFemurBreakerState(bool enabled) => Object.FindObjectOfType<LureSubjectContainer>().SetState(enabled);
 		public static void RemoveTeslaGates() { foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) { Object.Destroy(teslaGate.gameObject); } }
-		public static void RemoveDoors() { foreach (DoorVariant dr in drs) { Object.Destroy(dr.gameObject); } }
-		public static void SetElevatorsMovingSpeed(float newSpeed) { foreach (Lift lft in lfs) { lft.movingSpeed = newSpeed; } }
-		public static void SetIntercomSpeaker(ReferenceHub player)
+		public static void RemoveDoors() { foreach (_door dr in Doors) { Object.Destroy(dr.GameObject); } }
+		public static void SetElevatorsMovingSpeed(float newSpeed) { foreach (_lift lft in Lifts) { lft.MovingSpeed = newSpeed; } }
+		public static void SetIntercomSpeaker(Player player)
 		{
 			if (player != null)
 			{
-				GameObject gameObject = player.gameObject;
+				GameObject gameObject = player.GameObject;
 				gameObject.GetComponent<CharacterClassManager>().IntercomMuted = false;
 				Intercom.host.RequestTransmission(gameObject);
 				return;
 			}
 			foreach (CharacterClassManager ccm in Object.FindObjectsOfType<CharacterClassManager>())
 			{
-				if (ccm.IntercomMuted)
-				{
-					ccm.IntercomMuted = false;
-				}
+				if (ccm.IntercomMuted) ccm.IntercomMuted = false;
 			}
 		}
-		public static int GetMaxPlayers()
-		{
-			CustomNetworkManager nm = new CustomNetworkManager();
-			return nm.maxConnections;
-		}
-		public static void SetMaxPlayers(int amount)
-		{
-			CustomNetworkManager nm = new CustomNetworkManager();
-			nm.maxConnections = amount;
-		}
-		public static void DisableDecontamination(bool value) => DecontaminationController.Singleton.disableDecontamination = value;
+		public static void PlayCIEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
 		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);
 		public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
-		public static void Shake()
-		{
-			AlphaWarheadController host = AlphaWarheadController.Host;
-			if (host != null)
-			{
-				host.CallRpcShake(true);
-			}
-		}
 		public static void SetLightsIntensivity(float intensive)
 		{
 			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
@@ -250,7 +131,6 @@ namespace Qurre.API
 				}
 			}
 		}
-
 		public static void SetLightsIntensivity(float intensive, ZoneType zone)
 		{
 			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<global::FlickerableLightController>())
@@ -277,7 +157,7 @@ namespace Qurre.API
 							}
 							return;
 						default:
-							Log.Debug("Map: Tryed to use UNDEFINED zone");
+							Log.Debug("smail, UNDEFINED zone");
 							return;
 					}
 					if (component.currentZonesAndRooms[0].currentZone == b)
@@ -292,11 +172,54 @@ namespace Qurre.API
 			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
 			{
 				Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
-				if (component != null && component.type == Scp079Interactable.InteractableType.LightController && component.currentZonesAndRooms.Count != 0 && component.currentZonesAndRooms[0].currentRoom.Contains(room))
+				if (component != null && component.type == Scp079Interactable.InteractableType.LightController &&
+					component.currentZonesAndRooms.Count != 0 && component.currentZonesAndRooms[0].currentRoom.Contains(room))
 				{
 					flickerableLightController.ServerSetLightIntensity(intensive);
 				}
 			}
+		}
+		internal static void AddObjects()
+		{
+			DecontaminationLCZ = new Decontamination();
+			Alpha = new Alpha();
+			Heavy = new Heavy();
+			Scp914 = new Controllers.Scp914();
+			foreach (var tesla in Server.GetObjectsOf<TeslaGate>())
+				Teslas.Add(new Tesla(tesla));
+			foreach (var room in Server.GetObjectsOf<Transform>().Where(x => x.CompareTag("Room") || x.name == "Root_*&*Outside Cams" || x.name == "PocketWorld"))
+				Rooms.Add(new Room(room.gameObject));
+			foreach (var station in Server.GetObjectsOf<global::WorkStation>())
+				WorkStations.Add(new _workStation(station));
+			foreach (var door in Server.GetObjectsOf<DoorVariant>())
+				Doors.Add(new _door(door));
+			foreach (var interactable in Interface079.singleton.allInteractables)
+			{
+				foreach (var zoneroom in interactable.currentZonesAndRooms)
+				{
+					try
+					{
+						var room = Rooms.FirstOrDefault(x => x.Name == zoneroom.currentRoom);
+						var door = interactable.GetComponentInParent<Interactables.Interobjects.DoorUtils.DoorVariant>();
+						if (room == null || door == null) continue;
+						var sdoor = Doors.FirstOrDefault(x => x.GameObject == door.gameObject);
+						sdoor.Rooms.Add(room);
+						room.Doors.Add(sdoor);
+					}
+					catch { }
+				}
+			}
+		}
+		internal static void ClearObjects()
+		{
+			Teslas.Clear();
+			Doors.Clear();
+			Lifts.Clear();
+			Rooms.Clear();
+			Generators.Clear();
+			WorkStations.Clear();
+			Ragdolls.Clear();
+			Heavy.Recontained079 = false;
 		}
 	}
 }

@@ -2,7 +2,7 @@
 using HarmonyLib;
 using Mirror;
 using UnityEngine;
-using static Qurre.API.Events.SCP049;
+using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP049
 {
@@ -40,8 +40,7 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                         return false;
                     var ev = new FinishRecallEvent(API.Player.Get(__instance.Hub.gameObject), API.Player.Get(target.gameObject));
                     Qurre.Events.SCPs.SCP049.finishrecall(ev);
-                    if (!ev.IsAllowed)
-                        return false;
+                    if (!ev.Allowed) return false;
                     RoundSummary.changed_into_zombies++;
                     target.characterClassManager.SetClassID(RoleType.Scp0492);
                     target.GetComponent<PlayerStats>().Health =
@@ -82,8 +81,7 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                         return false;
                     var ev = new StartRecallEvent(API.Player.Get(__instance.Hub.gameObject), API.Player.Get(target.gameObject));
                     Qurre.Events.SCPs.SCP049.startrecall(ev);
-                    if (!ev.IsAllowed)
-                        return false;
+                    if (!ev.Allowed) return false;
                     __instance.Scp049_recallObjectServer(target.gameObject);
                     __instance.Scp049_recallProgressServer(0f);
                     __instance.Scp049_recallInProgressServer(true);

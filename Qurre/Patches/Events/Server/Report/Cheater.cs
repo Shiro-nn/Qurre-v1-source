@@ -2,7 +2,7 @@
 using System;
 using HarmonyLib;
 using Qurre.API;
-using static Qurre.API.Events.Report;
+using Qurre.API.Events;
 namespace Qurre.Patches.Events.Server.Report
 {
     [HarmonyPatch(typeof(CheaterReport), nameof(CheaterReport.IssueReport))]
@@ -14,10 +14,10 @@ namespace Qurre.Patches.Events.Server.Report
             {
                 if (reportedUserId == reporterUserId)
                     reporter.SendToClient(__instance.connectionToClient, "smart, smart" + Environment.NewLine, "yellow");
-                var ev = new CheaterEvent(Player.Get(reporterUserId), Player.Get(reportedUserId), ServerConsole.Port, reason);
+                var ev = new ReportCheaterEvent(Player.Get(reporterUserId), Player.Get(reportedUserId), ServerConsole.Port, reason);
                 Qurre.Events.Server.Report.cheater(ev);
                 reason = ev.Reason;
-                return ev.IsAllowed;
+                return ev.Allowed;
             }
             catch (Exception e)
             {
