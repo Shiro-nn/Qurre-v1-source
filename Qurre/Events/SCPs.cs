@@ -57,11 +57,9 @@ namespace Qurre.Events
         public static class SCP079
         {
             public static event AllEvents<GeneratorActivateEvent> GeneratorActivate;
-            public static event AllEvents<RecontainEvent> Recontain;
             public static event AllEvents<GetEXPEvent> GetEXP;
             public static event AllEvents<GetLVLEvent> GetLVL;
             public static void generatoractivate(GeneratorActivateEvent ev) => GeneratorActivate.invoke(ev);
-            public static void recontain(RecontainEvent ev) => Recontain.invoke(ev);
             public static void getEXP(GetEXPEvent ev) => GetEXP.invoke(ev);
             public static void getLVL(GetLVLEvent ev) => GetLVL.invoke(ev);
         }

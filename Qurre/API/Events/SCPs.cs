@@ -180,11 +180,6 @@ namespace Qurre.API.Events
         public GeneratorActivateEvent(Controllers.Generator generator) => Generator = generator;
         public Controllers.Generator Generator { get; }
     }
-    public class RecontainEvent : EventArgs
-    {
-        public RecontainEvent(Player target) => Target = target;
-        public Player Target { get; }
-    }
     public class GetEXPEvent : EventArgs
     {
         public GetEXPEvent(Player player, ExpGainType type, float amount, bool allowed = true)

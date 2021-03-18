@@ -4,7 +4,7 @@ using Qurre.API;
 using System;
 namespace Qurre.Patches.Controllers
 {
-    [HarmonyPatch(typeof(DoorSpawnpoint), "Start", new Type[] { typeof(DoorSpawnpoint) })]
+    [HarmonyPatch(typeof(DoorSpawnpoint), "Start")]
     public class DoorController
     {
         private static bool Prefix(DoorSpawnpoint __instance)

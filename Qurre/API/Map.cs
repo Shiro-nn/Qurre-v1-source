@@ -21,6 +21,7 @@ namespace Qurre.API
 		public static Alpha Alpha { get; private set; } = new Alpha();
 		public static Decontamination DecontaminationLCZ { get; private set; } = new Decontamination();
 		public static Heavy Heavy { get; private set; } = new Heavy();
+		public static MapListBroadcasts Broadcasts { get; private set; } = new MapListBroadcasts();
 		public static Controllers.Scp914 Scp914 { get; private set; } = new Controllers.Scp914();
 		public static List<_door> Doors { get; } = new List<_door>();
 		public static List<_lift> Lifts { get; } = new List<_lift>();
@@ -29,10 +30,10 @@ namespace Qurre.API
 		public static List<Room> Rooms { get; } = new List<Room>();
 		public static List<Tesla> Teslas { get; } = new List<Tesla>();
 		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
-		public static Controllers.Broadcast Broadcast(string message, ushort duration, bool instant = false)
+		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
-			var bc = new Controllers.Broadcast(Server.Host, message, duration);
-			Server.Host.Broadcasts.Add(bc, instant);
+			var bc = new MapBroadcast(Server.Host, message, duration);
+			Broadcasts.Add(bc, instant);
 			return bc;
 		}
 		public static void ClearBroadcasts() => Server.Host.Broadcasts.Clear();
@@ -184,6 +185,7 @@ namespace Qurre.API
 			DecontaminationLCZ = new Decontamination();
 			Alpha = new Alpha();
 			Heavy = new Heavy();
+			Broadcasts = new MapListBroadcasts();
 			Scp914 = new Controllers.Scp914();
 			foreach (var tesla in Server.GetObjectsOf<TeslaGate>())
 				Teslas.Add(new Tesla(tesla));

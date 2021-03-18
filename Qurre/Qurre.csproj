@@ -164,7 +164,6 @@
     <Compile Include="Patches\Events\PlayeR\Interact.cs" />
     <Compile Include="Patches\Events\PlayeR\Damage.cs" />
     <Compile Include="Patches\Events\PlayeR\Cuff.cs" />
-    <Compile Include="Patches\Events\PlayeR\Died.cs" />
     <Compile Include="Patches\Events\PlayeR\RoleChange.cs" />
     <Compile Include="Patches\Events\PlayeR\ItemChange.cs" />
     <Compile Include="Patches\Events\PlayeR\GroupChange.cs" />

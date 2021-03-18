@@ -11,7 +11,7 @@ using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.Scp173
 {
-    [HarmonyPatch(typeof(Scp173PlayerScript), "FixedUpdate", new Type[] { typeof(Scp173PlayerScript) })]
+    [HarmonyPatch(typeof(Scp173PlayerScript), "FixedUpdate")]
     internal static class Blink
     {
         private static bool Prefix(Scp173PlayerScript __instance)

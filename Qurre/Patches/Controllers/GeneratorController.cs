@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 namespace Qurre.Patches.Controllers
 {
-    [HarmonyPatch(typeof(Generator079), "Awake", new Type[] { typeof(Generator079) })]
+    [HarmonyPatch(typeof(Generator079), "Awake")]
     internal static class GeneratorController
     {
         private static void Postfix(Generator079 __instance)
