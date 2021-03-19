@@ -11,7 +11,7 @@ namespace Qurre.API.Controllers
             var gameobject = Object.Instantiate(role.model_ragdoll, pos + role.ragdoll_offset.position, Quaternion.Euler(rot.eulerAngles + role.ragdoll_offset.rotation));
             NetworkServer.Spawn(gameobject);
             ragdoll = gameobject.GetComponent<global::Ragdoll>();
-            ragdoll.Networkowner = new global::Ragdoll.Info(owner.GetComponent<Dissonance.Integrations.MirrorIgnorance.MirrorIgnorancePlayer>().PlayerId, owner.Nickname, info, role, owner.Id);
+            ragdoll.Networkowner = new global::Ragdoll.Info(owner.UserId, owner.Nickname, info, role, owner.Id);
             ragdoll.NetworkallowRecall = allowRecall;
             ragdoll.NetworkPlayerVelo = velocity;
             Map.Ragdolls.Add(this);
@@ -46,7 +46,7 @@ namespace Qurre.API.Controllers
             {
                 ragdoll.owner.PlayerId = value.Id;
                 ragdoll.owner.Nick = value.Nickname;
-                ragdoll.owner.ownerHLAPI_id = value.GetComponent<Dissonance.Integrations.MirrorIgnorance.MirrorIgnorancePlayer>().PlayerId;
+                ragdoll.owner.ownerHLAPI_id = value.UserId;
             }
         }
         public bool AllowRecall

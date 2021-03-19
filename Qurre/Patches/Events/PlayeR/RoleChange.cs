@@ -14,11 +14,11 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                if (!ply.GetComponent<CharacterClassManager>().IsVerified)
-                    return false;
+                if (!ply.GetComponent<CharacterClassManager>().IsVerified) return false;
+                API.Player pl = API.Player.Get(ply);
                 var sIL = new List<ItemType>();
                 foreach (ItemType item in __instance.Classes.SafeGet(classid).startItems) sIL.Add(item);
-                var cRE = new RoleChangeEvent(API.Player.Get(ply), classid, sIL, lite, escape);
+                var cRE = new RoleChangeEvent(pl, classid, sIL, lite, escape);
                 if (cRE.NewRole == RoleType.Spectator) cRE.Player.DropItems();
                 Player.rolechange(cRE);
                 lite = cRE.SavePos;
@@ -28,15 +28,14 @@ namespace Qurre.Patches.Events.PlayeR
                 classid = cRE.NewRole;
                 if (escape)
                 {
-                    var eE = new EscapeEvent(API.Player.Get(ply), classid);
+                    var eE = new EscapeEvent(pl, classid);
                     Player.escape(eE);
                     if (!eE.Allowed) return false;
                     classid = eE.NewRole;
                 }
-                ply.GetComponent<CharacterClassManager>().SetClassIDAdv(classid, lite, escape);
-                ply.GetComponent<PlayerStats>().SetHPAmount(__instance.Classes.SafeGet(classid).maxHP);
-                if (lite)
-                    return false;
+                pl.ClassManager.SetClassIDAdv(classid, lite, escape);
+                pl.PlayerStats.SetHPAmount(__instance.Classes.SafeGet(classid).maxHP);
+                if (lite) return false;
                 Inventory inv = ply.GetComponent<Inventory>();
                 List<Inventory.SyncItemInfo> list = new List<Inventory.SyncItemInfo>();
                 if (escape && CharacterClassManager.KeepItemsAfterEscaping)

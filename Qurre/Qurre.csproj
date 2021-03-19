@@ -120,6 +120,7 @@
     <Compile Include="Patches\Controllers\Scp914Controller.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
+    <Compile Include="Patches\Events\PlayeR\Dead.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\Blink.cs" />
     <Compile Include="Patches\Controllers\GeneratorController.cs" />
     <Compile Include="Patches\Controllers\LiftController.cs" />

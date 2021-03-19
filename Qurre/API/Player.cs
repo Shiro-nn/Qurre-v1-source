@@ -13,7 +13,7 @@ using RemoteAdmin;
 using Qurre.API.Controllers;
 namespace Qurre.API
 {
-	public class Player : MonoBehaviour
+	public class Player
 	{
 		private ReferenceHub rh;
 		private GameObject go;
@@ -282,6 +282,23 @@ namespace Qurre.API
 		}
 
 		public int Ping => Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer.Peers[Connection.connectionId].Ping;
+		public uint Ammo5
+		{
+			get { try { return Ammo[0]; } catch { return 0; } }
+			set { try { Ammo[0] = value; } catch { } }
+		}
+
+		public uint Ammo7
+		{
+			get { try { return Ammo[1]; } catch { return 0; } }
+			set { try { Ammo[1] = value; } catch { } }
+		}
+
+		public uint Ammo9
+		{
+			get { try { return Ammo[2]; } catch { return 0; } }
+			set { try { Ammo[2] = value; } catch { } }
+		}
 		public static IEnumerable<Player> Get(Team team) => List.Where(player => player.Team == team);
 		public static IEnumerable<Player> Get(RoleType role) => List.Where(player => player.Role == role);
 		public static Player Get(CommandSender sender) => Get(sender.SenderId);
@@ -439,7 +456,7 @@ namespace Qurre.API
 			Connection.Send(msg);
 			NetworkWriterPool.Recycle(writer);
 		}
-		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => ClassManager.SetPlayersClass(newRole, GameObject, lite, escape);
+		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => ClassManager.SetClassIDAdv(newRole, lite, escape);
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)
 		{
 			var bc = new Controllers.Broadcast(this, message, time);
