@@ -12,6 +12,11 @@ namespace Qurre.API.Controllers
         public bool IsUsingPortal => script.goingViaThePortal;
         public HashSet<Player> PocketPlayers { get; } = new HashSet<Player>();
         public void CreatePortal() => script.CreatePortalInCurrentPosition();
+        public void CreatePortal(Vector3 position)
+        {
+            script.CreatePortalInCurrentPosition();
+            script.portalPosition = position;
+        }
         public void UsePortal() => script.UseTeleport();
         public void DeletePortal() => script.DeletePortal();
         public void Contain() => script.Contain(player.ReferenceHub);

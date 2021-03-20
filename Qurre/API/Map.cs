@@ -42,7 +42,6 @@ namespace Qurre.API
 			GameObject randomPosition = Object.FindObjectOfType<SpawnpointManager>().GetRandomPosition(roleType);
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
 		}
-		public static void TurnOffLights(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
 		public static void SpawnGrenade(string grenadeType, Vector3 position)
 		{
 			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));
@@ -58,28 +57,50 @@ namespace Qurre.API
 			component2.NetworkfuseTime = 0.10000000149011612;
 			NetworkServer.Spawn(component2.gameObject);
 		}
-		public static GameObject SpawnBot(RoleType role, string name, float health, Vector3 position, Vector3 rotation, Vector3 scale)
-		{
-			GameObject gameObject = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
-			CharacterClassManager component = gameObject.GetComponent<CharacterClassManager>();
-			if (component != null)
-			{
-				component.CurClass = role;
-				gameObject.GetComponent<NicknameSync>().DisplayName = name;
-				gameObject.GetComponent<PlayerStats>().Health = health;
-				gameObject.GetComponent<QueryProcessor>().PlayerId = 1337228;
-				gameObject.GetComponent<QueryProcessor>().NetworkPlayerId = 1337228;
-				gameObject.transform.localScale = scale;
-				gameObject.transform.position = position;
-				gameObject.transform.eulerAngles = rotation;
-				if (health == -1)
-					component.GodMode = true;
+        public static GameObject SpawnBot(RoleType role, string name, float health, Vector3 position, Vector3 rotation, Vector3 scale)
+        {
+            GameObject gameObject = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
+            CharacterClassManager component = gameObject.GetComponent<CharacterClassManager>();
+            if (component != null)
+            {
+                component.CurClass = role;
+                gameObject.GetComponent<NicknameSync>().DisplayName = name;
+                gameObject.GetComponent<PlayerStats>().Health = health;
+                gameObject.GetComponent<QueryProcessor>().PlayerId = 1337228;
+                gameObject.GetComponent<QueryProcessor>().NetworkPlayerId = 1337228;
+                gameObject.transform.localScale = scale;
+                gameObject.transform.position = position;
+                gameObject.transform.eulerAngles = rotation;
+                if (health == -1)
+                    component.GodMode = true;
 
-				NetworkServer.Spawn(gameObject);
-			}
-			return gameObject;
-		}
-		public static GameObject SpawnPlayer(RoleType role, string name, string userSteamID, Vector3 position, Vector3 rotation, Vector3 scale)
+                NetworkServer.Spawn(gameObject);
+            }
+            return gameObject;
+        }
+        public static GameObject SpawnBot(RoleType role, string name, float health, Inventory.SyncItemInfo item, Vector3 position, Vector3 rotation, Vector3 scale)
+        {
+            GameObject gameObject = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
+            CharacterClassManager component = gameObject.GetComponent<CharacterClassManager>();
+            if (component != null)
+            {
+                component.CurClass = role;
+                gameObject.GetComponent<NicknameSync>().DisplayName = name;
+                gameObject.GetComponent<PlayerStats>().Health = health;
+                gameObject.GetComponent<QueryProcessor>().PlayerId = 1337228;
+				gameObject.GetComponent<QueryProcessor>().NetworkPlayerId = 1337228;
+				gameObject.GetComponent<Player>().CurrentItem = item;
+				gameObject.transform.localScale = scale;
+                gameObject.transform.position = position;
+                gameObject.transform.eulerAngles = rotation;
+				if (health == -1)
+                    component.GodMode = true;
+
+                NetworkServer.Spawn(gameObject);
+            }
+            return gameObject;
+        }
+        public static GameObject SpawnPlayer(RoleType role, string name, string userSteamID, Vector3 position, Vector3 rotation, Vector3 scale)
 		{
 			ReferenceHub hub = ReferenceHub.GetHub(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
 
@@ -121,65 +142,6 @@ namespace Qurre.API
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
 		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);
 		public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
-		public static void SetLightsIntensivity(float intensive)
-		{
-			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
-			{
-				Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
-				if (component != null && component.type == Scp079Interactable.InteractableType.LightController)
-				{
-					flickerableLightController.ServerSetLightIntensity(intensive);
-				}
-			}
-		}
-		public static void SetLightsIntensivity(float intensive, ZoneType zone)
-		{
-			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<global::FlickerableLightController>())
-			{
-				Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
-				if (component != null && component.type == Scp079Interactable.InteractableType.LightController && component.currentZonesAndRooms.Count != 0)
-				{
-					string b;
-					switch (zone)
-					{
-						case ZoneType.LightContainment:
-							b = "LightRooms";
-							break;
-						case ZoneType.HeavyContainment:
-							b = "HeavyRooms";
-							break;
-						case ZoneType.Entrance:
-							b = "EntranceRooms";
-							break;
-						case ZoneType.Surface:
-							if (component.optionalObject.transform.position.y > 900f)
-							{
-								flickerableLightController.ServerSetLightIntensity(intensive);
-							}
-							return;
-						default:
-							Log.Debug("smail, UNDEFINED zone");
-							return;
-					}
-					if (component.currentZonesAndRooms[0].currentZone == b)
-					{
-						flickerableLightController.ServerSetLightIntensity(intensive);
-					}
-				}
-			}
-		}
-		public static void SetLightsIntensivity(float intensive, string room)
-		{
-			foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
-			{
-				Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
-				if (component != null && component.type == Scp079Interactable.InteractableType.LightController &&
-					component.currentZonesAndRooms.Count != 0 && component.currentZonesAndRooms[0].currentRoom.Contains(room))
-				{
-					flickerableLightController.ServerSetLightIntensity(intensive);
-				}
-			}
-		}
 		internal static void AddObjects()
 		{
 			DecontaminationLCZ = new Decontamination();

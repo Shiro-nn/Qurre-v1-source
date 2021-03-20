@@ -18,6 +18,6 @@ namespace Qurre.API.Controllers
             }
             else foreach (var gen in Map.Generators.Where(x => !x.Overcharged)) gen.Overcharge();
         }
-        public void LightsOff(float duration, bool onlyHcz = true) => Generator079.mainGenerator.ServerOvercharge(duration, onlyHcz);
+        public void LightsOff(float duration) => Generator079.mainGenerator.ServerOvercharge(duration, true);
     }
 }

@@ -29,33 +29,33 @@ namespace Qurre.API.Controllers
 			AlphaWarheadController.InstantPrepare();
 			AlphaWarheadController.StartDetonation();
 		}
-		public void InstantPrepare() => AlphaWarheadController.InstantPrepare();
-		public void CancelDetonation() => AlphaWarheadController.CancelDetonation();
-		public void Stop() => AlphaWarheadController.CancelDetonation();
-		public void Detonate() => AlphaWarheadController.Detonate();
-		public void Shake() => AlphaWarheadController.CallRpcShake(false);
+		public void InstantPrepare() => awc.InstantPrepare();
+		public void CancelDetonation() => awc.CancelDetonation();
+		public void Stop() => awc.CancelDetonation();
+		public void Detonate() => awc.Detonate();
+		public void Shake() => awc.CallRpcShake(false);
 		public bool Enabled
 		{
-			get => AlphaWarheadNukesitePanel.Networkenabled;
-			set => AlphaWarheadNukesitePanel.Networkenabled = value;
+			get => awnp.Networkenabled;
+			set => awnp.Networkenabled = value;
 		}
-		public bool Detonated => AlphaWarheadController.detonated;
-		public bool CanDetoante => AlphaWarheadController.CanDetonate;
-		public bool Active => AlphaWarheadController.NetworkinProgress;
+		public bool Detonated => awc.detonated;
+		public bool CanDetoante => awc.CanDetonate;
+		public bool Active => awc.NetworkinProgress;
 		public float TimeToDetonation
 		{
-			get => AlphaWarheadController.NetworktimeToDetonation;
-			set => AlphaWarheadController.NetworktimeToDetonation = value;
+			get => awc.NetworktimeToDetonation;
+			set => awc.NetworktimeToDetonation = value;
 		}
 		public bool Locked
 		{
-			get => AlphaWarheadController.Alpha_isLocked();
-			set => AlphaWarheadController.Alpha_isLocked(value);
+			get => awc.Alpha_isLocked();
+			set => awc.Alpha_isLocked(value);
 		}
 		public int Cooldown
 		{
-			get => AlphaWarheadController.cooldown;
-			set => AlphaWarheadController.cooldown = value;
+			get => awc.cooldown;
+			set => awc.cooldown = value;
 		}
 		public static class InsidePanel
 		{
