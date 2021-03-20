@@ -42,6 +42,7 @@ namespace Qurre.API
 			GameObject randomPosition = Object.FindObjectOfType<SpawnpointManager>().GetRandomPosition(roleType);
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
 		}
+		public static void TurnOffLights(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
 		public static void SpawnGrenade(string grenadeType, Vector3 position)
 		{
 			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));
@@ -57,50 +58,26 @@ namespace Qurre.API
 			component2.NetworkfuseTime = 0.10000000149011612;
 			NetworkServer.Spawn(component2.gameObject);
 		}
-        public static GameObject SpawnBot(RoleType role, string name, float health, Vector3 position, Vector3 rotation, Vector3 scale)
-        {
-            GameObject gameObject = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
-            CharacterClassManager component = gameObject.GetComponent<CharacterClassManager>();
-            if (component != null)
-            {
-                component.CurClass = role;
-                gameObject.GetComponent<NicknameSync>().DisplayName = name;
-                gameObject.GetComponent<PlayerStats>().Health = health;
-                gameObject.GetComponent<QueryProcessor>().PlayerId = 1337228;
-                gameObject.GetComponent<QueryProcessor>().NetworkPlayerId = 1337228;
-                gameObject.transform.localScale = scale;
-                gameObject.transform.position = position;
-                gameObject.transform.eulerAngles = rotation;
-                if (health == -1)
-                    component.GodMode = true;
-
-                NetworkServer.Spawn(gameObject);
-            }
-            return gameObject;
-        }
-        public static GameObject SpawnBot(RoleType role, string name, float health, Inventory.SyncItemInfo item, Vector3 position, Vector3 rotation, Vector3 scale)
-        {
-            GameObject gameObject = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
-            CharacterClassManager component = gameObject.GetComponent<CharacterClassManager>();
-            if (component != null)
-            {
-                component.CurClass = role;
-                gameObject.GetComponent<NicknameSync>().DisplayName = name;
-                gameObject.GetComponent<PlayerStats>().Health = health;
-                gameObject.GetComponent<QueryProcessor>().PlayerId = 1337228;
+		public static GameObject SpawnBot(RoleType role, string name, float health, Vector3 position, Vector3 rotation, Vector3 scale)
+		{
+			GameObject gameObject = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
+			CharacterClassManager component = gameObject.GetComponent<CharacterClassManager>();
+			if (component != null)
+			{
+				component.CurClass = role;
+				gameObject.GetComponent<NicknameSync>().DisplayName = name;
+				gameObject.GetComponent<PlayerStats>().Health = health;
+				gameObject.GetComponent<QueryProcessor>().PlayerId = 1337228;
 				gameObject.GetComponent<QueryProcessor>().NetworkPlayerId = 1337228;
-				gameObject.GetComponent<Player>().CurrentItem = item;
 				gameObject.transform.localScale = scale;
-                gameObject.transform.position = position;
-                gameObject.transform.eulerAngles = rotation;
-				if (health == -1)
-                    component.GodMode = true;
-
-                NetworkServer.Spawn(gameObject);
-            }
-            return gameObject;
-        }
-        public static GameObject SpawnPlayer(RoleType role, string name, string userSteamID, Vector3 position, Vector3 rotation, Vector3 scale)
+				gameObject.transform.position = position;
+				gameObject.transform.eulerAngles = rotation;
+				if (health == -1) component.GodMode = true;
+				NetworkServer.Spawn(gameObject);
+			}
+			return gameObject;
+		}
+		public static GameObject SpawnPlayer(RoleType role, string name, string userSteamID, Vector3 position, Vector3 rotation, Vector3 scale)
 		{
 			ReferenceHub hub = ReferenceHub.GetHub(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
 
@@ -109,13 +86,10 @@ namespace Qurre.API
 			hub.nicknameSync.Network_displayName = name;
 			hub.gameObject.name = "CAMERA1";
 			hub.gameObject.tag = "BOT";
-
 			hub.gameObject.transform.localScale = scale;
 			hub.gameObject.transform.position = position;
 			hub.gameObject.transform.eulerAngles = rotation;
-
 			NetworkServer.Spawn(hub.gameObject);
-
 			return hub.gameObject;
 		}
 		public static void ContainSCP106(ReferenceHub executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().CallRpcContain106(executor.gameObject);

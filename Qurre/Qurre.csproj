@@ -69,6 +69,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\Controllers\Broadcast.cs" />
+    <Compile Include="API\Controllers\Lights.cs" />
     <Compile Include="API\Extensions.cs" />
     <Compile Include="API\Controllers\Alpha.cs" />
     <Compile Include="API\Cassie.cs" />

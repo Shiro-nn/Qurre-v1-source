@@ -1,9 +1,8 @@
 ﻿using Qurre.API.Objects;
-using Object = UnityEngine.Object;
-
+using UnityEngine;
 namespace Qurre.API.Controllers
 {
-    class Lights
+    public class Lights
     {
         public static void TurnOff(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
         public static void Intensivity(float intensive)
@@ -50,18 +49,6 @@ namespace Qurre.API.Controllers
                     {
                         flickerableLightController.ServerSetLightIntensity(intensive);
                     }
-                }
-            }
-        }
-        public static void Intensivity(float intensive, string room)
-        {
-            foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
-            {
-                Scp079Interactable component = flickerableLightController.GetComponent<Scp079Interactable>();
-                if (component != null && component.type == Scp079Interactable.InteractableType.LightController &&
-                    component.currentZonesAndRooms.Count != 0 && component.currentZonesAndRooms[0].currentRoom.Contains(room))
-                {
-                    flickerableLightController.ServerSetLightIntensity(intensive);
                 }
             }
         }

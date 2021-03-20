@@ -11,9 +11,6 @@ using Grenades;
 using CustomPlayerEffects;
 using RemoteAdmin;
 using Qurre.API.Controllers;
-using Interactables.Interobjects.DoorUtils;
-using MEC;
-
 namespace Qurre.API
 {
 	public class Player
@@ -672,45 +669,25 @@ namespace Qurre.API
 				default: return Side.NONE;
 			}
 		}
-		public void TeleportToRoom(Player player, RoomType room)
+		public void TeleportToRoom(RoomType room)
 		{
-            Vector3 roompos = Extensions.GetRoom(room).Position;
-            player.Position = roompos;
-        }
-		public void TeleportToRoom(Player player, RoomType room, float delay)
-		{
-            Vector3 roompos = Extensions.GetRoom(room).Position;
-			Timing.CallDelayed(delay, () => player.Position = roompos);
-        }
-		public void TeleportToRandomRoom(Player player)
-		{
-            RoomType room = (RoomType)UnityEngine.Random.Range(1, 48);
-            player.Position = Extensions.GetRoom(room).Position;
-        }
-        public void TeleportToRandomRoom(Player player, float delay)
-        {
-			RoomType room = (RoomType)UnityEngine.Random.Range(1, 48);
-            Timing.CallDelayed(delay, () => player.Position = Extensions.GetRoom(room).Position);
-        }
-        public void TeleportToDoor(Player player, DoorType door)
-        {
-            Vector3 doorpos = Extensions.GetDoor(door).Position;
-            player.Position = doorpos;
-        }
-        public void TeleportToDoor(Player player, DoorType door, float delay)
-        {
-            Vector3 doorpos = Extensions.GetDoor(door).Position;
-			Timing.CallDelayed(delay, () => player.Position = doorpos);
-        }
-        public void TeleportToRandomDoor(Player player)
-        {
-			DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
-			player.Position = Extensions.GetDoor(door).Position;
+			Vector3 roompos = Extensions.GetRoom(room).Position;
+			Position = roompos;
 		}
-        public void TeleportToRandomDoor(Player player, float delay)
-        {
-            DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
-			Timing.CallDelayed(delay, () => player.Position = Extensions.GetDoor(door).Position);
-        }
-    }
+		public void TeleportToRandomRoom()
+		{
+			RoomType room = (RoomType)UnityEngine.Random.Range(1, 48);
+			Position = Extensions.GetRoom(room).Position;
+		}
+		public void TeleportToDoor(DoorType door)
+		{
+			Vector3 doorpos = Extensions.GetDoor(door).Position + Vector3.up;
+			Position = doorpos;
+		}
+		public void TeleportToRandomDoor()
+		{
+			DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
+			Position = Extensions.GetDoor(door).Position + Vector3.up;
+		}
+	}
 }

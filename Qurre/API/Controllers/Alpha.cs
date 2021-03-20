@@ -26,8 +26,8 @@ namespace Qurre.API.Controllers
 		}
 		public void Start()
 		{
-			AlphaWarheadController.InstantPrepare();
-			AlphaWarheadController.StartDetonation();
+			awc.InstantPrepare();
+			awc.StartDetonation();
 		}
 		public void InstantPrepare() => awc.InstantPrepare();
 		public void CancelDetonation() => awc.CancelDetonation();
