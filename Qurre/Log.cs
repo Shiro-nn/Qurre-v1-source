@@ -6,9 +6,9 @@ namespace Qurre
 	public static class Log
 	{
 		internal static bool debug;
-		internal static bool Logging => Plugin.Config.GetBool("Qurre_logging", true);
-		internal static bool AllLogging => Plugin.Config.GetBool("Qurre_all_logging", false);
-		internal static bool AntiFlood => Plugin.Config.GetBool("Qurre_console_anti_flood", true);
+		internal static bool Logging => Plugin.Config.GetBool("Qurre_logging", true) || Plugin.Config.GetBool("qurre_logging", true);
+		internal static bool AllLogging => Plugin.Config.GetBool("Qurre_all_logging", false) || Plugin.Config.GetBool("qurre_all_logging", false);
+		internal static bool AntiFlood => Plugin.Config.GetBool("Qurre_console_anti_flood", true) || Plugin.Config.GetBool("qurre_console_anti_flood", true);
 		public static void Info(object message)
 		{
 			Assembly assembly = Assembly.GetCallingAssembly();
