@@ -29,7 +29,7 @@ namespace Qurre.API.Controllers
             if (Map.Cassies.FirstOrDefault() != null) Map.Cassies.FirstOrDefault().Send();
         }
         public static bool Lock { get; set; }
-        public static void Send(string msg, bool makeHold = false, bool makeNoise = false) => RespawnEffectsController.PlayCassieAnnouncement(msg, makeHold, makeNoise);
+        public static void Send(string msg, bool makeHold = false, bool makeNoise = false, bool instant = false) => Map.Cassies.Add(new Cassie(msg, makeHold, makeNoise), instant);
     }
     public class CassieList
     {
