@@ -22,6 +22,7 @@ namespace Qurre.API
 		public static Decontamination DecontaminationLCZ { get; private set; } = new Decontamination();
 		public static Heavy Heavy { get; private set; } = new Heavy();
 		public static MapListBroadcasts Broadcasts { get; private set; } = new MapListBroadcasts();
+		public static CassieList Cassies { get; private set; } = new CassieList();
 		public static Controllers.Scp914 Scp914 { get; private set; } = new Controllers.Scp914();
 		public static List<_door> Doors { get; } = new List<_door>();
 		public static List<_lift> Lifts { get; } = new List<_lift>();
@@ -122,6 +123,7 @@ namespace Qurre.API
 			Alpha = new Alpha();
 			Heavy = new Heavy();
 			Broadcasts = new MapListBroadcasts();
+			Cassies = new CassieList();
 			Scp914 = new Controllers.Scp914();
 			foreach (var tesla in Server.GetObjectsOf<TeslaGate>())
 				Teslas.Add(new Tesla(tesla));

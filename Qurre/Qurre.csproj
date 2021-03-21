@@ -75,7 +75,7 @@
     <Compile Include="API\Controllers\Lights.cs" />
     <Compile Include="API\Extensions.cs" />
     <Compile Include="API\Controllers\Alpha.cs" />
-    <Compile Include="API\Cassie.cs" />
+    <Compile Include="API\Controllers\Cassie.cs" />
     <Compile Include="API\Controllers\Scp079.cs" />
     <Compile Include="API\Controllers\WorkStation.cs" />
     <Compile Include="API\Controllers\Tesla.cs" />
@@ -121,6 +121,7 @@
     <Compile Include="Events\modules\Event.cs" />
     <Compile Include="Events\modules\main.cs" />
     <Compile Include="Log.cs" />
+    <Compile Include="Patches\Controllers\CassieController.cs" />
     <Compile Include="Patches\Controllers\Scp914Controller.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
