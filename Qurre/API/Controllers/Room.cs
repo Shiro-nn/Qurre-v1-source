@@ -16,6 +16,8 @@ namespace Qurre.API.Controllers
         }
         internal FlickerableLightController LightController { get; set; }
         public void LightsOff(float duration) => LightController.ServerFlickerLights(duration);
+        public bool IsLightsOff => FlickerableLightController && FlickerableLightController.IsEnabled();
+        private FlickerableLightController FlickerableLightController { get; set; }
         public void SetLightIntensity(float intensity) => LightController.ServerSetLightIntensity(intensity);
         public GameObject GameObject { get; }
         public Transform Transform => GameObject.transform;
