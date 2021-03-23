@@ -17,7 +17,7 @@ namespace Qurre.Patches.Events.Server
 				string[] allarguments = q.Split(' ');
 				string name = allarguments[0].ToLower();
 				string[] args = allarguments.Skip(1).ToArray();
-				var ev = new SendingRAEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Round.Host : (API.Player.Get(sender.SenderId) ?? API.Round.Host), q, name, args);
+				var ev = new SendingRAEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Server.Host : (API.Player.Get(sender.SenderId) ?? API.Server.Host), q, name, args);
 				PreauthStopwatch().Restart();
 				IdleMode.SetIdleMode(false);
 				if (q == "REQUEST_DATA PLAYER_LIST SILENT")

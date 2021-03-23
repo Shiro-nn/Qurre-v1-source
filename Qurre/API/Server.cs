@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QurreModLoader;
 namespace Qurre.API
 {
@@ -39,8 +36,7 @@ namespace Qurre.API
         {
             get
             {
-                if (host == null)
-                    host = Player.Get(PlayerManager.localPlayer);
+                if (host == null || host.ReferenceHub == null) host = new Player(PlayerManager.localPlayer);
                 return host;
             }
         }
@@ -48,8 +44,7 @@ namespace Qurre.API
         {
             get
             {
-                if (hinv == null)
-                    hinv = Player.Get(PlayerManager.localPlayer).Inventory;
+                if (hinv == null) hinv = ReferenceHub.GetHub(PlayerManager.localPlayer).inventory;
                 return hinv;
             }
         }

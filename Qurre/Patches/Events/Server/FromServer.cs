@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.Server
                 string[] allarguments = query.Split(' ');
                 string name = allarguments[0].ToLower();
                 string[] args = allarguments.Skip(1).ToArray();
-                var ev = new SendingConsoleEvent(API.Round.Host, query, name, args, encrypted, "", "white", true);
+                var ev = new SendingConsoleEvent(API.Server.Host, query, name, args, encrypted, "", "white", true);
                 Qurre.Events.Server.sendingconsole(ev);
                 if (!string.IsNullOrEmpty(ev.ReturnMessage))
                 {

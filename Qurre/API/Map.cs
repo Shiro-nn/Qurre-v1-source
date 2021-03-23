@@ -31,6 +31,7 @@ namespace Qurre.API
 		public static List<Room> Rooms { get; } = new List<Room>();
 		public static List<Tesla> Teslas { get; } = new List<Tesla>();
 		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
+		public static List<Pickup> Pickups => Object.FindObjectsOfType<Pickup>().ToList();
 		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
 			var bc = new MapBroadcast(Server.Host, message, duration);

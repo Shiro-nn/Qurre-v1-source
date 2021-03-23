@@ -48,7 +48,7 @@ namespace Qurre.API
             get => RoundSummary.kills_by_scp;
             set => RoundSummary.kills_by_scp = value;
         }
-        public static void Restart() => Host.PlayerStats.Roundrestart();
+        public static void Restart() => Server.Host.PlayerStats.Roundrestart();
         public static void Start() => CharacterClassManager.ForceRoundStart();
         public static void End() => ForceEnd = true;
         public static void DimScreen() => rs.RpcDimScreen();
@@ -83,14 +83,5 @@ namespace Qurre.API
         }
         public static void CallCICar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
         public static void CallMTFHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
-        private static Player host;
-        public static Player Host
-        {
-            get
-            {
-                if (host == null || host.ReferenceHub == null) host = new Player(PlayerManager.localPlayer);
-                return host;
-            }
-        }
     }
 }
