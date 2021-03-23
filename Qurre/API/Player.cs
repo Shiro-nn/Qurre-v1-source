@@ -196,6 +196,7 @@ namespace Qurre.API
 			get => PlayerStats.Health;
 			set
 			{
+				PlayerStats.Health = value;
 				if (value > MaxHP) MaxHP = (int)value;
 			}
 		}
