@@ -133,6 +133,31 @@ namespace Qurre.API.Controllers
             if (!Is096) return;
             Scp.Scp096_targets().Remove(player.ReferenceHub);
         }
+        public bool IsTarget
+        {
+            get
+            {
+                if (Targets.Contains(player))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            set
+            {
+                if (Targets.Contains(player))
+                {
+                    return;
+                }
+                else
+                {
+                    Targets.Add(player);
+                }
+            }
+        }
         public void ChargeDoor(Door door)
         {
             if (!Is096) return;
