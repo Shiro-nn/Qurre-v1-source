@@ -91,7 +91,7 @@ namespace Qurre.Patches.Events.Round
                     else
                         ev.LeadingTeam = RoundSummary.escaped_ds != 0 ? (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.ChaosInsurgency : (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Anomalies;
                 Qurre.Events.Round.check(ev);
-                instance.RoundSummary_roundEnded(ev.RoundEnd || API.Round.ForceEnd);
+                instance.RoundSummary_roundEnded(ev.RoundEnd);
                 if (instance.RoundSummary_roundEnded())
                 {
                     byte i1;

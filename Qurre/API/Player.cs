@@ -458,6 +458,23 @@ namespace Qurre.API
 			NetworkWriterPool.Recycle(writer);
 		}
 		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => ClassManager.SetClassIDAdv(newRole, lite, escape);
+		public void ChangeModel(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
+		{
+			if (damageType == null) damageType = DamageTypes.Com15;
+			if (newPosition == default) newPosition = Position;
+			if (newRotation == default) newRotation = Rotation;
+			Vector3 pos = Position;
+			RoleType role = Role;
+			string nick = Nickname;
+			int id = Id;
+			SetRole(newRole, true);
+			MEC.Timing.CallDelayed(0.3f, () =>
+			{
+				Rotation = newRotation;
+				Position = newPosition;
+			});
+			if (spawnRagdoll) Controllers.Ragdoll.Create(role, pos, default, default, new PlayerStats.HitInfo(999, nick, damageType, id), false, this);
+		}
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)
 		{
 			var bc = new Controllers.Broadcast(this, message, time);

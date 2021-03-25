@@ -163,13 +163,15 @@ namespace Qurre.API.Events
     }
     public class AddTargetEvent : EventArgs
     {
-        public AddTargetEvent(Scp096 scp096, Player target, bool allowed = true)
+        public AddTargetEvent(Scp096 scp096, Player player, Player target, bool allowed = true)
         {
             Scp096 = scp096;
+            Player = player;
             Target = target;
             Allowed = allowed;
         }
         public Scp096 Scp096 { get; }
+        public Player Player { get; }
         public Player Target { get; }
         public bool Allowed { get; set; }
     }

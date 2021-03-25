@@ -13,8 +13,8 @@ namespace Qurre.Events
         {
             public static event AllEvents<ReportCheaterEvent> Cheater;
             public static event AllEvents<ReportLocalEvent> Local;
-            public static void cheater(ReportCheaterEvent ev) => Cheater.Invoke(ev);
-            public static void local(ReportLocalEvent ev) => Local.Invoke(ev);
+            public static void cheater(ReportCheaterEvent ev) => Cheater?.Invoke(ev);
+            public static void local(ReportLocalEvent ev) => Local?.Invoke(ev);
         }
     }
 }

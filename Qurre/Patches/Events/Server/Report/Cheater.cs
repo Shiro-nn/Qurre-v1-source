@@ -8,15 +8,13 @@ namespace Qurre.Patches.Events.Server.Report
     [HarmonyPatch(typeof(CheaterReport), nameof(CheaterReport.IssueReport))]
     internal static class Cheater
     {
-        private static bool Prefix(CheaterReport __instance, GameConsoleTransmission reporter, string reporterUserId, string reportedUserId, ref string reason)
+        private static bool Prefix(CheaterReport __instance, GameConsoleTransmission reporter, string reporterUserId, string reportedUserId, string reason)
         {
             try
             {
-                if (reportedUserId == reporterUserId)
-                    reporter.SendToClient(__instance.connectionToClient, "smart, smart" + Environment.NewLine, "yellow");
+                //if (reportedUserId == reporterUserId) reporter.SendToClient(__instance.connectionToClient, "smart, smart", "yellow");
                 var ev = new ReportCheaterEvent(Player.Get(reporterUserId), Player.Get(reportedUserId), ServerConsole.Port, reason);
                 Qurre.Events.Server.Report.cheater(ev);
-                reason = ev.Reason;
                 return ev.Allowed;
             }
             catch (Exception e)

@@ -15,7 +15,7 @@ namespace Qurre.Events
         public static void start() => Start.invoke();
         public static void restart() => Restart.invoke();
         public static void end(RoundEndEvent ev) => End.invoke(ev);
-        public static void check(CheckEvent ev) => Check.invoke(ev);
+        public static void check(CheckEvent ev) => Check?.invoke(ev);
         public static void teamrespawn(TeamRespawnEvent ev) => TeamRespawn.invoke(ev);
     }
 }

@@ -89,16 +89,18 @@ namespace Qurre.API.Events
     }
     public class ReportLocalEvent : EventArgs
     {
-        public ReportLocalEvent(Player issuer, Player target, string reason, bool allowed = true)
+        public ReportLocalEvent(Player issuer, Player target, string reason, bool global, bool allowed = true)
         {
             Issuer = issuer;
             Target = target;
             Reason = reason;
+            GlobalReport = global;
             Allowed = allowed;
         }
         public Player Issuer { get; }
         public Player Target { get; }
         public string Reason { get; set; }
+        public bool GlobalReport { get; set; }
         public bool Allowed { get; set; }
     }
 }
