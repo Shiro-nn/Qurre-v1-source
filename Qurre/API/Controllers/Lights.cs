@@ -4,6 +4,7 @@ namespace Qurre.API.Controllers
 {
     public class Lights
     {
+        public bool IsLightsOff => Generator079.Generators[0].enabled;
         public static void TurnOff(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
         public static void Intensivity(float intensive)
         {

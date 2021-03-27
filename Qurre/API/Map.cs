@@ -44,7 +44,6 @@ namespace Qurre.API
 			GameObject randomPosition = Object.FindObjectOfType<SpawnpointManager>().GetRandomPosition(roleType);
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
 		}
-		public static void TurnOffLights(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
 		public static void SpawnGrenade(string grenadeType, Vector3 position)
 		{
 			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));
@@ -118,6 +117,11 @@ namespace Qurre.API
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
 		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);
 		public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
+		public static void ShowHint(string message, float duration)
+		{
+			foreach (Player player in Player.List)
+				player.ShowHint(message, duration);
+		}
 		internal static void AddObjects()
 		{
 			DecontaminationLCZ = new Decontamination();

@@ -11,7 +11,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 2, 7);
+		public static Version Version { get; } = new Version(1, 2, 8);
 		public static string Plan { get; private set; } = "";//Lite
 		public static int Planid { get; private set; } = 1;
 		private static string Domen { get; } = "localhost"; //qurre.store
