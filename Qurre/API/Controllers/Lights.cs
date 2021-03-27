@@ -4,8 +4,7 @@ namespace Qurre.API.Controllers
 {
     public class Lights
     {
-        public static void TurnOff(float duration, bool onlyHeavy = false) => Generator079.mainGenerator.ServerOvercharge(duration, onlyHeavy);
-        public bool IsLightsOff => Generator079.mainGenerator.enabled;
+        public static void TurnOff(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
         public static void Intensivity(float intensive)
         {
             foreach (FlickerableLightController flickerableLightController in Object.FindObjectsOfType<FlickerableLightController>())
