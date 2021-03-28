@@ -2,12 +2,11 @@
 using static QurreModLoader.umm;
 namespace Qurre.API.Controllers
 {
-	public class Alpha
+	public static class Alpha
 	{
-		internal Alpha() { }
-		private AlphaWarheadController awc;
-		private AlphaWarheadNukesitePanel awnp;
-		public AlphaWarheadController AlphaWarheadController
+		private static AlphaWarheadController awc;
+		private static AlphaWarheadNukesitePanel awnp;
+		public static AlphaWarheadController AlphaWarheadController
 		{
 			get
 			{
@@ -15,7 +14,7 @@ namespace Qurre.API.Controllers
 				return awc;
 			}
 		}
-		internal AlphaWarheadNukesitePanel AlphaWarheadNukesitePanel
+		internal static AlphaWarheadNukesitePanel AlphaWarheadNukesitePanel
 		{
 			get
 			{
@@ -23,35 +22,35 @@ namespace Qurre.API.Controllers
 				return awnp;
 			}
 		}
-		public void Start()
+		public static void Start()
 		{
 			awc.InstantPrepare();
 			awc.StartDetonation();
 		}
-		public void InstantPrepare() => awc.InstantPrepare();
-		public void CancelDetonation() => awc.CancelDetonation();
-		public void Stop() => awc.CancelDetonation();
-		public void Detonate() => awc.Detonate();
-		public void Shake() => awc.CallRpcShake(false);
-		public bool Enabled
+		public static void InstantPrepare() => awc.InstantPrepare();
+		public static void CancelDetonation() => awc.CancelDetonation();
+		public static void Stop() => awc.CancelDetonation();
+		public static void Detonate() => awc.Detonate();
+		public static void Shake() => awc.CallRpcShake(false);
+		public static bool Enabled
 		{
 			get => awnp.Networkenabled;
 			set => awnp.Networkenabled = value;
 		}
-		public bool Detonated => awc.detonated;
-		public bool CanDetoante => awc.CanDetonate;
-		public bool Active => awc.NetworkinProgress;
-		public float TimeToDetonation
+		public static bool Detonated => awc.detonated;
+		public static bool CanDetoante => awc.CanDetonate;
+		public static bool Active => awc.NetworkinProgress;
+		public static float TimeToDetonation
 		{
 			get => awc.NetworktimeToDetonation;
 			set => awc.NetworktimeToDetonation = value;
 		}
-		public bool Locked
+		public static bool Locked
 		{
 			get => awc.Alpha_isLocked();
 			set => awc.Alpha_isLocked(value);
 		}
-		public int Cooldown
+		public static int Cooldown
 		{
 			get => awc.cooldown;
 			set => awc.cooldown = value;

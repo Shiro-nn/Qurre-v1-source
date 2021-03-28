@@ -1,14 +1,13 @@
 ﻿using System.Linq;
 namespace Qurre.API.Controllers
 {
-    public class Heavy
+    public static class Heavy
     {
-        internal Heavy() { }
-        public bool ForcedOvercharge => Generator079.mainGenerator.forcedOvercharge;
-        public byte ActiveGenerators { get => ForcedOvercharge ? (byte)5 : Generator079.mainGenerator.totalVoltage; internal set => Generator079.mainGenerator.totalVoltage = value; }
-        public bool Recontained079 { get; internal set; } = false;
-        public void Recontain079(bool forced = true) => Recontainer079.BeginContainment(forced);
-        public void Overcharge(bool forced = true)
+        public static bool ForcedOvercharge => Generator079.mainGenerator.forcedOvercharge;
+        public static byte ActiveGenerators { get => ForcedOvercharge ? (byte)5 : Generator079.mainGenerator.totalVoltage; internal set => Generator079.mainGenerator.totalVoltage = value; }
+        public static bool Recontained079 { get; internal set; } = false;
+        public static void Recontain079(bool forced = true) => Recontainer079.BeginContainment(forced);
+        public static void Overcharge(bool forced = true)
         {
             if (forced)
             {
@@ -18,6 +17,5 @@ namespace Qurre.API.Controllers
             }
             else foreach (var gen in Map.Generators.Where(x => !x.Overcharged)) gen.Overcharge();
         }
-        public void LightsOff(float duration) => Generator079.mainGenerator.ServerOvercharge(duration, true);
     }
 }

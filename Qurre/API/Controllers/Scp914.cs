@@ -6,38 +6,37 @@ using UnityEngine;
 using Utils.ConfigHandler;
 namespace Qurre.API.Controllers
 {
-	public class Scp914
+	public static class Scp914
 	{
-		internal Scp914() { }
-		public GameObject GameObject => Scp914Machine.singleton.gameObject;
-		public bool Working => Scp914Machine.singleton.working;
-		public Scp914Knob KnobState
+		public static GameObject GameObject => Scp914Machine.singleton.gameObject;
+		public static bool Working => Scp914Machine.singleton.working;
+		public static Scp914Knob KnobState
         {
 			get => Scp914Machine.singleton.knobState;
 			set => Scp914Machine.singleton.knobState = value;
 		}
-		public ConfigEntry<Scp914Mode> Cfg
+		public static ConfigEntry<Scp914Mode> Cfg
         {
 			get => Scp914Machine.singleton.configMode;
 			set => Scp914Machine.singleton.configMode = value;
 		}
-		public Transform Intake
+		public static Transform Intake
 		{
 			get => Scp914Machine.singleton.intake;
 			set => Scp914Machine.singleton.intake = value;
 		}
 
-		public Transform Output
+		public static Transform Output
 		{
 			get => Scp914Machine.singleton.output;
 			set => Scp914Machine.singleton.output = value;
 		}
-		public List<Recipe> RecipesList { get; } = new List<Recipe>();
-		public void Activate() => Scp914Machine.singleton.RpcActivate(NetworkTime.time);
-		public void Activate(float time) => Scp914Machine.singleton.RpcActivate(time);
-		public Dictionary<ItemType, Dictionary<Scp914Knob, ItemType[]>> Recipes() => Scp914Machine.singleton.recipesDict;
-		public void Recipes(Dictionary<ItemType, Dictionary<Scp914Knob, ItemType[]>> recipes) => Scp914Machine.singleton.recipesDict = recipes;
-		public int UpgradeItemID(int id)
+		public static List<Recipe> RecipesList { get; } = new List<Recipe>();
+		public static void Activate() => Scp914Machine.singleton.RpcActivate(NetworkTime.time);
+		public static void Activate(float time) => Scp914Machine.singleton.RpcActivate(time);
+		public static Dictionary<ItemType, Dictionary<Scp914Knob, ItemType[]>> Recipes() => Scp914Machine.singleton.recipesDict;
+		public static void Recipes(Dictionary<ItemType, Dictionary<Scp914Knob, ItemType[]>> recipes) => Scp914Machine.singleton.recipesDict = recipes;
+		public static int UpgradeItemID(int id)
 		{
 			var recipe = RecipesList.FirstOrDefault(x => x.itemID == id);
 			if (recipe == null) return -1;

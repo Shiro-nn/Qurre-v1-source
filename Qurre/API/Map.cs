@@ -18,12 +18,8 @@ namespace Qurre.API
 	public class Map
 	{
 		public static int roundtime = 0;
-		public static Alpha Alpha { get; private set; } = new Alpha();
-		public static Decontamination DecontaminationLCZ { get; private set; } = new Decontamination();
-		public static Heavy Heavy { get; private set; } = new Heavy();
 		public static MapListBroadcasts Broadcasts { get; private set; } = new MapListBroadcasts();
 		public static CassieList Cassies { get; private set; } = new CassieList();
-		public static Controllers.Scp914 Scp914 { get; private set; } = new Controllers.Scp914();
 		public static List<_door> Doors { get; } = new List<_door>();
 		public static List<_lift> Lifts { get; } = new List<_lift>();
 		public static List<Generator> Generators { get; } = new List<Generator>();
@@ -124,12 +120,8 @@ namespace Qurre.API
 		}
 		internal static void AddObjects()
 		{
-			DecontaminationLCZ = new Decontamination();
-			Alpha = new Alpha();
-			Heavy = new Heavy();
 			Broadcasts = new MapListBroadcasts();
 			Cassies = new CassieList();
-			Scp914 = new Controllers.Scp914();
 			foreach (var tesla in Server.GetObjectsOf<TeslaGate>())
 				Teslas.Add(new Tesla(tesla));
 			foreach (var room in Server.GetObjectsOf<Transform>().Where(x => x.CompareTag("Room") || x.name == "Root_*&*Outside Cams" || x.name == "PocketWorld"))

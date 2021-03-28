@@ -72,17 +72,17 @@ namespace Qurre.API.Controllers
         }
         public Room Room => Map.Rooms.FirstOrDefault(x => x.Name.ToLower() == generator.CurRoom.ToLower());
         public Vector3 TabletEjectionPoint => generator.tabletEjectionPoint.position;
-        public bool Overcharged => Map.Heavy.ForcedOvercharge || generator.Generator_localTime() <= 0f;
+        public bool Overcharged => Heavy.ForcedOvercharge || generator.Generator_localTime() <= 0f;
         public void Overcharge()
         {
             if (Overcharged) return;
             Locked = false;
-            Map.Heavy.ActiveGenerators++;
+            Heavy.ActiveGenerators++;
             generator.NetworkremainingPowerup = 0f;
             generator.Generator_localTime(0f);
             generator.EjectTablet();
-            generator.Generator_RpcNotify(Map.Heavy.ActiveGenerators);
-            if (Map.Heavy.ActiveGenerators < 5)
+            generator.Generator_RpcNotify(Heavy.ActiveGenerators);
+            if (Heavy.ActiveGenerators < 5)
                 Respawning.RespawnEffectsController.PlayCassieAnnouncement(string.Concat(new object[]
                 {
                         "JAM_",
@@ -90,7 +90,7 @@ namespace Qurre.API.Controllers
                         "_",
                         UnityEngine.Random.Range(2, 5),
                         " SCP079RECON",
-                        Map.Heavy.ActiveGenerators
+                        Heavy.ActiveGenerators
                 }), false, true);
             else Recontainer079.BeginContainment(false);
         }

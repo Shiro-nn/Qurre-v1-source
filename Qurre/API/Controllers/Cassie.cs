@@ -1,9 +1,7 @@
-﻿using MEC;
-using Respawning;
+﻿using Respawning;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace Qurre.API.Controllers
 {
     public class Cassie

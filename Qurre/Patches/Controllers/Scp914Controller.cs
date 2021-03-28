@@ -12,7 +12,7 @@ namespace Qurre.Patches.Controllers
             try
             {
                 if (loaded) return;
-                foreach (var recipe in __instance.recipes) API.Map.Scp914.RecipesList.Add(new API.Controllers.Scp914.Recipe(recipe));
+                foreach (var recipe in __instance.recipes) API.Controllers.Scp914.RecipesList.Add(new API.Controllers.Scp914.Recipe(recipe));
                 loaded = true;
             }
             catch (Exception e)

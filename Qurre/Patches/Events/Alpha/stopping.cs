@@ -19,7 +19,7 @@ namespace Qurre.Patches.Events.Alpha
                     __instance.GetComponent<PlayerStats>().TargetAchieve(disabler.GetComponent<NetworkIdentity>().connectionToClient, "thatwasclose");
                 var ev = new AlphaStopEvent(API.Player.Get(disabler) ?? API.Server.Host);
                 Qurre.Events.Alpha.stopping(ev);
-                return ev.Allowed && !API.Map.Alpha.Locked;
+                return ev.Allowed && !API.Controllers.Alpha.Locked;
             }
             catch (System.Exception e)
             {

@@ -2,17 +2,16 @@
 using static QurreModLoader.umm;
 namespace Qurre.API.Controllers
 {
-    public class Decontamination
+    public static class Decontamination
     {
-        internal Decontamination() { }
-        public DecontaminationController Controller => DecontaminationController.Singleton;
-        public bool DisableDecontamination
+        public static DecontaminationController Controller => DecontaminationController.Singleton;
+        public static bool DisableDecontamination
         {
             get => DecontaminationController.Singleton.disableDecontamination;
             set => DecontaminationController.Singleton.disableDecontamination = value;
         }
-        public bool Locked { get => Controller.DCLocked(); set => Controller.DCLocked(value); }
-        public bool InProgress => Controller.DCBegun();
-        public void InstantStart() => Controller.FinishDecontamination();
+        public static bool Locked { get => Controller.DCLocked(); set => Controller.DCLocked(value); }
+        public static bool InProgress => Controller.DCBegun();
+        public static void InstantStart() => Controller.FinishDecontamination();
     }
 }
