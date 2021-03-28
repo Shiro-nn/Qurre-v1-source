@@ -13,9 +13,6 @@ using _ragdoll = Qurre.API.Controllers.Ragdoll;
 using _workStation = Qurre.API.Controllers.WorkStation;
 using Qurre.API.Controllers;
 using static QurreModLoader.umm;
-using System;
-using Hints;
-
 namespace Qurre.API
 {
 	public class Map
@@ -47,11 +44,6 @@ namespace Qurre.API
 			GameObject randomPosition = Object.FindObjectOfType<SpawnpointManager>().GetRandomPosition(roleType);
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
 		}
-		[Obsolete]
-		/// <summary>
-		/// Please use Qurre.API.Controllers.Lights.TurnOff
-		/// </summary>summary>
-		public static void TurnOffLights(float duration, bool onlyHeavy = false) => Generator079.Generators[0].ServerOvercharge(duration, onlyHeavy);
 		public static void SpawnGrenade(string grenadeType, Vector3 position)
 		{
 			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));

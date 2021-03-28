@@ -19,8 +19,7 @@ namespace Qurre.API.Controllers
 		{
 			get
 			{
-				if (awnp == null)
-					awnp = Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
+				if (awnp == null) awnp = Object.FindObjectOfType<AlphaWarheadNukesitePanel>();
 				return awnp;
 			}
 		}

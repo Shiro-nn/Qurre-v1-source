@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>Qurre</id>
+    <version>1.2.8</version>
+    <title>Qurre-sl</title>
+    <authors>Qurre Team</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <license type="file">LICENSE.txt</license>
+    <projectUrl>https://github.com/fydne/Qurre-sl</projectUrl>
+    <repository type="git" url="https://github.com/fydne/Qurre-sl"/>
+    <icon>images\qurre_ol.png</icon>
+    <description>Framework for SCP:SL servers with unique functions and api</description>
+    <releaseNotes>Added:
+Qurre.API.Controllers.Lights.IsLightsOff (fixed in 1.2.8.1)
+Qurre.API.Map.ShowHint
+Fixed:
+Patch [Round.Check]
+Removed:
+Qurre.API.Controllers.Heavy.IsLightsOff
+Qurre.API.Map.TurnOffLights</releaseNotes>
+    <copyright>Copyright © Qurre Team 2021</copyright>
+    <tags>scp scp:sl scpsl</tags>
+  </metadata>
+  <files>
+    <file src="..\licenses\LICENSE.txt" target="" />
+    <file src="..\licenses\qurre_ol.png" target="images\" />
+  </files>
+</package>

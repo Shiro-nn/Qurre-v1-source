@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 namespace Qurre.API.Controllers
 {
     public class Heavy
@@ -19,10 +18,6 @@ namespace Qurre.API.Controllers
             }
             else foreach (var gen in Map.Generators.Where(x => !x.Overcharged)) gen.Overcharge();
         }
-        [Obsolete]
-        /// <summary>
-        /// Please use Qurre.API.Controllers.Lights.TurnOff
-        /// </summary>summary>
-        public void LightsOff(float duration, bool onlyHeavy) => Generator079.mainGenerator.ServerOvercharge(duration, onlyHeavy);
+        public void LightsOff(float duration) => Generator079.mainGenerator.ServerOvercharge(duration, true);
     }
 }
