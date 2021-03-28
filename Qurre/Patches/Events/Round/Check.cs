@@ -83,13 +83,15 @@ namespace Qurre.Patches.Events.Round
                     if (scp_team > 0) ++count;
                     if (count <= 1) instance.RoundSummary_roundEnded(true);
                 }
+                instance.RoundSummary_roundEnded(API.Round.ForceEnd);
                 var ev = new CheckEvent((RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Draw, list, instance.RoundSummary_roundEnded());
                 if (mtf_team > 0)
-                    if (RoundSummary.escaped_ds == 0 && RoundSummary.escaped_scientists != 0) ev.LeadingTeam = (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.FacilityForces;
-                    else ev.LeadingTeam = RoundSummary.escaped_ds != 0 ? (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.ChaosInsurgency : (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Anomalies;
+                    if (RoundSummary.escaped_ds == 0 && RoundSummary.escaped_scientists != 0)
+                        ev.LeadingTeam = (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.FacilityForces;
+                    else
+                        ev.LeadingTeam = RoundSummary.escaped_ds != 0 ? (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.ChaosInsurgency : (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Anomalies;
                 Qurre.Events.Round.check(ev);
                 instance.RoundSummary_roundEnded(ev.RoundEnd);
-                if(API.Round.ForceEnd) instance.RoundSummary_roundEnded(API.Round.ForceEnd);
                 if (instance.RoundSummary_roundEnded())
                 {
                     byte i1;
