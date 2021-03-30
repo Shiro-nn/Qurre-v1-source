@@ -24,36 +24,36 @@ namespace Qurre.API.Controllers
 		}
 		public static void Start()
 		{
-			awc.InstantPrepare();
-			awc.StartDetonation();
+			AlphaWarheadController.InstantPrepare();
+			AlphaWarheadController.StartDetonation();
 		}
-		public static void InstantPrepare() => awc.InstantPrepare();
-		public static void CancelDetonation() => awc.CancelDetonation();
-		public static void Stop() => awc.CancelDetonation();
-		public static void Detonate() => awc.Detonate();
-		public static void Shake() => awc.CallRpcShake(false);
+		public static void InstantPrepare() => AlphaWarheadController.InstantPrepare();
+		public static void CancelDetonation() => AlphaWarheadController.CancelDetonation();
+		public static void Stop() => AlphaWarheadController.CancelDetonation();
+		public static void Detonate() => AlphaWarheadController.Detonate();
+		public static void Shake() => AlphaWarheadController.CallRpcShake(false);
 		public static bool Enabled
 		{
-			get => awnp.Networkenabled;
-			set => awnp.Networkenabled = value;
+			get => AlphaWarheadNukesitePanel.Networkenabled;
+			set => AlphaWarheadNukesitePanel.Networkenabled = value;
 		}
-		public static bool Detonated => awc.detonated;
-		public static bool CanDetoante => awc.CanDetonate;
-		public static bool Active => awc.NetworkinProgress;
+		public static bool Detonated => AlphaWarheadController.detonated;
+		public static bool CanDetoante => AlphaWarheadController.CanDetonate;
+		public static bool Active => AlphaWarheadController.NetworkinProgress;
 		public static float TimeToDetonation
 		{
-			get => awc.NetworktimeToDetonation;
-			set => awc.NetworktimeToDetonation = value;
+			get => AlphaWarheadController.NetworktimeToDetonation;
+			set => AlphaWarheadController.NetworktimeToDetonation = value;
 		}
 		public static bool Locked
 		{
-			get => awc.Alpha_isLocked();
-			set => awc.Alpha_isLocked(value);
+			get => AlphaWarheadController.Alpha_isLocked();
+			set => AlphaWarheadController.Alpha_isLocked(value);
 		}
 		public static int Cooldown
 		{
-			get => awc.cooldown;
-			set => awc.cooldown = value;
+			get => AlphaWarheadController.cooldown;
+			set => AlphaWarheadController.cooldown = value;
 		}
 		public static class InsidePanel
 		{
@@ -68,7 +68,7 @@ namespace Qurre.API.Controllers
 				get => Panel.Alpha_leverStatus();
 				set => Panel.Alpha_leverStatus(value);
 			}
-			public static bool Locked { get; set; }
+			public static bool Locked { get; set; } = false;
 			public static Transform Lever => Panel.lever;
 		}
 		public static class OutsidePanel
