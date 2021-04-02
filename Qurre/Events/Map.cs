@@ -18,6 +18,6 @@ namespace Qurre.Events
         public static void newblood(NewBloodEvent ev) => NewBlood.invoke(ev);
         public static void newdecal(NewDecalEvent ev) => NewDecal.invoke(ev);
         public static void generated() => Generated.invoke();
-        public static void grenadeexplode(GrenadeExplodeEvent ev) => GrenadeExplode.invoke(ev);
+        public static void grenadeexplode(GrenadeExplodeEvent ev) => GrenadeExplode?.invoke(ev);
     }
 }

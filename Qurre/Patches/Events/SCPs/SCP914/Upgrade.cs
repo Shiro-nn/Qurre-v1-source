@@ -16,29 +16,25 @@ namespace Qurre.Patches.Events.SCPs.SCP914
         {
             try
             {
-                if (!NetworkServer.active)
-                    return true;
+                if (!NetworkServer.active) return true;
                 Collider[] colliderArray = Physics.OverlapBox(__instance.intake.position, __instance.inputSize / 2f);
                 __instance.Scp914_players().Clear();
                 __instance.Scp914_items().Clear();
                 foreach (Collider collider in colliderArray)
                 {
                     CharacterClassManager plrs = collider.GetComponent<CharacterClassManager>();
-                    if (plrs != null)
-                        __instance.Scp914_players().Add(plrs);
+                    if (plrs != null) __instance.Scp914_players().Add(plrs);
                     else
                     {
                         Pickup picks = collider.GetComponent<Pickup>();
-                        if (picks != null)
-                            __instance.Scp914_items().Add(picks);
+                        if (picks != null) __instance.Scp914_items().Add(picks);
                     }
                 }
                 var ev = new UpgradeEvent(__instance, __instance.Scp914_players().Select(player => Player.Get(player.gameObject)).ToList(), __instance.Scp914_items(), __instance.knobState);
                 Qurre.Events.SCPs.SCP914.upgrade(ev);
                 var players = ev.Players.Select(player => player.ClassManager).ToList();
                 __instance.MoveObjects(ev.Items, players);
-                if (ev.Allowed)
-                    __instance.UpgradeObjects(ev.Items, players);
+                if (ev.Allowed) __instance.UpgradeObjects(ev.Items, players);
                 return false;
             }
             catch (System.Exception e)

@@ -27,13 +27,13 @@ namespace Qurre.API.Controllers
                     string b;
                     switch (zone)
                     {
-                        case ZoneType.LightContainment:
+                        case ZoneType.Light:
                             b = "LightRooms";
                             break;
-                        case ZoneType.HeavyContainment:
+                        case ZoneType.Heavy:
                             b = "HeavyRooms";
                             break;
-                        case ZoneType.Entrance:
+                        case ZoneType.Office:
                             b = "EntranceRooms";
                             break;
                         case ZoneType.Surface:

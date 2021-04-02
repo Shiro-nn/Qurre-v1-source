@@ -30,14 +30,12 @@ namespace Qurre.API.Controllers
                 if (zone != ZoneType.Unspecified)
                     return zone;
                 zone = ZoneType.Unspecified;
-                if (Position.y == -1997f)
-                    zone = ZoneType.Unspecified;
-                else if (Position.y >= 0f && Position.y < 500f)
-                    zone = ZoneType.LightContainment;
-                else if (Position.y < -100 && Position.y > -1000f)
-                    zone = ZoneType.HeavyContainment;
-                else if (Name.Contains("ENT") || Name.Contains("INTERCOM"))
-                    zone = ZoneType.Entrance;
+                if (Position.y >= 0f && Position.y < 500f)
+                    zone = ZoneType.Light;
+                else if (Name.Contains("EZ") || Name.Contains("INTERCOM"))
+                    zone = ZoneType.Office;
+                else if (Position.y < -100 && Position.y > -1015f)
+                    zone = ZoneType.Heavy;
                 else if (Position.y >= 5)
                     zone = ZoneType.Surface;
                 return zone;

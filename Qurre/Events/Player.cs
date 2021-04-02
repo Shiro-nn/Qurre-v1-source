@@ -55,7 +55,7 @@ namespace Qurre.Events
         public static void interact(InteractEvent ev) => Interact.invoke(ev);
         public static void interactdoor(InteractDoorEvent ev) => InteractDoor.invoke(ev);
         public static void interactLift(InteractLiftEvent ev) => InteractLift.invoke(ev);
-        public static void interactLocker(InteractLockerEvent ev) => InteractLocker.invoke(ev);
+        public static void interactLocker(InteractLockerEvent ev) => InteractLocker?.invoke(ev);
         public static void icomSpeak(IcomSpeakEvent ev) => IcomSpeak.invoke(ev);
         public static void droppingItem(DroppingItemEvent ev) => DroppingItem.invoke(ev);
         public static void dropItem(DropItemEvent ev) => DropItem.invoke(ev);

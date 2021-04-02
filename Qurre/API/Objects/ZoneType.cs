@@ -3,9 +3,9 @@
 	public enum ZoneType
 	{
 		Surface,
-		Entrance,
-		HeavyContainment,
-		LightContainment,
+		Office,
+		Heavy,
+		Light,
 		Unspecified
 	}
 }

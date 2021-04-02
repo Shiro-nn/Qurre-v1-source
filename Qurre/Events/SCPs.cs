@@ -13,7 +13,7 @@ namespace Qurre.Events
             public static event AllEvents<UpgradeEvent> Upgrade;
             public static void activating(ActivatingEvent ev) => Activating.invoke(ev);
             public static void changeknob(ChangeKnobEvent ev) => ChangeKnob.invoke(ev);
-            public static void upgrade(UpgradeEvent ev) => Upgrade.invoke(ev);
+            public static void upgrade(UpgradeEvent ev) => Upgrade?.invoke(ev);
         }
         #endregion
         #region SCP173
