@@ -54,7 +54,7 @@ namespace Qurre.Patches.Events.Round
                             }
                             catch { }
                         }
-                        if (twolist.Count > 0)
+                        if (twolist.Count > 0 && ev.Allowed)
                         {
                             RespawnTickets.Singleton.GrantTickets(__instance.NextKnownTeam, -twolist.Count * spawnableTeam.TicketRespawnCost);
                             if (UnitNamingRules.TryGetNamingRule(__instance.NextKnownTeam, out UnitNamingRule rule))
