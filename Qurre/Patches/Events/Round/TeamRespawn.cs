@@ -41,8 +41,7 @@ namespace Qurre.Patches.Events.Round
                         List<Player> twolist = new List<Player>();
                         var ev = new TeamRespawnEvent(list, avsp, __instance.NextKnownTeam);
                         Qurre.Events.Round.teamrespawn(ev);
-                        while (list.Count > avsp)
-                            list.RemoveAt(list.Count - 1);
+                        while (list.Count > avsp) list.RemoveAt(list.Count - 1);
                         list.ShuffleList();
                         foreach (Player targ in list)
                         {

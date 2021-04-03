@@ -34,7 +34,6 @@ namespace Qurre.API.Events
             Players = players;
             MaxRespAmount = maxRespAmount;
             NextKnownTeam = nextKnownTeam;
-            Allowed = allowed;
         }
         public List<Player> Players { get; }
         public int MaxRespAmount { get; set; }
