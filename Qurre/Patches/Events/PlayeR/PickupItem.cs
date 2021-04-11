@@ -22,7 +22,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.PickupItem:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [PickupItem]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

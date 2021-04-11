@@ -31,7 +31,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.ItemChange:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [ItemChange]:\n{e}\n{e.StackTrace}");
             }
         }
     }

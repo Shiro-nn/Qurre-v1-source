@@ -75,7 +75,7 @@ namespace Qurre.Patches.Events.Round
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching Round.TeamRespawn:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Round [TeamRespawn]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

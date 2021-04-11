@@ -9,6 +9,7 @@ namespace Qurre.API
         private static Inventory hinv;
         public static ServerConsole ServerConsole => ServerConsole.singleton;
         public static ushort Port => ModLoader.Port;
+        public static string Ip => ServerConsole.Ip;
         public static string Name
         {
             get => ServerConsole._serverName;

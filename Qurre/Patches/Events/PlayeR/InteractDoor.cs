@@ -60,7 +60,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.InteractDoor:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [InteractDoor]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

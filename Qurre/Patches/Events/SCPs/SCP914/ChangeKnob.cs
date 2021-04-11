@@ -29,7 +29,7 @@ namespace Qurre.Patches.Events.SCPs.SCP914
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching SCPs.SCP914.ChangeKnob:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> SCP914 [ChangeKnob]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

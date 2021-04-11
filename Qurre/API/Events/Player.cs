@@ -348,16 +348,18 @@ namespace Qurre.API.Events
     }
     public class ShootingEvent : EventArgs
     {
-        public ShootingEvent(Player shooter, GameObject target, Vector3 position, bool allowed = true)
+        public ShootingEvent(Player shooter, GameObject target, Vector3 position, WeaponType wt, bool allowed = true)
         {
             Shooter = shooter;
             Target = target;
             Position = position;
+            WeaponType = wt;
             Allowed = allowed;
         }
         public Player Shooter { get; }
         public GameObject Target { get; }
         public Vector3 Position { get; set; }
+        public WeaponType WeaponType { get; set; }
         public bool Allowed { get; set; }
     }
     public class SpeakEvent : EventArgs
@@ -480,5 +482,17 @@ namespace Qurre.API.Events
         public RoleType RoleType { get; private set; }
         public Vector3 Position { get; set; }
         public float RotationY { get; set; }
+    }
+    public class RadioUpdateEvent : EventArgs
+    {
+        public RadioUpdateEvent(Player player, RadioStatus changeTo, bool allowed = true)
+        {
+            Player = player;
+            ChangeTo = changeTo;
+            Allowed = allowed;
+        }
+        public Player Player { get; private set; }
+        public RadioStatus ChangeTo { get; private set; }
+        public bool Allowed { get; set; }
     }
 }

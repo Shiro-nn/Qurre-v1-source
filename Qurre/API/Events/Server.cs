@@ -41,6 +41,24 @@ namespace Qurre.API.Events
         public bool Success { get; set; } = true;
         public bool Allowed { get; set; }
     }
+    public class RaRequestPlayerListEvent : EventArgs
+    {
+        public RaRequestPlayerListEvent(CommandSender commandSender, Player player, string command, string name, string[] args, bool allowed = true)
+        {
+            CommandSender = commandSender;
+            Player = player;
+            Command = command;
+            Name = name;
+            Args = args;
+            Allowed = allowed;
+        }
+        public CommandSender CommandSender { get; }
+        public Player Player { get; }
+        public string Command { get; }
+        public string Name { get; }
+        public string[] Args { get; }
+        public bool Allowed { get; set; }
+    }
     public class SendingConsoleEvent : EventArgs
     {
         public SendingConsoleEvent(

@@ -57,13 +57,11 @@ namespace Qurre.API
             var timeToRoundRestart = Mathf.Clamp(GameCore.ConfigFile.ServerConfig.GetInt("auto_round_restart_time", 10), 5, 1000);
             rs.RpcShowRoundSummary(rs.classlistStart, remainingPlayers, team, EscapedDPersonnel, EscapedScientists, ScpKills, timeToRoundRestart);
         }
-        public static void AddUnit(TeamUnitType team, string text)
+        public static void AddUnit(TeamUnitType team, string unit)
         {
             UnitNamingRule unitNamingRule;
-            if (UnitNamingRules.AllNamingRules.TryGetValue((SpawnableTeamType)team, out unitNamingRule))
-            {
-                unitNamingRule.AddCombination(text, (SpawnableTeamType)team);
-            }
+            if (!UnitNamingRules.AllNamingRules.TryGetValue((SpawnableTeamType)team, out unitNamingRule)) return;
+            unitNamingRule.AddCombination(unit, (SpawnableTeamType)team);
         }
         public static void RenameUnit(TeamUnitType team, int id, string newName)
         {
@@ -72,6 +70,10 @@ namespace Qurre.API
                 SpawnableTeam = (byte)team,
                 UnitName = newName
             };
+        }
+        public static void RemoveUnit(int id)
+        {
+            RespawnManager.Singleton.NamingManager.AllUnitNames.RemoveAt(id);
         }
         public static void ForceTeamRespawn(bool isCI) => RespawnManager.Singleton.ForceSpawnTeam(isCI ? SpawnableTeamType.ChaosInsurgency : SpawnableTeamType.NineTailedFox);
         public static void InvokeStaticMethod(this Type type, string methodName, object[] param)

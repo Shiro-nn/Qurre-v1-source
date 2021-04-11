@@ -51,14 +51,30 @@ namespace Qurre.API.Events
         public Scp914Knob Knob { get; set; }
         public bool Allowed { get; set; }
     }
+    public class UpgradePlayerEvent : EventArgs
+    {
+        public UpgradePlayerEvent(Scp914Machine scp914, Player player, Scp914Knob knob, bool allowed = true)
+        {
+            Scp914 = scp914;
+            Player = player;
+            Knob = knob;
+            Allowed = allowed;
+        }
+        public Scp914Machine Scp914 { get; }
+        public Player Player { get; }
+        public Scp914Knob Knob { get; set; }
+        public bool Allowed { get; set; }
+    }
     #endregion
     #region scp173
     public class BlinkEvent : EventArgs
     {
-        public BlinkEvent(HashSet<Player> players)
+        public BlinkEvent(Player scp, HashSet<Player> players)
         {
             Players = players;
+            Scp = scp;
         }
+        public Player Scp { get; }
         public HashSet<Player> Players { get; }
     }
     #endregion

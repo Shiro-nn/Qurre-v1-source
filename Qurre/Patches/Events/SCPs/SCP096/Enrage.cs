@@ -17,7 +17,7 @@ namespace Qurre.Patches.Events.SCPs.SCP096
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching SCPs.SCP096.Enrage:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> SCP096 [Enrage]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

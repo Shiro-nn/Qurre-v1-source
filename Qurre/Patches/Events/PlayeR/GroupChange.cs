@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.GroupChange:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [GroupChange]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

@@ -109,6 +109,10 @@ namespace Qurre.API
 				if (ccm.IntercomMuted) ccm.IntercomMuted = false;
 			}
 		}
+		public static void UnitUpdate()
+		{
+			foreach (Player pl in Player.List) pl.UnitUpdate();
+		}
 		public static void PlayCIEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
 		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);

@@ -21,7 +21,7 @@ namespace Qurre.Patches.Events.Server.Report
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching Server.Report.Local:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Server -> Report [Local]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

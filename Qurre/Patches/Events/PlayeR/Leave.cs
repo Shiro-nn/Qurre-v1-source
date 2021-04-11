@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.Leaving:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [Leaving]:\n{e}\n{e.StackTrace}");
             }
         }
     }
@@ -42,7 +42,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.Leaved:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [Leaved]:\n{e}\n{e.StackTrace}");
             }
         }
     }

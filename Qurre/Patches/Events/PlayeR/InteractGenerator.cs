@@ -103,7 +103,7 @@ namespace Qurre.Patches.Events.PlayeR
 			}
 			catch (Exception e)
 			{
-				Log.Error($"umm, error in patching PlayeR.InteractGeneratorDoor:\n{e}\n{e.StackTrace}");
+				Log.Error($"umm, error in patching Player [InteractGeneratorDoor]:\n{e}\n{e.StackTrace}");
 				return true;
 			}
 		}

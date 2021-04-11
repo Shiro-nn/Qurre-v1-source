@@ -19,7 +19,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.UsedMedical:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [UsedMedical]:\n{e}\n{e.StackTrace}");
             }
         }
     }

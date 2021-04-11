@@ -20,7 +20,7 @@ namespace Qurre.Patches.Events.MAP
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching MAP.NewBlood:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Map [NewBlood]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }
@@ -53,7 +53,7 @@ namespace Qurre.Patches.Events.MAP
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching MAP.NewBloodAndDecal:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Map [NewBloodAndDecal]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

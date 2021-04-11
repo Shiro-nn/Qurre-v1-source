@@ -7,6 +7,8 @@ using UnityEngine;
 using Qurre.API;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
+using System.Collections.Generic;
+
 namespace Qurre.Patches.Events.SCPs.SCP914
 {
     [HarmonyPatch(typeof(Scp914Machine), nameof(Scp914Machine.ProcessItems))]
@@ -30,7 +32,14 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                         if (picks != null) __instance.Scp914_items().Add(picks);
                     }
                 }
-                var ev = new UpgradeEvent(__instance, __instance.Scp914_players().Select(player => Player.Get(player.gameObject)).ToList(), __instance.Scp914_items(), __instance.knobState);
+                List<Player> _players = __instance.Scp914_players().Select(player => Player.Get(player.gameObject)).ToList();
+                foreach (Player pl in _players)
+                {
+                    var _ev = new UpgradePlayerEvent(__instance, pl, __instance.knobState);
+                    Qurre.Events.SCPs.SCP914.upgradePlayer(_ev);
+                    if (!_ev.Allowed) _players.Remove(pl);
+                }
+                var ev = new UpgradeEvent(__instance, _players, __instance.Scp914_items(), __instance.knobState);
                 Qurre.Events.SCPs.SCP914.upgrade(ev);
                 var players = ev.Players.Select(player => player.ClassManager).ToList();
                 __instance.MoveObjects(ev.Items, players);
@@ -39,7 +48,7 @@ namespace Qurre.Patches.Events.SCPs.SCP914
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching SCPs.SCP914.Upgrade:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> SCP914 [Upgrade]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

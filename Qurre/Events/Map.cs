@@ -12,12 +12,14 @@ namespace Qurre.Events
         public static event AllEvents<NewDecalEvent> NewDecal;
         public static event AllEvents Generated;
         public static event AllEvents<GrenadeExplodeEvent> GrenadeExplode;
-        public static void lczdecon(LCZDeconEvent ev) => LCZDecon.invoke(ev);
-        public static void announcementdecontamination(AnnouncementDecontaminationEvent ev) => AnnouncementDecontaminationZDecon.invoke(ev);
-        public static void mtfAnnouncement(MTFAnnouncementEvent ev) => MTFAnnouncement.invoke(ev);
-        public static void newblood(NewBloodEvent ev) => NewBlood.invoke(ev);
-        public static void newdecal(NewDecalEvent ev) => NewDecal.invoke(ev);
+        public static event AllEvents<SetSeedEvent> SetSeed;
+        public static void lczdecon(LCZDeconEvent ev) => LCZDecon?.invoke(ev);
+        public static void announcementdecontamination(AnnouncementDecontaminationEvent ev) => AnnouncementDecontaminationZDecon?.invoke(ev);
+        public static void mtfAnnouncement(MTFAnnouncementEvent ev) => MTFAnnouncement?.invoke(ev);
+        public static void newblood(NewBloodEvent ev) => NewBlood?.invoke(ev);
+        public static void newdecal(NewDecalEvent ev) => NewDecal?.invoke(ev);
         public static void generated() => Generated.invoke();
         public static void grenadeexplode(GrenadeExplodeEvent ev) => GrenadeExplode?.invoke(ev);
+        public static void setSeed(SetSeedEvent ev) => SetSeed?.invoke(ev);
     }
 }

@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.Alpha
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching Alpha.Stopping:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Alpha [Stopping]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

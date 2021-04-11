@@ -81,7 +81,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.RoleChange:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [RoleChange]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

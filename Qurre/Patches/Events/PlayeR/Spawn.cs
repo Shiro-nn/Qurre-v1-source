@@ -36,14 +36,29 @@ namespace Qurre.Patches.Events.PlayeR
                     Handcuffs hcs = __instance.GetComponent<Handcuffs>();
                     hcs.ClearTarget();
                     hcs.NetworkCufferId = -1;
+                    Respawning.SpawnableTeamType spawnableTeamType;
+                    string[] array;
+                    if (role.roleId != RoleType.Spectator && 
+                        Respawning.RespawnManager.CurrentSequence() != Respawning.RespawnManager.RespawnSequencePhase.SpawningSelectedTeam && 
+                        Respawning.NamingRules.UnitNamingManager.RolesWithEnforcedDefaultName.TryGetValue(role.roleId, out spawnableTeamType) && 
+                        Respawning.RespawnManager.Singleton.NamingManager.TryGetAllNamesFromGroup((byte)spawnableTeamType, out array) && array.Length != 0)
+                    {
+                        __instance.NetworkCurSpawnableTeamType = (byte)spawnableTeamType;
+                        __instance.NetworkCurUnitName = array[0];
+                    }
+                    else if (__instance.CurSpawnableTeamType != 0)
+                    {
+                        __instance.NetworkCurSpawnableTeamType = 0;
+                        __instance.NetworkCurUnitName = string.Empty;
+                    }
                 }
                 if (role.team != Team.RIP)
                 {
                     if (NetworkServer.active && !lite)
                     {
+                        
                         Vector3 cRP = NonFacilityCompatibility.currentSceneSettings.constantRespawnPoint;
-                        if (cRP != Vector3.zero)
-                            __instance._pms().OnPlayerClassChange(cRP, 0f);
+                        if (cRP != Vector3.zero) __instance._pms().OnPlayerClassChange(cRP, 0f);
                         else
                         {
                             GameObject GO = _spawnpointManager().GetRandomPosition(__instance.CurClass);
@@ -91,7 +106,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.Spawn:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [Spawn]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

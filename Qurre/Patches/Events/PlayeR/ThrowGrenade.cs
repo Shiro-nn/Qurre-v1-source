@@ -21,7 +21,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.ThrowGrenade:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [ThrowGrenade]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

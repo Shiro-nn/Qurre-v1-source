@@ -26,7 +26,7 @@ namespace Qurre.Patches.Events.Server
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching Server.FromServer:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Server [FromServer]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

@@ -20,7 +20,7 @@ namespace Qurre.Patches.Events.MAP
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching MAP.AnnouncementDecontamination:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Map [AnnouncementDecontamination]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

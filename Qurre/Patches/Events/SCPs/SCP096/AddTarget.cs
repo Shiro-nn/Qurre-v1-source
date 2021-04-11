@@ -18,7 +18,7 @@ namespace Qurre.Patches.Events.SCPs.SCP096
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching SCPs.SCP096.AddTargetLook:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> SCP096 [AddTargetLook]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }
@@ -36,7 +36,7 @@ namespace Qurre.Patches.Events.SCPs.SCP096
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching SCPs.SCP096.AddTargetShoot:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> SCP096 [AddTargetShoot]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

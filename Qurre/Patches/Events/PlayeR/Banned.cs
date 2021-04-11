@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.Banned:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [Banned]:\n{e}\n{e.StackTrace}");
             }
         }
     }

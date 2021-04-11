@@ -37,7 +37,8 @@
     <Reference Include="0Harmony">
       <HintPath>..\lib\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp">
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
@@ -86,6 +87,8 @@
     <Compile Include="API\Controllers\Heavy.cs" />
     <Compile Include="API\Controllers\Generator.cs" />
     <Compile Include="API\Controllers\Lift.cs" />
+    <Compile Include="API\Objects\WeaponType.cs" />
+    <Compile Include="API\Objects\RadioStatus.cs" />
     <Compile Include="API\Objects\GrenadeType.cs" />
     <Compile Include="API\Objects\TeamUnitType.cs" />
     <Compile Include="API\Objects\LiftType.cs" />
@@ -125,6 +128,9 @@
     <Compile Include="Patches\Controllers\Scp914Controller.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
+    <Compile Include="Patches\etc\UnitName.cs" />
+    <Compile Include="Patches\Events\Map\SetSeed.cs" />
+    <Compile Include="Patches\Events\Player\RadioUpdate.cs" />
     <Compile Include="Patches\Events\Player\Dead.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\Blink.cs" />
     <Compile Include="Patches\Controllers\GeneratorController.cs" />
@@ -135,9 +141,9 @@
     <Compile Include="Patches\etc\FriendlyFire.cs" />
     <Compile Include="Patches\etc\ServerName.cs" />
     <Compile Include="Patches\Events\Alpha\EnablePanel.cs" />
-    <Compile Include="Patches\Events\Alpha\stopping.cs" />
-    <Compile Include="Patches\Events\Alpha\staringbyserver.cs" />
-    <Compile Include="Patches\Events\Alpha\starting.cs" />
+    <Compile Include="Patches\Events\Alpha\Stopping.cs" />
+    <Compile Include="Patches\Events\Alpha\StaringByServer.cs" />
+    <Compile Include="Patches\Events\Alpha\Starting.cs" />
     <Compile Include="Patches\Events\Alpha\detonate.cs" />
     <Compile Include="Patches\Events\Map\AnnouncementDecontamination.cs" />
     <Compile Include="Patches\Events\Map\NewBlood.cs" />

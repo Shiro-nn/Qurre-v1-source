@@ -26,7 +26,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.StoppingMedicalUsing:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [StoppingMedicalUsing]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

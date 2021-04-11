@@ -44,7 +44,7 @@ namespace Qurre.Patches.Events.MAP.grenade
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching MAP.grenade.Explode_flash:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Map -> Grenade [Explode Flash]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }
@@ -75,7 +75,7 @@ namespace Qurre.Patches.Events.MAP.grenade
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching MAP.grenade.Explode_frag:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Map -> Grenade [Explode Frag]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

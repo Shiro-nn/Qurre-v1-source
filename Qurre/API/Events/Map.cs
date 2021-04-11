@@ -89,4 +89,9 @@ namespace Qurre.API.Events
         public GameObject Grenade { get; }
         public bool Allowed { get; set; }
     }
+    public class SetSeedEvent : EventArgs
+    {
+        public SetSeedEvent(int seed) => Seed = seed;
+        public int Seed { get; set; }
+    }
 }

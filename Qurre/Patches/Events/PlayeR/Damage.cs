@@ -38,7 +38,7 @@ namespace Qurre.Patches.Events.PlayeR
 			}
 			catch (Exception e)
 			{
-				Log.Error($"umm, error in patching PlayeR.Damage:\n{e}\n{e.StackTrace}");
+				Log.Error($"umm, error in patching Player [Damage]:\n{e}\n{e.StackTrace}");
 				return true;
 			}
 		}

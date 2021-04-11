@@ -24,7 +24,7 @@ namespace Qurre.Patches.Events.Server
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching Server.Console_:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Server -> [Console]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

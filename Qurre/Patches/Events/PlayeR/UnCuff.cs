@@ -30,7 +30,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.UnCuff:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [UnCuff]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }
@@ -57,7 +57,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.UnCuffTeam:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [UnCuffTeam]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

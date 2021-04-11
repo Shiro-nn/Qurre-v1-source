@@ -7,8 +7,19 @@ using _lift = Qurre.API.Controllers.Lift;
 using _workStation = Qurre.API.Controllers.WorkStation;
 namespace Qurre.API
 {
-    public static class Extensions
+	public static class Extensions
 	{
+		public static WeaponType GetWeaponType(this ItemType item)
+		{
+			if (item == ItemType.GunCOM15) return WeaponType.Com15;
+			if (item == ItemType.GunE11SR) return WeaponType.Epsilon11;
+			if (item == ItemType.GunLogicer) return WeaponType.Logicer;
+			if (item == ItemType.GunMP7) return WeaponType.MP7;
+			if (item == ItemType.GunProject90) return WeaponType.Project90;
+			if (item == ItemType.GunUSP) return WeaponType.USP;
+			if (item == ItemType.MicroHID) return WeaponType.MicroHID;
+			return WeaponType.None;
+		}
 		public static DoorVariant DoorVariant { get; internal set; }
 		public static Room GetRoom(RoomType type) => Map.Rooms.FirstOrDefault(x => x.Type == type);
 		public static _door GetDoor(DoorType type) => Map.Doors.FirstOrDefault(x => x.Type == type);

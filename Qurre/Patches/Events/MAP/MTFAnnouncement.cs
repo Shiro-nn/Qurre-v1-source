@@ -22,7 +22,7 @@ namespace Qurre.Patches.Events.MAP
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching MAP.MTFAnnouncement:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Map [MTFAnnouncement]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

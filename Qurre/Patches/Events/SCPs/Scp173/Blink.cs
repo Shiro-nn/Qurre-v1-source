@@ -33,7 +33,7 @@ namespace Qurre.Patches.Events.SCPs.Scp173
                 scp.Scp173Controller.ConfrontingPlayers = players;
                 if (scp.Scp173Controller.ConfrontingPlayers.Count != 0)
                 {
-                    var ev = new BlinkEvent(players);
+                    var ev = new BlinkEvent(scp, players);
                     Qurre.Events.SCPs.SCP173.blink(ev);
                 }
                 __instance.Scp173_AllowMove(true);
@@ -49,7 +49,7 @@ namespace Qurre.Patches.Events.SCPs.Scp173
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching SCPs.Scp173.Blink:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> Scp173 [Blink]:\n{e}\n{e.StackTrace}");
             }
             return false;
         }

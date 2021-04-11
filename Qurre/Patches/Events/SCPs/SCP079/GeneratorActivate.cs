@@ -24,7 +24,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching SCPs.SCP079.ActivateGenerator:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> SCP079 [ActivateGenerator]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

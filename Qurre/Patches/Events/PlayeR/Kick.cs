@@ -11,8 +11,7 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                if (player == null)
-                    return false;
+                if (player == null) return false;
                 var ev = new KickedEvent(API.Player.Get(player), message);
                 Qurre.Events.Player.kicked(ev);
                 message = ev.Reason;
@@ -20,7 +19,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.Kick:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [Kick]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

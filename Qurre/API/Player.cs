@@ -138,8 +138,18 @@ namespace Qurre.API
 			{
 				try
 				{
+					NetworkIdentity identity = Connection.identity;
+					GameObject.transform.localScale = value;
+					ObjectDestroyMessage destroyMessage = new ObjectDestroyMessage();
+					destroyMessage.netId = identity.netId;
+					foreach (GameObject obj in PlayerManager.players)
+					{
+						NetworkConnection playerCon = obj.GetComponent<NetworkIdentity>().connectionToClient;
+						if (obj != GameObject) playerCon.Send(destroyMessage, 0);
+						SendSpawnMessage?.Invoke(null, new object[] { identity, playerCon });
+					}/*
 					rh.transform.localScale = value;
-					foreach (Player target in List) SendSpawnMessage?.Invoke(null, new object[] { ReferenceHub.characterClassManager.netIdentity, target.Connection });
+					foreach (Player target in List) SendSpawnMessage?.Invoke(null, new object[] { ReferenceHub.characterClassManager.netIdentity, target.Connection });*/
 				}
 				catch (Exception ex)
 				{
@@ -226,6 +236,7 @@ namespace Qurre.API
 		}
 		public List<Inventory.SyncItemInfo> AllItems => Inventory.items.ToList();
 		public int CurrentItemIndex => Inventory.GetItemIndex();
+		public ItemType ItemInHand { get => Inventory.curItem; set => Inventory.SetCurItem(value); }
 		public Stamina Stamina => rh.fpc.staminaController();
 		public float StaminaUsage
 		{
@@ -273,7 +284,12 @@ namespace Qurre.API
 		public string UnitName
 		{
 			get => ClassManager.NetworkCurUnitName;
-			set => ClassManager.NetworkCurUnitName = value;
+            set
+			{
+				Respawning.SpawnableTeamType spawnableTeamType;
+				if (Respawning.NamingRules.UnitNamingManager.RolesWithEnforcedDefaultName.TryGetValue(Role, out spawnableTeamType)) ClassManager.NetworkCurSpawnableTeamType = (byte)spawnableTeamType;
+				ClassManager.NetworkCurUnitName = value;
+			}
 		}
 		public float AliveTime => ClassManager.AliveTime;
 		public long DeathTime
@@ -387,6 +403,7 @@ namespace Qurre.API
 				return sendSpawnMessage;
 			}
 		}
+		public void UnitUpdate() => ClassManager.ApplyProperties(true, false);
 		public void RAMessage(string message, bool success = true, string pluginName = null) =>
 			Sender.RaReply((pluginName ?? Assembly.GetCallingAssembly().GetName().Name) + "#" + message, success, true, string.Empty);
 		public void SendConsoleMessage(string message, string color)
@@ -458,7 +475,7 @@ namespace Qurre.API
 			NetworkWriterPool.Recycle(writer);
 		}
 		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => ClassManager.SetClassIDAdv(newRole, lite, escape);
-		public void ChangeModel(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
+		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (newPosition == default) newPosition = Position;

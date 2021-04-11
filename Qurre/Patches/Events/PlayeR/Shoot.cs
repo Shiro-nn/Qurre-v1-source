@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
@@ -24,13 +23,13 @@ namespace Qurre.Patches.Events.PlayeR
                 Player Target = null;
                 if (target != null) Target = Player.Get(target);
                 Player player = Player.Get(__instance.gameObject);
-                var ev = new ShootingEvent(API.Player.Get(__instance.gameObject), target, targetPos);
+                var ev = new ShootingEvent(Player.Get(__instance.gameObject), target, targetPos, player.ItemInHand.GetWeaponType());
                 Qurre.Events.Player.shooting(ev);
                 return ev.Allowed;
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.Shoot:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [Shoot]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

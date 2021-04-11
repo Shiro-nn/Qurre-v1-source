@@ -94,7 +94,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching SCPs.SCP079.GetEXP:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> SCP079 [GetEXP]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

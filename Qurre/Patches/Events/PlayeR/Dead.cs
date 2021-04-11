@@ -21,7 +21,7 @@ namespace Qurre.Patches.Events.PlayeR
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching PlayeR.Dead:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [Dead]:\n{e}\n{e.StackTrace}");
             }
         }
     }

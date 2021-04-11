@@ -21,15 +21,22 @@ namespace Qurre.Patches.Events.Server
 				PreauthStopwatch().Restart();
 				IdleMode.SetIdleMode(false);
 				if (q == "REQUEST_DATA PLAYER_LIST SILENT")
-					return true;
-				Qurre.Events.Server.sendingra(ev);
-				if (!string.IsNullOrEmpty(ev.ReplyMessage))
-					sender.RaReply(ev.ReplyMessage, ev.Success, true, string.Empty);
-				return ev.Allowed;
+				{
+					var _ev = new RaRequestPlayerListEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Server.Host : (API.Player.Get(sender.SenderId) ?? API.Server.Host), q, name, args);
+					Qurre.Events.Server.raRequestPlayerList(_ev);
+					return _ev.Allowed;
+				}
+				else
+				{
+					Qurre.Events.Server.sendingra(ev);
+					if (!string.IsNullOrEmpty(ev.ReplyMessage))
+						sender.RaReply(ev.ReplyMessage, ev.Success, true, string.Empty);
+					return ev.Allowed;
+				}
 			}
 			catch (Exception e)
 			{
-				Log.Error($"umm, error in patching Server.RA:\n{e}\n{e.StackTrace}");
+				Log.Error($"umm, error in patching Server [RA]:\n{e}\n{e.StackTrace}");
 				return true;
 			}
 		}
