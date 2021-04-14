@@ -13,6 +13,7 @@ namespace Qurre.Patches.Events.MAP
         {
             try
             {
+                if (regular == null) return false;
                 int scpsLeft = Player.List.Where(x => x.Team == Team.SCP && x.Role != RoleType.Scp0492).Count();
                 string[] unitInformations = regular.Split('-');
                 var ev = new MTFAnnouncementEvent(scpsLeft, unitInformations[0], int.Parse(unitInformations[1]));

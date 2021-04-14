@@ -22,7 +22,7 @@ namespace Qurre.Events.modules
         private static void WaitingForPlayers()
         {
             RoundSummary.RoundLock = false;
-            if(Plugin.Config.GetBool("Qurre_AllUnit", true))
+            if(Plugin.Config.GetBool("Qurre_AllUnit", false))
             {
                 API.Round.AddUnit(API.Objects.TeamUnitType.ClassD, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
                 API.Round.AddUnit(API.Objects.TeamUnitType.ChaosInsurgency, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");

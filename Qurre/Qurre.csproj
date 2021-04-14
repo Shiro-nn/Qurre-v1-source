@@ -128,6 +128,7 @@
     <Compile Include="Patches\Controllers\Scp914Controller.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
+    <Compile Include="Patches\etc\RespawnCassie.cs" />
     <Compile Include="Patches\etc\UnitName.cs" />
     <Compile Include="Patches\Events\Map\SetSeed.cs" />
     <Compile Include="Patches\Events\Player\RadioUpdate.cs" />
