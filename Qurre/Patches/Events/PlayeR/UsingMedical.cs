@@ -13,11 +13,9 @@ namespace Qurre.Patches.Events.PlayeR
         {
             try
             {
-                if (!__instance.RateLimit().CanExecute(true))
-                    return false;
+                if (!__instance.RateLimit().CanExecute(true)) return false;
                 __instance.CAWI_cancel(false);
-                if (__instance.cooldown > 0.0)
-                    return false;
+                if (__instance.cooldown > 0.0) return false;
                 for (int i = 0; i < __instance.usableItems.Length; ++i)
                 {
                     if (__instance.usableItems[i].inventoryID == __instance.CAWI_hub().inventory.curItem &&
@@ -26,8 +24,7 @@ namespace Qurre.Patches.Events.PlayeR
                         var ev = new MedicalUsingEvent(API.Player.Get(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
                         Qurre.Events.Player.medicalUsing(ev);
                         __instance.cooldown = ev.Cooldown;
-                        if (ev.Allowed)
-                            Timing.RunCoroutine(__instance.UseMedicalItem(i), Segment.FixedUpdate);
+                        if (ev.Allowed) Timing.RunCoroutine(__instance.UseMedicalItem(i), Segment.FixedUpdate);
                     }
                 }
                 return false;

@@ -400,6 +400,18 @@ namespace Qurre.API.Events
         public Controllers.Ragdoll Ragdoll { get; }
         public bool Allowed { get; set; }
     }
+    public class HealEvent : EventArgs
+    {
+        public HealEvent(Player player, float hp, bool allowed = true)
+        {
+            Player = player;
+            Hp = hp;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public float Hp { get; }
+        public bool Allowed { get; }
+    }
     public class MedicalUsedEvent : EventArgs
     {
         public MedicalUsedEvent(Player player, ItemType item)

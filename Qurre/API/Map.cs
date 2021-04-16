@@ -13,6 +13,8 @@ using _ragdoll = Qurre.API.Controllers.Ragdoll;
 using _workStation = Qurre.API.Controllers.WorkStation;
 using Qurre.API.Controllers;
 using static QurreModLoader.umm;
+using Grenades;
+
 namespace Qurre.API
 {
 	public class Map
@@ -45,6 +47,28 @@ namespace Qurre.API
 			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));
 			grenade.transform.position = position;
 			NetworkServer.Spawn(grenade);
+		}
+		public static void SpawnGrenade(bool frag, Vector3 position)
+		{
+			GrenadeManager gm = Server.Host.GrenadeManager;
+			if (frag)
+			{
+				GrenadeSettings settings = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.GrenadeFrag);
+				FragGrenade grenade = GameObject.Instantiate(settings.grenadeInstance).GetComponent<FragGrenade>();
+				grenade.fuseDuration = 2f;
+				grenade.InitData(gm, Vector3.zero, Vector3.zero, 0f);
+				grenade.transform.position = position;
+				NetworkServer.Spawn(grenade.gameObject);
+			}
+			else
+			{
+				GrenadeSettings settings = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.GrenadeFlash);
+				FlashGrenade grenade = GameObject.Instantiate(settings.grenadeInstance).GetComponent<FlashGrenade>();
+				grenade.fuseDuration = 2f;
+				grenade.InitData(gm, Vector3.zero, Vector3.zero, 0f);
+				grenade.transform.position = position;
+				NetworkServer.Spawn(grenade.gameObject);
+			}
 		}
 		public static void Explode(Vector3 position, GrenadeType grenadeType = GrenadeType.Grenade, Player player = null)
 		{

@@ -95,7 +95,7 @@ namespace Qurre.Patches.Events.PlayeR
                         }
                     }
                     if (!__instance.isLocalPlayer)
-                        __instance.GetComponent<PlayerStats>().maxHP = role.maxHP;
+                        API.Player.Get(__instance.gameObject).MaxHP = role.maxHP;
                 }
                 __instance.Scp0492.iAm049_2 = __instance.CurClass == RoleType.Scp0492;
                 __instance.Scp106.iAm106 = __instance.CurClass == RoleType.Scp106;

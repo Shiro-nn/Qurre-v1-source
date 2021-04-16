@@ -31,6 +31,7 @@ namespace Qurre.Events
         public static event AllEvents<RechargeWeaponEvent> RechargeWeapon;
         public static event AllEvents<ShootingEvent> Shooting;
         public static event AllEvents<RagdollSpawnEvent> RagdollSpawn;
+        public static event AllEvents<HealEvent> Heal;
         public static event AllEvents<MedicalStoppingEvent> MedicalStopping;
         public static event AllEvents<MedicalUsingEvent> MedicalUsing;
         public static event AllEvents<MedicalUsedEvent> MedicalUsed;
@@ -67,6 +68,7 @@ namespace Qurre.Events
         public static void rechargeWeapon(RechargeWeaponEvent ev) => RechargeWeapon.invoke(ev);
         public static void shooting(ShootingEvent ev) => Shooting.invoke(ev);
         public static void ragdollSpawn(RagdollSpawnEvent ev) => RagdollSpawn.invoke(ev);
+        public static void heal(HealEvent ev) => Heal.invoke(ev);
         public static void medicalStopping(MedicalStoppingEvent ev) => MedicalStopping.invoke(ev);
         public static void medicalUsing(MedicalUsingEvent ev) => MedicalUsing.invoke(ev);
         public static void medicalUsed(MedicalUsedEvent ev) => MedicalUsed.invoke(ev);
