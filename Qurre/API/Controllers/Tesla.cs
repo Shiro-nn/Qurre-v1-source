@@ -8,8 +8,11 @@ namespace Qurre.API.Controllers
         public GameObject GameObject => Gate.gameObject;
         public Vector3 Position { get => Gate.localPosition; }
         public float SizeOfTrigger { get => Gate.sizeOfTrigger; set => Gate.sizeOfTrigger = value; }
-        public void Trigger() => Gate.CallRpcPlayAnimation();
-        public void InstantTrigger() => Gate.RpcInstantTesla();
+        public void Trigger(bool instant = false)
+        {
+            if(instant) Gate.RpcInstantTesla();
+            else Gate.CallRpcPlayAnimation();
+        }
         public void Destroy() => Object.Destroy(Gate.gameObject);
     }
 }
