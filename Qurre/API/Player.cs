@@ -706,13 +706,13 @@ namespace Qurre.API
 		}
 		public void TeleportToRoom(RoomType room)
 		{
-			Vector3 roompos = Extensions.GetRoom(room).Position + (Vector3.up * 2);
+			Vector3 roompos = Extensions.GetRoom(room).Position + Vector3.up;
 			Position = roompos;
 		}
 		public void TeleportToRandomRoom()
 		{
 			RoomType room = (RoomType)UnityEngine.Random.Range(1, 48);
-			Position = Extensions.GetRoom(room).Position + (Vector3.up * 2);
+			Position = Extensions.GetRoom(room).Position + Vector3.up;
 		}
 		public void TeleportToDoor(DoorType door)
 		{
