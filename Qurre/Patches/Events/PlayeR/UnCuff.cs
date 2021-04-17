@@ -16,8 +16,7 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 foreach (Player target in Player.List)
                 {
-                    if (target == null)
-                        continue;
+                    if (target == null) continue;
                     if (target.CufferId == __instance.MyReferenceHub.queryProcessor.PlayerId)
                     {
                         var ev = new UnCuffEvent(Player.Get(__instance.gameObject), target);
