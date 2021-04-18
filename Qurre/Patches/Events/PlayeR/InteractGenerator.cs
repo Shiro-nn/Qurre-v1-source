@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Linq;
 using HarmonyLib;
 using Mirror;
 using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
+using QurreModLoader;
 using UnityEngine;
 namespace Qurre.Patches.Events.PlayeR
 {
@@ -19,7 +19,7 @@ namespace Qurre.Patches.Events.PlayeR
 				switch (command)
 				{
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Tablet:
-						if (__instance.isTabletConnected || !__instance.isDoorOpen || QurreModLoader.umm.Generator_localTime(__instance) <= 0f || Generator079.mainGenerator.forcedOvercharge)
+						if (__instance.isTabletConnected || !__instance.isDoorOpen || __instance.Generator_localTime() <= 0f || Generator079.mainGenerator.forcedOvercharge)
 							return false;
 						Inventory inv = person.GetComponent<Inventory>();
 						using (SyncList<Inventory.SyncItemInfo>.SyncListEnumerator SLE = inv.items.GetEnumerator())
@@ -57,46 +57,41 @@ namespace Qurre.Patches.Events.PlayeR
 	{
 		public static bool Prefix(Generator079 __instance, GameObject person)
 		{
+			Player player = Player.Get(person);
+			if (player == null)
+				return true;
+			if (__instance.Gen_doorAnimationCooldown() > 0f || __instance.Gen_deniedCooldown() > 0f)
+				return false;
 			try
 			{
-				var player = Player.Get(person);
-				if (player == null) return false;
-				if (player.Inventory == null || QurreModLoader.umm.Gen_doorAnimationCooldown(__instance) > 0f || QurreModLoader.umm.Gen_deniedCooldown(__instance) > 0f) return false;
 				if (__instance.isDoorUnlocked)
 				{
-					var allow = true;
-					if (!__instance.isDoorOpen)
-					{
-						var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor);
-						Qurre.Events.Player.interactGenerator(ev);
-						allow = ev.Allowed;
-					}
-					else
-					{
-						var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.CloseDoor);
-						Qurre.Events.Player.interactGenerator(ev);
-						allow = ev.Allowed;
-					}
-					if (!allow)
-					{
-						__instance.RpcDenied();
-						return false;
-					}
-					__instance.isDoorOpen = !__instance.isDoorOpen;
+					InteractGeneratorEvent ev;
+					if (__instance.NetworkisDoorOpen) ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.CloseDoor);
+					else ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor);
+					Qurre.Events.Player.interactGenerator(ev);
+					if (!ev.Allowed) return false;
+					__instance.Gen_doorAnimationCooldown(1.5f);
+					__instance.NetworkisDoorOpen = !__instance.isDoorOpen;
+					__instance.Generator_RpcDoSound(__instance.isDoorOpen);
 					return false;
 				}
-				var boolean = player.BypassMode;
-				if (player.Inventory.GetItemInHand().id > ItemType.KeycardJanitor)
+
+				if (player.Inventory.curItem > ItemType.KeycardJanitor)
 				{
-					var permissions = player.Inventory.GetItemByID(player.Inventory.curItem).permissions;
-					foreach (var t in permissions.Where(x => x == "ARMORY_LVL_2")) boolean = true;
-				}
-				var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabledEjected, boolean);
-				Qurre.Events.Player.interactGenerator(ev1);
-				if (ev1.Allowed)
-				{
-					__instance.isDoorUnlocked = true;
-					return false;
+					string[] permissions = player.Inventory.GetItemByID(player.Inventory.curItem).permissions;
+					for (int i = 0; i < permissions.Length; i++)
+					{
+						if (permissions[i] == "ARMORY_LVL_2" || player.BypassMode)
+						{
+							var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.Unlocked);
+							Qurre.Events.Player.interactGenerator(ev);
+							if (!ev.Allowed) return false;
+							__instance.NetworkisDoorUnlocked = true;
+							__instance.Gen_doorAnimationCooldown(0.5f);
+							return false;
+						}
+					}
 				}
 				__instance.RpcDenied();
 				return false;
