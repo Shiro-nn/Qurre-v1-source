@@ -20,7 +20,15 @@ namespace Qurre.API
 			if (item == ItemType.MicroHID) return WeaponType.MicroHID;
 			return WeaponType.None;
 		}
-		public static DoorVariant DoorVariant { get; internal set; }
+		public static DoorVariant DoorPrefabLCZ { get; internal set; }
+		public static DoorVariant DoorPrefabHCZ { get; internal set; }
+		public static DoorVariant DoorPrefabEZ { get; internal set; }
+		public static DoorVariant GetDoorPrefab(DoorPrefabs prefab)
+		{
+			if (prefab == DoorPrefabs.DoorLCZ) return DoorPrefabLCZ;
+			else if (prefab == DoorPrefabs.DoorHCZ) return DoorPrefabHCZ;
+			else return DoorPrefabEZ;
+		}
 		public static Room GetRoom(RoomType type) => Map.Rooms.FirstOrDefault(x => x.Type == type);
 		public static _door GetDoor(DoorType type) => Map.Doors.FirstOrDefault(x => x.Type == type);
 		public static _lift GetLift(LiftType type) => Map.Lifts.FirstOrDefault(x => x.Type == type);

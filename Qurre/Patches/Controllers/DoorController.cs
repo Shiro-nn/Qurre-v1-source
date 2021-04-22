@@ -11,8 +11,21 @@ namespace Qurre.Patches.Controllers
         {
             try
             {
-                if (Extensions.DoorVariant == null)
-                    Extensions.DoorVariant = UnityEngine.Object.Instantiate(__instance.TargetPrefab);
+                switch (__instance.TargetPrefab.name.ToUpper())
+                {
+                    case "HCZ BREAKABLEDOOR":
+                        if (Extensions.DoorPrefabHCZ == null)
+                            Extensions.DoorPrefabHCZ = UnityEngine.Object.Instantiate(__instance.TargetPrefab);
+                        break;
+                    case "LCZ BREAKABLEDOOR":
+                        if (Extensions.DoorPrefabLCZ == null)
+                            Extensions.DoorPrefabLCZ = UnityEngine.Object.Instantiate(__instance.TargetPrefab);
+                        break;
+                    case "EZ BREAKABLEDOOR":
+                        if (Extensions.DoorPrefabEZ == null)
+                            Extensions.DoorPrefabEZ = UnityEngine.Object.Instantiate(__instance.TargetPrefab);
+                        break;
+                }
             }
             catch (Exception e)
             {

@@ -19,18 +19,24 @@ namespace Qurre.Patches.Events.SCPs.SCP914
             try
             {
                 if (!NetworkServer.active) return true;
+                if (__instance.intake == null || __instance.inputSize == null) return true;
                 Collider[] colliderArray = Physics.OverlapBox(__instance.intake.position, __instance.inputSize / 2f);
                 __instance.Scp914_players().Clear();
                 __instance.Scp914_items().Clear();
                 foreach (Collider collider in colliderArray)
                 {
-                    CharacterClassManager plrs = collider.GetComponent<CharacterClassManager>();
-                    if (plrs != null) __instance.Scp914_players().Add(plrs);
-                    else
+                    try
                     {
-                        Pickup picks = collider.GetComponent<Pickup>();
-                        if (picks != null) __instance.Scp914_items().Add(picks);
+                        if (collider == null) continue;
+                        CharacterClassManager plrs = collider.GetComponent<CharacterClassManager>();
+                        if (plrs != null) __instance.Scp914_players().Add(plrs);
+                        else
+                        {
+                            Pickup picks = collider.GetComponent<Pickup>();
+                            if (picks != null) __instance.Scp914_items().Add(picks);
+                        }
                     }
+                    catch { }
                 }
                 List<Player> _players = __instance.Scp914_players().Select(player => Player.Get(player.gameObject)).ToList();
                 foreach (Player pl in _players)

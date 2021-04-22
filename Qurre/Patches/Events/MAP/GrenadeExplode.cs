@@ -56,6 +56,7 @@ namespace Qurre.Patches.Events.MAP.grenade
         {
             try
             {
+                if (__instance.throwerGameObject == null || __instance.transform == null || __instance.transform.position == null) return true;
                 Vector3 vec = __instance.transform.position;
                 Dictionary<Player, float> players = new Dictionary<Player, float>();
                 foreach (GameObject gameObject in PlayerManager.players)
@@ -63,6 +64,7 @@ namespace Qurre.Patches.Events.MAP.grenade
                     if (ServerConsole.FriendlyFire || !(gameObject != __instance.throwerGameObject) || gameObject.GetComponent<WeaponManager>().GetShootPermission(__instance.throwerTeam, false))
                     {
                         PlayerStats PlSt = gameObject.GetComponent<PlayerStats>();
+                        if(PlSt.transform == null || PlSt.transform.position == null) return true;
                         if (PlSt == null || !PlSt.ccm.InWorld) continue;
                         float fl = __instance.damageOverDistance.Evaluate(Vector3.Distance(vec, PlSt.transform.position)) * (PlSt.ccm.IsHuman() ?
                             ConfigFile.ServerConfig.GetFloat("human_grenade_multiplier", 0.7f) : ConfigFile.ServerConfig.GetFloat("scp_grenade_multiplier", 1f));

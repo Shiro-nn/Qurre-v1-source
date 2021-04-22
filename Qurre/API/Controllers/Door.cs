@@ -100,9 +100,9 @@ namespace Qurre.API.Controllers
             else return false;
         }
         public List<Room> Rooms { get; } = new List<Room>();
-        public static Door Spawn(Vector3 position, Quaternion? rotation = null, DoorPermissions permissions = null)
+        public static Door Spawn(Vector3 position, DoorPrefabs prefab, Quaternion? rotation = null, DoorPermissions permissions = null)
         {
-            _door doorVariant = Object.Instantiate(Extensions.DoorVariant);
+            _door doorVariant = Object.Instantiate(Extensions.GetDoorPrefab(prefab));
             doorVariant.transform.position = position;
             doorVariant.transform.rotation = rotation ?? new Quaternion(0, 0, 0, 0);
             doorVariant.RequiredPermissions = permissions ?? new DoorPermissions();

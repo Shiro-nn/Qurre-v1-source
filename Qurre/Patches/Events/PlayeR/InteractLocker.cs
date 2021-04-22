@@ -52,9 +52,9 @@ namespace Qurre.Patches.Events.PlayeR
                             break;
                         }
                     }
-                    singleton.lockers[lockerId].LockPickups(!boolean, chamberNumber, anyOpen);
-                    if (!string.IsNullOrEmpty(accessToken))
-                        singleton.RpcChangeMaterial(lockerId, chamberNumber, false);
+                    if (singleton.lockers[lockerId] == null) return true;
+                    try { singleton.lockers[lockerId].LockPickups(!boolean, chamberNumber, anyOpen); } catch { return true; }
+                    if (!string.IsNullOrEmpty(accessToken)) singleton.RpcChangeMaterial(lockerId, chamberNumber, false);
                 }
                 else singleton.RpcChangeMaterial(lockerId, chamberNumber, true);
                 __instance.OnInteract();

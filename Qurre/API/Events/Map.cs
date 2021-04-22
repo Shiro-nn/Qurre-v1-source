@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Interactables.Interobjects.DoorUtils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -93,5 +94,19 @@ namespace Qurre.API.Events
     {
         public SetSeedEvent(int seed) => Seed = seed;
         public int Seed { get; set; }
+    }
+    public class DoorDamageEvent : EventArgs
+    {
+        public DoorDamageEvent(Controllers.Door door, float hp, DoorDamageType damageType, bool allowed = true)
+        {
+            Door = door;
+            Hp = hp;
+            DamageType = damageType;
+            Allowed = allowed;
+        }
+        public Controllers.Door Door { get; }
+        public float Hp { get; }
+        public DoorDamageType DamageType { get; }
+        public bool Allowed { get; set; }
     }
 }
