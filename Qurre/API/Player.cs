@@ -166,6 +166,11 @@ namespace Qurre.API
 				return raycastthit.transform.gameObject;
 			}
 		}
+		public bool Noclip
+        {
+			get => rh.characterClassManager.NoclipEnabled;
+			set => rh.characterClassManager.SetNoclip(value);
+        }
 		public Team Team => GetTeam(Role);
 		public Side Side => GetSide(Team);
 		public RoleType Role
@@ -724,5 +729,12 @@ namespace Qurre.API
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
 		}
+		public void Invisible(bool value)
+        {
+			if (!value)
+				NetworkServer.UnSpawn(GameObject);
+			else
+				NetworkServer.Spawn(GameObject);
+        }
 	}
 }

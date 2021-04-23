@@ -14,6 +14,8 @@ using _workStation = Qurre.API.Controllers.WorkStation;
 using Qurre.API.Controllers;
 using static QurreModLoader.umm;
 using Grenades;
+using MapGeneration;
+using LightContainmentZoneDecontamination;
 
 namespace Qurre.API
 {
@@ -29,6 +31,48 @@ namespace Qurre.API
 		public static List<Room> Rooms { get; } = new List<Room>();
 		public static List<Tesla> Teslas { get; } = new List<Tesla>();
 		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
+
+		public static float WalkSpeedMultiplier
+        {
+			get => ServerConfigSynchronizer.Singleton.NetworkHumanWalkSpeedMultiplier;
+			set => ServerConfigSynchronizer.Singleton.NetworkHumanWalkSpeedMultiplier = value;
+        }
+		public static float SprintSpeedMultiplier
+        {
+			get => ServerConfigSynchronizer.Singleton.NetworkHumanSprintSpeedMultiplier;
+			set => ServerConfigSynchronizer.Singleton.NetworkHumanSprintSpeedMultiplier = value;
+        }
+		public static bool DisabledLCZDecontamination
+		{
+			get => DecontaminationController.Singleton.disableDecontamination;
+			set => DecontaminationController.Singleton.disableDecontamination = value;
+		}
+		public static Vector3 Gravitation
+        {
+			get => Physics.gravity;
+			set => Physics.gravity = value;
+        }
+		public static float ElevatorsMovingSpeed
+        {
+			get => Object.FindObjectsOfType<Lift>()[0].movingSpeed;
+			set
+            {
+				foreach (Lift lift in Object.FindObjectsOfType<Lift>()) lift.movingSpeed = value;
+			}
+        }
+		public static bool FemurBreakerState
+        {
+			get => Object.FindObjectOfType<LureSubjectContainer>().allowContain;
+			set => Object.FindObjectOfType<LureSubjectContainer>().SetState(value);
+		}
+		public static float BreakableWindowHp
+        {
+			get => Object.FindObjectsOfType<BreakableWindow>()[0].health;
+			set
+            {
+				foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>()) window.health = value;
+            }
+        }
 		public static List<Pickup> Pickups => Object.FindObjectsOfType<Pickup>().ToList();
 		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
@@ -115,10 +159,6 @@ namespace Qurre.API
 		}
 		public static void ContainSCP106(ReferenceHub executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().CallRpcContain106(executor.gameObject);
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
-		public static void SetFemurBreakerState(bool enabled) => Object.FindObjectOfType<LureSubjectContainer>().SetState(enabled);
-		public static void RemoveTeslaGates() { foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) { Object.Destroy(teslaGate.gameObject); } }
-		public static void RemoveDoors() { foreach (_door dr in Doors) { Object.Destroy(dr.GameObject); } }
-		public static void SetElevatorsMovingSpeed(float newSpeed) { foreach (_lift lft in Lifts) { lft.MovingSpeed = newSpeed; } }
 		public static void SetIntercomSpeaker(Player player)
 		{
 			if (player != null)
@@ -165,7 +205,7 @@ namespace Qurre.API
 					try
 					{
 						var room = Rooms.FirstOrDefault(x => x.Name == zoneroom.currentRoom);
-						var door = interactable.GetComponentInParent<Interactables.Interobjects.DoorUtils.DoorVariant>();
+						var door = interactable.GetComponentInParent<DoorVariant>();
 						if (room == null || door == null) continue;
 						var sdoor = Doors.FirstOrDefault(x => x.GameObject == door.gameObject);
 						sdoor.Rooms.Add(room);
@@ -186,5 +226,85 @@ namespace Qurre.API
 			Ragdolls.Clear();
 			Heavy.Recontained079 = false;
 		}
+		public static void AnnounceNtfEntrance(int scpsLeft, int mtfNumber, char mtfLetter)
+        {
+			if (scpsLeft == 0)
+				RespawnEffectsController.PlayCassieAnnouncement($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining NoSCPsLeft", true, true);
+			else
+				RespawnEffectsController.PlayCassieAnnouncement($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining AwaitingRecontainment {scpsLeft} scpsubjects", true, true);
+		}
+		public static void AnnounceScpKill(string scpNumber, Player killer = null)
+		{
+			GameObject gameObject = GameObject.Find("Host");
+			RoleType rt;
+			switch ("SCP-" + scpNumber)
+			{
+				case "49":
+				case "049":
+					rt = RoleType.Scp049;
+					break;
+				case "79":
+				case "079":
+					rt = RoleType.Scp079;
+					break;
+				case "96":
+				case "096":
+					rt = RoleType.Scp096;
+					break;
+				case "106":
+					rt = RoleType.Scp106;
+					break;
+				case "173":
+					rt = RoleType.Scp173;
+					break;
+				case "939-53":
+				case "939_53":
+				case "93953":
+					rt = RoleType.Scp93953;
+					break;
+				case "939-89":
+				case "939_89":
+				case "93989":
+					rt = RoleType.Scp93989;
+					break;
+				default:
+					rt = RoleType.None;
+					break;
+			}
+			CharacterClassManager component2 = gameObject.GetComponent<CharacterClassManager>();
+			NineTailedFoxAnnouncer.AnnounceScpTermination(component2.Classes.SafeGet(rt), new PlayerStats.HitInfo(-1f, killer?.Nickname ?? "", DamageTypes.None, killer?.Id ?? (-1)), "");
+		}
+		public static void DecontaminateLCZ()
+        {
+			DecontaminationController.Singleton.FinishDecontamination();
+			DecontaminationController.Singleton.NetworkRoundStartTime = -1.0;
+        }
+		public static void Remove(RemovableObject removable)
+        {
+            switch (removable)
+            {
+				case RemovableObject.Doors:
+					foreach (DoorVariant door in Object.FindObjectsOfType<DoorVariant>()) Object.Destroy(door.gameObject);
+					break;
+				case RemovableObject.Generators:
+					foreach (Generator079 generator in Object.FindObjectsOfType<Generator079>()) Object.Destroy(generator.gameObject);
+					break;
+				case RemovableObject.Lockers:
+					foreach (LockerManager locker in Object.FindObjectsOfType<LockerManager>()) Object.Destroy(locker.gameObject);
+					break;
+				case RemovableObject.Teslagates:
+					foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) Object.Destroy(teslaGate.gameObject);
+					break;
+				case RemovableObject.Windows:
+					foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>()) Object.Destroy(window.gameObject);
+					break;
+				case RemovableObject.Workstations:
+					foreach (WorkStation workStation in Object.FindObjectsOfType<WorkStation>()) Object.Destroy(workStation.gameObject);
+					break;
+				case RemovableObject.Rooms:
+					foreach (NetworkIdentity netId in Object.FindObjectsOfType<NetworkIdentity>()) if (netId.name.Contains("All")) Object.Destroy(netId);
+					break;
+			}
+        }
 	}
 }

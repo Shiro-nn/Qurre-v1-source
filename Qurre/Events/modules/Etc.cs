@@ -1,5 +1,6 @@
 ﻿using Qurre.API.Events;
 using UnityEngine.SceneManagement;
+using MapGeneration;
 namespace Qurre.Events.modules
 {
     internal class Etc
@@ -7,7 +8,7 @@ namespace Qurre.Events.modules
         internal static void Load()
         {
             SceneManager.sceneUnloaded += SceneUnloaded;
-            MapGeneration.SeedSynchronizer.OnMapGenerated += Map.generated;
+            SeedSynchronizer.OnMapGenerated += Map.generated;
             Round.WaitingForPlayers += WaitingForPlayers;
             Player.RoleChange += ChangeRole;
             Round.Restart += RoundRestart;

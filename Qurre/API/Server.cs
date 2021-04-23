@@ -61,5 +61,11 @@ namespace Qurre.API
         }
         public static List<TObject> GetObjectsOf<TObject>() where TObject : UnityEngine.Object => UnityEngine.Object.FindObjectsOfType<TObject>().ToList();
         public static TObject GetObjectOf<TObject>() where TObject : UnityEngine.Object => UnityEngine.Object.FindObjectOfType<TObject>();
+        public static void Restart()
+        {
+            ServerConsole.AddOutputEntry(default(ServerOutput.ExitActionRestartEntry));
+            umm.SetNextRoundAction(ServerStatic.NextRoundAction.Restart);
+            umm.StaticChangeLevel(new PlayerStats(), true);
+        }
     }
 }

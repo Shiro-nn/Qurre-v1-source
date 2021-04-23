@@ -39,9 +39,10 @@
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass">
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Mirror">
@@ -88,6 +89,7 @@
     <Compile Include="API\Controllers\Generator.cs" />
     <Compile Include="API\Controllers\Lift.cs" />
     <Compile Include="API\Objects\DoorPrefabs.cs" />
+    <Compile Include="API\Objects\RemovableObject.cs" />
     <Compile Include="API\Objects\WeaponType.cs" />
     <Compile Include="API\Objects\RadioStatus.cs" />
     <Compile Include="API\Objects\GrenadeType.cs" />
