@@ -18,8 +18,8 @@ namespace Qurre.Patches.etc
             try
             {
                 if (!NetworkServer.active) return false;
-                int ii = __instance.Player_frame();
-                __instance.Player_frame(ii++);
+                int ii = __instance.Player_frame(); ii++;
+                __instance.Player_frame(ii);
                 if (__instance.Player_frame() != __instance.Player_syncFrequency()) return false;
                 __instance.Player_frame(0);
                 var players = Player.List.ToList();
@@ -113,7 +113,6 @@ namespace Qurre.Patches.etc
 
 
                     AA_001:
-
                         var posData = __instance.Player_transmitBuffer()[k];
                         var rotation = posData.rotation;
                         var pos = posData.position;

@@ -15,35 +15,57 @@ namespace Qurre.Patches.Events.PlayeR
 		{
 			try
 			{
-				var player = Player.Get(person);
+				Player player = Player.Get(person);
 				switch (command)
 				{
-					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Tablet:
-						if (__instance.isTabletConnected || !__instance.isDoorOpen || __instance.Generator_localTime() <= 0f || Generator079.mainGenerator.forcedOvercharge)
-							return false;
-						Inventory inv = person.GetComponent<Inventory>();
-						using (SyncList<Inventory.SyncItemInfo>.SyncListEnumerator SLE = inv.items.GetEnumerator())
+					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Door:
+						bool boolean = true;
+						switch (__instance.isDoorOpen)
 						{
-							while (SLE.MoveNext())
+							case false:
+								var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor);
+								Qurre.Events.Player.interactGenerator(ev1);
+								boolean = ev1.Allowed;
+								break;
+							case true:
+								var ev2 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.CloseDoor);
+								Qurre.Events.Player.interactGenerator(ev2);
+								boolean = ev2.Allowed;
+								break;
+						}
+						if (boolean) __instance.OpenClose(person);
+						else __instance.RpcDenied();
+						break;
+					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Tablet:
+						if (__instance.isTabletConnected || !__instance.isDoorOpen || __instance.Generator_localTime() <= 0.0 || Generator079.mainGenerator.forcedOvercharge)
+							break;
+						Inventory component = person.GetComponent<Inventory>();
+						using (SyncList<Inventory.SyncItemInfo>.SyncListEnumerator enumerator = component.items.GetEnumerator())
+						{
+							while (enumerator.MoveNext())
 							{
-								Inventory.SyncItemInfo inf = SLE.Current;
-								if (inf.id == ItemType.WeaponManagerTablet)
+								Inventory.SyncItemInfo current = enumerator.Current;
+								if (current.id == ItemType.WeaponManagerTablet)
 								{
-									var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabletInjected);
-									Qurre.Events.Player.interactGenerator(ev);
-									if (ev.Allowed) __instance.isTabletConnected = ev.Allowed;
+									var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabletInjected);
+									Qurre.Events.Player.interactGenerator(ev1);
+									if (ev1.Allowed)
+									{
+										component.items.Remove(current);
+										__instance.NetworkisTabletConnected = true;
+									}
 									break;
 								}
 							}
+							break;
 						}
-						return false;
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Cancel:
-						if (!__instance.isTabletConnected) return false;
-						var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabledEjected);
-						Qurre.Events.Player.interactGenerator(ev1);
-						return ev1.Allowed;
+						var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabledEjected);
+						Qurre.Events.Player.interactGenerator(ev);
+						if (ev.Allowed) __instance.EjectTablet();
+						break;
 				}
-				return true;
+				return false;
 			}
 			catch (Exception e)
 			{

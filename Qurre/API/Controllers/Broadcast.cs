@@ -41,20 +41,21 @@ namespace Qurre.API.Controllers
         }
         public ushort Time { get; }
         public bool Active { get; private set; }
-        public void Start(Player player)
+        public void Start()
         {
-            if (player.Broadcasts.FirstOrDefault() != this) return;
+            if (pl.Id == Server.Host.Id) { if (Map.Broadcasts.FirstOrDefault() != this) { return; } }
+            if (pl.Id != Server.Host.Id) { if (pl.Broadcasts.FirstOrDefault() != this) { return; } }
             if (Active) return;
             Active = true;
             DisplayTime = UnityEngine.Time.time;
-            if (pl.Id == Server.Host.Id) BC.BroadcastComponent.RpcAddElement(Message, Time, global::Broadcast.BroadcastFlags.Normal);
-            else BC.BroadcastComponent.TargetAddElement(pl.Scp079PlayerScript.connectionToClient, Message, Time, global::Broadcast.BroadcastFlags.Normal);
+            if (pl.Id == Server.Host.Id) { BC.BroadcastComponent.RpcAddElement(Message, Time, global::Broadcast.BroadcastFlags.Normal); }
+            else { BC.BroadcastComponent.TargetAddElement(pl.Scp079PlayerScript.connectionToClient, Message, Time, global::Broadcast.BroadcastFlags.Normal); }
             Timing.CallDelayed(Time, () => End());
         }
         public void Update()
         {
             var time = Time - (UnityEngine.Time.time - DisplayTime) + 1;
-            if(pl.Id == Server.Host.Id)
+            if (pl.Id == Server.Host.Id)
             {
                 BC.BroadcastComponent.RpcClearElements();
                 BC.BroadcastComponent.RpcAddElement(Message, (ushort)time, global::Broadcast.BroadcastFlags.Normal);
@@ -69,10 +70,19 @@ namespace Qurre.API.Controllers
         {
             if (!Active) return;
             Active = false;
-            pl.Broadcasts.Remove(this);
-            if (pl.Id == Server.Host.Id) BC.BroadcastComponent.RpcClearElements();
-            else BC.BroadcastComponent.TargetClearElements(pl.Scp079PlayerScript.connectionToClient);
-            if (pl.Broadcasts.FirstOrDefault() != null) pl.Broadcasts.FirstOrDefault().Start(pl);
+
+            if (pl.Id == Server.Host.Id)
+            {
+                Map.Broadcasts.Remove(this);
+                BC.BroadcastComponent.RpcClearElements();
+                if (Map.Broadcasts.FirstOrDefault() != null) Map.Broadcasts.FirstOrDefault().Start();
+            }
+            else
+            {
+                pl.Broadcasts.Remove(this);
+                BC.BroadcastComponent.TargetClearElements(pl.Scp079PlayerScript.connectionToClient);
+                if (pl.Broadcasts.FirstOrDefault() != null) pl.Broadcasts.FirstOrDefault().Start();
+            }
         }
     }
     public class ListBroadcasts
@@ -91,12 +101,12 @@ namespace Qurre.API.Controllers
                 list.AddRange(bcs);
                 bcs = list;
                 if (currentbc != null) currentbc.End();
-                else bcs.First().Start(_player);
+                else bcs.First().Start();
             }
             else
             {
                 bcs.Add(bc);
-                if (!bcs.First().Active) bcs.First().Start(_player);
+                if (!bcs.First().Active) bcs.First().Start();
             }
         }
         public void Remove(Broadcast bc)

@@ -23,4 +23,22 @@ namespace Qurre.Patches.Events.Map
             }
         }
     }
+    [HarmonyPatch(typeof(DoorEventOpenerExtension), "Trigger")]
+    internal static class DoorOpen
+    {
+        private static bool Prefix(DoorEventOpenerExtension __instance, DoorEventOpenerExtension.OpenerEventType eventType)
+        {
+            try
+            {
+                var ev = new DoorOpenEvent(Extensions.GetDoor(__instance.TargetDoor), eventType);
+                Qurre.Events.Map.doorOpen(ev);
+                return ev.Allowed;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"umm, error in patching Map [DoorOpen]:\n{e}\n{e.StackTrace}");
+                return true;
+            }
+        }
+    }
 }

@@ -123,4 +123,16 @@ namespace Qurre.API.Events
         public bool NewState { get; }
         public bool Allowed { get; set; }
     }
+    public class DoorOpenEvent : EventArgs
+    {
+        public DoorOpenEvent(Controllers.Door door, DoorEventOpenerExtension.OpenerEventType eventType, bool allowed = true)
+        {
+            Door = door;
+            EventType = eventType;
+            Allowed = allowed;
+        }
+        public Controllers.Door Door { get; }
+        public DoorEventOpenerExtension.OpenerEventType EventType { get; }
+        public bool Allowed { get; set; }
+    }
 }
