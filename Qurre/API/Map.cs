@@ -14,15 +14,13 @@ using _workStation = Qurre.API.Controllers.WorkStation;
 using Qurre.API.Controllers;
 using static QurreModLoader.umm;
 using Grenades;
-using MapGeneration;
 using LightContainmentZoneDecontamination;
-
 namespace Qurre.API
 {
 	public class Map
 	{
 		public static int roundtime = 0;
-		public static MapListBroadcasts Broadcasts { get; private set; } = new MapListBroadcasts();
+		public static ListBroadcasts Broadcasts { get; private set; } = new ListBroadcasts(Server.Host);
 		public static CassieList Cassies { get; private set; } = new CassieList();
 		public static List<_door> Doors { get; } = new List<_door>();
 		public static List<_lift> Lifts { get; } = new List<_lift>();
@@ -33,50 +31,50 @@ namespace Qurre.API
 		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
 
 		public static float WalkSpeedMultiplier
-        {
+		{
 			get => ServerConfigSynchronizer.Singleton.NetworkHumanWalkSpeedMultiplier;
 			set => ServerConfigSynchronizer.Singleton.NetworkHumanWalkSpeedMultiplier = value;
-        }
+		}
 		public static float SprintSpeedMultiplier
-        {
+		{
 			get => ServerConfigSynchronizer.Singleton.NetworkHumanSprintSpeedMultiplier;
 			set => ServerConfigSynchronizer.Singleton.NetworkHumanSprintSpeedMultiplier = value;
-        }
+		}
 		public static bool DisabledLCZDecontamination
 		{
 			get => DecontaminationController.Singleton.disableDecontamination;
 			set => DecontaminationController.Singleton.disableDecontamination = value;
 		}
 		public static Vector3 Gravitation
-        {
+		{
 			get => Physics.gravity;
 			set => Physics.gravity = value;
-        }
+		}
 		public static float ElevatorsMovingSpeed
-        {
+		{
 			get => Object.FindObjectsOfType<Lift>()[0].movingSpeed;
 			set
-            {
+			{
 				foreach (Lift lift in Object.FindObjectsOfType<Lift>()) lift.movingSpeed = value;
 			}
-        }
+		}
 		public static bool FemurBreakerState
-        {
+		{
 			get => Object.FindObjectOfType<LureSubjectContainer>().allowContain;
 			set => Object.FindObjectOfType<LureSubjectContainer>().SetState(value);
 		}
 		public static float BreakableWindowHp
-        {
+		{
 			get => Object.FindObjectsOfType<BreakableWindow>()[0].health;
 			set
-            {
+			{
 				foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>()) window.health = value;
-            }
-        }
+			}
+		}
 		public static List<Pickup> Pickups => Object.FindObjectsOfType<Pickup>().ToList();
-		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false)
+		public static Controllers.Broadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
-			var bc = new MapBroadcast(Server.Host, message, duration);
+			var bc = new Controllers.Broadcast(Server.Host, message, duration);
 			Broadcasts.Add(bc, instant);
 			return bc;
 		}
@@ -173,65 +171,18 @@ namespace Qurre.API
 				if (ccm.IntercomMuted) ccm.IntercomMuted = false;
 			}
 		}
-		public static void UnitUpdate()
-		{
-			foreach (Player pl in Player.List) pl.UnitUpdate();
-		}
 		public static void PlayCIEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
 		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);
 		public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
 		public static void ShowHint(string message, float duration)
 		{
-			foreach (Player player in Player.List)
-				player.ShowHint(message, duration);
-		}
-		internal static void AddObjects()
-		{
-			Broadcasts = new MapListBroadcasts();
-			Cassies = new CassieList();
-			foreach (var tesla in Server.GetObjectsOf<TeslaGate>())
-				Teslas.Add(new Tesla(tesla));
-			foreach (var room in Server.GetObjectsOf<Transform>().Where(x => x.CompareTag("Room") || x.name == "Root_*&*Outside Cams" || x.name == "PocketWorld"))
-				Rooms.Add(new Room(room.gameObject));
-			foreach (var station in Server.GetObjectsOf<global::WorkStation>())
-				WorkStations.Add(new _workStation(station));
-			foreach (var door in Server.GetObjectsOf<DoorVariant>())
-				Doors.Add(new _door(door));
-			foreach (var interactable in Interface079.singleton.allInteractables)
-			{
-				foreach (var zoneroom in interactable.currentZonesAndRooms)
-				{
-					try
-					{
-						var room = Rooms.FirstOrDefault(x => x.Name == zoneroom.currentRoom);
-						var door = interactable.GetComponentInParent<DoorVariant>();
-						if (room == null || door == null) continue;
-						var sdoor = Doors.FirstOrDefault(x => x.GameObject == door.gameObject);
-						sdoor.Rooms.Add(room);
-						room.Doors.Add(sdoor);
-					}
-					catch { }
-				}
-			}
-		}
-		internal static void ClearObjects()
-		{
-			Teslas.Clear();
-			Doors.Clear();
-			Lifts.Clear();
-			Rooms.Clear();
-			Generators.Clear();
-			WorkStations.Clear();
-			Ragdolls.Clear();
-			Heavy.Recontained079 = false;
+			foreach (Player player in Player.List) player.ShowHint(message, duration);
 		}
 		public static void AnnounceNtfEntrance(int scpsLeft, int mtfNumber, char mtfLetter)
-        {
-			if (scpsLeft == 0)
-				RespawnEffectsController.PlayCassieAnnouncement($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining NoSCPsLeft", true, true);
-			else
-				RespawnEffectsController.PlayCassieAnnouncement($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining AwaitingRecontainment {scpsLeft} scpsubjects", true, true);
+		{
+			if (scpsLeft == 0) Cassie.Send($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining NoSCPsLeft", true, true, true);
+			else Cassie.Send($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining AwaitingRecontainment {scpsLeft} scpsubjects", true, true, true);
 		}
 		public static void AnnounceScpKill(string scpNumber, Player killer = null)
 		{
@@ -275,14 +226,14 @@ namespace Qurre.API
 			NineTailedFoxAnnouncer.AnnounceScpTermination(component2.Classes.SafeGet(rt), new PlayerStats.HitInfo(-1f, killer?.Nickname ?? "", DamageTypes.None, killer?.Id ?? (-1)), "");
 		}
 		public static void DecontaminateLCZ()
-        {
+		{
 			DecontaminationController.Singleton.FinishDecontamination();
 			DecontaminationController.Singleton.NetworkRoundStartTime = -1.0;
-        }
+		}
 		public static void Remove(RemovableObject removable)
-        {
-            switch (removable)
-            {
+		{
+			switch (removable)
+			{
 				case RemovableObject.Doors:
 					foreach (DoorVariant door in Object.FindObjectsOfType<DoorVariant>()) Object.Destroy(door.gameObject);
 					break;
@@ -305,6 +256,46 @@ namespace Qurre.API
 					foreach (NetworkIdentity netId in Object.FindObjectsOfType<NetworkIdentity>()) if (netId.name.Contains("All")) Object.Destroy(netId);
 					break;
 			}
-        }
+		}
+		internal static void AddObjects()
+		{
+			Broadcasts = new ListBroadcasts(Server.Host);
+			Cassies = new CassieList();
+			foreach (var tesla in Server.GetObjectsOf<TeslaGate>())
+				Teslas.Add(new Tesla(tesla));
+			foreach (var room in Server.GetObjectsOf<Transform>().Where(x => x.CompareTag("Room") || x.name == "Root_*&*Outside Cams" || x.name == "PocketWorld"))
+				Rooms.Add(new Room(room.gameObject));
+			foreach (var station in Server.GetObjectsOf<global::WorkStation>())
+				WorkStations.Add(new _workStation(station));
+			foreach (var door in Server.GetObjectsOf<DoorVariant>())
+				Doors.Add(new _door(door));
+			foreach (var interactable in Interface079.singleton.allInteractables)
+			{
+				foreach (var zoneroom in interactable.currentZonesAndRooms)
+				{
+					try
+					{
+						var room = Rooms.FirstOrDefault(x => x.Name == zoneroom.currentRoom);
+						var door = interactable.GetComponentInParent<DoorVariant>();
+						if (room == null || door == null) continue;
+						var sdoor = Doors.FirstOrDefault(x => x.GameObject == door.gameObject);
+						sdoor.Rooms.Add(room);
+						room.Doors.Add(sdoor);
+					}
+					catch { }
+				}
+			}
+		}
+		internal static void ClearObjects()
+		{
+			Teslas.Clear();
+			Doors.Clear();
+			Lifts.Clear();
+			Rooms.Clear();
+			Generators.Clear();
+			WorkStations.Clear();
+			Ragdolls.Clear();
+			Heavy.Recontained079 = false;
+		}
 	}
 }

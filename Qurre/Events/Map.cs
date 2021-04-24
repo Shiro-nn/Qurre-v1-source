@@ -14,6 +14,7 @@ namespace Qurre.Events
         public static event AllEvents<GrenadeExplodeEvent> GrenadeExplode;
         public static event AllEvents<SetSeedEvent> SetSeed;
         public static event AllEvents<DoorDamageEvent> DoorDamage;
+        public static event AllEvents<DoorLockEvent> DoorLock;
         public static void lczdecon(LCZDeconEvent ev) => LCZDecon?.invoke(ev);
         public static void announcementdecontamination(AnnouncementDecontaminationEvent ev) => AnnouncementDecontaminationZDecon?.invoke(ev);
         public static void mtfAnnouncement(MTFAnnouncementEvent ev) => MTFAnnouncement?.invoke(ev);
@@ -22,6 +23,7 @@ namespace Qurre.Events
         public static void generated() => Generated.invoke();
         public static void grenadeexplode(GrenadeExplodeEvent ev) => GrenadeExplode?.invoke(ev);
         public static void setSeed(SetSeedEvent ev) => SetSeed?.invoke(ev);
-        public static void doordamage(DoorDamageEvent ev) => DoorDamage?.invoke(ev);
+        public static void doorDamage(DoorDamageEvent ev) => DoorDamage?.invoke(ev);
+        public static void doorLock(DoorLockEvent ev) => DoorLock?.invoke(ev);
     }
 }

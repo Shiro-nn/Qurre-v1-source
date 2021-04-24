@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.Map
             try
             {
                 var ev = new DoorDamageEvent(Extensions.GetDoor(__instance), hp, type);
-                Qurre.Events.Map.doordamage(ev);
+                Qurre.Events.Map.doorDamage(ev);
                 return ev.Allowed;
             }
             catch (Exception e)

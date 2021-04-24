@@ -167,10 +167,10 @@ namespace Qurre.API
 			}
 		}
 		public bool Noclip
-        {
+		{
 			get => rh.characterClassManager.NoclipEnabled;
 			set => rh.characterClassManager.SetNoclip(value);
-        }
+		}
 		public Team Team => GetTeam(Role);
 		public Side Side => GetSide(Team);
 		public RoleType Role
@@ -186,6 +186,7 @@ namespace Qurre.API
 		public NetworkConnection Connection => Scp079PlayerScript.connectionToClient;
 		public bool IsHost => ClassManager.IsHost;
 		public bool FriendlyFire { get; set; }
+		public bool Invisible { get; set; }
 		public bool BypassMode
 		{
 			get => ServerRoles.BypassMode;
@@ -408,7 +409,6 @@ namespace Qurre.API
 				return sendSpawnMessage;
 			}
 		}
-		public void UnitUpdate() => ClassManager.ApplyProperties(true, false);
 		public void RAMessage(string message, bool success = true, string pluginName = null) =>
 			Sender.RaReply((pluginName ?? Assembly.GetCallingAssembly().GetName().Name) + "#" + message, success, true, string.Empty);
 		public void SendConsoleMessage(string message, string color)
@@ -729,12 +729,5 @@ namespace Qurre.API
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
 		}
-		public void Invisible(bool value)
-        {
-			if (!value)
-				NetworkServer.UnSpawn(GameObject);
-			else
-				NetworkServer.Spawn(GameObject);
-        }
 	}
 }

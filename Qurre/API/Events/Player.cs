@@ -507,4 +507,24 @@ namespace Qurre.API.Events
         public RadioStatus ChangeTo { get; private set; }
         public bool Allowed { get; set; }
     }
+    public class TransmitPlayerDataEvent : EventArgs
+    {
+        public TransmitPlayerDataEvent(Player player, Player playerToShow, Vector3 pos, float rot, bool invisible)
+        {
+            Player = player;
+            PlayerToShow = playerToShow;
+            Position = pos;
+            Rotation = rot;
+            Invisible = invisible;
+        }
+        public Player Player { get; internal set; }
+
+        public Player PlayerToShow { get; internal set; }
+
+        public float Rotation { get; set; }
+
+        public Vector3 Position { get; set; }
+
+        public bool Invisible { get; set; }
+    }
 }

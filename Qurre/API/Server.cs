@@ -65,7 +65,7 @@ namespace Qurre.API
         {
             ServerConsole.AddOutputEntry(default(ServerOutput.ExitActionRestartEntry));
             umm.SetNextRoundAction(ServerStatic.NextRoundAction.Restart);
-            umm.StaticChangeLevel(new PlayerStats(), true);
+            umm.StaticChangeLevel(true);
         }
     }
 }

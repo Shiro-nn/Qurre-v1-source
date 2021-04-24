@@ -109,4 +109,18 @@ namespace Qurre.API.Events
         public DoorDamageType DamageType { get; }
         public bool Allowed { get; set; }
     }
+    public class DoorLockEvent : EventArgs
+    {
+        public DoorLockEvent(Controllers.Door door, DoorLockReason reason, bool newState, bool allowed = true)
+        {
+            Door = door;
+            Reason = reason;
+            NewState = newState;
+            Allowed = allowed;
+        }
+        public Controllers.Door Door { get; }
+        public DoorLockReason Reason { get; }
+        public bool NewState { get; }
+        public bool Allowed { get; set; }
+    }
 }

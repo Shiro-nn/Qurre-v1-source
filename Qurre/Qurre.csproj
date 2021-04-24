@@ -39,7 +39,7 @@
     </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\Assembly-CSharp.dll</HintPath>
+      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -131,10 +131,12 @@
     <Compile Include="Patches\Controllers\Scp914Controller.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
+    <Compile Include="Patches\etc\Invisible.cs" />
     <Compile Include="Patches\etc\Translation.cs" />
     <Compile Include="Patches\etc\MaxHpFix.cs" />
     <Compile Include="Patches\etc\RespawnCassie.cs" />
     <Compile Include="Patches\etc\UnitName.cs" />
+    <Compile Include="Patches\Events\Map\DoorLock.cs" />
     <Compile Include="Patches\Events\Map\DoorDamage.cs" />
     <Compile Include="Patches\Events\Map\SetSeed.cs" />
     <Compile Include="Patches\Events\Player\Heal.cs" />

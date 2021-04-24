@@ -12,7 +12,9 @@ namespace Qurre.Patches.Events.SCPs.SCP096
             try
             {
                 if (target == null) return true;
-                var ev = new AddTargetEvent(__instance, API.Player.Get(__instance.Hub.gameObject), API.Player.Get(target));
+                API.Player targetPL = API.Player.Get(target);
+                API.Player player = API.Player.Get(__instance.Hub.gameObject);
+                var ev = new AddTargetEvent(__instance, player, targetPL);
                 Qurre.Events.SCPs.SCP096.addtarget(ev);
                 return ev.Allowed;
             }
@@ -30,7 +32,10 @@ namespace Qurre.Patches.Events.SCPs.SCP096
         {
             try
             {
-                var ev = new AddTargetEvent(__instance, API.Player.Get(__instance.Hub.gameObject), API.Player.Get(info.RHub));
+                API.Player player = API.Player.Get(__instance.Hub.gameObject);
+                API.Player target = API.Player.Get(info.RHub);
+                if (player.Invisible || target.Invisible) return false;
+                var ev = new AddTargetEvent(__instance, player, target);
                 Qurre.Events.SCPs.SCP096.addtarget(ev);
                 return ev.Allowed;
             }
