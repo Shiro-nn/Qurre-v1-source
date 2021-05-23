@@ -20,6 +20,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
                 __instance.epsenRenderer.sharedMaterial = __instance.matLetGreen;
                 __instance.epsdisRenderer.sharedMaterial = __instance.matLedBlack;
                 __instance.Generator_asource().PlayOneShot(__instance.unlockSound);
+                API.Round.ActiveGenerators++;
                 return false;
             }
             catch (System.Exception e)

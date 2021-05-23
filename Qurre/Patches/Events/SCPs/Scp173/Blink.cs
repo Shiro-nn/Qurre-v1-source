@@ -4,9 +4,6 @@ using Qurre.API;
 using Qurre.API.Events;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.Scp173
@@ -19,7 +16,7 @@ namespace Qurre.Patches.Events.SCPs.Scp173
             try
             {
                 if ((Scp173_remainingTime - Time.fixedDeltaTime) >= 0f) return true;
-                if (!API.Round.IsStarted) return true;
+                if (!API.Round.Started) return true;
                 __instance.Scp173_DoBlinkingSequence();
                 if (!__instance.iAm173 || (!__instance.isLocalPlayer && !NetworkServer.active)) return false;
                 HashSet<Player> players = new HashSet<Player>();

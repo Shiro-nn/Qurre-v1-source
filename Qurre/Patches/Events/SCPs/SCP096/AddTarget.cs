@@ -32,9 +32,10 @@ namespace Qurre.Patches.Events.SCPs.SCP096
         {
             try
             {
+                if (__instance == null || __instance.Hub == null || info == null) return true;
                 API.Player player = API.Player.Get(__instance.Hub.gameObject);
                 API.Player target = API.Player.Get(info.RHub);
-                if (player.Invisible || target.Invisible) return false;
+                if ((player != null && player.Invisible) || (target != null && target.Invisible)) return false;
                 var ev = new AddTargetEvent(__instance, player, target);
                 Qurre.Events.SCPs.SCP096.addtarget(ev);
                 return ev.Allowed;

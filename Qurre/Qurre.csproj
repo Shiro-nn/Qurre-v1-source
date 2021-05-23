@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -48,6 +50,19 @@
     <Reference Include="Mirror">
       <HintPath>..\lib\Mirror.dll</HintPath>
     </Reference>
+    <Reference Include="MongoDB.Bson">
+      <HintPath>..\lib\MongoDB.Bson.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver">
+      <HintPath>..\lib\MongoDB.Driver.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Driver.Core">
+      <HintPath>..\lib\MongoDB.Driver.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="MongoDB.Libmongocrypt, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\MongoDB.Libmongocrypt.dll</HintPath>
+    </Reference>
     <Reference Include="NorthwoodLib">
       <HintPath>..\lib\NorthwoodLib.dll</HintPath>
     </Reference>
@@ -73,8 +88,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Config.cs" />
+    <Compile Include="API\DataBase\DataBase.cs" />
     <Compile Include="API\Controllers\Broadcast.cs" />
     <Compile Include="API\Controllers\Lights.cs" />
+    <Compile Include="API\DataBase\MongoDataBases.cs" />
     <Compile Include="API\Extensions.cs" />
     <Compile Include="API\Controllers\Alpha.cs" />
     <Compile Include="API\Controllers\Cassie.cs" />
@@ -88,6 +106,7 @@
     <Compile Include="API\Controllers\Heavy.cs" />
     <Compile Include="API\Controllers\Generator.cs" />
     <Compile Include="API\Controllers\Lift.cs" />
+    <Compile Include="API\Objects\ConfigObjects.cs" />
     <Compile Include="API\Objects\DoorPrefabs.cs" />
     <Compile Include="API\Objects\RemovableObject.cs" />
     <Compile Include="API\Objects\WeaponType.cs" />
@@ -117,6 +136,7 @@
     <Compile Include="API\Player.cs" />
     <Compile Include="API\Round.cs" />
     <Compile Include="API\Controllers\Scp914.cs" />
+    <Compile Include="API\ConfigManager.cs" />
     <Compile Include="Events\Alpha.cs" />
     <Compile Include="Events\modules\Etc.cs" />
     <Compile Include="Events\Player.cs" />
@@ -217,7 +237,7 @@
     <Compile Include="Patches\Events\Server\Report\Local.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginManager.cs" />
-    <Compile Include="QurreLoad.cs" />
+    <Compile Include="Loader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

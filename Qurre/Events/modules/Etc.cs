@@ -1,6 +1,9 @@
 ﻿using Qurre.API.Events;
 using UnityEngine.SceneManagement;
 using MapGeneration;
+using Interactables.Interobjects.DoorUtils;
+using System.Linq;
+
 namespace Qurre.Events.modules
 {
     internal class Etc
@@ -13,6 +16,7 @@ namespace Qurre.Events.modules
             Player.RoleChange += ChangeRole;
             Round.Restart += RoundRestart;
             Server.SendingRA += FixRaBc;
+            Map.DoorLock += Fix079;
         }
         private static void SceneUnloaded(Scene _)
         {
@@ -24,6 +28,7 @@ namespace Qurre.Events.modules
         private static void WaitingForPlayers()
         {
             RoundSummary.RoundLock = false;
+            API.Round.ActiveGenerators = 0;
             if (Plugin.Config.GetBool("Qurre_AllUnit", false))
             {
                 API.Round.AddUnit(API.Objects.TeamUnitType.ClassD, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
@@ -59,6 +64,35 @@ namespace Qurre.Events.modules
                 string text16 = ev.Command.Substring(ev.Name.Length + ev.Args[0].Length + 2);
                 API.Map.Broadcast(text16, System.Convert.ToUInt16(ev.Args[0])); ev.Success = true;
                 ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Broadcast sent.", false, true, "");
+            }
+            else if (ev.Name == "pbc" && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
+            {
+                ev.Allowed = false;
+                ushort pi;
+                ushort num8;
+                if (!ushort.TryParse(ev.Args[0], out pi) || pi < 1)
+                {
+                    ev.CommandSender.RaReply(ev.Name.ToUpper() + "#First argument must be a positive integer.", false, true, "");
+                    return;
+                }
+                if (!ushort.TryParse(ev.Args[1], out num8) || num8 < 1)
+                {
+                    ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Second argument must be a positive integer.", false, true, "");
+                    return;
+                }
+                string text16 = ev.Command.Substring(ev.Name.Length + ev.Args[0].Length + ev.Args[1].Length + 3);
+                var pl = API.Player.Get(pi);
+                pl.Broadcast(text16, System.Convert.ToUInt16(ev.Args[1])); ev.Success = true;
+                ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Broadcast sent.", false, true, "");
+            }
+        }
+        private static void Fix079(DoorLockEvent ev)
+        {
+            if (ev.Door == null) return;
+            if (ev.Reason == DoorLockReason.NoPower && ev.NewState)
+            {
+                MEC.Timing.CallDelayed(3f, () => ev.Door.DoorVariant.ServerChangeLock(DoorLockReason.NoPower, false));
+                if (API.Round.ActiveGenerators > 4) foreach (API.Player pl in API.Player.List.Where(x => x.Role == RoleType.Scp079)) pl.Kill(DamageTypes.Recontainment);
             }
         }
     }

@@ -11,9 +11,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 3, 8);
-		public static string Plan { get; private set; } = "";//Lite
-		public static int Planid { get; private set; } = 1;
+		public static Version Version { get; } = new Version(1, 4, 0);
 		private static string Domen { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -62,16 +60,12 @@ namespace Qurre
 				Directory.CreateDirectory(LoadedDependenciesDirectory);
 
 			string[] depends = Directory.GetFiles(LoadedDependenciesDirectory);
-
 			foreach (string dll in depends)
 			{
-				if (!dll.EndsWith(".dll"))
-					continue;
-
-				if (IsLoaded(dll))
-					return;
-
-				if (dll.EndsWith("0Harmony.dll") || dll.EndsWith("YamlDotNet.dll"))
+				if (!dll.EndsWith(".dll")) continue;
+				if (IsLoaded(dll)) continue;
+				if (dll.EndsWith("0Harmony.dll") || dll.EndsWith("YamlDotNet.dll") || dll.EndsWith("MongoDB.Bson.dll") || dll.EndsWith("DnsClient.dll")
+					 || dll.EndsWith("MongoDB.Driver.Core.dll") || dll.EndsWith("MongoDB.Driver.dll") || dll.EndsWith("MongoDB.Libmongocrypt.dll"))
 					continue;
 
 				Assembly assembly = Assembly.LoadFrom(dll);
@@ -238,20 +232,14 @@ namespace Qurre
 					var a = response.Split(':')[1].Substring(1).Split('<')[0];
 					if (a == "2")
 					{
-						Planid = 2;
-						Plan = "Premium";
 						Log.Custom("Qurre plan: Premium", "Plan", ConsoleColor.Green);
 					}
 					else if (a == "3")
 					{
-						Planid = 3;
-						Plan = "Gold";
 						Log.Custom("Qurre plan: Gold", "Plan", ConsoleColor.Yellow);
 					}
 					else if (a == "4")
 					{
-						Planid = 4;
-						Plan = "Platinum";
 						Log.Custom("Qurre plan: Platinum", "Plan", ConsoleColor.White);
 					}
 					else

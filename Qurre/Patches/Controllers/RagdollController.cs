@@ -20,10 +20,10 @@ namespace Qurre.Patches.Controllers
 				component.Networkowner = new Ragdoll.Info(ownerID, ownerNick, ragdollInfo, role, playerId);
 				component.NetworkallowRecall = allowRecall;
 				component.NetworkPlayerVelo = velocity;
-				var synapseragdoll = new API.Controllers.Ragdoll(component);
-				var ev = new RagdollSpawnEvent(ragdollInfo.PlayerId == 0 ? null : API.Player.Get(ragdollInfo.PlayerId), API.Player.Get(__instance.gameObject), synapseragdoll);
+				var ragdoll = new API.Controllers.Ragdoll(component);
+				var ev = new RagdollSpawnEvent(ragdollInfo.PlayerId == 0 ? null : API.Player.Get(ragdollInfo.PlayerId), API.Player.Get(__instance.gameObject), ragdoll);
 				Qurre.Events.Player.ragdollSpawn(ev);
-				if (!ev.Allowed) synapseragdoll.Destroy();
+				if (!ev.Allowed) ragdoll.Destroy();
 				return false;
 			}
 			catch (System.Exception e)

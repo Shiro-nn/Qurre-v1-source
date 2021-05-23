@@ -11,12 +11,12 @@ namespace Qurre.API.Controllers
 		public static GameObject GameObject => Scp914Machine.singleton.gameObject;
 		public static bool Working => Scp914Machine.singleton.working;
 		public static Scp914Knob KnobState
-        {
-			get => Scp914Machine.singleton.knobState;
-			set => Scp914Machine.singleton.knobState = value;
+		{
+			get => Scp914Machine.singleton.NetworkknobState;
+			set => Scp914Machine.singleton.NetworkknobState = value;
 		}
 		public static ConfigEntry<Scp914Mode> Cfg
-        {
+		{
 			get => Scp914Machine.singleton.configMode;
 			set => Scp914Machine.singleton.configMode = value;
 		}

@@ -261,14 +261,11 @@ namespace Qurre.API
 		{
 			Broadcasts = new ListBroadcasts(Server.Host);
 			Cassies = new CassieList();
-			foreach (var tesla in Server.GetObjectsOf<TeslaGate>())
-				Teslas.Add(new Tesla(tesla));
 			foreach (var room in Server.GetObjectsOf<Transform>().Where(x => x.CompareTag("Room") || x.name == "Root_*&*Outside Cams" || x.name == "PocketWorld"))
 				Rooms.Add(new Room(room.gameObject));
-			foreach (var station in Server.GetObjectsOf<global::WorkStation>())
-				WorkStations.Add(new _workStation(station));
-			foreach (var door in Server.GetObjectsOf<DoorVariant>())
-				Doors.Add(new _door(door));
+			foreach (var tesla in Server.GetObjectsOf<TeslaGate>()) Teslas.Add(new Tesla(tesla));
+			foreach (var station in Server.GetObjectsOf<WorkStation>()) WorkStations.Add(new _workStation(station));
+			foreach (var door in Server.GetObjectsOf<DoorVariant>()) Doors.Add(new _door(door));
 			foreach (var interactable in Interface079.singleton.allInteractables)
 			{
 				foreach (var zoneroom in interactable.currentZonesAndRooms)

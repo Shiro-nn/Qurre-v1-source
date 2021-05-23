@@ -18,8 +18,8 @@ namespace Qurre.Patches.etc
 					del = true;
 				}
 			}
-			ServerConsole._serverName += $" <color=#00000000><size=1>Qurre {PluginManager.Plan}v{PluginManager.Version}</size></color>";
-			Log.Info($"Qurre {PluginManager.Plan}v{PluginManager.Version}");
+			ServerConsole._serverName += $" <color=#00000000><size=1>Qurre v{PluginManager.Version}</size></color>";
+			Log.Info($"Qurre v{PluginManager.Version}");
 		}
 	}
 }

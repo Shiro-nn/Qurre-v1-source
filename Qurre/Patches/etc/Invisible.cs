@@ -41,12 +41,7 @@ namespace Qurre.Patches.etc
                         var vector = __instance.Player_transmitBuffer()[k].position - player.Position;
                         if (player.Role == RoleType.Scp173)
                         {
-                            if (player.Scp173Controller.IgnoredPlayers.Contains(playerToShow))
-                            {
-                                showinvoid = true;
-                                goto AA_001;
-                            }
-                            else if ((playerToShow.Team == Team.SCP && !Plugin.Config.GetBool("Qurre_ScpTrigger173", false)) || player.Scp173Controller.IgnoredPlayers.Contains(playerToShow) || playerToShow.Invisible)
+                            if ((playerToShow.Team == Team.SCP && !Plugin.Config.GetBool("Qurre_ScpTrigger173", false)) || player.Scp173Controller.IgnoredPlayers.Contains(playerToShow) || playerToShow.Invisible)
                             {
                                 var posinfo = __instance.Player_transmitBuffer()[k];
                                 var rot = Quaternion.LookRotation(playerToShow.Position - player.Position).eulerAngles.y;

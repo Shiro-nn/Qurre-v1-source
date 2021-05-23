@@ -70,6 +70,15 @@ namespace Qurre.API.Controllers
                 return type;
             }
         }
+        public bool Pryable
+        {
+            get
+            {
+                if (DoorVariant is PryableDoor pry)
+                    return pry.TryPryGate();
+                else return false;
+            }
+        }
         public bool Breakable => DoorVariant is BreakableDoor;
         public bool Open
         {
@@ -80,6 +89,18 @@ namespace Qurre.API.Controllers
         {
             get => DoorVariant.ActiveLocks > 0;
             set => DoorVariant.ServerChangeLock(DoorLockReason.SpecialDoorFeature, value);
+        }
+        public bool Destroyed
+        {
+            get
+            {
+                if (DoorVariant is BreakableDoor damageableDoor)
+                {
+                    return damageableDoor.IsDestroyed;
+                }
+                else return false;
+            }
+            set => BreakDoor();
         }
         public bool BreakDoor()
         {
@@ -92,12 +113,6 @@ namespace Qurre.API.Controllers
             {
                 return false;
             }
-        }
-        public bool Pry()
-        {
-            if (DoorVariant is PryableDoor pry)
-                return pry.TryPryGate();
-            else return false;
         }
         public List<Room> Rooms { get; } = new List<Room>();
         public static Door Spawn(Vector3 position, DoorPrefabs prefab, Quaternion? rotation = null, DoorPermissions permissions = null)

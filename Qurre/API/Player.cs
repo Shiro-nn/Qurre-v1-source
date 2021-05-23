@@ -175,7 +175,7 @@ namespace Qurre.API
 		public Side Side => GetSide(Team);
 		public RoleType Role
 		{
-			get => ClassManager.NetworkCurClass;
+			get => ClassManager.CurClass;
 			set => SetRole(value);
 		}
 		public bool IsReloading => WeaponManager.IsReloading();
@@ -497,6 +497,7 @@ namespace Qurre.API
 			});
 			if (spawnRagdoll) Controllers.Ragdoll.Create(role, pos, default, default, new PlayerStats.HitInfo(999, nick, damageType, id), false, this);
 		}
+		public Controllers.Broadcast Broadcast(string message, ushort time, bool instant = false) => Broadcast(time, message, instant);
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)
 		{
 			var bc = new Controllers.Broadcast(this, message, time);

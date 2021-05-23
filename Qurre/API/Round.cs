@@ -16,12 +16,13 @@ namespace Qurre.API
         public static TimeSpan ElapsedTime => RoundStart.RoundLenght;
         public static DateTime StartedTime => DateTime.Now - ElapsedTime;
         public static int CurrentRound { get; internal set; } = 0;
+        public static int ActiveGenerators { get; internal set; } = 0;
         public static float NextRespawn
         {
             get => rm._timeForNextSequence() - rm._stopwatch().Elapsed.Seconds;
             set => rm._timeForNextSequence(value + rm._stopwatch().Elapsed.Seconds);
         }
-        public static bool IsStarted => RoundSummary.RoundInProgress();
+        public static bool Started => RoundSummary.RoundInProgress();
         public static bool Ended => rs.RoundSummary_roundEnded();
         public static bool Lock
         {

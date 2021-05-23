@@ -76,6 +76,7 @@ namespace Qurre.API.Controllers
                 Map.Broadcasts.Remove(this);
                 BC.BroadcastComponent.RpcClearElements();
                 if (Map.Broadcasts.FirstOrDefault() != null) Map.Broadcasts.FirstOrDefault().Start();
+                else foreach(Player pl in Player.List) if (pl.Broadcasts.FirstOrDefault() != null && !pl.Broadcasts.First().Active) pl.Broadcasts.First().Start();
             }
             else
             {
@@ -106,7 +107,7 @@ namespace Qurre.API.Controllers
             else
             {
                 bcs.Add(bc);
-                if (!bcs.First().Active) bcs.First().Start();
+                if (!bcs.First().Active && !(Map.Broadcasts.FirstOrDefault() != null && Map.Broadcasts.First().Active)) bcs.First().Start();
             }
         }
         public void Remove(Broadcast bc)
@@ -127,6 +128,7 @@ namespace Qurre.API.Controllers
         public List<Broadcast> List() => bcs;
         public bool Contains(Broadcast bc) => bcs.Contains(bc);
         public bool Any(Func<Broadcast, bool> func) => bcs.Any(func);
+        public Broadcast First() => bcs.First();
         public Broadcast FirstOrDefault() => bcs.FirstOrDefault();
         public Broadcast FirstOrDefault(Func<Broadcast, bool> func) => bcs.FirstOrDefault(func);
     }

@@ -1,9 +1,10 @@
-﻿using Version = System.Version;
+﻿using Qurre.API;
+using Version = System.Version;
 namespace Qurre
 {
 	public abstract class Plugin
 	{
-		public static YamlConfig Config;
+		public static Config Config { get; set; }
 		public virtual string Developer { get; } = "";
 		public virtual string Name { get; } = "";
 		public virtual Version Version { get; } = new Version(1, 0, 0);
