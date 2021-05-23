@@ -240,17 +240,7 @@ namespace Qurre.API
 				if (text.ToLower().StartsWith(key + ":"))
 				{
 					string text2 = text.Substring(key.Length + 1).Trim();
-					if (text2.Contains("[") && text2.Contains("]"))
-					{
-						if (DataBuffer != null)
-						{
-							DataBuffer.AddRange(ParseCommaSeparatedString(text2));
-							continue;
-						}
-						foreach (string item in ParseCommaSeparatedString(text2)) DataBuffer.Add(item);
-						continue;
-					}
-                    else DataBuffer.Add(text2);
+					DataBuffer.Add(text2);
 				}
 				else
 				{
@@ -259,13 +249,6 @@ namespace Qurre.API
 				}
 			}
 			return DataBuffer;
-		}
-		private static string[] ParseCommaSeparatedString(string data)
-		{
-			data = data.Trim();
-			if (!data.StartsWith("[") || !data.EndsWith("]")) return null;
-			data = data.Substring(1, data.Length - 2).Replace(", ", ",");
-			return data.Split(',');
 		}
 		private void CommentInvalid(string key, string type)
 		{
