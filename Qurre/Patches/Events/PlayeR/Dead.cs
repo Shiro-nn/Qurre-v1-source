@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1118
-using HarmonyLib;
+﻿using HarmonyLib;
 using Qurre.API.Events;
 using UnityEngine;
 using Qurre.API;

@@ -114,14 +114,15 @@ namespace Qurre.API
         }
         private void WriteCfg(string key, object def, string comment = "")
         {
-            string _com = comment.Trim();
+            string _com = comment.Trim().Replace("\n", "\n#");
+            string _def = def.ToString().Replace("\n", "\\n");
             using (StreamWriter sw = new StreamWriter(PluginManager.ConfigsPath, true, Encoding.Default))
             {
-                if (def.ToString() == "True") def = "true";
-                if (def.ToString() == "False") def = "false";
-                if (_com == "") sw.WriteLine($"{key}: {def}");
-                else sw.WriteLine($"#{_com}\n{key}: {def}");
-                ConfigManager.RawData.Add($"{key}: {def}");
+                if (_def == "True") _def = "true";
+                if (_def == "False") _def = "false";
+                if (_com == "") sw.WriteLine($"{key}: {_def}");
+                else sw.WriteLine($"#{_com}\n{key}: {_def}");
+                ConfigManager.RawData.Add($"{key}: {_def}");
             }
         }
     }

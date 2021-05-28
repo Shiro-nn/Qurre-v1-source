@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using GameCore;
+﻿using GameCore;
 using HarmonyLib;
 using Mirror;
 using Qurre.API;

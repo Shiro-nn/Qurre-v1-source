@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 using MapGeneration;
 using Interactables.Interobjects.DoorUtils;
 using System.Linq;
-
 namespace Qurre.Events.modules
 {
     internal class Etc
@@ -68,14 +67,12 @@ namespace Qurre.Events.modules
             else if (ev.Name == "pbc" && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
             {
                 ev.Allowed = false;
-                ushort pi;
-                ushort num8;
-                if (!ushort.TryParse(ev.Args[0], out pi) || pi < 1)
+                if (!ushort.TryParse(ev.Args[0], out ushort pi) || pi < 1)
                 {
                     ev.CommandSender.RaReply(ev.Name.ToUpper() + "#First argument must be a positive integer.", false, true, "");
                     return;
                 }
-                if (!ushort.TryParse(ev.Args[1], out num8) || num8 < 1)
+                if (!ushort.TryParse(ev.Args[1], out ushort num8) || num8 < 1)
                 {
                     ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Second argument must be a positive integer.", false, true, "");
                     return;

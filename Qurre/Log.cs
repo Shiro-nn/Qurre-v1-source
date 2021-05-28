@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using UnityEngine;
 namespace Qurre
 {
 	public static class Log
@@ -12,11 +13,6 @@ namespace Qurre
 		{
 			Assembly assembly = Assembly.GetCallingAssembly();
 			ServerConsole.AddLog($"[INFO] [{assembly.GetName().Name}] {message}", ConsoleColor.Yellow);
-		}
-		public static void Custom(object message, string prefix = "Custom", ConsoleColor color = ConsoleColor.Black)
-		{
-			Assembly assembly = Assembly.GetCallingAssembly();
-			ServerConsole.AddLog($"[{prefix}] [{assembly.GetName().Name}] {message}", color);
 		}
 		public static void Debug(object message)
 		{
@@ -35,6 +31,11 @@ namespace Qurre
 			Assembly assembly = Assembly.GetCallingAssembly();
 			ServerConsole.AddLog($"[ERROR] [{assembly.GetName().Name}] {message}", ConsoleColor.Red);
 			LogTxt($"[ERROR] [{assembly.GetName().Name}] {message}");
+		}
+		public static void Custom(object message, string prefix = "Custom", ConsoleColor color = ConsoleColor.Black)
+		{
+			Assembly assembly = Assembly.GetCallingAssembly();
+			ServerConsole.AddLog($"[{prefix}] [{assembly.GetName().Name}] {message}", color);
 		}
 		internal static void LogTxt(object message)
 		{
