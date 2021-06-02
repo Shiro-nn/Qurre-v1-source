@@ -158,7 +158,7 @@ namespace Qurre.API
 		{
 			string rawString = GetRawString(key);
 			if (rawString == "default") return def;
-			return rawString;
+			return rawString.Replace("\\n", "\n");
 		}
 		public List<bool> GetBoolList(string key)
 		{

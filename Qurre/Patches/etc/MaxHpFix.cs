@@ -26,12 +26,12 @@ namespace Qurre.Patches.etc
                 {
                     __instance.CAWI_cursor(Cursor.visible);
                 }
-                return true;
+                return false;
             }
             catch (Exception e)
             {
                 Log.Error($"umm, error in patching Fixes [MaxHp]:\n{e}\n{e.StackTrace}");
-                return false;
+                return true;
             }
         }
     }

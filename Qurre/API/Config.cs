@@ -110,7 +110,7 @@ namespace Qurre.API
                 if (_list == null || _list.Count < 1) WriteCfg(_key, def, comment);
                 return ConfigManager.GetUShort(_key, (ushort)def);
             }
-            else return null;
+            else return def;
         }
         private void WriteCfg(string key, object def, string comment = "")
         {

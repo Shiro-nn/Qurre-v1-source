@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using UnityEngine;
 namespace Qurre
 {
 	public static class Log
@@ -38,15 +37,18 @@ namespace Qurre
 			ServerConsole.AddLog($"[{prefix}] [{assembly.GetName().Name}] {message}", color);
 		}
 		internal static void LogTxt(object message)
-		{
-			if (!Directory.Exists(PluginManager.LogsDirectory) && Logging)
+        {
+            if (Logging)
 			{
-				Directory.CreateDirectory(PluginManager.LogsDirectory);
-				Warn($"Logs directory not found - creating: {PluginManager.LogsDirectory}");
+				if (!Directory.Exists(PluginManager.LogsDirectory))
+				{
+					Directory.CreateDirectory(PluginManager.LogsDirectory);
+					Warn($"Logs directory not found - creating: {PluginManager.LogsDirectory}");
+				}
+				var log = Path.Combine(PluginManager.LogsDirectory, $"{QurreModLoader.ModLoader.Port}-log.txt");
+				if (!File.Exists(log)) File.Create(log).Close();
+				File.AppendAllText(log, $"[{DateTime.Now:dd.MM.yyyy HH:mm:ss}] {message}\n");
 			}
-			var log = Path.Combine(PluginManager.LogsDirectory, $"{QurreModLoader.ModLoader.Port}-log.txt");
-			if (!File.Exists(log)) File.Create(log).Close();
-			File.AppendAllText(log, $"[{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}] {message}\n");
 		}
 		internal static void AllLogsTxt(object message)
         {
@@ -59,7 +61,7 @@ namespace Qurre
 				}
 				var log = Path.Combine(PluginManager.LogsDirectory, $"{QurreModLoader.ModLoader.Port}-all-logs.txt");
 				if (!File.Exists(log)) File.Create(log).Close();
-				File.AppendAllText(log, $"[{DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss")}] {message}\n");
+				File.AppendAllText(log, $"[{DateTime.Now:dd.MM.yyyy HH:mm:ss}] {message}\n");
 			}
 		}
 	}

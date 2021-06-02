@@ -18,6 +18,7 @@ namespace Qurre.API
 		private ReferenceHub rh;
 		private GameObject go;
 		private string ui;
+		private string tag = "";
 		public Player(ReferenceHub RH)
 		{
 			rh = RH;
@@ -73,6 +74,11 @@ namespace Qurre.API
 		public QueryProcessor QueryProcessor => rh.queryProcessor;
 		public PlayerEffectsController PlayerEffectsController => rh.playerEffectsController;
 		public NicknameSync NicknameSync => rh.nicknameSync;
+		public string Tag
+		{
+			get => tag;
+			set => tag = value;
+		}
 		public int Id
 		{
 			get => rh.queryProcessor.NetworkPlayerId;
@@ -243,6 +249,7 @@ namespace Qurre.API
 		public List<Inventory.SyncItemInfo> AllItems => Inventory.items.ToList();
 		public int CurrentItemIndex => Inventory.GetItemIndex();
 		public ItemType ItemInHand { get => Inventory.curItem; set => Inventory.SetCurItem(value); }
+		public Inventory.SyncItemInfo ItemInfoInHand { get => Inventory.GetItemInHand(); }
 		public Stamina Stamina => rh.fpc.staminaController();
 		public float StaminaUsage
 		{
@@ -482,6 +489,7 @@ namespace Qurre.API
 		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => ClassManager.SetClassIDAdv(newRole, lite, escape);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
+			var ih = ItemInHand;
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (newPosition == default) newPosition = Position;
 			if (newRotation == default) newRotation = Rotation;
@@ -494,6 +502,7 @@ namespace Qurre.API
 			{
 				Rotation = newRotation;
 				Position = newPosition;
+				ItemInHand = ih;
 			});
 			if (spawnRagdoll) Controllers.Ragdoll.Create(role, pos, default, default, new PlayerStats.HitInfo(999, nick, damageType, id), false, this);
 		}
