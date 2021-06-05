@@ -3,15 +3,17 @@ using MEC;
 using QurreModLoader;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 namespace Qurre
 {
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 4, 2);
+		public static Version Version { get; } = new Version(1, 4, 3);
 		private static string Domen { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -50,12 +52,11 @@ namespace Qurre
 				if (mod.EndsWith("Qurre.dll")) continue;
 				LoadPlugin(mod);
 			}
+			FixAudio();
 			Enable();
 		}
 		private static void LoadDependencies()
 		{
-			Log.Custom("Loading dependencies...", "Loader", ConsoleColor.Magenta);
-
 			if (!Directory.Exists(LoadedDependenciesDirectory))
 				Directory.CreateDirectory(LoadedDependenciesDirectory);
 
@@ -87,7 +88,7 @@ namespace Qurre
 		private static List<Assembly> localLoaded = new List<Assembly>();
 		public static void LoadPlugin(string mod)
 		{
-			Log.Info($"Loading {mod}");
+			Log.Debug($"Loading {mod}");
 			try
 			{
 				byte[] file = ModLoader.ReadFile(mod);
@@ -107,9 +108,9 @@ namespace Qurre
 						continue;
 					}
 
-					Log.Info($"Loading type {type.FullName}");
+					Log.Debug($"Loading type {type.FullName}");
 					object plugin = Activator.CreateInstance(type);
-					Log.Info($"Instantiated type {type.FullName}");
+					Log.Debug($"Instantiated type {type.FullName}");
 
 					if (!(plugin is Plugin p))
 					{
@@ -124,7 +125,7 @@ namespace Qurre
 					}
 
 					plugins.Add(p);
-					Log.Info($"{type.FullName} loaded");
+					Log.Debug($"{type.FullName} loaded");
 				}
 			}
 			catch (Exception ex)
@@ -200,7 +201,7 @@ namespace Qurre
 			{
 				hInstance = new Harmony("qurre.patches");
 				hInstance.PatchAll();
-				Log.Info("Harmony successfully Patching");
+				Log.Info("Harmony successfully Patched");
 			}
 			catch (Exception ex)
 			{
@@ -212,21 +213,79 @@ namespace Qurre
 			try
 			{
 				hInstance.UnpatchAll(null);
-				Log.Info("Harmony successfully UnPatching");
+				Log.Info("Harmony successfully UnPatched");
 			}
 			catch (Exception ex)
 			{
 				Log.Error($"Harmony UnPatching threw an error:\n{ex}");
 			}
 		}
-		private static void CheckPlan()
+		private static void FixAudio()
+		{
+			try
+			{
+				var fl = Path.Combine(ManagedAssembliesDirectory, "DissonanceVoip.dll");
+				if (!File.Exists(fl)) UpdateAudio();
+				else
+				{
+					FileVersionInfo Dissonance = FileVersionInfo.GetVersionInfo(fl);
+					if (!Dissonance.LegalCopyright.Contains("Qurre")) UpdateAudio();
+				}
+			}
+			catch (Exception e)
+			{
+				Log.Warn($"Checking for DissonanceVoip update threw an error:\n{e}");
+			}
+		}
+		private static void UpdateAudio()
+		{
+			try
+			{
+				var fl = Path.Combine(ManagedAssembliesDirectory, "DissonanceVoip.dll");
+				if (File.Exists(fl)) File.Delete(fl);
+				ServerConsole.AddLog($"[WARN] [Qurre Loader] DissonanceVoip.dll outdated. Downloading DissonanceVoip.dll", ConsoleColor.Red);
+				WebRequest request = WebRequest.Create("https://cdn.scpsl.store/qurre/audio/DissonanceVoip.dll");
+				WebResponse response = request.GetResponse();
+				Stream responseStream = response.GetResponseStream();
+				Stream fileStream = File.OpenWrite(Path.Combine(ManagedAssembliesDirectory, "DissonanceVoip.dll"));
+				byte[] buffer = new byte[4096];
+				int bytesRead = responseStream.Read(buffer, 0, 4096);
+				while (bytesRead > 0)
+				{
+					fileStream.Write(buffer, 0, bytesRead);
+					bytesRead = responseStream.Read(buffer, 0, 4096);
+				}
+				API.Server.Restart();
+			}
+			catch (Exception e)
+			{
+				Log.Warn($"Updating DissonanceVoip threw an error:\n{e}");
+			}
+		}
+		private static void LoadFromUrl() // Web Loader
+		{
+			try
+			{
+				string _link = "https://cdn.scpsl.store/qurre/audio/AudioModuleDependency.dll";
+				WebClient _wc = new WebClient();
+				Assembly _assembly = Assembly.Load(_wc.DownloadData(_link));
+				string link = "https://cdn.scpsl.store/qurre/audio/AudioModule.dll";
+				WebClient wc = new WebClient();
+				Assembly assembly = Assembly.Load(wc.DownloadData(link));
+			}
+			catch (Exception e)
+			{
+				ServerConsole.AddLog($"{e}", ConsoleColor.Red);
+			}
+		}
+		private static void CheckPlan() // Web checker
 		{
 			try
 			{
 				var url = $"http://{Domen}/check";
-				var req = System.Net.WebRequest.Create(url);
+				var req = WebRequest.Create(url);
 				var resp = req.GetResponse();
-				using (var sr = new System.IO.StreamReader(resp.GetResponseStream()))
+				using (var sr = new StreamReader(resp.GetResponseStream()))
 				{
 					var response = sr.ReadToEnd().Trim();
 					var a = response.Split(':')[1].Substring(1).Split('<')[0];

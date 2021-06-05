@@ -3,6 +3,11 @@ using UnityEngine.SceneManagement;
 using MapGeneration;
 using Interactables.Interobjects.DoorUtils;
 using System.Linq;
+using System.Collections.Generic;
+using Dissonance.Config;
+using Dissonance;
+using Dissonance.Networking.Client;
+
 namespace Qurre.Events.modules
 {
     internal class Etc
@@ -16,6 +21,7 @@ namespace Qurre.Events.modules
             Round.Restart += RoundRestart;
             Server.SendingRA += FixRaBc;
             Map.DoorLock += Fix079;
+            MEC.Timing.RunCoroutine(UpdateAudioClient());
         }
         private static void SceneUnloaded(Scene _)
         {
@@ -49,6 +55,26 @@ namespace Qurre.Events.modules
             if (ev.NewRole == RoleType.Spectator) ev.Player.Inventory.ServerDropAll();
         }
         private static void RoundRestart() => API.Map.ClearObjects();
+        public static IEnumerator<float> UpdateAudioClient()
+        {
+            for (; ; )
+            {
+                yield return float.NegativeInfinity;
+                if (QurreModLoader.Audio.client != null && !QurreModLoader.Audio.client._disconnected)
+                {
+                    int num;
+                    for (int i = 0; i < DebugSettings.Instance._levels.Count; i = num + 1)
+                    {
+                        DebugSettings.Instance._levels[i] = LogLevel.Trace;
+                        num = i;
+                    }
+                    if (QurreModLoader.Audio.client.Update() == ClientStatus.Error)
+                    {
+                        if(Log.debug) Log.Error("Audio Client caused an error.");
+                    }
+                }
+            }
+        }
         private static void FixRaBc(SendingRAEvent ev)
         {
             if ((ev.Name == "bc" || ev.Name == "broadcast") && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))

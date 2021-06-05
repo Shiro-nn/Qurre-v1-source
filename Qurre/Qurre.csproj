@@ -47,6 +47,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
+    <Reference Include="DissonanceVoip, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>D:\scp\SCPSL_Data\Managed\DissonanceVoip.dll</HintPath>
+    </Reference>
     <Reference Include="Mirror">
       <HintPath>..\lib\Mirror.dll</HintPath>
     </Reference>
@@ -88,6 +92,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Audio.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\DataBase\DataBase.cs" />
     <Compile Include="API\Controllers\Broadcast.cs" />
@@ -151,6 +156,7 @@
     <Compile Include="Patches\Controllers\Scp914Controller.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
+    <Compile Include="Patches\etc\Audio.cs" />
     <Compile Include="Patches\etc\Invisible.cs" />
     <Compile Include="Patches\etc\Translation.cs" />
     <Compile Include="Patches\etc\MaxHpFix.cs" />

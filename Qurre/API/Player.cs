@@ -490,6 +490,7 @@ namespace Qurre.API
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
 			var ih = ItemInHand;
+			var _ahp = AHP;
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (newPosition == default) newPosition = Position;
 			if (newRotation == default) newRotation = Rotation;
@@ -500,6 +501,7 @@ namespace Qurre.API
 			SetRole(newRole, true);
 			MEC.Timing.CallDelayed(0.3f, () =>
 			{
+				AHP = _ahp;
 				Rotation = newRotation;
 				Position = newPosition;
 				ItemInHand = ih;

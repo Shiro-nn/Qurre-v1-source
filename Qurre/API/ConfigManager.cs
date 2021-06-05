@@ -263,6 +263,7 @@ namespace Qurre.API
 		}
 		public bool TryGetString(string key, out string value)
 		{
+			value = "";
 			foreach (string text in RawData)
 			{
 				if (text.ToLower().StartsWith(key + ": "))
@@ -271,7 +272,6 @@ namespace Qurre.API
 					return true;
 				}
 			}
-			value = "default";
 			return false;
 		}
 		private string GetRawString(string key)
