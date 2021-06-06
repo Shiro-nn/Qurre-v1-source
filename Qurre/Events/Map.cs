@@ -16,6 +16,7 @@ namespace Qurre.Events
         public static event AllEvents<DoorDamageEvent> DoorDamage;
         public static event AllEvents<DoorLockEvent> DoorLock;
         public static event AllEvents<DoorOpenEvent> DoorOpen;
+        public static event AllEvents<UseLiftEvent> UseLift;
         public static void lczdecon(LCZDeconEvent ev) => LCZDecon?.invoke(ev);
         public static void announcementdecontamination(AnnouncementDecontaminationEvent ev) => AnnouncementDecontaminationZDecon?.invoke(ev);
         public static void mtfAnnouncement(MTFAnnouncementEvent ev) => MTFAnnouncement?.invoke(ev);
@@ -27,5 +28,6 @@ namespace Qurre.Events
         public static void doorDamage(DoorDamageEvent ev) => DoorDamage?.invoke(ev);
         public static void doorLock(DoorLockEvent ev) => DoorLock?.invoke(ev);
         public static void doorOpen(DoorOpenEvent ev) => DoorOpen?.invoke(ev);
+        public static void useLift(UseLiftEvent ev) => UseLift?.invoke(ev);
     }
 }

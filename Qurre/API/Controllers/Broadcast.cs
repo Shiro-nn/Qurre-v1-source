@@ -101,6 +101,7 @@ namespace Qurre.API.Controllers
                 list.Add(bc);
                 list.AddRange(bcs);
                 bcs = list;
+                if (Map.Broadcasts.FirstOrDefault() != null && _player.Id != Server.Host.Id) BC.BroadcastComponent.TargetClearElements(_player.Connection);
                 if (currentbc != null) currentbc.End();
                 else bcs.First().Start();
             }

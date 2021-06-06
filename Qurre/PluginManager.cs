@@ -13,7 +13,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 4, 3);
+		public static Version Version { get; } = new Version(1, 4, 4);
 		private static string Domen { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -255,7 +255,6 @@ namespace Qurre
 					fileStream.Write(buffer, 0, bytesRead);
 					bytesRead = responseStream.Read(buffer, 0, 4096);
 				}
-				API.Server.Restart();
 			}
 			catch (Exception e)
 			{

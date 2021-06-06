@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using Dissonance.Config;
 using Dissonance;
 using Dissonance.Networking.Client;
-
 namespace Qurre.Events.modules
 {
     internal class Etc
@@ -55,7 +54,7 @@ namespace Qurre.Events.modules
             if (ev.NewRole == RoleType.Spectator) ev.Player.Inventory.ServerDropAll();
         }
         private static void RoundRestart() => API.Map.ClearObjects();
-        public static IEnumerator<float> UpdateAudioClient()
+        private static IEnumerator<float> UpdateAudioClient()
         {
             for (; ; )
             {

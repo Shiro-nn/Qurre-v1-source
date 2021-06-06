@@ -135,4 +135,16 @@ namespace Qurre.API.Events
         public DoorEventOpenerExtension.OpenerEventType EventType { get; }
         public bool Allowed { get; set; }
     }
+    public class UseLiftEvent : EventArgs
+    {
+        public UseLiftEvent(Controllers.Lift lift, bool result, bool allowed = true)
+        {
+            Lift = lift;
+            Result = result;
+            Allowed = allowed;
+        }
+        public Controllers.Lift Lift { get; }
+        public bool Result { get; set; }
+        public bool Allowed { get; set; }
+    }
 }

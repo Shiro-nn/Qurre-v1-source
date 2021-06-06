@@ -162,6 +162,7 @@
     <Compile Include="Patches\etc\MaxHpFix.cs" />
     <Compile Include="Patches\etc\RespawnCassie.cs" />
     <Compile Include="Patches\etc\UnitName.cs" />
+    <Compile Include="Patches\Events\Map\UseElevator.cs" />
     <Compile Include="Patches\Events\Map\DoorLock.cs" />
     <Compile Include="Patches\Events\Map\DoorDamage.cs" />
     <Compile Include="Patches\Events\Map\SetSeed.cs" />

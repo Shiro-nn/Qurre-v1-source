@@ -276,7 +276,8 @@ namespace Qurre.API
 		}
 		private string GetRawString(string key)
 		{
-            if (!TryGetString(key, out string result))
+			var _key = key.ToLower();
+			if (!TryGetString(_key, out string result))
             {
                 return "default";
             }

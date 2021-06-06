@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Net;
-
 namespace Qurre.API
 {
     public static class Audio
@@ -11,6 +10,7 @@ namespace Qurre.API
             FileStream stream = File.OpenRead(path);
             QurreModLoader.Audio.Play(stream, volume);
         }
+        [System.Obsolete]
         public static void PlayFromUrl(string url, float volume)
         {
             WebRequest request = WebRequest.Create(url);
