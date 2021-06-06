@@ -137,14 +137,12 @@ namespace Qurre.API.Events
     }
     public class UseLiftEvent : EventArgs
     {
-        public UseLiftEvent(Controllers.Lift lift, bool result, bool allowed = true)
+        public UseLiftEvent(Controllers.Lift lift, bool allowed)
         {
             Lift = lift;
-            Result = result;
             Allowed = allowed;
         }
         public Controllers.Lift Lift { get; }
-        public bool Result { get; set; }
         public bool Allowed { get; set; }
     }
 }
