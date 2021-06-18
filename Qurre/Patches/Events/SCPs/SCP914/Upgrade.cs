@@ -45,11 +45,13 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                     Qurre.Events.SCPs.SCP914.upgradePlayer(_ev);
                     if (!_ev.Allowed) _players.Remove(pl);
                 }
+                var _list_pick = __instance.Scp914_items();
+                if (_list_pick == null) _list_pick = new List<Pickup>();
                 var ev = new UpgradeEvent(__instance, _players, __instance.Scp914_items(), __instance.knobState);
                 Qurre.Events.SCPs.SCP914.upgrade(ev);
                 var players = ev.Players.Select(player => player.ClassManager).ToList();
                 __instance.MoveObjects(ev.Items, players);
-                if (ev.Allowed) __instance.UpgradeObjects(ev.Items, players);
+                try { if (ev.Allowed) __instance.UpgradeObjects(ev.Items, players); } catch { }
                 return false;
             }
             catch (System.Exception e)

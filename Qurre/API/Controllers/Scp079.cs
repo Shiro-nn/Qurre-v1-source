@@ -16,7 +16,7 @@ namespace Qurre.API.Controllers
         public float Energy { get => script.Mana; set => script.NetworkcurMana = value; }
         public float MaxEnergy { get => script.maxMana; set => script.NetworkmaxMana = value; }
         public Camera079 Camera { get => script.currentCamera; set => script?.CallRpcSwitchCamera(value.cameraId, false); }
-        public Camera079[] Camers => Scp079PlayerScript.allCameras;
+        public static Camera079[] Camers => Scp079PlayerScript.allCameras;
         public SyncListUInt LockedDoors { get => script.lockedDoors; set => script.lockedDoors = value; }
         public void GiveExp(float amount) => script.AddExperience(amount);
         public void ForceLevel(byte levelToForce, bool notifiyUser) => script.ForceLevel(levelToForce, notifiyUser);
