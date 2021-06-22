@@ -13,8 +13,8 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 4, 6);
-		private static string Domen { get; } = "localhost"; //qurre.team
+		public static Version Version { get; } = new Version(1, 4, 7);
+		private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
 		public static string PluginsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Plugins");
@@ -261,27 +261,23 @@ namespace Qurre
 				Log.Warn($"Updating DissonanceVoip threw an error:\n{e}");
 			}
 		}
-		private static void LoadFromUrl() // Web Loader
+		private static void LoadFromUrl(string link) // Web Loader
 		{
 			try
 			{
-				string _link = "https://cdn.scpsl.store/qurre/audio/AudioModuleDependency.dll";
-				WebClient _wc = new WebClient();
-				Assembly _assembly = Assembly.Load(_wc.DownloadData(_link));
-				string link = "https://cdn.scpsl.store/qurre/audio/AudioModule.dll";
 				WebClient wc = new WebClient();
 				Assembly assembly = Assembly.Load(wc.DownloadData(link));
 			}
 			catch (Exception e)
 			{
-				ServerConsole.AddLog($"{e}", ConsoleColor.Red);
+				Log.Error($"{e}");
 			}
 		}
 		private static void CheckPlan() // Web checker
 		{
 			try
 			{
-				var url = $"http://{Domen}/check";
+				var url = $"http://{Domain}/check";
 				var req = WebRequest.Create(url);
 				var resp = req.GetResponse();
 				using (var sr = new StreamReader(resp.GetResponseStream()))

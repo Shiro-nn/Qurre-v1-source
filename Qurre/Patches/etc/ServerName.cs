@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 namespace Qurre.Patches.etc
 {
 	[HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.ReloadServerName))]

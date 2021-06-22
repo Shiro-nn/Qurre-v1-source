@@ -31,6 +31,7 @@ namespace Qurre.Events.modules
         }
         private static void WaitingForPlayers()
         {
+            API.Round.ForceEnd = false;
             RoundSummary.RoundLock = false;
             API.Round.ActiveGenerators = 0;
             if (Plugin.Config.GetBool("Qurre_AllUnit", false))
