@@ -5,7 +5,7 @@ using RemoteAdmin;
 namespace Qurre.Patches.etc
 {
 	[HarmonyPatch(typeof(CustomBroadcastTrigger), "IsUserActivated")]
-	public class TriggerAudio1
+	public class FixAudio1
 	{
 		public static bool Prefix(CustomBroadcastTrigger __instance, ref bool __result)
 		{
@@ -24,7 +24,7 @@ namespace Qurre.Patches.etc
 		}
 	}
 	[HarmonyPatch(typeof(VoiceBroadcastTrigger), "get_CanTrigger")]
-	public class TriggerAudio2
+	public class FixAudio2
 	{
 		public static bool Prefix(VoiceBroadcastTrigger __instance, ref bool __result)
 		{
@@ -43,7 +43,7 @@ namespace Qurre.Patches.etc
 		}
 	}
 	[HarmonyPatch(typeof(BaseCommsTrigger), "get_TokenActivationState")]
-	public class TriggerAudio3
+	public class FixAudio3
 	{
 		public static bool Prefix(BaseCommsTrigger __instance, ref bool __result)
 		{
@@ -62,7 +62,7 @@ namespace Qurre.Patches.etc
 		}
 	}
 	[HarmonyPatch(typeof(VoiceBroadcastTrigger), "ShouldActivate")]
-	public class TriggerAudio4
+	public class FixAudio4
 	{
 		public static bool Prefix(VoiceBroadcastTrigger __instance, ref bool __result, bool intent)
 		{
