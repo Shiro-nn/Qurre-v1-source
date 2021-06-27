@@ -93,8 +93,7 @@ namespace Qurre.Patches.Events.PlayeR
                             __instance.ProtectedTime = Time.time;
                         }
                     }
-                    if (!__instance.isLocalPlayer)
-                        API.Player.Get(__instance.gameObject).MaxArtificialHealth = role.maxHP;
+                    if (!__instance.isLocalPlayer) API.Player.Get(__instance.gameObject).MaxHp = role.maxHP;
                 }
                 __instance.Scp0492.iAm049_2 = __instance.CurClass == RoleType.Scp0492;
                 __instance.Scp106.iAm106 = __instance.CurClass == RoleType.Scp106;

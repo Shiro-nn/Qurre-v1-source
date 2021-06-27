@@ -27,7 +27,7 @@ namespace Qurre.Patches.Events.PlayeR
 				Qurre.Events.Invoke.Player.Damage(ev);
 				info = ev.HitInformations;
 				if (!ev.Allowed) return false;
-				if (!ev.Target.GodMode && (ev.Amount == -1 || ev.Amount >= (ev.Target.Health + ev.Target.ArtificialHealth)))
+				if (!ev.Target.GodMode && (ev.Amount == -1 || ev.Amount >= (ev.Target.Hp + ev.Target.Ahp)))
 				{
 					var dE = new DiesEvent(ev.Attacker, ev.Target, ev.HitInformations);
 					Qurre.Events.Invoke.Player.Dies(dE);

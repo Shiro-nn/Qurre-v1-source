@@ -213,35 +213,35 @@ namespace Qurre.API
 			get => ClassManager.GodMode;
 			set => ClassManager.GodMode = value;
 		}
-		public float Health
+		public float Hp
 		{
 			get => PlayerStats.Health;
 			set
 			{
 				PlayerStats.Health = value;
-				if (value > MaxHealth) MaxHealth = (int)value;
+				if (value > MaxHp) MaxHp = (int)value;
 			}
 		}
-		public int MaxHealth
+		public int MaxHp
 		{
 			get => PlayerStats.maxHP;
 			set => PlayerStats.maxHP = value;
 		}
-		public float ArtificialHealthDecay
+		public float AhpDecay
 		{
 			get => PlayerStats.artificialHpDecay;
 			set => PlayerStats.artificialHpDecay = value;
 		}
-		public float ArtificialHealth
+		public float Ahp
 		{
 			get => PlayerStats.unsyncedArtificialHealth;
 			set
 			{
 				PlayerStats.unsyncedArtificialHealth = value;
-				if (value > MaxArtificialHealth) MaxArtificialHealth = (int)value;
+				if (value > MaxAhp) MaxAhp = (int)value;
 			}
 		}
-		public int MaxArtificialHealth
+		public int MaxAhp
 		{
 			get => PlayerStats.maxArtificialHealth;
 			set => PlayerStats.maxArtificialHealth = value;
@@ -495,7 +495,7 @@ namespace Qurre.API
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
 			var ih = ItemInHand;
-			var _ahp = ArtificialHealth;
+			var _ahp = Ahp;
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (newPosition == default) newPosition = Position;
 			if (newRotation == default) newRotation = Rotation;
@@ -506,7 +506,7 @@ namespace Qurre.API
 			SetRole(newRole, true);
 			MEC.Timing.CallDelayed(0.3f, () =>
 			{
-				ArtificialHealth = _ahp;
+				Ahp = _ahp;
 				Rotation = newRotation;
 				Position = newPosition;
 				ItemInHand = ih;
@@ -745,6 +745,37 @@ namespace Qurre.API
 		{
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
+		}
+
+		[Obsolete("Use Hp")]
+		public float Health
+		{
+			get => Hp;
+			set => Hp = value;
+		}
+		[Obsolete("Use MaxHp")]
+		public int MaxHealth
+		{
+			get => MaxHp;
+			set => MaxHp = value;
+		}
+		[Obsolete("Use AhpDecay")]
+		public float ArtificialHealthDecay
+		{
+			get => AhpDecay;
+			set => AhpDecay = value;
+		}
+		[Obsolete("Use Ahp")]
+		public float ArtificialHealth
+		{
+			get => Ahp;
+			set => Ahp = value;
+		}
+		[Obsolete("Use MaxAhp")]
+		public int MaxArtificialHealth
+		{
+			get => MaxAhp;
+			set => MaxAhp = value;
 		}
 	}
 }
