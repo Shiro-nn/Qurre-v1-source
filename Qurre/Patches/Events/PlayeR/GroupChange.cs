@@ -11,7 +11,7 @@ namespace Qurre.Patches.Events.PlayeR
             try
             {
                 var ev = new GroupChangeEvent(Player.Get(__instance.gameObject), group);
-                Qurre.Events.Player.groupchange(ev);
+                Qurre.Events.Invoke.Player.GroupChange(ev);
                 return ev.Allowed;
             }
             catch (System.Exception e)

@@ -1,7 +1,6 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 using Qurre.API.Events;
-using Qurre.Events;
+using Qurre.Events.Invoke;
 namespace Qurre.Patches.Events.PlayeR
 {
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.CallCmdSetUnic))]
@@ -24,7 +23,7 @@ namespace Qurre.Patches.Events.PlayeR
                     if (item.uniq == i)
                         newi = item;
                 var ev = new ItemChangeEvent(API.Player.Get(__instance.gameObject), old, newi);
-                Player.itemchange(ev);
+                Player.ItemChange(ev);
                 oI = __instance.GetItemIndex();
                 if (oI != -1)
                     __instance.items[oI] = ev.OldItem;

@@ -1,8 +1,7 @@
-﻿#pragma warning disable SA1313
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using HarmonyLib;
 using Qurre.API.Events;
-using Qurre.Events;
+using Qurre.Events.Invoke;
 using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.PlayeR
@@ -20,16 +19,16 @@ namespace Qurre.Patches.Events.PlayeR
                 foreach (ItemType item in __instance.Classes.SafeGet(classid).startItems) sIL.Add(item);
                 var cRE = new RoleChangeEvent(pl, classid, sIL, lite, escape);
                 if (cRE.NewRole == RoleType.Spectator) cRE.Player.DropItems();
-                Player.rolechange(cRE);
+                Player.RoleChange(cRE);
                 lite = cRE.SavePos;
                 escape = cRE.Escaped;
                 if (classid != RoleType.Spectator && cRE.NewRole == RoleType.Spectator)
-                    Player.dead(new DeadEvent(API.Server.Host, cRE.Player, new PlayerStats.HitInfo(-1, "Dedicated Server", DamageTypes.None, 0)));
+                    Player.Dead(new DeadEvent(API.Server.Host, cRE.Player, new PlayerStats.HitInfo(-1, "Dedicated Server", DamageTypes.None, 0)));
                 classid = cRE.NewRole;
                 if (escape)
                 {
                     var eE = new EscapeEvent(pl, classid);
-                    Player.escape(eE);
+                    Player.Escape(eE);
                     if (!eE.Allowed) return false;
                     classid = eE.NewRole;
                 }

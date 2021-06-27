@@ -19,18 +19,18 @@ namespace Qurre.Patches.Events.PlayeR
 				if (info.GetDamageType() == DamageTypes.Recontainment && target.Role == RoleType.Scp079)
 				{
 					var eventArgs = new DeadEvent(null, target, info);
-					Qurre.Events.Player.dead(eventArgs);
+					Qurre.Events.Invoke.Player.Dead(eventArgs);
 				}
 				if (attacker == null || attacker.IsHost) return true;
 				var ev = new DamageEvent(attacker, target, info);
 				if (ev.Target.IsHost) return true;
-				Qurre.Events.Player.damage(ev);
+				Qurre.Events.Invoke.Player.Damage(ev);
 				info = ev.HitInformations;
 				if (!ev.Allowed) return false;
-				if (!ev.Target.GodMode && (ev.Amount == -1 || ev.Amount >= (ev.Target.HP + ev.Target.AHP)))
+				if (!ev.Target.GodMode && (ev.Amount == -1 || ev.Amount >= (ev.Target.Health + ev.Target.ArtificialHealth)))
 				{
 					var dE = new DiesEvent(ev.Attacker, ev.Target, ev.HitInformations);
-					Qurre.Events.Player.dies(dE);
+					Qurre.Events.Invoke.Player.Dies(dE);
 					if (!dE.Allowed) return false;
 				}
 				return true;

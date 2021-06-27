@@ -10,7 +10,7 @@ namespace Qurre.Patches.Events.PlayeR
             try
             {
                 var ev = new BannedEvent(string.IsNullOrEmpty(ban.Id) ? null : API.Player.Get(ban.Id), ban, banType);
-                Qurre.Events.Player.banned(ev);
+                Qurre.Events.Invoke.Player.Banned(ev);
             }
             catch (System.Exception e)
             {

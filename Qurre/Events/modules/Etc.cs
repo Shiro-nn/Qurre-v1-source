@@ -14,7 +14,7 @@ namespace Qurre.Events.modules
         internal static void Load()
         {
             SceneManager.sceneUnloaded += SceneUnloaded;
-            SeedSynchronizer.OnMapGenerated += Map.generated;
+            SeedSynchronizer.OnMapGenerated += Invoke.Map.Generated;
             Round.WaitingForPlayers += WaitingForPlayers;
             Player.RoleChange += ChangeRole;
             Round.Restart += RoundRestart;
@@ -70,7 +70,7 @@ namespace Qurre.Events.modules
                     }
                     if (QurreModLoader.Audio.client.Update() == ClientStatus.Error)
                     {
-                        if(Log.debug) Log.Error("Audio Client caused an error.");
+                        if (Log.debug) Log.Error("Audio Client caused an error.");
                     }
                 }
             }
@@ -80,8 +80,12 @@ namespace Qurre.Events.modules
             if ((ev.Name == "bc" || ev.Name == "broadcast") && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
             {
                 ev.Allowed = false;
-                ushort num8;
-                if (!ushort.TryParse(ev.Args[0], out num8) || num8 < 1)
+                if (ev.Args.Length == 0)
+                {
+                    ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Example: bc time message.", false, true, "");
+                    return;
+                }
+                if (!ushort.TryParse(ev.Args[0], out ushort num8) || num8 < 1)
                 {
                     ev.CommandSender.RaReply(ev.Name.ToUpper() + "#First argument must be a positive integer.", false, true, "");
                     return;
@@ -93,6 +97,11 @@ namespace Qurre.Events.modules
             else if (ev.Name == "pbc" && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
             {
                 ev.Allowed = false;
+                if (ev.Args.Length == 0)
+                {
+                    ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Example: pbc id time message.", false, true, "");
+                    return;
+                }
                 if (!ushort.TryParse(ev.Args[0], out ushort pi) || pi < 1)
                 {
                     ev.CommandSender.RaReply(ev.Name.ToUpper() + "#First argument must be a positive integer.", false, true, "");

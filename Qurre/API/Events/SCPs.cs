@@ -173,9 +173,31 @@ namespace Qurre.API.Events
         public Player Player { get; }
         public bool Allowed { get; set; }
     }
-    public class CalmDownEvent : EnrageEvent
+    public class WindupEvent : EventArgs
     {
-        public CalmDownEvent(Scp096 scp096, Player player, bool allowed = true) : base(scp096, player, allowed) { }
+        public WindupEvent(Scp096 scp096, Player player, bool force, bool allowed = true)
+        {
+            Scp096 = scp096;
+            Player = player;
+            Force = force;
+            Allowed = allowed;
+        }
+        public Scp096 Scp096 { get; }
+        public Player Player { get; }
+        public bool Force { get; private set; }
+        public bool Allowed { get; set; }
+    }
+    public class CalmDownEvent : EventArgs
+    {
+        public CalmDownEvent(Scp096 scp096, Player player, bool allowed = true)
+        {
+            Scp096 = scp096;
+            Player = player;
+            Allowed = allowed;
+        }
+        public Scp096 Scp096 { get; }
+        public Player Player { get; }
+        public bool Allowed { get; set; }
     }
     public class AddTargetEvent : EventArgs
     {
@@ -240,9 +262,17 @@ namespace Qurre.API.Events
         public Player Target { get; }
         public bool Allowed { get; set; }
     }
-    public class FinishRecallEvent : StartRecallEvent
+    public class FinishRecallEvent : EventArgs
     {
-        public FinishRecallEvent(Player scp049, Player target, bool allowed = true) : base(scp049, target, allowed) { }
+        public FinishRecallEvent(Player scp049, Player target, bool allowed = true)
+        {
+            Scp049 = scp049;
+            Target = target;
+            Allowed = allowed;
+        }
+        public Player Scp049 { get; }
+        public Player Target { get; }
+        public bool Allowed { get; set; }
     }
     #endregion
 }

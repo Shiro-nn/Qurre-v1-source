@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.Map
 				var ev = new UseLiftEvent(API.Extensions.GetLift(__instance), __result);
 				if (!ev.Lift.Operative || API.Controllers.Alpha.TimeToDetonation == 0 || ev.Lift.Locked) ev.Allowed = false;
 				else ev.Allowed = true;
-				Qurre.Events.Map.useLift(ev);
+				Qurre.Events.Invoke.Map.UseLift(ev);
 				__result = ev.Allowed;
 				if (ev.Allowed)
 				{

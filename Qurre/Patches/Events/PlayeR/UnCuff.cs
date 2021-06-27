@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
@@ -20,7 +19,7 @@ namespace Qurre.Patches.Events.PlayeR
                     if (target.CufferId == __instance.MyReferenceHub.queryProcessor.PlayerId)
                     {
                         var ev = new UnCuffEvent(Player.Get(__instance.gameObject), target);
-                        Qurre.Events.Player.unCuff(ev);
+                        Qurre.Events.Invoke.Player.UnCuff(ev);
                         if (ev.Allowed) target.CufferId = -1;
                         break;
                     }
@@ -49,7 +48,7 @@ namespace Qurre.Patches.Events.PlayeR
                     return false;
                 var p = Player.Get(target);
                 var ev = new UnCuffEvent(Player.Get(__instance.gameObject), p); ;
-                Qurre.Events.Player.unCuff(ev);
+                Qurre.Events.Invoke.Player.UnCuff(ev);
                 if (!ev.Allowed) return false;
                 p.CufferId = -1;
                 return false;

@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.PlayeR
             try
             {
                 var ev = new SpeakEvent(__instance, __instance.IntercomAsHuman, __instance.RadioAsHuman, __instance.MimicAs939, __instance.SCPChat, __instance.SpectatorChat, value);
-                Qurre.Events.Player.speak(ev);
+                Qurre.Events.Invoke.Player.Speak(ev);
                 __instance.SCPChat = ev.ScpChat;
                 __instance.SpectatorChat = ev.RipChat;
                 __instance.IntercomAsHuman = ev.Intercom;

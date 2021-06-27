@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace Qurre.Patches.Events.PlayeR
             try
             {
                 var ev = new SyncDataEvent(API.Player.Get(__instance.gameObject), v2, state);
-                Qurre.Events.Player.syncData(ev);
+                Qurre.Events.Invoke.Player.SyncData(ev);
                 return ev.Allowed;
             }
             catch (Exception e)

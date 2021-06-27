@@ -16,6 +16,10 @@ namespace Qurre.Patches.Events.PlayeR
 			try
 			{
 				Player player = Player.Get(person);
+				if (player == null)
+					return true;
+				if (__instance.Gen_doorAnimationCooldown() > 0f || __instance.Gen_deniedCooldown() > 0f)
+					return false;
 				switch (command)
 				{
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Door:
@@ -23,13 +27,20 @@ namespace Qurre.Patches.Events.PlayeR
 						switch (__instance.isDoorOpen)
 						{
 							case false:
-								var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor);
-								Qurre.Events.Player.interactGenerator(ev1);
+								if (player.Inventory.curItem > ItemType.KeycardJanitor)
+								{
+									string[] permissions = player.Inventory.GetItemByID(player.Inventory.curItem).permissions;
+									for (int i = 0; i < permissions.Length; i++)
+										if (permissions[i] == "ARMORY_LVL_2" || player.BypassMode)
+											boolean = true;
+								}
+								var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor, boolean);
+								Qurre.Events.Invoke.Player.InteractGenerator(ev1);
 								boolean = ev1.Allowed;
 								break;
 							case true:
 								var ev2 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.CloseDoor);
-								Qurre.Events.Player.interactGenerator(ev2);
+								Qurre.Events.Invoke.Player.InteractGenerator(ev2);
 								boolean = ev2.Allowed;
 								break;
 						}
@@ -48,7 +59,7 @@ namespace Qurre.Patches.Events.PlayeR
 								if (current.id == ItemType.WeaponManagerTablet)
 								{
 									var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabletInjected);
-									Qurre.Events.Player.interactGenerator(ev1);
+									Qurre.Events.Invoke.Player.InteractGenerator(ev1);
 									if (ev1.Allowed)
 									{
 										component.items.Remove(current);
@@ -61,7 +72,7 @@ namespace Qurre.Patches.Events.PlayeR
 						}
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Cancel:
 						var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabledEjected);
-						Qurre.Events.Player.interactGenerator(ev);
+						Qurre.Events.Invoke.Player.InteractGenerator(ev);
 						if (ev.Allowed) __instance.EjectTablet();
 						break;
 				}
@@ -70,57 +81,6 @@ namespace Qurre.Patches.Events.PlayeR
 			catch (Exception e)
 			{
 				Log.Error($"umm, error in patching PlayeR.InteractGenerator:\n{e}\n{e.StackTrace}");
-				return true;
-			}
-		}
-	}
-	[HarmonyPatch(typeof(Generator079), nameof(Generator079.OpenClose))]
-	public static class InteractGeneratorDoor
-	{
-		public static bool Prefix(Generator079 __instance, GameObject person)
-		{
-			Player player = Player.Get(person);
-			if (player == null)
-				return true;
-			if (__instance.Gen_doorAnimationCooldown() > 0f || __instance.Gen_deniedCooldown() > 0f)
-				return false;
-			try
-			{
-				if (__instance.isDoorUnlocked)
-				{
-					InteractGeneratorEvent ev;
-					if (__instance.NetworkisDoorOpen) ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.CloseDoor);
-					else ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor);
-					Qurre.Events.Player.interactGenerator(ev);
-					if (!ev.Allowed) return false;
-					__instance.Gen_doorAnimationCooldown(1.5f);
-					__instance.NetworkisDoorOpen = !__instance.isDoorOpen;
-					__instance.Generator_RpcDoSound(__instance.isDoorOpen);
-					return false;
-				}
-
-				if (player.Inventory.curItem > ItemType.KeycardJanitor)
-				{
-					string[] permissions = player.Inventory.GetItemByID(player.Inventory.curItem).permissions;
-					for (int i = 0; i < permissions.Length; i++)
-					{
-						if (permissions[i] == "ARMORY_LVL_2" || player.BypassMode)
-						{
-							var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.Unlocked);
-							Qurre.Events.Player.interactGenerator(ev);
-							if (!ev.Allowed) return false;
-							__instance.NetworkisDoorUnlocked = true;
-							__instance.Gen_doorAnimationCooldown(0.5f);
-							return false;
-						}
-					}
-				}
-				__instance.RpcDenied();
-				return false;
-			}
-			catch (Exception e)
-			{
-				Log.Error($"umm, error in patching Player [InteractGeneratorDoor]:\n{e}\n{e.StackTrace}");
 				return true;
 			}
 		}

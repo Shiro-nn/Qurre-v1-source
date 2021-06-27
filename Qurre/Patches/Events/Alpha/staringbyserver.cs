@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1118
-using HarmonyLib;
+﻿using HarmonyLib;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.Alpha
@@ -16,7 +15,7 @@ namespace Qurre.Patches.Events.Alpha
                 if ((AWC_resumeScenario() != -1 || __instance.scenarios_start[AWC_startScenario()].SumTime() != (double)__instance.timeToDetonation) && (AWC_resumeScenario() == -1 || __instance.scenarios_resume[AWC_resumeScenario()].SumTime() != (double)__instance.timeToDetonation))
                     return false;
                 var ev = new AlphaStartEvent(API.Server.Host);
-                Qurre.Events.Alpha.starting(ev);
+                Qurre.Events.Invoke.Alpha.Starting(ev);
                 if (!ev.Allowed) return false;
                 __instance.NetworkinProgress = true;
                 return false;

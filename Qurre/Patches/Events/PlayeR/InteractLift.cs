@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
@@ -23,8 +22,8 @@ namespace Qurre.Patches.Events.PlayeR
                 {
                     if (__instance.ChckDis(lIft.door.transform.position))
                     {
-                        var ev = new InteractLiftEvent(API.Player.Get(__instance.gameObject), lIft, lift.GetLift());
-                        Qurre.Events.Player.interactLift(ev);
+                        var ev = new InteractLiftEvent(Player.Get(__instance.gameObject), lIft, lift.GetLift());
+                        Qurre.Events.Invoke.Player.InteractLift(ev);
                         if (!ev.Allowed) return false;
                         elevator.GetComponent<Lift>().UseLift();
                         __instance.OnInteract();

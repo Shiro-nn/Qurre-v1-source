@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 using PlayableScps;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP096
@@ -12,7 +11,7 @@ namespace Qurre.Patches.Events.SCPs.SCP096
             try
             {
                 var ev = new CalmDownEvent(__instance, API.Player.Get(__instance.Hub.gameObject));
-                Qurre.Events.SCPs.SCP096.calmdown(ev);
+                Qurre.Events.Invoke.Scp096.CalmDown(ev);
                 return ev.Allowed;
             }
             catch (System.Exception e)

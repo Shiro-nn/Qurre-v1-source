@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 using Mirror;
 using Qurre.API.Events;
 using UnityEngine;
@@ -84,7 +83,7 @@ namespace Qurre.Patches.Events.PlayeR
                                 rotY = 0f;
                             }
                             var ev = new SpawnEvent(API.Player.Get(__instance.gameObject), __instance.CurClass, sP, rotY);
-                            Qurre.Events.Player.spawn(ev);
+                            Qurre.Events.Invoke.Player.Spawn(ev);
                             __instance._pms().OnPlayerClassChange(ev.Position, ev.RotationY);
                         }
                         if (!__instance.SpawnProtected && CharacterClassManager.EnableSP && CharacterClassManager.SProtectedTeam.Contains((int)role.team))
@@ -95,7 +94,7 @@ namespace Qurre.Patches.Events.PlayeR
                         }
                     }
                     if (!__instance.isLocalPlayer)
-                        API.Player.Get(__instance.gameObject).MaxHP = role.maxHP;
+                        API.Player.Get(__instance.gameObject).MaxArtificialHealth = role.maxHP;
                 }
                 __instance.Scp0492.iAm049_2 = __instance.CurClass == RoleType.Scp0492;
                 __instance.Scp106.iAm106 = __instance.CurClass == RoleType.Scp106;

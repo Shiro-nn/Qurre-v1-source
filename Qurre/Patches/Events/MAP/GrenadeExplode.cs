@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using System.Collections.Generic;
 using CustomPlayerEffects;
 using Grenades;
@@ -39,7 +38,7 @@ namespace Qurre.Patches.Events.MAP.grenade
                         players.Add(Player.Get(gameObject), num);
                 }
                 GrenadeExplodeEvent ev = new GrenadeExplodeEvent(Player.Get(__instance.throwerGameObject), players, false, __instance.gameObject);
-                Qurre.Events.Map.grenadeexplode(ev);
+                Qurre.Events.Invoke.Map.GrenadeExplode(ev);
                 return ev.Allowed;
             }
             catch (Exception e)
@@ -72,7 +71,7 @@ namespace Qurre.Patches.Events.MAP.grenade
                     }
                 }
                 var ev = new GrenadeExplodeEvent(Player.Get(__instance.throwerGameObject), players, true, __instance.gameObject);
-                Qurre.Events.Map.grenadeexplode(ev);
+                Qurre.Events.Invoke.Map.GrenadeExplode(ev);
                 return ev.Allowed;
             }
             catch (Exception e)

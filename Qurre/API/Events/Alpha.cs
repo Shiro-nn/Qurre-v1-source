@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 namespace Qurre.API.Events
 {
-    public class AlphaStartEvent : AlphaStopEvent
+    public class AlphaStartEvent : EventArgs
     {
-        public AlphaStartEvent(Player player, bool allowed = true) : base(player, allowed) { }
+        public AlphaStartEvent(Player player, bool allowed = true)
+        {
+            Player = player ?? Server.Host;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public bool Allowed { get; set; }
     }
     public class AlphaStopEvent : EventArgs
     {
         public AlphaStopEvent(Player player, bool allowed = true)
         {
-            Player = player ?? API.Server.Host;
+            Player = player ?? Server.Host;
             Allowed = allowed;
         }
         public Player Player { get; }

@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
@@ -40,7 +39,7 @@ namespace Qurre.Patches.Events.Round
                             list.ShuffleList();
                         List<Player> twolist = new List<Player>();
                         var ev = new TeamRespawnEvent(list, avsp, __instance.NextKnownTeam);
-                        Qurre.Events.Round.teamrespawn(ev);
+                        Qurre.Events.Invoke.Round.TeamRespawn(ev);
                         while (list.Count > avsp) list.RemoveAt(list.Count - 1);
                         list.ShuffleList();
                         foreach (Player targ in list)

@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using System.Linq;
 using HarmonyLib;
 using Qurre.API.Events;
@@ -17,7 +16,7 @@ namespace Qurre.Patches.Events.Server
                 string name = allarguments[0].ToLower();
                 string[] args = allarguments.Skip(1).ToArray();
                 var ev = new SendingConsoleEvent(API.Server.Host, query, name, args, encrypted, "", "white", true);
-                Qurre.Events.Server.sendingconsole(ev);
+                Qurre.Events.Invoke.Server.SendingConsole(ev);
                 if (!string.IsNullOrEmpty(ev.ReturnMessage))
                 {
                     __instance.GCT.SendToClient(__instance.connectionToClient, ev.ReturnMessage, ev.Color);

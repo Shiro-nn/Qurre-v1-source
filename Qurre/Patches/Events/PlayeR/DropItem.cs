@@ -16,13 +16,13 @@ namespace Qurre.Patches.Events.PlayeR
                 Inventory.SyncItemInfo item = __instance.items[itemInventoryIndex];
                 if (__instance.items[itemInventoryIndex].id != item.id) return false;
                 var ev = new DroppingItemEvent(API.Player.Get(__instance.gameObject), item);
-                Qurre.Events.Player.droppingItem(ev);
+                Qurre.Events.Invoke.Player.DroppingItem(ev);
                 item = ev.Item;
                 if (!ev.Allowed) return false;
                 Pickup pick = __instance.SetPickup(item.id, item.durability, __instance.transform.position, __instance.camera.transform.rotation, item.modSight, item.modBarrel, item.modOther);
                 __instance.items.RemoveAt(itemInventoryIndex);
                 var ev1 = new DropItemEvent(API.Player.Get(__instance.gameObject), pick);
-                Qurre.Events.Player.dropItem(ev1);
+                Qurre.Events.Invoke.Player.DropItem(ev1);
                 return false;
             }
             catch (Exception e)

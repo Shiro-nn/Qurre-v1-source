@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 namespace Qurre.Patches.Events.Round
 {
     [HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.AddLog))]
@@ -11,7 +10,7 @@ namespace Qurre.Patches.Events.Round
             {
                 API.Map.AddObjects();
                 API.Round.CurrentRound++;
-                Qurre.Events.Round.waitingforplayers();
+                Qurre.Events.Invoke.Round.WaitingForPlayers();
             }
         }
     }

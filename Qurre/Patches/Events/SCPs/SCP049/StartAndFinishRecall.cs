@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
@@ -39,7 +38,7 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                     if (target.characterClassManager.CurClass != RoleType.Spectator)
                         return false;
                     var ev = new FinishRecallEvent(API.Player.Get(__instance.Hub.gameObject), API.Player.Get(target.gameObject));
-                    Qurre.Events.SCPs.SCP049.finishrecall(ev);
+                    Qurre.Events.Invoke.Scp049.FinishRecall(ev);
                     if (!ev.Allowed) return false;
                     RoundSummary.changed_into_zombies++;
                     target.characterClassManager.SetClassID(RoleType.Scp0492);
@@ -80,7 +79,7 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                         PlayableScps.Scp049.ReviveDistance * 1.3f)
                         return false;
                     var ev = new StartRecallEvent(API.Player.Get(__instance.Hub.gameObject), API.Player.Get(target.gameObject));
-                    Qurre.Events.SCPs.SCP049.startrecall(ev);
+                    Qurre.Events.Invoke.Scp049.StartRecall(ev);
                     if (!ev.Allowed) return false;
                     __instance.Scp049_recallObjectServer(target.gameObject);
                     __instance.Scp049_recallProgressServer(0f);

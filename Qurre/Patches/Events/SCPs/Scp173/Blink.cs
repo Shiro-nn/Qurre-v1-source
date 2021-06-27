@@ -31,7 +31,7 @@ namespace Qurre.Patches.Events.SCPs.Scp173
                 if (scp.Scp173Controller.ConfrontingPlayers.Count != 0)
                 {
                     var ev = new BlinkEvent(scp, players);
-                    Qurre.Events.SCPs.SCP173.blink(ev);
+                    Qurre.Events.Invoke.Scp173.Blink(ev);
                 }
                 __instance.Scp173_AllowMove(true);
                 foreach (GameObject gameObject in PlayerManager.players)

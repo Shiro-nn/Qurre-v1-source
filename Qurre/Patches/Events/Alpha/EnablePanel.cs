@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using Qurre.API;
@@ -27,7 +26,7 @@ namespace Qurre.Patches.Events.Alpha
                 var list = new List<string>();
                 list.Add("CONT_LVL_3");
                 var ev = new EnableAlphaPanelEvent(Player.Get(__instance.gameObject), list);
-                Qurre.Events.Alpha.enablepanel(ev);
+                Qurre.Events.Invoke.Alpha.EnablePanel(ev);
                 if (ev.Allowed && itemById.permissions.Intersect(ev.Permissions).Any())
                 {
                     gameObject.GetComponentInParent<AlphaWarheadOutsitePanel>().NetworkkeycardEntered = true;

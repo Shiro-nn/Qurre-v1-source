@@ -1,8 +1,6 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 using LightContainmentZoneDecontamination;
 using Qurre.API.Events;
-
 namespace Qurre.Patches.Events.MAP
 {
     [HarmonyPatch(typeof(DecontaminationController), nameof(DecontaminationController.FinishDecontamination))]
@@ -11,7 +9,7 @@ namespace Qurre.Patches.Events.MAP
         private static bool Prefix()
         {
             var ev = new LCZDeconEvent();
-            Qurre.Events.Map.lczdecon(ev);
+            Qurre.Events.Invoke.Map.LCZDecon(ev);
             return ev.Allowed;
         }
     }

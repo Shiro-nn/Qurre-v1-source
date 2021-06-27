@@ -11,7 +11,7 @@ namespace Qurre.Patches.Events.PlayeR
             try
             {
                 var ev = new RadioUpdateEvent(API.Player.Get(__instance.gameObject), (RadioStatus)preset);
-                Qurre.Events.Player.radioUpdate(ev);
+                Qurre.Events.Invoke.Player.RadioUpdate(ev);
                 return ev.Allowed;
             }
             catch (System.Exception e)

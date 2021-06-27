@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 using LightContainmentZoneDecontamination;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
@@ -13,7 +12,7 @@ namespace Qurre.Patches.Events.MAP
             try
             {
                 var ev = new AnnouncementDecontaminationEvent(QurreModLoader.umm.DC_nextPhase(__instance), hard);
-                Qurre.Events.Map.announcementdecontamination(ev);
+                Qurre.Events.Invoke.Map.AnnouncementDecontaminationZDecon(ev);
                 hard = ev.IsGlobal;
                 __instance.Set_DC_nextPhase(ev.Id);
                 return ev.Allowed;

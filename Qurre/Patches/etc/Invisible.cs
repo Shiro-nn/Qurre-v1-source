@@ -113,7 +113,7 @@ namespace Qurre.Patches.etc
                         var pos = posData.position;
 
                         var ev = new TransmitPlayerDataEvent(player, playerToShow, pos, rotation, showinvoid);
-                        Qurre.Events.Player.transmitPlayerData(ev);
+                        Qurre.Events.Invoke.Player.TransmitPlayerData(ev);
                         pos = ev.Position;
                         rotation = ev.Rotation;
                         showinvoid = ev.Invisible;

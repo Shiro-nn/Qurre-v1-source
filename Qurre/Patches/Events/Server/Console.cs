@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using System.Linq;
 using HarmonyLib;
 using Qurre.API;
@@ -18,7 +17,7 @@ namespace Qurre.Patches.Events.Server
                 string name = allarguments[0].ToLower();
                 string[] args = allarguments.Skip(1).ToArray();
                 var ev = new SendingConsoleEvent(Player.Get(__instance.gameObject), query, name, args, encrypted);
-                Qurre.Events.Server.sendingconsole(ev);
+                Qurre.Events.Invoke.Server.SendingConsole(ev);
                 if (ev.ReturnMessage != "") __instance.GCT.SendToClient(__instance.connectionToClient, ev.ReturnMessage, ev.Color);
                 return ev.Allowed;
             }

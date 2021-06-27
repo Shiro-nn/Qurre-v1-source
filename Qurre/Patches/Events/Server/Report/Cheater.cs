@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
@@ -14,7 +13,7 @@ namespace Qurre.Patches.Events.Server.Report
             {
                 try { if (reportedUserId == reporterUserId) reporter.SendToClient(__instance.connectionToClient, "smart, smart", "yellow"); } catch { }
                 var ev = new ReportCheaterEvent(Player.Get(reporterUserId), Player.Get(reportedUserId), ServerConsole.Port, reason);
-                Qurre.Events.Server.Report.cheater(ev);
+                Qurre.Events.Invoke.Server.Report.Cheater(ev);
                 return ev.Allowed;
             }
             catch (Exception e)

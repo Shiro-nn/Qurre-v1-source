@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1118
-using HarmonyLib;
+﻿using HarmonyLib;
 using MEC;
 using UnityEngine;
 using Qurre.API.Events;
@@ -15,7 +14,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                 if (!QurreModLoader.umm.RateLimit(__instance).CanExecute(false))
                     return false;
                 var ev = new PortalUsingEvent(API.Player.Get(__instance.gameObject), __instance.portalPosition);
-                Qurre.Events.SCPs.SCP106.portalusing(ev);
+                Qurre.Events.Invoke.Scp106.PortalUsing(ev);
                 __instance.portalPosition = ev.PortalPosition;
                 if (!ev.Allowed)
                     return false;

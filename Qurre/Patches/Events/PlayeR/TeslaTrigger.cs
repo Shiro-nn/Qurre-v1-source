@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using System.Collections.Generic;
 using HarmonyLib;
 using Qurre.API;
@@ -27,7 +26,7 @@ namespace Qurre.Patches.Events.PlayeR
                             if (!teslaGate.PlayerInRange(allHub.Value) || teslaGate.InProgress) continue;
                             if (Player.Get(allHub.Key).Invisible) continue;
                             var ev = new TeslaTriggerEvent(Player.Get(allHub.Key), teslaGate.PlayerInHurtRange(allHub.Key));
-                            Qurre.Events.Player.teslaTrigger(ev);
+                            Qurre.Events.Invoke.Player.TeslaTrigger(ev);
                             if (ev.Triggerable) teslaGate.ServerSideCode();
                         }
                     }

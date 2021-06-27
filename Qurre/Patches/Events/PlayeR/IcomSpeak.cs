@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
@@ -17,13 +16,13 @@ namespace Qurre.Patches.Events.PlayeR
                 if (player)
                 {
                     if (!__instance.ServerAllowToSpeak()) return false;
-                    Qurre.Events.Player.icomSpeak(ev);
+                    Qurre.Events.Invoke.Player.IcomSpeak(ev);
                     if (ev.Allowed) Intercom.host.RequestTransmission(__instance.gameObject);
                 }
                 else
                 {
                     if (!(Intercom.host.Networkspeaker == __instance.gameObject)) return false;
-                    Qurre.Events.Player.icomSpeak(ev);
+                    Qurre.Events.Invoke.Player.IcomSpeak(ev);
                     if (ev.Allowed) Intercom.host.RequestTransmission(null);
                 }
                 return false;

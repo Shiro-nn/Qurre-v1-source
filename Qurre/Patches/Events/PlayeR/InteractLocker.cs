@@ -36,7 +36,7 @@ namespace Qurre.Patches.Events.PlayeR
                     lockerId,
                     chamberNumber,
                     string.IsNullOrEmpty(accessToken) || (item != null && item.permissions.Contains(accessToken)) || __instance.ServerRolesInteract().BypassMode);
-                Qurre.Events.Player.interactLocker(ev);
+                Qurre.Events.Invoke.Player.InteractLocker(ev);
                 if (ev.Allowed)
                 {
                     bool boolean = (singleton.openLockers[lockerId] & 1 << chamberNumber) != 1 << chamberNumber;

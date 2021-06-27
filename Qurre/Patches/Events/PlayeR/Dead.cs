@@ -15,7 +15,7 @@ namespace Qurre.Patches.Events.PlayeR
                 Player target = Player.Get(go);
                 if ((target != null && (target.Role != RoleType.Spectator || target.GodMode || target.IsHost)) || attacker == null) return;
                 var ev = new DeadEvent(Player.Get(__instance.gameObject), target, info);
-                Qurre.Events.Player.dead(ev);
+                Qurre.Events.Invoke.Player.Dead(ev);
                 info = ev.HitInfo;
             }
             catch (System.Exception e)

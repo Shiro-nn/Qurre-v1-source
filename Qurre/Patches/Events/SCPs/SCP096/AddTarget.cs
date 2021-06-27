@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP096
@@ -13,9 +12,10 @@ namespace Qurre.Patches.Events.SCPs.SCP096
             {
                 if (target == null) return true;
                 API.Player targetPL = API.Player.Get(target);
+                if (targetPL == null) return true;
                 API.Player player = API.Player.Get(__instance.Hub.gameObject);
                 var ev = new AddTargetEvent(__instance, player, targetPL);
-                Qurre.Events.SCPs.SCP096.addtarget(ev);
+                Qurre.Events.Invoke.Scp096.AddTarget(ev);
                 return ev.Allowed;
             }
             catch (System.Exception e)
@@ -32,12 +32,13 @@ namespace Qurre.Patches.Events.SCPs.SCP096
         {
             try
             {
-                if (__instance == null || __instance.Hub == null || info == null) return true;
+                if (__instance == null || __instance.Hub == null || info == null || info.RHub == null) return true;
                 API.Player player = API.Player.Get(__instance.Hub.gameObject);
                 API.Player target = API.Player.Get(info.RHub);
+                if (target == null) return true;
                 if ((player != null && player.Invisible) || (target != null && target.Invisible)) return false;
                 var ev = new AddTargetEvent(__instance, player, target);
-                Qurre.Events.SCPs.SCP096.addtarget(ev);
+                Qurre.Events.Invoke.Scp096.AddTarget(ev);
                 return ev.Allowed;
             }
             catch (System.Exception e)

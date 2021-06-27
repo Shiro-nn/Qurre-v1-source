@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -87,7 +86,7 @@ namespace Qurre.Patches.Events.Round
                 if (mtf_team > 0)
                     if (RoundSummary.escaped_ds == 0 && RoundSummary.escaped_scientists != 0) ev.LeadingTeam = (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.FacilityForces;
                     else ev.LeadingTeam = RoundSummary.escaped_ds != 0 ? (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.ChaosInsurgency : (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Anomalies;
-                Qurre.Events.Round.check(ev);
+                Qurre.Events.Invoke.Round.Check(ev);
                 instance.RoundSummary_roundEnded(ev.RoundEnd);
                 if(API.Round.ForceEnd) instance.RoundSummary_roundEnded(API.Round.ForceEnd);
                 if (instance.RoundSummary_roundEnded())
@@ -100,7 +99,7 @@ namespace Qurre.Patches.Events.Round
                     {
                         list.scps_except_zombies -= list.zombies;
                         var end = new RoundEndEvent(ev.LeadingTeam, list, timeToRoundRestart);
-                        Qurre.Events.Round.end(end);
+                        Qurre.Events.Invoke.Round.End(end);
                         instance.RpcShowRoundSummary(instance.classlistStart, end.ClassList, (LeadingTeam)end.LeadingTeam, RoundSummary.escaped_ds, RoundSummary.escaped_scientists, RoundSummary.kills_by_scp, end.ToRestart);
 
                         var dpercentage = (float)instance.classlistStart.class_ds == 0 ? 0 : RoundSummary.escaped_ds + list.class_ds / instance.classlistStart.class_ds;

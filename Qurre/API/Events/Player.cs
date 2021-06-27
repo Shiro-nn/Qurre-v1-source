@@ -18,13 +18,20 @@ namespace Qurre.API.Events
         public BanDetails Details { get; }
         public BanHandler.BanType Type { get; }
     }
-    public class BanEvent : KickEvent
+    public class BanEvent : EventArgs
     {
         private int duration;
+        private Player target;
+        private Player issuer;
+        private bool _allowed;
         public BanEvent(Player target, Player issuer, int duration, string reason, string fullMessage, bool allowed = true)
-            : base(target, issuer, reason, fullMessage, allowed)
         {
             Duration = duration;
+            Target = target;
+            Issuer = issuer;
+            Reason = reason;
+            FullMessage = fullMessage;
+            Allowed = allowed;
         }
         public int Duration
         {
@@ -33,6 +40,35 @@ namespace Qurre.API.Events
             {
                 if (duration == value) return;
                 duration = value;
+            }
+        }
+        public Player Target
+        {
+            get => target;
+            set
+            {
+                if (value == null || target == value) return;
+                target = value;
+            }
+        }
+        public Player Issuer
+        {
+            get => issuer;
+            set
+            {
+                if (value == null || issuer == value) return;
+                issuer = value;
+            }
+        }
+        public string Reason { get; set; }
+        public string FullMessage { get; set; }
+        public bool Allowed
+        {
+            get => _allowed;
+            set
+            {
+                if (_allowed == value) return;
+                _allowed = value;
             }
         }
     }
@@ -167,9 +203,17 @@ namespace Qurre.API.Events
         public Player Target { get; }
         public bool Allowed { get; set; }
     }
-    public class UnCuffEvent : CuffEvent
+    public class UnCuffEvent : EventArgs
     {
-        public UnCuffEvent(Player cuffer, Player target, bool allowed = true) : base(cuffer, target, allowed) { }
+        public UnCuffEvent(Player cuffer, Player target, bool allowed = true)
+        {
+            Cuffer = cuffer;
+            Target = target;
+            Allowed = allowed;
+        }
+        public Player Cuffer { get; }
+        public Player Target { get; }
+        public bool Allowed { get; set; }
     }
     public class DamageEvent : EventArgs
     {
@@ -317,22 +361,27 @@ namespace Qurre.API.Events
         public Player Player { get; }
         public Pickup Pickup { get; }
     }
-    public class PickupItemEvent : DropItemEvent
+    public class PickupItemEvent : EventArgs
     {
-        public PickupItemEvent(Player player, Pickup pickup, bool allowed = true) : base(player, pickup)
+        public PickupItemEvent(Player player, Pickup pickup, bool allowed = true)
         {
             Allowed = allowed;
+            Player = player;
+            Pickup = pickup;
         }
         public bool Allowed { get; set; }
+        public Player Player { get; }
+        public Pickup Pickup { get; }
     }
     public class JoinEvent : EventArgs
     {
         public JoinEvent(Player player) => Player = player;
         public Player Player { get; }
     }
-    public class LeaveEvent : JoinEvent
+    public class LeaveEvent : EventArgs
     {
-        public LeaveEvent(Player player) : base(player) { }
+        public LeaveEvent(Player player) => Player = player;
+        public Player Player { get; }
     }
     public class RechargeWeaponEvent : EventArgs
     {
@@ -424,20 +473,33 @@ namespace Qurre.API.Events
         public Player Player { get; }
         public ItemType Item { get; }
     }
-    public class MedicalUsingEvent : MedicalUsedEvent
+    public class MedicalUsingEvent : EventArgs
     {
-        public MedicalUsingEvent(Player player, ItemType item, float cooldown, bool allowed = true) : base(player, item)
+        public MedicalUsingEvent(Player player, ItemType item, float cooldown, bool allowed = true)
         {
             Cooldown = cooldown;
             Allowed = allowed;
+            Player = player;
+            Item = item;
         }
         public float Cooldown { get; set; }
         public bool Allowed { get; set; }
+        public Player Player { get; }
+        public ItemType Item { get; }
     }
-    public class MedicalStoppingEvent : MedicalUsingEvent
+    public class MedicalStoppingEvent : EventArgs
     {
-        public MedicalStoppingEvent(Player player, ItemType item, float cooldown, bool allowed = true) : base(player, item, cooldown, allowed) { }
-        public new float Cooldown => base.Cooldown;
+        public MedicalStoppingEvent(Player player, ItemType item, float cooldown, bool allowed = true)
+        {
+            Cooldown = cooldown;
+            Allowed = allowed;
+            Player = player;
+            Item = item;
+        }
+        public float Cooldown { get; set; }
+        public bool Allowed { get; set; }
+        public Player Player { get; }
+        public ItemType Item { get; }
     }
     public class SyncDataEvent : EventArgs
     {

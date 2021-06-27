@@ -3,7 +3,6 @@ using Mirror;
 using System;
 using UnityEngine;
 using static QurreModLoader.umm;
-
 namespace Qurre.Patches.etc
 {
     [HarmonyPatch(typeof(ConsumableAndWearableItems), "LateUpdate")]

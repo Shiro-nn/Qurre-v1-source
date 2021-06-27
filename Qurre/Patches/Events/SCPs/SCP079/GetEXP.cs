@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using UnityEngine;
 using Qurre.API.Events;
@@ -84,7 +83,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
                     default:
                         return false;
                 }
-                Qurre.Events.SCPs.SCP079.getEXP(ev);
+                Qurre.Events.Invoke.Scp079.GetEXP(ev);
                 if (ev.Allowed && ev.Amount > 0)
                 {
                     __instance.AddExperience(ev.Amount);

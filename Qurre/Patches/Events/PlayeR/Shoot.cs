@@ -24,7 +24,7 @@ namespace Qurre.Patches.Events.PlayeR
                 if (target != null) Target = Player.Get(target);
                 Player player = Player.Get(__instance.gameObject);
                 var ev = new ShootingEvent(Player.Get(__instance.gameObject), target, targetPos, player.ItemInHand.GetWeaponType());
-                Qurre.Events.Player.shooting(ev);
+                Qurre.Events.Invoke.Player.Shooting(ev);
                 return ev.Allowed;
             }
             catch (Exception e)

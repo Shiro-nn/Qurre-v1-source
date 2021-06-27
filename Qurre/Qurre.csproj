@@ -143,6 +143,12 @@
     <Compile Include="API\Controllers\Scp914.cs" />
     <Compile Include="API\ConfigManager.cs" />
     <Compile Include="Events\Alpha.cs" />
+    <Compile Include="Events\Invoke\Alpha.cs" />
+    <Compile Include="Events\Invoke\Server.cs" />
+    <Compile Include="Events\Invoke\SCPs.cs" />
+    <Compile Include="Events\Invoke\Round.cs" />
+    <Compile Include="Events\Invoke\Player.cs" />
+    <Compile Include="Events\Invoke\Map.cs" />
     <Compile Include="Events\modules\Etc.cs" />
     <Compile Include="Events\Player.cs" />
     <Compile Include="Events\Map.cs" />
@@ -150,7 +156,7 @@
     <Compile Include="Events\Round.cs" />
     <Compile Include="Events\Server.cs" />
     <Compile Include="Events\modules\Event.cs" />
-    <Compile Include="Events\modules\main.cs" />
+    <Compile Include="Events\modules\Main.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Patches\Controllers\CassieController.cs" />
     <Compile Include="Patches\Controllers\Scp914Controller.cs" />
@@ -169,6 +175,7 @@
     <Compile Include="Patches\Events\Player\Heal.cs" />
     <Compile Include="Patches\Events\Player\RadioUpdate.cs" />
     <Compile Include="Patches\Events\Player\Dead.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\Windup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\Blink.cs" />
     <Compile Include="Patches\Controllers\GeneratorController.cs" />
     <Compile Include="Patches\Controllers\LiftController.cs" />

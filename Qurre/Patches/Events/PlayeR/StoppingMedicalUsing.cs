@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
@@ -18,7 +17,7 @@ namespace Qurre.Patches.Events.PlayeR
                     if (__instance.usableItems[i].inventoryID == __instance.CAWI_hub().inventory.curItem && __instance.usableItems[i].cancelableTime > 0f)
                     {
                         var ev = new MedicalStoppingEvent(API.Player.Get(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
-                        Qurre.Events.Player.medicalStopping(ev);
+                        Qurre.Events.Invoke.Player.MedicalStopping(ev);
                         __instance.CAWI_cancel(ev.Allowed);
                     }
                 }

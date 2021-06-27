@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
 using Searching;
@@ -16,7 +15,7 @@ namespace Qurre.Patches.Events.PlayeR
                 var item = __instance.ItemSearchCompletor_TargetPickup();
                 if (item == null) return true;
                 var ev = new PickupItemEvent(API.Player.Get(__instance.ItemSearchCompletor_Hub().gameObject), item);
-                Qurre.Events.Player.pickupItem(ev);
+                Qurre.Events.Invoke.Player.PickupItem(ev);
                 if (!ev.Allowed) __instance.ItemSearchCompletor_TargetPickup().InUse = false;
                 return ev.Allowed;
             }

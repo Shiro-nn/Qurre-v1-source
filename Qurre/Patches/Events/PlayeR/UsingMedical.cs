@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using MEC;
 using Qurre.API.Events;
@@ -22,7 +21,7 @@ namespace Qurre.Patches.Events.PlayeR
                         __instance.usableCooldowns[i] <= 0.0)
                     {
                         var ev = new MedicalUsingEvent(API.Player.Get(__instance.gameObject), __instance.CAWI_hub().inventory.curItem, __instance.usableItems[i].animationDuration);
-                        Qurre.Events.Player.medicalUsing(ev);
+                        Qurre.Events.Invoke.Player.MedicalUsing(ev);
                         __instance.cooldown = ev.Cooldown;
                         if (ev.Allowed) Timing.RunCoroutine(__instance.UseMedicalItem(i), Segment.FixedUpdate);
                     }

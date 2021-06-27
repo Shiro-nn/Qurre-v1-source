@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 using Qurre.API.Events;
 using UnityEngine;
 namespace Qurre.Patches.Events.MAP
@@ -12,7 +11,7 @@ namespace Qurre.Patches.Events.MAP
             try
             {
                 var ev = new NewBloodEvent(API.Player.Get(__instance.gameObject), pos, type, f);
-                Qurre.Events.Map.newblood(ev);
+                Qurre.Events.Invoke.Map.NewBlood(ev);
                 pos = ev.Position;
                 type = ev.Type;
                 f = ev.Multiplier;
@@ -38,13 +37,13 @@ namespace Qurre.Patches.Events.MAP
                     var ev = new NewBloodEvent(API.Player.Get(__instance.gameObject), pos, bt, 1);
                     pos = ev.Position;
                     QurreModLoader.umm.Weapon_hub(__instance).characterClassManager.Classes.SafeGet(QurreModLoader.umm.Weapon_hub(__instance).characterClassManager.CurClass).bloodType = ev.Type;
-                    Qurre.Events.Map.newblood(ev);
+                    Qurre.Events.Invoke.Map.NewBlood(ev);
                     return ev.Allowed && Plugin.Config.GetBool("Qurre_spawn_blood", true);
                 }
                 else
                 {
                     var ev = new NewDecalEvent(API.Player.Get(__instance.gameObject), pos, rot, type);
-                    Qurre.Events.Map.newdecal(ev);
+                    Qurre.Events.Invoke.Map.NewDecal(ev);
                     pos = ev.Position;
                     rot = ev.Rotation;
                     type = ev.Type;

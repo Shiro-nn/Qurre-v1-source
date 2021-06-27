@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
 using UnityEngine;
@@ -13,7 +12,7 @@ namespace Qurre.Patches.Events.PlayeR
             try
             {
                 var ev = new HealEvent(API.Player.Get(__instance.gameObject), hp);
-                Qurre.Events.Player.heal(ev);
+                Qurre.Events.Invoke.Player.Heal(ev);
                 if (ev.Allowed)
                 {
                     float num = Mathf.Clamp(ev.Hp, 0f, __instance.maxHP - __instance.Health);

@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1118
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using LightContainmentZoneDecontamination;
@@ -28,7 +27,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                     if (type == PocketDimensionTeleport.PDTeleportType.Killer)
                     {
                         var ev = new PocketDimensionFailEscapeEvent(player, __instance);
-                        Qurre.Events.SCPs.SCP106.pocketdimensionfailescape(ev);
+                        Qurre.Events.Invoke.Scp106.PocketDimensionFailEscape(ev);
                         if (!ev.Allowed) return false;
                     }
                     player.Damage(9999, DamageTypes.Pocket);
@@ -56,7 +55,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                     pos.y += 2f;
                     if (player.Team == Team.SCP) type = PocketDimensionTeleport.PDTeleportType.Exit;
                     var ev = new PocketDimensionEscapeEvent(player, pos);
-                    Qurre.Events.SCPs.SCP106.pocketdimensionescape(ev);
+                    Qurre.Events.Invoke.Scp106.PocketDimensionEscape(ev);
                     if (!ev.Allowed) return false;
                     player.ReferenceHub.playerMovementSync.AddSafeTime(2f, false);
                     player.Position = pos;

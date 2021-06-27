@@ -24,7 +24,7 @@ namespace Qurre.Patches.Events.Map
                 else SeedSynchronizer.DebugInfo("Server has successfully loaded a seed from config: " + num.ToString(), MessageImportance.Normal, false);
                 __instance.Network_syncSeed = Mathf.Clamp(num, 1, int.MaxValue);
                 var ev = new SetSeedEvent(__instance.Network_syncSeed);
-                Qurre.Events.Map.setSeed(ev);
+                Qurre.Events.Invoke.Map.SetSeed(ev);
                 __instance.Network_syncSeed = ev.Seed;
                 return false;
             }

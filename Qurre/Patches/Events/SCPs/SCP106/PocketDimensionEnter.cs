@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using System.Linq;
 using CustomPlayerEffects;
 using HarmonyLib;
@@ -61,7 +60,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                             script.RpcGainExp(ExpGainType.PocketAssist, ccm.CurClass);
                     }
                     var ev = new PocketDimensionEnterEvent(API.Player.Get(ply), Vector3.down * 1998.5f);
-                    Qurre.Events.SCPs.SCP106.pocketdimensionenter(ev);
+                    Qurre.Events.Invoke.Scp106.PocketDimensionEnter(ev);
                     if (!ev.Allowed) return false;
                     ply.GetComponent<PlayerMovementSync>().OverridePosition(ev.Position, 0f, true);
                     __instance.GetComponent<PlayerStats>().HurtPlayer(new PlayerStats.HitInfo(40f,

@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using HarmonyLib;
+﻿using HarmonyLib;
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
@@ -26,7 +25,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                             CCM.CurClass != RoleType.Spectator && !CCM.GodMode)
                         {
                             var ev = new FemurBreakerEnterEvent(API.Player.Get(Stats.gameObject));
-                            Qurre.Events.SCPs.SCP106.femurbreakerenter(ev);
+                            Qurre.Events.Invoke.Scp106.FemurBreakerEnter(ev);
                             if (ev.Allowed)
                             {
                                 Stats.HurtPlayer(new PlayerStats.HitInfo(10000f, "WORLD", DamageTypes.Lure, 0), player);

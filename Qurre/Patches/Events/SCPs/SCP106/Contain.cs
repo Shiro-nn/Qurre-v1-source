@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1118
-using HarmonyLib;
+﻿using HarmonyLib;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
@@ -9,7 +8,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
         private static bool Prefix(CharacterClassManager __instance)
         {
             var ev = new ContainEvent(API.Player.Get(__instance.gameObject));
-            Qurre.Events.SCPs.SCP106.contain(ev);
+            Qurre.Events.Invoke.Scp106.Contain(ev);
             return ev.Allowed;
         }
     }

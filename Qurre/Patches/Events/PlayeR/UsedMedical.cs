@@ -1,5 +1,4 @@
-﻿#pragma warning disable CS0122
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.PlayeR
@@ -14,7 +13,7 @@ namespace Qurre.Patches.Events.PlayeR
                 if (healAnimation == (ConsumableAndWearableItems.HealAnimation)ConsumableAndWearableItems.HealAnimation.DequipMedicalItem)
                 {
                     var ev = new MedicalUsedEvent(API.Player.Get(__instance.gameObject), __instance.usableItems[mid].inventoryID);
-                    Qurre.Events.Player.medicalUsed(ev);
+                    Qurre.Events.Invoke.Player.MedicalUsed(ev);
                 }
             }
             catch (Exception e)

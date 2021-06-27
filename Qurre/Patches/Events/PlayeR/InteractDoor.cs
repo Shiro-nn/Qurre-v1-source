@@ -1,11 +1,8 @@
-﻿#pragma warning disable
-using System;
-using System.Linq;
+﻿using System;
 using HarmonyLib;
 using Interactables.Interobjects.DoorUtils;
 using Qurre.API;
 using Qurre.API.Events;
-using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.PlayeR
 {
@@ -41,7 +38,7 @@ namespace Qurre.Patches.Events.PlayeR
                     if (ply.characterClassManager.CurClass == RoleType.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.curItem, ply)) ev.Allowed = true;
                     else ev.Allowed = false;
                 }
-                Qurre.Events.Player.interactdoor(ev);
+                Qurre.Events.Invoke.Player.InteractDoor(ev);
                 if (ev.Allowed && Interact)
                 {
                     __instance.NetworkTargetState = !__instance.TargetState;

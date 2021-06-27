@@ -31,7 +31,7 @@ namespace Qurre.Patches.Events.PlayeR
                     if (duration > 0)
                     {
                         var ev = new BanEvent(targetPlayer, issuerPlayer, duration, reason, message);
-                        Qurre.Events.Player.ban(ev);
+                        Qurre.Events.Invoke.Player.Ban(ev);
                         duration = ev.Duration;
                         reason = ev.Reason;
                         message = ev.FullMessage;
@@ -92,7 +92,7 @@ namespace Qurre.Patches.Events.PlayeR
                     else if (duration == 0)
                     {
                         var ev = new KickEvent(targetPlayer, issuerPlayer, reason, message);
-                        Qurre.Events.Player.kick(ev);
+                        Qurre.Events.Invoke.Player.Kick(ev);
                         reason = ev.Reason;
                         message = ev.FullMessage;
                         if (!ev.Allowed) return false;

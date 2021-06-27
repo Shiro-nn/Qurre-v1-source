@@ -22,7 +22,7 @@ namespace Qurre.Patches.Controllers
 				component.NetworkPlayerVelo = velocity;
 				var ragdoll = new API.Controllers.Ragdoll(component);
 				var ev = new RagdollSpawnEvent(ragdollInfo.PlayerId == 0 ? null : API.Player.Get(ragdollInfo.PlayerId), API.Player.Get(__instance.gameObject), ragdoll);
-				Qurre.Events.Player.ragdollSpawn(ev);
+				Qurre.Events.Invoke.Player.RagdollSpawn(ev);
 				if (!ev.Allowed) ragdoll.Destroy();
 				return false;
 			}

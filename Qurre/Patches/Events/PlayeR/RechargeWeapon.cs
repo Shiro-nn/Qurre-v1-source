@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.PlayeR
@@ -21,7 +20,7 @@ namespace Qurre.Patches.Events.PlayeR
                     (double)__instance.weapons[__instance.curWeapon].maxAmmo)
                     return false;
                 var ev = new RechargeWeaponEvent(API.Player.Get(__instance.gameObject), animationOnly);
-                Qurre.Events.Player.rechargeWeapon(ev);
+                Qurre.Events.Invoke.Player.RechargeWeapon(ev);
                 return ev.Allowed;
             }
             catch (Exception e)

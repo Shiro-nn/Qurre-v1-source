@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System.Linq;
+﻿using System.Linq;
 using Scp914;
 using HarmonyLib;
 using Mirror;
@@ -8,7 +7,6 @@ using Qurre.API;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
 using System.Collections.Generic;
-
 namespace Qurre.Patches.Events.SCPs.SCP914
 {
     [HarmonyPatch(typeof(Scp914Machine), nameof(Scp914Machine.ProcessItems))]
@@ -42,13 +40,13 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                 foreach (Player pl in _players)
                 {
                     var _ev = new UpgradePlayerEvent(__instance, pl, __instance.knobState);
-                    Qurre.Events.SCPs.SCP914.upgradePlayer(_ev);
+                    Qurre.Events.Invoke.Scp914.UpgradePlayer(_ev);
                     if (!_ev.Allowed) _players.Remove(pl);
                 }
                 var _list_pick = __instance.Scp914_items();
                 if (_list_pick == null) _list_pick = new List<Pickup>();
                 var ev = new UpgradeEvent(__instance, _players, __instance.Scp914_items(), __instance.knobState);
-                Qurre.Events.SCPs.SCP914.upgrade(ev);
+                Qurre.Events.Invoke.Scp914.Upgrade(ev);
                 var players = ev.Players.Select(player => player.ClassManager).ToList();
                 __instance.MoveObjects(ev.Items, players);
                 try { if (ev.Allowed) __instance.UpgradeObjects(ev.Items, players); } catch { }

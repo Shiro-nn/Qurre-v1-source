@@ -2,7 +2,7 @@
 namespace Qurre.Patches.etc
 {
 	[HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.ReloadServerName))]
-	internal class ServerNamePatch
+	public class ServerNamePatch
 	{
 		internal static void Postfix()
 		{

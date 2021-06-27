@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System.Linq;
+﻿using System.Linq;
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
@@ -17,7 +16,7 @@ namespace Qurre.Patches.Events.MAP
                 int scpsLeft = Player.List.Where(x => x.Team == Team.SCP && x.Role != RoleType.Scp0492).Count();
                 string[] unitInformations = regular.Split('-');
                 var ev = new MTFAnnouncementEvent(scpsLeft, unitInformations[0], int.Parse(unitInformations[1]));
-                Qurre.Events.Map.mtfAnnouncement(ev);
+                Qurre.Events.Invoke.Map.MTFAnnouncement(ev);
                 regular = $"{ev.UnitName}-{ev.UnitNumber}";
                 return ev.Allowed;
             }

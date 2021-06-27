@@ -1,6 +1,6 @@
 ﻿using Qurre.API.Events;
 using Qurre.Events.modules;
-using static Qurre.Events.modules.main;
+using static Qurre.Events.modules.Main;
 namespace Qurre.Events
 {
     public static class Map
@@ -17,17 +17,17 @@ namespace Qurre.Events
         public static event AllEvents<DoorLockEvent> DoorLock;
         public static event AllEvents<DoorOpenEvent> DoorOpen;
         public static event AllEvents<UseLiftEvent> UseLift;
-        public static void lczdecon(LCZDeconEvent ev) => LCZDecon?.invoke(ev);
-        public static void announcementdecontamination(AnnouncementDecontaminationEvent ev) => AnnouncementDecontaminationZDecon?.invoke(ev);
-        public static void mtfAnnouncement(MTFAnnouncementEvent ev) => MTFAnnouncement?.invoke(ev);
-        public static void newblood(NewBloodEvent ev) => NewBlood?.invoke(ev);
-        public static void newdecal(NewDecalEvent ev) => NewDecal?.invoke(ev);
-        public static void generated() => Generated.invoke();
-        public static void grenadeexplode(GrenadeExplodeEvent ev) => GrenadeExplode?.invoke(ev);
-        public static void setSeed(SetSeedEvent ev) => SetSeed?.invoke(ev);
-        public static void doorDamage(DoorDamageEvent ev) => DoorDamage?.invoke(ev);
-        public static void doorLock(DoorLockEvent ev) => DoorLock?.invoke(ev);
-        public static void doorOpen(DoorOpenEvent ev) => DoorOpen?.invoke(ev);
-        public static void useLift(UseLiftEvent ev) => UseLift?.invoke(ev);
+        internal static void Invokes(LCZDeconEvent ev) => LCZDecon?.invoke(ev);
+        internal static void Invokes(AnnouncementDecontaminationEvent ev) => AnnouncementDecontaminationZDecon?.invoke(ev);
+        internal static void Invokes(MTFAnnouncementEvent ev) => MTFAnnouncement?.invoke(ev);
+        internal static void Invokes(NewBloodEvent ev) => NewBlood?.invoke(ev);
+        internal static void Invokes(NewDecalEvent ev) => NewDecal?.invoke(ev);
+        internal static void Invokes() => Generated.invoke();
+        internal static void Invokes(GrenadeExplodeEvent ev) => GrenadeExplode?.invoke(ev);
+        internal static void Invokes(SetSeedEvent ev) => SetSeed?.invoke(ev);
+        internal static void Invokes(DoorDamageEvent ev) => DoorDamage?.invoke(ev);
+        internal static void Invokes(DoorLockEvent ev) => DoorLock?.invoke(ev);
+        internal static void Invokes(DoorOpenEvent ev) => DoorOpen?.invoke(ev);
+        internal static void Invokes(UseLiftEvent ev) => UseLift?.invoke(ev);
     }
 }

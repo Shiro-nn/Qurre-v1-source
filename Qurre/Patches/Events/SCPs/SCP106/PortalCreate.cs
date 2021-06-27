@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1118
-using HarmonyLib;
+﻿using HarmonyLib;
 using UnityEngine;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
@@ -16,7 +15,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                     return false;
                 bool rayCastHit = Physics.Raycast(new Ray(__instance.transform.position, -__instance.transform.up), out RaycastHit raycastHit, 10f, __instance.teleportPlacementMask);
                 var ev = new PortalCreateEvent(API.Player.Get(__instance.gameObject), raycastHit.point - Vector3.up);
-                Qurre.Events.SCPs.SCP106.portalcreate(ev);
+                Qurre.Events.Invoke.Scp106.PortalCreate(ev);
                 Debug.DrawRay(__instance.transform.position, -__instance.transform.up, Color.red, 10f);
                 if (ev.Allowed && __instance.iAm106 && !__instance.goingViaThePortal && rayCastHit)
                     __instance.SetPortalPosition(ev.Position);

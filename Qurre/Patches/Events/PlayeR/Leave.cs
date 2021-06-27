@@ -1,10 +1,8 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
 using Qurre.API;
 using Mirror;
-
 namespace Qurre.Patches.Events.PlayeR
 {
     [HarmonyPatch(typeof(CustomNetworkManager), nameof(CustomNetworkManager.OnServerDisconnect), new[] { typeof(NetworkConnection) })]
@@ -19,7 +17,7 @@ namespace Qurre.Patches.Events.PlayeR
                 if (player == null || player.IsHost) return;
                 var ev = new LeaveEvent(player);
                 ServerConsole.AddLog($"Player {player.Nickname} ({player.UserId}) ({player?.Id}) disconnected", ConsoleColor.DarkMagenta);
-                Qurre.Events.Player.leave(ev);
+                Qurre.Events.Invoke.Player.Leave(ev);
             }
             catch (Exception e)
             {

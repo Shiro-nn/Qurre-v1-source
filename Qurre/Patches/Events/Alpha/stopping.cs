@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1118
-using System;
+﻿using System;
 using HarmonyLib;
 using Mirror;
 using Qurre.API.Events;
@@ -18,7 +17,7 @@ namespace Qurre.Patches.Events.Alpha
                 if (__instance.timeToDetonation <= 15.0 && disabler != null)
                     __instance.GetComponent<PlayerStats>().TargetAchieve(disabler.GetComponent<NetworkIdentity>().connectionToClient, "thatwasclose");
                 var ev = new AlphaStopEvent(API.Player.Get(disabler) ?? API.Server.Host);
-                Qurre.Events.Alpha.stopping(ev);
+                Qurre.Events.Invoke.Alpha.Stopping(ev);
                 return ev.Allowed && !API.Controllers.Alpha.Locked;
             }
             catch (System.Exception e)

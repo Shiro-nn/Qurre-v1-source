@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.PlayeR
             {
                 if (player == null) return false;
                 var ev = new KickedEvent(API.Player.Get(player), message);
-                Qurre.Events.Player.kicked(ev);
+                Qurre.Events.Invoke.Player.Kicked(ev);
                 message = ev.Reason;
                 return ev.Allowed;
             }

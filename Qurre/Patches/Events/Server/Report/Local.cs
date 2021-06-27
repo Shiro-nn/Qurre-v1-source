@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1118
-using HarmonyLib;
+﻿using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.Server.Report
@@ -15,7 +14,7 @@ namespace Qurre.Patches.Events.Server.Report
                 Player target = Player.Get(playerId);
                 if (target == null) return false;
                 var ev = new ReportLocalEvent(issuer, target, reason, notifyGm);
-                Qurre.Events.Server.Report.local(ev);
+                Qurre.Events.Invoke.Server.Report.Local(ev);
                 notifyGm = ev.GlobalReport;
                 return ev.Allowed;
             }

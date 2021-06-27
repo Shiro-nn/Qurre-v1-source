@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using Qurre.API;
 using HarmonyLib;
 using MEC;
@@ -21,14 +20,14 @@ namespace Qurre.Patches.Events.PlayeR
                     else Player.Dictionary[__instance.gameObject] = player;
                 }
                 catch { }
-                ServerConsole.AddLog($"Player {player?.Nickname} ({player?.UserId}) ({player?.Id}) connected. iP: {player?.IP}", ConsoleColor.Magenta);
+                ServerConsole.AddLog($"Player {player?.Nickname} ({player?.UserId}) ({player?.Id}) connected. iP: {player?.Ip}", ConsoleColor.Magenta);
                 Timing.CallDelayed(0.25f, () =>
                 {
                     if (player != null && player.Muted)
                         player.ClassManager.SetDirtyBit(1UL);
                 });
                 var ev = new JoinEvent(player);
-                Qurre.Events.Player.join(ev);
+                Qurre.Events.Invoke.Player.Join(ev);
             }
             catch (Exception e)
             {

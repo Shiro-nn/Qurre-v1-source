@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1118
-using System;
+﻿using System;
 using HarmonyLib;
 using Scp914;
 using Qurre.API.Events;
@@ -18,7 +17,7 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                     Math.Abs(Scp914Machine.singleton.curKnobCooldown) > 0.001f)
                     return false;
                 var ev = new ChangeKnobEvent(API.Player.Get(__instance.gameObject), Scp914Machine.singleton.knobState + 1);
-                Qurre.Events.SCPs.SCP914.changeknob(ev);
+                Qurre.Events.Invoke.Scp914.ChangeKnob(ev);
                 if (ev.Allowed)
                 {
                     Scp914Machine.singleton.NetworkknobState = ev.KnobSetting;

@@ -1,5 +1,4 @@
-﻿#pragma warning disable SA1313
-using System;
+﻿using System;
 using Grenades;
 using HarmonyLib;
 using Qurre.API.Events;
@@ -13,7 +12,7 @@ namespace Qurre.Patches.Events.PlayeR
             try
             {
                 var ev = new ThrowGrenadeEvent(API.Player.Get(__instance.gameObject), __instance, id, slowThrow, time);
-                Qurre.Events.Player.throwGrenade(ev);
+                Qurre.Events.Invoke.Player.ThrowGrenade(ev);
                 id = ev.Id;
                 slowThrow = ev.Slow;
                 time = ev.FuseTime;

@@ -188,7 +188,7 @@ namespace Qurre.API
 		public bool IsZooming => WeaponManager.NetworksyncZoomed;
 		public PlayerMovementState MoveState => AnimationController.MoveState;
 		public bool IsJumping => AnimationController.curAnim == 2;
-		public string IP => NetworkIdentity.connectionToClient.address;
+		public string Ip => NetworkIdentity.connectionToClient.address;
 		public NetworkConnection Connection => Scp079PlayerScript.connectionToClient;
 		public bool IsHost => ClassManager.IsHost;
 		public bool FriendlyFire { get; set; }
@@ -213,30 +213,35 @@ namespace Qurre.API
 			get => ClassManager.GodMode;
 			set => ClassManager.GodMode = value;
 		}
-		public float HP
+		public float Health
 		{
 			get => PlayerStats.Health;
 			set
 			{
 				PlayerStats.Health = value;
-				if (value > MaxHP) MaxHP = (int)value;
+				if (value > MaxHealth) MaxHealth = (int)value;
 			}
 		}
-		public int MaxHP
+		public int MaxHealth
 		{
 			get => PlayerStats.maxHP;
 			set => PlayerStats.maxHP = value;
 		}
-		public float AHP
+		public float ArtificialHealthDecay
+		{
+			get => PlayerStats.artificialHpDecay;
+			set => PlayerStats.artificialHpDecay = value;
+		}
+		public float ArtificialHealth
 		{
 			get => PlayerStats.unsyncedArtificialHealth;
 			set
 			{
 				PlayerStats.unsyncedArtificialHealth = value;
-				if (value > MaxAHP) MaxAHP = (int)value;
+				if (value > MaxArtificialHealth) MaxArtificialHealth = (int)value;
 			}
 		}
-		public int MaxAHP
+		public int MaxArtificialHealth
 		{
 			get => PlayerStats.maxArtificialHealth;
 			set => PlayerStats.maxArtificialHealth = value;
@@ -490,7 +495,7 @@ namespace Qurre.API
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
 			var ih = ItemInHand;
-			var _ahp = AHP;
+			var _ahp = ArtificialHealth;
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (newPosition == default) newPosition = Position;
 			if (newRotation == default) newRotation = Rotation;
@@ -501,7 +506,7 @@ namespace Qurre.API
 			SetRole(newRole, true);
 			MEC.Timing.CallDelayed(0.3f, () =>
 			{
-				AHP = _ahp;
+				ArtificialHealth = _ahp;
 				Rotation = newRotation;
 				Position = newPosition;
 				ItemInHand = ih;
