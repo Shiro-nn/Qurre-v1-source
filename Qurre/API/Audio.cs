@@ -4,7 +4,6 @@ namespace Qurre.API
 {
     public static class Audio
     {
-        private static ushort IdPlayer = 9000;
         ///<summary>
         ///<para>Plays music from the stream.</para>
         ///<para>format - WaveFormat(48000, 1) /*(.ogg)*/</para>
@@ -15,11 +14,7 @@ namespace Qurre.API
         /// </code>
         /// </example>
         ///</summary>
-        public static void Play(Stream stream, float volume)
-        {
-            IdPlayer++;
-            QurreModLoader.Audio.Play(stream, IdPlayer, volume);
-        }
+        public static void Play(Stream stream, float volume) => QurreModLoader.Audio.Play(stream, volume);
         ///<summary>
         ///<para>Plays music from a file.</para>
         ///<para>format - WaveFormat(48000, 1) /*(.ogg)*/</para>
@@ -30,11 +25,7 @@ namespace Qurre.API
         /// </code>
         /// </example>
         ///</summary>
-        public static void PlayFromFile(string path, float volume)
-        {
-            IdPlayer++;
-            QurreModLoader.Audio.Play(new FileStream(path, FileMode.Open), IdPlayer, volume);
-        }
+        public static void PlayFromFile(string path, float volume) => QurreModLoader.Audio.Play(new FileStream(path, FileMode.Open), volume);
         ///<summary>
         ///<para>Plays music from a link.</para>
         ///<para>format - WaveFormat(48000, 1) /*(.ogg)*/</para>
@@ -50,8 +41,7 @@ namespace Qurre.API
             using (var wc = new WebClient())
             {
                 byte[] byteData = wc.DownloadData(url);
-                IdPlayer++;
-                QurreModLoader.Audio.Play(new MemoryStream(byteData), IdPlayer, volume);
+                QurreModLoader.Audio.Play(new MemoryStream(byteData), volume);
             }
         }
     }

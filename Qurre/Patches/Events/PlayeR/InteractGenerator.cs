@@ -24,28 +24,38 @@ namespace Qurre.Patches.Events.PlayeR
 				{
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Door:
 						bool boolean = true;
-						switch (__instance.isDoorOpen)
+                        if (__instance.GetGenerator().Locked)
 						{
-							case false:
-								if (player.Inventory.curItem > ItemType.KeycardJanitor)
-								{
-									string[] permissions = player.Inventory.GetItemByID(player.Inventory.curItem).permissions;
-									for (int i = 0; i < permissions.Length; i++)
-										if (permissions[i] == "ARMORY_LVL_2" || player.BypassMode)
-											boolean = true;
-								}
-								var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor, boolean);
-								Qurre.Events.Invoke.Player.InteractGenerator(ev1);
-								boolean = ev1.Allowed;
-								break;
-							case true:
-								var ev2 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.CloseDoor);
-								Qurre.Events.Invoke.Player.InteractGenerator(ev2);
-								boolean = ev2.Allowed;
-								break;
+							if (player.Inventory.curItem > ItemType.KeycardJanitor)
+							{
+								string[] permissions = player.Inventory.GetItemByID(player.Inventory.curItem).permissions;
+								for (int i = 0; i < permissions.Length; i++)
+									if (permissions[i] == "ARMORY_LVL_2" || player.BypassMode)
+										boolean = true;
+							}
+							var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.Unlocked, boolean);
+							Qurre.Events.Invoke.Player.InteractGenerator(ev1);
+							if (ev1.Allowed) __instance.GetGenerator().Locked = false;
+							else __instance.RpcDenied();
 						}
-						if (boolean) __instance.OpenClose(person);
-						else __instance.RpcDenied();
+                        else
+						{
+							switch (__instance.isDoorOpen)
+							{
+								case false:
+									var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor);
+									Qurre.Events.Invoke.Player.InteractGenerator(ev1);
+									boolean = ev1.Allowed;
+									break;
+								case true:
+									var ev2 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.CloseDoor);
+									Qurre.Events.Invoke.Player.InteractGenerator(ev2);
+									boolean = ev2.Allowed;
+									break;
+							}
+							if (boolean) __instance.OpenClose(person);
+							else __instance.RpcDenied();
+						}
 						break;
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Tablet:
 						if (__instance.isTabletConnected || !__instance.isDoorOpen || __instance.Generator_localTime() <= 0.0 || Generator079.mainGenerator.forcedOvercharge)

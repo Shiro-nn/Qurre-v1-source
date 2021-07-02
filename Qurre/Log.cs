@@ -37,8 +37,8 @@ namespace Qurre
 			ServerConsole.AddLog($"[{prefix}] [{assembly.GetName().Name}] {message}", color);
 		}
 		internal static void LogTxt(object message)
-        {
-            if (Logging)
+		{
+			if (Logging)
 			{
 				if (!Directory.Exists(PluginManager.LogsDirectory))
 				{
@@ -51,7 +51,7 @@ namespace Qurre
 			}
 		}
 		internal static void AllLogsTxt(object message)
-        {
+		{
 			if (AllLogging)
 			{
 				if (!Directory.Exists(PluginManager.LogsDirectory))

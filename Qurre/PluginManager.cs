@@ -13,7 +13,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 5, 1);
+		public static Version Version { get; } = new Version(1, 5, 2);
 		private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -24,7 +24,7 @@ namespace Qurre
 		public static string ManagedAssembliesDirectory { get; private set; } = Path.Combine(Path.Combine(Environment.CurrentDirectory, "SCPSL_Data"), "Managed");
 		public static string ConfigsPath { get; internal set; }
 		private static Harmony hInstance;
-		public static IEnumerator<float> LoadPlugins()
+		internal static IEnumerator<float> LoadPlugins()
 		{
 			if (!Directory.Exists(PluginsDirectory))
 			{
