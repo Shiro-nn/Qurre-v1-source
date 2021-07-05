@@ -3,10 +3,10 @@ using Mirror;
 using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.ApplyProperties))]
-    internal class Spawn
+    internal static class Spawn
     {
         private static bool Prefix(CharacterClassManager __instance, bool lite = false, bool escape = false)
         {

@@ -2,7 +2,7 @@
 using HarmonyLib;
 using Qurre.API.Events;
 using UnityEngine;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.CallCmdSyncData))]
     internal static class SyncData

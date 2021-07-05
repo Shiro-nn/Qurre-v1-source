@@ -6,7 +6,7 @@ using static QurreModLoader.umm;
 namespace Qurre.Patches.Controllers
 {
 	[HarmonyPatch(typeof(RagdollManager), nameof(RagdollManager.SpawnRagdoll))]
-	internal class RagdollController
+	internal static class RagdollController
 	{
 		private static bool Prefix(RagdollManager __instance, Vector3 pos, Quaternion rot, Vector3 velocity, int classId, PlayerStats.HitInfo ragdollInfo, bool allowRecall, string ownerID, string ownerNick, int playerId)
 		{

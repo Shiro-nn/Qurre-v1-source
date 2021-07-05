@@ -3,7 +3,7 @@ using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.HurtPlayer))]
     internal static class Damage

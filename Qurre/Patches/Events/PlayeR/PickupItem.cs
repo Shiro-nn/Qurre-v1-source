@@ -3,7 +3,7 @@ using HarmonyLib;
 using Qurre.API.Events;
 using Searching;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(ItemSearchCompletor), nameof(ItemSearchCompletor.Complete))]
     internal static class PickupItem

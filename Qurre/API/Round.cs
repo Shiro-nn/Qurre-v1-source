@@ -19,8 +19,8 @@ namespace Qurre.API
         public static int ActiveGenerators { get; internal set; } = 0;
         public static float NextRespawn
         {
-            get => rm._timeForNextSequence() - rm._stopwatch().Elapsed.Seconds;
-            set => rm._timeForNextSequence(value + rm._stopwatch().Elapsed.Seconds);
+            get => rm._timeForNextSequence() - (float)rm._stopwatch().Elapsed.TotalSeconds;
+            set => rm._timeForNextSequence(value + (float)rm._stopwatch().Elapsed.TotalSeconds);
         }
         public static bool Started => RoundSummary.RoundInProgress();
         public static bool Ended => rs.RoundSummary_roundEnded();

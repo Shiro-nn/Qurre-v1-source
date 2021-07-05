@@ -2,7 +2,7 @@
 using Assets._Scripts.Dissonance;
 using HarmonyLib;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(DissonanceUserSetup), nameof(DissonanceUserSetup.CallCmdAltIsActive))]
     internal static class Speak

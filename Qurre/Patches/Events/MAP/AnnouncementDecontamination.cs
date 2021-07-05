@@ -2,7 +2,7 @@
 using LightContainmentZoneDecontamination;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.MAP
+namespace Qurre.Patches.Events.Map
 {
     [HarmonyPatch(typeof(DecontaminationController), nameof(DecontaminationController.UpdateSpeaker))]
     internal static class AnnouncementDecontamination

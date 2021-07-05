@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Qurre.API.Events;
 using Qurre.Events.Invoke;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.CallCmdSetUnic))]
     internal static class ItemChange

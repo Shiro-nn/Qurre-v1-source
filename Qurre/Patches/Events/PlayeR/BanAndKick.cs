@@ -5,7 +5,7 @@ using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(BanPlayer), nameof(BanPlayer.BanUser), new[] { typeof(GameObject), typeof(int), typeof(string), typeof(string), typeof(bool) })]
     internal static class BanAndKick

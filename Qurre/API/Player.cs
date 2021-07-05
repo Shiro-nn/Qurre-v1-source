@@ -18,7 +18,10 @@ namespace Qurre.API
 		private ReferenceHub rh;
 		private GameObject go;
 		private string ui;
-		private string tag = "";
+		private string _tag = "";
+		public Radio radio;
+		public MicroHID microHID;
+		public Escape escape;
 		public Player(ReferenceHub RH)
 		{
 			rh = RH;
@@ -38,8 +41,7 @@ namespace Qurre.API
 			get => rh;
 			private set
 			{
-				if (value == null) throw new NullReferenceException("Player's ReferenceHub cannot be null!");
-				rh = value;
+                rh = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null.");
 				go = value.gameObject;
 				ui = value.characterClassManager.UserId;
 			}
@@ -59,6 +61,9 @@ namespace Qurre.API
 				else return rh.gameObject;
 			}
 		}
+		public Radio Radio { get { if (radio == null) { radio = GameObject.GetComponent<Radio>(); } return radio; } }
+		public MicroHID MicroHID { get { if (microHID == null) { microHID = GameObject.GetComponent<MicroHID>(); } return microHID; } }
+		public Escape Escape { get { if (escape == null) { escape = ClassManager.GetComponent<Escape>(); } return escape; } }
 		public AmmoBox Ammo => rh.ammoBox;
 		public HintDisplay HintDisplay => rh.hints;
 		public Transform CameraTransform => rh.PlayerCameraReference;
@@ -76,8 +81,8 @@ namespace Qurre.API
 		public NicknameSync NicknameSync => rh.nicknameSync;
 		public string Tag
 		{
-			get => tag;
-			set => tag = value;
+			get => _tag;
+			set => _tag = value;
 		}
 		public int Id
 		{
@@ -115,6 +120,19 @@ namespace Qurre.API
 		{
 			get => ServerRoles.OverwatchEnabled();
 			set => ServerRoles.CallTargetSetOverwatch(NetworkIdentity.connectionToClient, value);
+		}
+		public Player Cuffer
+		{
+			get => CufferId == -1 && ReferenceHub.handcuffs.NetworkForceCuff ? Server.Host : Get(CufferId);
+			set
+			{
+				if (value == null)
+				{
+					CufferId = -1;
+					return;
+				}
+				CufferId = value.Id;
+			}
 		}
 		public int CufferId
 		{
@@ -184,9 +202,14 @@ namespace Qurre.API
 			get => ClassManager.CurClass;
 			set => SetRole(value);
 		}
+		public Fraction Fraction => ClassManager.Fraction;
 		public bool IsReloading => WeaponManager.IsReloading();
 		public bool IsZooming => WeaponManager.NetworksyncZoomed;
-		public PlayerMovementState MoveState => AnimationController.MoveState;
+		public PlayerMovementState MoveState
+		{
+			get => (PlayerMovementState)AnimationController.Network_curMoveState;
+			set => AnimationController.Network_curMoveState = (byte)value;
+		}
 		public bool IsJumping => AnimationController.curAnim == 2;
 		public string Ip => NetworkIdentity.connectionToClient.address;
 		public NetworkConnection Connection => Scp079PlayerScript.connectionToClient;
@@ -664,11 +687,6 @@ namespace Qurre.API
 		public void PlayNeckSnapSound() => rh.GetComponent<Scp173PlayerScript>().CallRpcSyncAudio();
 		public void PlayFallSound() => rh.falldamage.CallRpcDoSound();
 		public void Redirect(float timeOffset, ushort port) => PlayerStats.CallRpcRoundrestartRedirect(timeOffset, port);
-		public Vector3 Get106Portal()
-		{
-			if (!rh.GetComponent<Scp106PlayerScript>().iAm106) return Vector3.zero;
-			return rh.GetComponent<Scp106PlayerScript>().NetworkportalPosition;
-		}
 		public void PlayReloadAnimation(sbyte weapon = 0) => WeaponManager.CallRpcReload(weapon);
 		public void Play106TeleportAnimation() => rh.scp106PlayerScript.CallRpcTeleportAnimation();
 		public void Play106ContainAnimation() => rh.scp106PlayerScript.CallRpcContainAnimation();
@@ -726,6 +744,83 @@ namespace Qurre.API
 				default: return Side.NONE;
 			}
 		}
+		internal void CheckEscape()
+		{
+			RoleType newRole = RoleType.None;
+			var changeTeam = false;
+
+			if (Handcuffs.ForceCuff && CharacterClassManager.ForceCuffedChangeTeam)
+				changeTeam = true;
+
+			if (IsCuffed && CharacterClassManager.CuffedChangeTeam)
+			{
+				switch (Role)
+				{
+					case RoleType.Scientist when Cuffer.Fraction == Fraction.FoundationEnemy:
+						changeTeam = true;
+						break;
+
+					case RoleType.ClassD when Cuffer.Fraction == Fraction.FoundationStaff:
+						changeTeam = true;
+						break;
+				}
+			}
+
+			switch (Role)
+			{
+				case RoleType.ClassD when changeTeam:
+					newRole = RoleType.NtfCadet;
+					break;
+
+				case RoleType.ClassD:
+				case RoleType.Scientist when changeTeam:
+					newRole = RoleType.ChaosInsurgency;
+					break;
+
+				case RoleType.Scientist:
+					newRole = RoleType.NtfScientist;
+					break;
+			}
+			var ev = new Events.EscapeEvent(this, newRole);
+			Qurre.Events.Invoke.Player.Escape(ev);
+			if (!ev.Allowed) return;
+			newRole = ev.NewRole;
+
+			var isClassD = Role == RoleType.ClassD;
+
+			if (newRole != RoleType.None) ClassManager.SetPlayersClass(newRole, GameObject, false, true);
+			else return;
+
+			Escape.TargetShowEscapeMessage(Connection, isClassD, changeTeam);
+
+			var tickets = Respawning.RespawnTickets.Singleton;
+			switch (Team)
+			{
+				case Team.MTF when changeTeam:
+					RoundSummary.escaped_scientists++;
+					tickets.GrantTickets(Respawning.SpawnableTeamType.NineTailedFox,
+						GameCore.ConfigFile.ServerConfig.GetInt("respawn_tickets_mtf_classd_cuffed_count", 1), false);
+					break;
+
+				case Team.MTF:
+					RoundSummary.escaped_scientists++;
+					tickets.GrantTickets(Respawning.SpawnableTeamType.NineTailedFox,
+						GameCore.ConfigFile.ServerConfig.GetInt("respawn_tickets_mtf_scientist_count", 1), false);
+					break;
+
+				case Team.CHI when changeTeam:
+					RoundSummary.escaped_ds++;
+					tickets.GrantTickets(Respawning.SpawnableTeamType.NineTailedFox,
+						GameCore.ConfigFile.ServerConfig.GetInt("respawn_tickets_ci_scientist_cuffed_count", 1), false);
+					break;
+
+				case Team.CHI:
+					RoundSummary.escaped_ds++;
+					tickets.GrantTickets(Respawning.SpawnableTeamType.NineTailedFox,
+						GameCore.ConfigFile.ServerConfig.GetInt("respawn_tickets_ci_classd_count", 1), false);
+					break;
+			}
+		}
 		public void TeleportToRoom(RoomType room)
 		{
 			Vector3 roompos = Extensions.GetRoom(room).Position + Vector3.up * 2;
@@ -745,37 +840,6 @@ namespace Qurre.API
 		{
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
-		}
-
-		[Obsolete("Use Hp")]
-		public float Health
-		{
-			get => Hp;
-			set => Hp = value;
-		}
-		[Obsolete("Use MaxHp")]
-		public int MaxHealth
-		{
-			get => MaxHp;
-			set => MaxHp = value;
-		}
-		[Obsolete("Use AhpDecay")]
-		public float ArtificialHealthDecay
-		{
-			get => AhpDecay;
-			set => AhpDecay = value;
-		}
-		[Obsolete("Use Ahp")]
-		public float ArtificialHealth
-		{
-			get => Ahp;
-			set => Ahp = value;
-		}
-		[Obsolete("Use MaxAhp")]
-		public int MaxArtificialHealth
-		{
-			get => MaxAhp;
-			set => MaxAhp = value;
 		}
 	}
 }

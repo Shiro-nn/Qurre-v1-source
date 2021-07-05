@@ -12,8 +12,6 @@
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,6 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>qurre_ol.ico</ApplicationIcon>
@@ -39,13 +39,13 @@
     <Reference Include="0Harmony">
       <HintPath>..\lib\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp.dll</HintPath>
-    </Reference>
     <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp_publicized, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="DissonanceVoip, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -163,6 +163,8 @@
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
     <Compile Include="Patches\etc\Audio.cs" />
+    <Compile Include="Patches\etc\EscapeFix.cs" />
+    <Compile Include="Patches\etc\Scale.cs" />
     <Compile Include="Patches\etc\Invisible.cs" />
     <Compile Include="Patches\etc\Translation.cs" />
     <Compile Include="Patches\etc\MaxHpFix.cs" />
@@ -172,9 +174,11 @@
     <Compile Include="Patches\Events\Map\DoorLock.cs" />
     <Compile Include="Patches\Events\Map\DoorDamage.cs" />
     <Compile Include="Patches\Events\Map\SetSeed.cs" />
-    <Compile Include="Patches\Events\Player\Heal.cs" />
-    <Compile Include="Patches\Events\Player\RadioUpdate.cs" />
-    <Compile Include="Patches\Events\Player\Dead.cs" />
+    <Compile Include="Patches\Events\player\UseRadio.cs" />
+    <Compile Include="Patches\Events\player\UsingMicroHid.cs" />
+    <Compile Include="Patches\Events\player\Heal.cs" />
+    <Compile Include="Patches\Events\player\RadioUpdate.cs" />
+    <Compile Include="Patches\Events\player\Dead.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\Windup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\Blink.cs" />
     <Compile Include="Patches\Controllers\GeneratorController.cs" />
@@ -188,41 +192,41 @@
     <Compile Include="Patches\Events\Alpha\Stopping.cs" />
     <Compile Include="Patches\Events\Alpha\StaringByServer.cs" />
     <Compile Include="Patches\Events\Alpha\Starting.cs" />
-    <Compile Include="Patches\Events\Alpha\detonate.cs" />
+    <Compile Include="Patches\Events\Alpha\Detonate.cs" />
     <Compile Include="Patches\Events\Map\AnnouncementDecontamination.cs" />
     <Compile Include="Patches\Events\Map\NewBlood.cs" />
     <Compile Include="Patches\Events\Map\GrenadeExplode.cs" />
     <Compile Include="Patches\Events\Map\MTFAnnouncement.cs" />
     <Compile Include="Patches\Events\Map\LCZDecontamination.cs" />
-    <Compile Include="Patches\Events\Player\Banned.cs" />
-    <Compile Include="Patches\Events\Player\BanAndKick.cs" />
-    <Compile Include="Patches\Events\Player\Spawn.cs" />
-    <Compile Include="Patches\Events\Player\Speak.cs" />
-    <Compile Include="Patches\Events\Player\InteractGenerator.cs" />
-    <Compile Include="Patches\Events\Player\TeslaTrigger.cs" />
-    <Compile Include="Patches\Events\Player\ThrowGrenade.cs" />
-    <Compile Include="Patches\Events\Player\SyncData.cs" />
-    <Compile Include="Patches\Events\Player\UsedMedical.cs" />
-    <Compile Include="Patches\Events\Player\UsingMedical.cs" />
-    <Compile Include="Patches\Events\Player\StoppingMedicalUsing.cs" />
-    <Compile Include="Patches\Events\Player\Shoot.cs" />
-    <Compile Include="Patches\Events\Player\UnCuff.cs" />
-    <Compile Include="Patches\Events\Player\RechargeWeapon.cs" />
-    <Compile Include="Patches\Events\Player\PickupItem.cs" />
-    <Compile Include="Patches\Events\Player\Leave.cs" />
-    <Compile Include="Patches\Events\Player\Kick.cs" />
-    <Compile Include="Patches\Events\Player\Join.cs" />
-    <Compile Include="Patches\Events\Player\DropItem.cs" />
-    <Compile Include="Patches\Events\Player\IcomSpeak.cs" />
-    <Compile Include="Patches\Events\Player\InteractLocker.cs" />
-    <Compile Include="Patches\Events\Player\InteractLift.cs" />
-    <Compile Include="Patches\Events\Player\InteractDoor.cs" />
-    <Compile Include="Patches\Events\Player\Interact.cs" />
-    <Compile Include="Patches\Events\Player\Damage.cs" />
-    <Compile Include="Patches\Events\Player\Cuff.cs" />
-    <Compile Include="Patches\Events\Player\RoleChange.cs" />
-    <Compile Include="Patches\Events\Player\ItemChange.cs" />
-    <Compile Include="Patches\Events\Player\GroupChange.cs" />
+    <Compile Include="Patches\Events\player\Banned.cs" />
+    <Compile Include="Patches\Events\player\BanAndKick.cs" />
+    <Compile Include="Patches\Events\player\Spawn.cs" />
+    <Compile Include="Patches\Events\player\Speak.cs" />
+    <Compile Include="Patches\Events\player\InteractGenerator.cs" />
+    <Compile Include="Patches\Events\player\TeslaTrigger.cs" />
+    <Compile Include="Patches\Events\player\ThrowGrenade.cs" />
+    <Compile Include="Patches\Events\player\SyncData.cs" />
+    <Compile Include="Patches\Events\player\UsedMedical.cs" />
+    <Compile Include="Patches\Events\player\UsingMedical.cs" />
+    <Compile Include="Patches\Events\player\StoppingMedicalUsing.cs" />
+    <Compile Include="Patches\Events\player\Shoot.cs" />
+    <Compile Include="Patches\Events\player\UnCuff.cs" />
+    <Compile Include="Patches\Events\player\RechargeWeapon.cs" />
+    <Compile Include="Patches\Events\player\PickupItem.cs" />
+    <Compile Include="Patches\Events\player\Leave.cs" />
+    <Compile Include="Patches\Events\player\Kick.cs" />
+    <Compile Include="Patches\Events\player\Join.cs" />
+    <Compile Include="Patches\Events\player\DropItem.cs" />
+    <Compile Include="Patches\Events\player\IcomSpeak.cs" />
+    <Compile Include="Patches\Events\player\InteractLocker.cs" />
+    <Compile Include="Patches\Events\player\InteractLift.cs" />
+    <Compile Include="Patches\Events\player\InteractDoor.cs" />
+    <Compile Include="Patches\Events\player\Interact.cs" />
+    <Compile Include="Patches\Events\player\Damage.cs" />
+    <Compile Include="Patches\Events\player\Cuff.cs" />
+    <Compile Include="Patches\Events\player\RoleChange.cs" />
+    <Compile Include="Patches\Events\player\ItemChange.cs" />
+    <Compile Include="Patches\Events\player\GroupChange.cs" />
     <Compile Include="Patches\Events\Round\TeamRespawn.cs" />
     <Compile Include="Patches\Events\Round\Restart.cs" />
     <Compile Include="Patches\Events\Round\Check.cs" />

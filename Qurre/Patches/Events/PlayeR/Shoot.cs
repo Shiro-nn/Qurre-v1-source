@@ -4,7 +4,7 @@ using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(WeaponManager), nameof(WeaponManager.CallCmdShoot))]
     internal static class Shoot

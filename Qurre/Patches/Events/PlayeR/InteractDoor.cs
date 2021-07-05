@@ -4,7 +4,7 @@ using Interactables.Interobjects.DoorUtils;
 using Qurre.API;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.ServerInteract), new Type[] { typeof(ReferenceHub), typeof(byte) })]
     internal static class InteractDoor

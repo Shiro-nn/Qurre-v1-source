@@ -43,6 +43,8 @@ namespace Qurre.Events
         public static event AllEvents<SpawnEvent> Spawn;
         public static event AllEvents<RadioUpdateEvent> RadioUpdate;
         public static event AllEvents<TransmitPlayerDataEvent> TransmitPlayerData;
+        public static event AllEvents<MicroHidUsingEvent> MicroHidUsing;
+        public static event AllEvents<RadioUseEvent> RadioUse;
         internal static void Invokes(BannedEvent ev) => Banned.invoke(ev);
         internal static void Invokes(BanEvent ev) => Ban.invoke(ev);
         internal static void Invokes(KickEvent ev) => Kick.invoke(ev);
@@ -81,5 +83,7 @@ namespace Qurre.Events
         internal static void Invokes(SpawnEvent ev) => Spawn.invoke(ev);
         internal static void Invokes(RadioUpdateEvent ev) => RadioUpdate.invoke(ev);
         internal static void Invokes(TransmitPlayerDataEvent ev) => TransmitPlayerData.invoke(ev);
+        internal static void Invokes(MicroHidUsingEvent ev) => MicroHidUsing.invoke(ev);
+        internal static void Invokes(RadioUseEvent ev) => RadioUse.invoke(ev);
     }
 }

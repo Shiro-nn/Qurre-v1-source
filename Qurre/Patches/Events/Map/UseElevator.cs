@@ -5,7 +5,7 @@ using System;
 namespace Qurre.Patches.Events.Map
 {
 	[HarmonyPatch(typeof(Lift), "UseLift")]
-	public class UseElevator
+	internal static class UseElevator
 	{
 		private static bool Prefix(Lift __instance, ref bool __result)
 		{

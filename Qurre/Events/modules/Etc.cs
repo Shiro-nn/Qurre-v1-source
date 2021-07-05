@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Dissonance.Config;
 using Dissonance;
 using Dissonance.Networking.Client;
+using UnityEngine;
 namespace Qurre.Events.modules
 {
     internal class Etc
@@ -18,6 +19,7 @@ namespace Qurre.Events.modules
             Round.WaitingForPlayers += WaitingForPlayers;
             Player.RoleChange += ChangeRole;
             Round.Restart += RoundRestart;
+            Player.SyncData += SyncData;
             Server.SendingRA += FixRaBc;
             Map.DoorLock += Fix079;
             MEC.Timing.RunCoroutine(UpdateAudioClient());
@@ -74,6 +76,11 @@ namespace Qurre.Events.modules
                     }
                 }
             }
+        }
+        private static void SyncData(SyncDataEvent ev)
+        {
+            if (ev.Player.Escape != null && Vector3.Distance(ev.Player.Position, ev.Player.Escape.worldPosition) < Escape.radius)
+                ev.Player.CheckEscape();
         }
         private static void FixRaBc(SendingRAEvent ev)
         {

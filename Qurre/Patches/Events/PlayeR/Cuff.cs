@@ -4,7 +4,7 @@ using HarmonyLib;
 using Qurre.API.Events;
 using UnityEngine;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(Handcuffs), nameof(Handcuffs.CallCmdCuffTarget))]
     internal static class Cuff

@@ -3,7 +3,7 @@ using HarmonyLib;
 using MEC;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(ConsumableAndWearableItems), nameof(ConsumableAndWearableItems.CallCmdUseMedicalItem))]
     internal static class UsingMedical

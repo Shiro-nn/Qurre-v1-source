@@ -1,17 +1,18 @@
 ﻿using HarmonyLib;
 using Qurre.API.Events;
 using Qurre.API.Objects;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(Radio), nameof(Radio.CallCmdUpdatePreset))]
     internal static class RadioUpdate
     {
-        private static bool Prefix(Radio __instance, byte preset)
+        private static bool Prefix(Radio __instance, ref byte preset)
         {
             try
             {
-                var ev = new RadioUpdateEvent(API.Player.Get(__instance.gameObject), (RadioStatus)preset);
+                var ev = new RadioUpdateEvent(API.Player.Get(__instance.gameObject), __instance, (RadioStatus)preset);
                 Qurre.Events.Invoke.Player.RadioUpdate(ev);
+                preset = (byte)ev.ChangeTo;
                 return ev.Allowed;
             }
             catch (System.Exception e)

@@ -2,7 +2,7 @@
 using Grenades;
 using HarmonyLib;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(GrenadeManager), nameof(GrenadeManager.CallCmdThrowGrenade))]
     internal static class ThrowGrenade

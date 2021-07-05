@@ -8,7 +8,11 @@ namespace Qurre
 		public virtual string Developer { get; } = "";
 		public virtual string Name { get; } = "";
 		public virtual Version Version { get; } = new Version(1, 0, 0);
-		public virtual Version NeededQurreVersion { get; } = new Version(1, 5, 0);
+		public virtual Version NeededQurreVersion { get; } = new Version(1, 0, 0);
+		///<summary>
+		///<para>Plugin load priority.</para>
+		///<para>The higher the number, the earlier the plugin will load.</para>
+		///</summary>
 		public virtual int Priority { get; } = 0;
 		public abstract void Enable();
 		public abstract void Disable();

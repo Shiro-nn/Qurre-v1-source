@@ -3,7 +3,7 @@ using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
 using Respawning.NamingRules;
-namespace Qurre.Patches.Events.MAP
+namespace Qurre.Patches.Events.Map
 {
     [HarmonyPatch(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.PlayEntranceAnnouncement))]
     internal static class MTFAnnouncement

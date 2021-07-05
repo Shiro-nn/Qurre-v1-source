@@ -4,7 +4,7 @@ using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP096
 {
     [HarmonyPatch(typeof(PlayableScps.Scp096), nameof(PlayableScps.Scp096.AddTarget))]
-    static class AddTargetLook
+    internal static class AddTargetLook
     {
         public static bool Prefix(PlayableScps.Scp096 __instance, GameObject target)
         {
@@ -26,7 +26,7 @@ namespace Qurre.Patches.Events.SCPs.SCP096
         }
     }
     [HarmonyPatch(typeof(PlayableScps.Scp096), nameof(PlayableScps.Scp096.OnDamage))]
-    static class AddTargetShoot
+    internal static class AddTargetShoot
     {
         public static bool Prefix(PlayableScps.Scp096 __instance, PlayerStats.HitInfo info)
         {

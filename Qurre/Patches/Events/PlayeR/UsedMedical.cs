@@ -1,7 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(ConsumableAndWearableItems), nameof(ConsumableAndWearableItems.SendRpc))]
     internal static class UsedMedical

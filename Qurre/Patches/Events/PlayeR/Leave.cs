@@ -3,7 +3,7 @@ using HarmonyLib;
 using Qurre.API.Events;
 using Qurre.API;
 using Mirror;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(CustomNetworkManager), nameof(CustomNetworkManager.OnServerDisconnect), new[] { typeof(NetworkConnection) })]
     internal static class Leave

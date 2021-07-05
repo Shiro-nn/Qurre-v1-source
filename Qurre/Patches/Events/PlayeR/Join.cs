@@ -3,7 +3,7 @@ using Qurre.API;
 using HarmonyLib;
 using MEC;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkIsVerified), MethodType.Setter)]
     internal static class Join

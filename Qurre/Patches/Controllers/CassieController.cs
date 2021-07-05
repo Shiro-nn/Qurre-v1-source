@@ -6,7 +6,7 @@ using System;
 namespace Qurre.Patches.Controllers
 {
     [HarmonyPatch(typeof(RespawnEffectsController), nameof(RespawnEffectsController.PlayCassieAnnouncement))]
-    public class CassieController
+    internal static class CassieController
     {
         private static bool Prefix(string words, bool makeHold, bool makeNoise)
         {

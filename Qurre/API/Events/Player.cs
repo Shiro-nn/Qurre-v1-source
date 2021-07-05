@@ -191,6 +191,25 @@ namespace Qurre.API.Events
         public RoleType NewRole { get; set; }
         public bool Allowed { get; set; }
     }
+    public class MicroHidUsingEvent : EventArgs
+    {
+        public MicroHidUsingEvent(Player player, Inventory.SyncItemInfo microHid, MicroHID.MicroHidState state, bool allowed = true)
+        {
+            Player = player;
+            MicroHid = microHid;
+            State = state;
+            Allowed = allowed;
+        }
+        public Player Player { get; internal set; }
+        public Inventory.SyncItemInfo MicroHid { get; internal set; }
+        public float Energy
+        {
+            get => Player.MicroHID.NetworkEnergy;
+            set => Player.MicroHID.NetworkEnergy = value;
+        }
+        public MicroHID.MicroHidState State { get; set; }
+        public bool Allowed { get; set; }
+    }
     public class CuffEvent : EventArgs
     {
         public CuffEvent(Player cuffer, Player target, bool allowed = true)
@@ -561,14 +580,30 @@ namespace Qurre.API.Events
     }
     public class RadioUpdateEvent : EventArgs
     {
-        public RadioUpdateEvent(Player player, RadioStatus changeTo, bool allowed = true)
+        public RadioUpdateEvent(Player player, Radio radio, RadioStatus changeTo, bool allowed = true)
         {
             Player = player;
+            Radio = radio;
             ChangeTo = changeTo;
             Allowed = allowed;
         }
         public Player Player { get; private set; }
-        public RadioStatus ChangeTo { get; private set; }
+        public Radio Radio { get; private set; }
+        public RadioStatus ChangeTo { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class RadioUseEvent : EventArgs
+    {
+        public RadioUseEvent(Player player, Radio radio, float battery, bool allowed = true)
+        {
+            Player = player;
+            Radio = radio;
+            Battery = battery;
+            Allowed = allowed;
+        }
+        public Player Player { get; private set; }
+        public Radio Radio { get; private set; }
+        public float Battery { get; set; }
         public bool Allowed { get; set; }
     }
     public class TransmitPlayerDataEvent : EventArgs

@@ -4,7 +4,7 @@ using Qurre.API.Events;
 using Qurre.Events.Invoke;
 using UnityEngine;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.SetPlayersClass))]
     internal static class RoleChange
@@ -25,13 +25,6 @@ namespace Qurre.Patches.Events.PlayeR
                 if (classid != RoleType.Spectator && cRE.NewRole == RoleType.Spectator)
                     Player.Dead(new DeadEvent(API.Server.Host, cRE.Player, new PlayerStats.HitInfo(-1, "Dedicated Server", DamageTypes.None, 0)));
                 classid = cRE.NewRole;
-                if (escape)
-                {
-                    var eE = new EscapeEvent(pl, classid);
-                    Player.Escape(eE);
-                    if (!eE.Allowed) return false;
-                    classid = eE.NewRole;
-                }
                 pl.ClassManager.SetClassIDAdv(classid, lite, escape);
                 pl.PlayerStats.SetHPAmount(__instance.Classes.SafeGet(classid).maxHP);
                 if (lite) return false;

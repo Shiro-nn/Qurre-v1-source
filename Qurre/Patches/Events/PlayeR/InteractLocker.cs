@@ -2,7 +2,7 @@
 using HarmonyLib;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.CallCmdUseLocker))]
     internal static class InteractLocker

@@ -6,7 +6,7 @@ using Qurre.API.Events;
 using Qurre.API.Objects;
 using QurreModLoader;
 using UnityEngine;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
 	[HarmonyPatch(typeof(Generator079), nameof(Generator079.Interact))]
 	internal static class InteractGenerator

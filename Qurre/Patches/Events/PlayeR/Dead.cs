@@ -2,7 +2,7 @@
 using Qurre.API.Events;
 using UnityEngine;
 using Qurre.API;
-namespace Qurre.Patches.Events.PlayeR
+namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.HurtPlayer))]
     internal static class Dead

@@ -8,7 +8,7 @@ using Qurre.API.Events;
 using GameCore;
 using static QurreModLoader.umm;
 using Qurre.API;
-namespace Qurre.Patches.Events.MAP.grenade
+namespace Qurre.Patches.Events.Map.Grenade
 {
     [HarmonyPatch(typeof(FlashGrenade), nameof(FlashGrenade.ServersideExplosion))]
     internal static class Explode_flash
