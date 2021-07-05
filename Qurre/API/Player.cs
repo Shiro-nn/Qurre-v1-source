@@ -781,6 +781,7 @@ namespace Qurre.API
 					newRole = RoleType.NtfScientist;
 					break;
 			}
+			if (newRole == RoleType.None) return;
 			var ev = new Events.EscapeEvent(this, newRole);
 			Qurre.Events.Invoke.Player.Escape(ev);
 			if (!ev.Allowed) return;
