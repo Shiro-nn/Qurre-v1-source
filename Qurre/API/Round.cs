@@ -3,7 +3,6 @@ using Qurre.API.Objects;
 using Respawning;
 using Respawning.NamingRules;
 using System;
-using System.Reflection;
 using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.API
@@ -77,14 +76,9 @@ namespace Qurre.API
             RespawnManager.Singleton.NamingManager.AllUnitNames.RemoveAt(id);
         }
         public static void ForceTeamRespawn(bool isCI) => RespawnManager.Singleton.ForceSpawnTeam(isCI ? SpawnableTeamType.ChaosInsurgency : SpawnableTeamType.NineTailedFox);
-        public static void InvokeStaticMethod(this Type type, string methodName, object[] param)
-        {
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic |
-                                 BindingFlags.Static | BindingFlags.Public;
-            MethodInfo info = type.GetMethod(methodName, flags);
-            info?.Invoke(null, param);
-        }
         public static void CallCICar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
         public static void CallMTFHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
+        [Obsolete("Use Server.InvokeStaticMethod")]
+        public static void InvokeStaticMethod(Type type, string methodName, object[] param) => type.InvokeStaticMethod(methodName, param);
     }
 }

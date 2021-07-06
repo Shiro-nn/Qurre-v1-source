@@ -16,5 +16,7 @@ namespace Qurre.API.Controllers
         public void DeletePortal() => script.DeletePortal();
         public void Contain() => script.Contain(player.ReferenceHub);
         public void CapturePlayer(Player player) => script.CallCmdMovePlayer(player.GameObject, ServerTime.time);
+        public void PlayTeleportAnimation() => script.CallRpcTeleportAnimation();
+        public void PlayContainAnimation() => script.CallRpcContainAnimation();
     }
 }

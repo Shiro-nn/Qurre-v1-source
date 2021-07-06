@@ -1,4 +1,5 @@
-﻿using Qurre.API.Objects;
+﻿using Mirror;
+using Qurre.API.Objects;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -19,7 +20,36 @@ namespace Qurre.API.Controllers
         public void SetLightIntensity(float intensity) => LightController.ServerSetLightIntensity(intensity);
         public GameObject GameObject { get; }
         public Transform Transform => GameObject.transform;
-        public Vector3 Position => GameObject.transform.position;
+        public Vector3 Position
+        {
+            get => Transform.position;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.position = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public Quaternion Rotation
+        {
+            get => Transform.localRotation;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.localRotation = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public Vector3 Scale
+        {
+            get => Transform.localScale;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.localScale = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
         public string Name => name;
         public List<Door> Doors { get; } = new List<Door>();
         public List<Player> Players => Player.List.Where(x => !x.IsHost && x.Room.Name == Name).ToList();

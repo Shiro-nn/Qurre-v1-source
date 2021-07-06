@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mirror;
+using UnityEngine;
 namespace Qurre.API.Controllers
 {
     public class Tesla
@@ -6,11 +7,58 @@ namespace Qurre.API.Controllers
         private TeslaGate Gate;
         internal Tesla(TeslaGate gate) => Gate = gate;
         public GameObject GameObject => Gate.gameObject;
-        public Vector3 Position { get => Gate.localPosition; }
+        public Transform Transform => GameObject.transform;
+        public Vector3 Position
+        {
+            get => Transform.position;
+            [System.Obsolete("Works every other time. Tesla moves successfully on the server. On the client, Tesla moves for about 10ms and then comes back.")]
+            set
+            {
+                Gate.localPosition = value;
+                NetworkServer.UnSpawn(GameObject);
+                Gate.localPosition = value;
+                Transform.localPosition = value;
+                Transform.position = value;
+                Gate.localPosition = value;
+                NetworkServer.Spawn(GameObject);/*
+                NetworkServer.UnSpawn(Gate.transform.gameObject);
+                Gate.localPosition = value;
+                Gate.transform.localPosition = value;
+                Gate.transform.position = value;
+                Gate.localPosition = value;
+                NetworkServer.Spawn(Gate.transform.gameObject);*/
+                Gate.localPosition = value;
+            }
+        }
+        public Quaternion Rotation
+        {
+            get => Transform.localRotation;
+            [System.Obsolete("Works every other time. Tesla moves successfully on the server. On the client, Tesla moves for about 10ms and then comes back.")]
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.localRotation = value;
+                Gate.localRotation = value.eulerAngles;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public Vector3 Scale
+        {
+            get => Transform.localScale;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.localScale = value;
+                SizeOfKiller = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public Vector3 SizeOfKiller { get => Gate.sizeOfKiller; set => Gate.sizeOfKiller = value; }
+        public bool InProgress { get => Gate.InProgress; set => Gate.InProgress = value; }
         public float SizeOfTrigger { get => Gate.sizeOfTrigger; set => Gate.sizeOfTrigger = value; }
         public void Trigger(bool instant = false)
         {
-            if(instant) Gate.RpcInstantTesla();
+            if (instant) Gate.RpcInstantTesla();
             else Gate.CallRpcPlayAnimation();
         }
         public void Destroy() => Object.Destroy(Gate.gameObject);

@@ -11,7 +11,10 @@ namespace Qurre.API.Controllers
         public GameObject GameObject => _lift.gameObject;
         public _lift Elevator => _lift;
         public string Name => _lift.elevatorName;
-        public Vector3 Position => GameObject.transform.position;
+        public Transform Transform => GameObject.transform;
+        public Vector3 Position => Transform.position;
+        public Quaternion Rotation => Transform.localRotation;
+        public Vector3 Scale => Transform.localScale;
         public _lift.Status Status { get => _lift.status; set => _lift.SetStatus(value); }
         public bool Locked { get => _lift.LiftLock(); set => _lift.LiftLock(value); }
         public float MaxDistance { get => _lift.maxDistance; set => _lift.maxDistance = value; }

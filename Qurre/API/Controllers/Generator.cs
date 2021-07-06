@@ -1,4 +1,5 @@
-﻿using QurreModLoader;
+﻿using Mirror;
+using QurreModLoader;
 using System.Linq;
 using UnityEngine;
 namespace Qurre.API.Controllers
@@ -15,7 +16,37 @@ namespace Qurre.API.Controllers
         public GameObject GameObject => generator.gameObject;
         public readonly bool Main;
         public string Name => GameObject.name;
-        public Vector3 Position => GameObject.transform.position;
+        public Transform Transform => GameObject.transform;
+        public Vector3 Position
+        {
+            get => Transform.position;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.position = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public Quaternion Rotation
+        {
+            get => Transform.localRotation;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.localRotation = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public Vector3 Scale
+        {
+            get => Transform.localScale;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.localScale = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
         public bool Open
         {
             get => generator.NetworkisDoorOpen;
@@ -65,6 +96,11 @@ namespace Qurre.API.Controllers
                 else TabletConnected = false;
             }
         }
+        public float Voltage
+        {
+            get => generator.localVoltage;
+            set => generator.localVoltage = value;
+        }
         public float RemainingPowerUp
         {
             get => generator.remainingPowerup;
@@ -86,9 +122,9 @@ namespace Qurre.API.Controllers
                 Respawning.RespawnEffectsController.PlayCassieAnnouncement(string.Concat(new object[]
                 {
                         "JAM_",
-                        UnityEngine.Random.Range(0, 100).ToString("000"),
+                        Random.Range(0, 100).ToString("000"),
                         "_",
-                        UnityEngine.Random.Range(2, 5),
+                        Random.Range(2, 5),
                         " SCP079RECON",
                         Heavy.ActiveGenerators
                 }), false, true);

@@ -29,6 +29,16 @@ namespace Qurre.API.Controllers
                 NetworkServer.Spawn(GameObject);
             }
         }
+        public Quaternion Rotation
+        {
+            get => ragdoll.transform.localRotation;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                ragdoll.transform.localRotation = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
         public Vector3 Scale
         {
             get => ragdoll.transform.localScale;

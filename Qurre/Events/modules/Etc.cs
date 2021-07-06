@@ -28,6 +28,7 @@ namespace Qurre.Events.modules
         {
             API.Player.IdPlayers.Clear();
             API.Player.UserIDPlayers.Clear();
+            API.Player.ArgsPlayers.Clear();
             API.Player.Dictionary.Clear();
             API.Map.ClearObjects();
         }
@@ -79,7 +80,7 @@ namespace Qurre.Events.modules
         }
         private static void SyncData(SyncDataEvent ev)
         {
-            if (ev.Player.Escape != null && Vector3.Distance(ev.Player.Position, ev.Player.Escape.worldPosition) < Escape.radius)
+            if (ev.Player != null && ev.Player.Escape != null && Vector3.Distance(ev.Player.Position, ev.Player.Escape.worldPosition) < Escape.radius)
                 ev.Player.CheckEscape();
         }
         private static void FixRaBc(SendingRAEvent ev)

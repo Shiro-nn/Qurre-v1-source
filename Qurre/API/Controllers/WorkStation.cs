@@ -22,24 +22,35 @@ namespace Qurre.API.Controllers
             Map.WorkStations.Add(this);
         }
         public GameObject GameObject => workStation.gameObject;
+        public Transform Transform => GameObject.transform;
         public string Name => GameObject.name;
         public Vector3 Position
         {
-            get => GameObject.transform.position;
+            get => Transform.position;
             set
             {
                 NetworkServer.UnSpawn(GameObject);
-                GameObject.transform.position = value;
+                Transform.position = value;
                 NetworkServer.Spawn(GameObject);
             }
         }
         public Vector3 Scale
         {
-            get => GameObject.transform.localScale;
+            get => Transform.localScale;
             set
             {
                 NetworkServer.UnSpawn(GameObject);
-                GameObject.transform.localScale = value;
+                Transform.localScale = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public Quaternion Rotation
+        {
+            get => Transform.localRotation;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.localRotation = value;
                 NetworkServer.Spawn(GameObject);
             }
         }

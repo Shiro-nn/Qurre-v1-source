@@ -4,6 +4,7 @@ using Qurre.API.Objects;
 using System.Linq;
 using _door = Qurre.API.Controllers.Door;
 using _lift = Qurre.API.Controllers.Lift;
+using _locker = Qurre.API.Controllers.Locker;
 using _workStation = Qurre.API.Controllers.WorkStation;
 namespace Qurre.API
 {
@@ -36,6 +37,7 @@ namespace Qurre.API
 		public static Generator GetGenerator(this Generator079 generator079) => Map.Generators.FirstOrDefault(x => x.GameObject == generator079.gameObject);
 		public static Tesla GetTesla(this TeslaGate teslaGate) => Map.Teslas.FirstOrDefault(x => x.GameObject == teslaGate.gameObject);
 		public static _lift GetLift(this Lift lift) => Map.Lifts.FirstOrDefault(x => x.GameObject == lift.gameObject);
+		public static _locker GetLocker(this Locker locker) => Map.Lockers.FirstOrDefault(x => x.Transform == locker.gameObject);
 		public static _workStation GetWorkStation(this WorkStation station) => Map.WorkStations.FirstOrDefault(x => x.GameObject == station.gameObject);
 	}
 }

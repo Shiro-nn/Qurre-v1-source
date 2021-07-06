@@ -1,4 +1,6 @@
 ﻿using Mirror;
+using System.Collections.Generic;
+using System.Linq;
 using static QurreModLoader.umm;
 namespace Qurre.API.Controllers
 {
@@ -16,7 +18,8 @@ namespace Qurre.API.Controllers
         public float Energy { get => script.Mana; set => script.NetworkcurMana = value; }
         public float MaxEnergy { get => script.maxMana; set => script.NetworkmaxMana = value; }
         public Camera079 Camera { get => script.currentCamera; set => script?.CallRpcSwitchCamera(value.cameraId, false); }
-        public static Camera079[] Camers => Scp079PlayerScript.allCameras;
+        public static Camera079[] Cameras => Scp079PlayerScript.allCameras;
+        public static IEnumerable<Scp079Interactable> Speakers => UnityEngine.Object.FindObjectsOfType<Scp079Interactable>().Where(x => x.type == Scp079Interactable.InteractableType.Speaker);
         public SyncListUInt LockedDoors { get => script.lockedDoors; set => script.lockedDoors = value; }
         public void GiveExp(float amount) => script.AddExperience(amount);
         public void ForceLevel(byte levelToForce, bool notifiyUser) => script.ForceLevel(levelToForce, notifiyUser);
@@ -24,5 +27,7 @@ namespace Qurre.API.Controllers
         public void UnlockDoor(uint doorID) { if (script.lockedDoors.Contains(doorID)) script.lockedDoors.Remove(doorID); }
         public void UnlockDoors() => script.CmdResetDoors();
         public static int ActivatedGenerators => Generator079.mainGenerator.totalVoltage;
+        [System.Obsolete("Use Scp079.Cameras")]
+        public static Camera079[] Camers => Cameras;
     }
 }

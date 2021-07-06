@@ -46,6 +46,16 @@ namespace Qurre.API.Controllers
                 NetworkServer.Spawn(GameObject);
             }
         }
+        public Vector3 Scale
+        {
+            get => GameObject.transform.localScale;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                GameObject.transform.localScale = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
         public DoorPermissions Permissions { get => DoorVariant.RequiredPermissions; set => DoorVariant.RequiredPermissions = value; }
         private DoorType type;
         public DoorType Type

@@ -19,9 +19,9 @@ namespace Qurre.API
 		private GameObject go;
 		private string ui;
 		private string _tag = "";
-		public Radio radio;
-		public MicroHID microHID;
-		public Escape escape;
+		private Radio radio;
+		private MicroHID microHID;
+		private Escape escape;
 		public Player(ReferenceHub RH)
 		{
 			rh = RH;
@@ -34,14 +34,15 @@ namespace Qurre.API
 		public Player(GameObject gameObject) => rh = ReferenceHub.GetHub(gameObject);
 		public static Dictionary<GameObject, Player> Dictionary { get; } = new Dictionary<GameObject, Player>();
 		public static Dictionary<int, Player> IdPlayers = new Dictionary<int, Player>();
-		public static Dictionary<string, Player> UserIDPlayers = new Dictionary<string, Player>();
+		public static Dictionary<string, Player> UserIDPlayers { get; set; } = new Dictionary<string, Player>();
+		public static Dictionary<string, Player> ArgsPlayers { get; set; } = new Dictionary<string, Player>();
 		public static IEnumerable<Player> List => Dictionary.Values;
 		public ReferenceHub ReferenceHub
 		{
 			get => rh;
 			private set
 			{
-                rh = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null.");
+				rh = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null.");
 				go = value.gameObject;
 				ui = value.characterClassManager.UserId;
 			}
@@ -139,7 +140,7 @@ namespace Qurre.API
 			get => Handcuffs.NetworkCufferId;
 			set => Handcuffs.NetworkCufferId = value;
 		}
-		public bool IsCuffed => CufferId != -1;
+		public bool Cuffed => CufferId != -1;
 		public Vector3 Position
 		{
 			get => rh.playerMovementSync.GetRealPosition();
@@ -154,6 +155,11 @@ namespace Qurre.API
 		{
 			get => rh.PlayerCameraReference.forward;
 			set => rh.PlayerCameraReference.forward = value;
+		}
+		public Quaternion FullRotation
+		{
+			get => rh.PlayerCameraReference.localRotation;
+			set => rh.PlayerCameraReference.localRotation = value;
 		}
 		public Vector3 Scale
 		{
@@ -171,9 +177,7 @@ namespace Qurre.API
 						NetworkConnection playerCon = obj.GetComponent<NetworkIdentity>().connectionToClient;
 						if (obj != GameObject) playerCon.Send(destroyMessage, 0);
 						SendSpawnMessage?.Invoke(null, new object[] { identity, playerCon });
-					}/*
-					rh.transform.localScale = value;
-					foreach (Player target in List) SendSpawnMessage?.Invoke(null, new object[] { ReferenceHub.characterClassManager.netIdentity, target.Connection });*/
+					}
 				}
 				catch (Exception ex)
 				{
@@ -204,7 +208,16 @@ namespace Qurre.API
 		}
 		public Fraction Fraction => ClassManager.Fraction;
 		public bool IsReloading => WeaponManager.IsReloading();
-		public bool IsZooming => WeaponManager.NetworksyncZoomed;
+		public bool Zoomed
+		{
+			get => WeaponManager.NetworksyncZoomed;
+			set => WeaponManager.NetworksyncZoomed = value;
+		}
+		public bool InFlash
+		{
+			get => WeaponManager.NetworksyncFlash;
+			set => WeaponManager.NetworksyncFlash = value;
+		}
 		public PlayerMovementState MoveState
 		{
 			get => (PlayerMovementState)AnimationController.Network_curMoveState;
@@ -327,8 +340,8 @@ namespace Qurre.API
 			get => ClassManager.NetworkCurUnitName;
 			set
 			{
-				Respawning.SpawnableTeamType spawnableTeamType;
-				if (Respawning.NamingRules.UnitNamingManager.RolesWithEnforcedDefaultName.TryGetValue(Role, out spawnableTeamType)) ClassManager.NetworkCurSpawnableTeamType = (byte)spawnableTeamType;
+				if (Respawning.NamingRules.UnitNamingManager.RolesWithEnforcedDefaultName.TryGetValue(Role, out Respawning.SpawnableTeamType spawnableTeamType))
+					ClassManager.NetworkCurSpawnableTeamType = (byte)spawnableTeamType;
 				ClassManager.NetworkCurUnitName = value;
 			}
 		}
@@ -359,7 +372,7 @@ namespace Qurre.API
 		}
 		public static IEnumerable<Player> Get(Team team) => List.Where(player => player.Team == team);
 		public static IEnumerable<Player> Get(RoleType role) => List.Where(player => player.Role == role);
-		public static Player Get(CommandSender sender) => Get(sender.SenderId);
+		public static Player Get(CommandSender sender) => sender == null ? null : Get(sender.SenderId);
 		public static Player Get(ReferenceHub referenceHub) => referenceHub == null ? null : Get(referenceHub.gameObject);
 		public static Player Get(GameObject gameObject)
 		{
@@ -381,12 +394,12 @@ namespace Qurre.API
 		{
 			try
 			{
-				if (UserIDPlayers.ContainsKey(args)) return UserIDPlayers[args];
+				if (ArgsPlayers.ContainsKey(args)) return ArgsPlayers[args];
 				Player playerFound = null;
 				if (short.TryParse(args, out short playerId)) return Get(playerId);
 				if (args.EndsWith("@steam") || args.EndsWith("@discord") || args.EndsWith("@northwood") || args.EndsWith("@patreon"))
 					foreach (Player pl in List.Where(x => x.UserId == args)) playerFound = pl;
-				else
+				if (playerFound == null)
 				{
 					if (args == "WORLD" || args == "SCP-018" || args == "SCP-575" || args == "SCP-207") return null;
 					int maxNameLength = 31, lastnameDifference = 31;
@@ -424,7 +437,7 @@ namespace Qurre.API
 						}
 					}
 				}
-				if (playerFound != null) UserIDPlayers.Add(args, playerFound);
+				if (playerFound != null) ArgsPlayers.Add(args, playerFound);
 				return playerFound;
 			}
 			catch (Exception exception)
@@ -527,6 +540,7 @@ namespace Qurre.API
 			string nick = Nickname;
 			int id = Id;
 			SetRole(newRole, true);
+			Position = newPosition;
 			MEC.Timing.CallDelayed(0.3f, () =>
 			{
 				Ahp = _ahp;
@@ -572,7 +586,7 @@ namespace Qurre.API
 		public void Kick(string reason, string issuer = "API") => Ban(0, reason, issuer);
 		public void Handcuff(Player player)
 		{
-			if (Handcuffs == null) { return; }
+			if (Handcuffs == null) return;
 			if (Handcuffs.CufferId < 0 &&
 				player.Inventory.items.Any((Inventory.SyncItemInfo item) => item.id == ItemType.Disarmer) &&
 				Vector3.Distance(player.Position, Position) <= 130f)
@@ -688,10 +702,6 @@ namespace Qurre.API
 		public void PlayFallSound() => rh.falldamage.CallRpcDoSound();
 		public void Redirect(float timeOffset, ushort port) => PlayerStats.CallRpcRoundrestartRedirect(timeOffset, port);
 		public void PlayReloadAnimation(sbyte weapon = 0) => WeaponManager.CallRpcReload(weapon);
-		public void Play106TeleportAnimation() => rh.scp106PlayerScript.CallRpcTeleportAnimation();
-		public void Play106ContainAnimation() => rh.scp106PlayerScript.CallRpcContainAnimation();
-		public void Create106Portal() => rh.scp106PlayerScript.CallCmdMakePortal();
-		public void Use106Portal() => rh.scp106PlayerScript.CallCmdUsePortal();
 
 		private Team GetTeam(RoleType rt)
 		{
@@ -752,7 +762,7 @@ namespace Qurre.API
 			if (Handcuffs.ForceCuff && CharacterClassManager.ForceCuffedChangeTeam)
 				changeTeam = true;
 
-			if (IsCuffed && CharacterClassManager.CuffedChangeTeam)
+			if (Cuffed && CharacterClassManager.CuffedChangeTeam)
 			{
 				switch (Role)
 				{
@@ -789,8 +799,7 @@ namespace Qurre.API
 
 			var isClassD = Role == RoleType.ClassD;
 
-			if (newRole != RoleType.None) ClassManager.SetPlayersClass(newRole, GameObject, false, true);
-			else return;
+			ClassManager.SetPlayersClass(newRole, GameObject, false, true);
 
 			Escape.TargetShowEscapeMessage(Connection, isClassD, changeTeam);
 
@@ -842,5 +851,19 @@ namespace Qurre.API
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
 		}
+
+
+		[Obsolete("Use Player.Cuffed")]
+		public bool IsCuffed => Cuffed;
+		[Obsolete("Use Player.Zoomed")]
+		public bool IsZooming => Zoomed;
+		[Obsolete("Use Player.Scp106Controller.CreatePortal")]
+		public void Create106Portal() => rh.scp106PlayerScript.CallCmdMakePortal();
+		[Obsolete("Use Player.Scp106Controller.UsePortal")]
+		public void Use106Portal() => rh.scp106PlayerScript.CallCmdUsePortal();
+		[Obsolete("Use Player.Scp106Controller.PlayTeleportAnimation")]
+		public void Play106TeleportAnimation() => rh.scp106PlayerScript.CallRpcTeleportAnimation();
+		[Obsolete("Use Player.Scp106Controller.PlayContainAnimation")]
+		public void Play106ContainAnimation() => rh.scp106PlayerScript.CallRpcContainAnimation();
 	}
 }

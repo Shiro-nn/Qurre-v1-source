@@ -4,36 +4,36 @@ using System.Globalization;
 using System.Linq;
 namespace Qurre.API
 {
-    internal class ConfigManager
-    {
-        internal ConfigManager() => LoadConfigFile();
-        internal List<string> RawData;
-        private static List<string> Filter(IEnumerable<string> lines)
-        {
-            return (from line in lines
-                    where !string.IsNullOrEmpty(line) && !line.StartsWith("#") && (line.StartsWith(" - ") || line.Contains(':'))
-                    select line).ToList();
-        }
+	internal class ConfigManager
+	{
+		internal ConfigManager() => LoadConfigFile();
+		internal List<string> RawData;
+		private static List<string> Filter(IEnumerable<string> lines)
+		{
+			return (from line in lines
+					where !string.IsNullOrEmpty(line) && !line.StartsWith("#") && (line.StartsWith(" - ") || line.Contains(':'))
+					select line).ToList();
+		}
 		internal void Reload() => LoadConfigFile();
 		internal void LoadConfigFile()
-        {
-            RemoveInvalid();
-            RawData = Filter(FileManager.ReadAllLines(PluginManager.ConfigsPath));
-        }
-        private static void RemoveInvalid()
-        {
-            string[] array = FileManager.ReadAllLines(PluginManager.ConfigsPath);
-            bool flag = false;
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (!array[i].StartsWith("#") && !array[i].StartsWith(" -") && !array[i].Contains(":") && !string.IsNullOrEmpty(array[i].Replace(" ", "")))
-                {
-                    flag = true;
-                    array[i] = "#INVALID - " + array[i];
-                }
-            }
-            if (flag) FileManager.WriteToFile(array, PluginManager.ConfigsPath, false);
-        }
+		{
+			RemoveInvalid();
+			RawData = Filter(FileManager.ReadAllLines(PluginManager.ConfigsPath));
+		}
+		private static void RemoveInvalid()
+		{
+			string[] array = FileManager.ReadAllLines(PluginManager.ConfigsPath);
+			bool flag = false;
+			for (int i = 0; i < array.Length; i++)
+			{
+				if (!array[i].StartsWith("#") && !array[i].StartsWith(" -") && !array[i].Contains(":") && !string.IsNullOrEmpty(array[i].Replace(" ", "")))
+				{
+					flag = true;
+					array[i] = "#INVALID - " + array[i];
+				}
+			}
+			if (flag) FileManager.WriteToFile(array, PluginManager.ConfigsPath, false);
+		}
 
 
 
@@ -41,8 +41,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (bool.TryParse(text, out bool result)) return result;
-            Log.Warn(key + " has invalid value, " + text + " is not a valid bool!");
+			if (bool.TryParse(text, out bool result)) return result;
+			Log.Warn(key + " has invalid value, " + text + " is not a valid bool!");
 			CommentInvalid(key, "BOOL");
 			return def;
 		}
@@ -50,8 +50,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (byte.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out byte result)) return result;
-            Log.Warn(key + " has an invalid value, " + text + " is not a valid byte!");
+			if (byte.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out byte result)) return result;
+			Log.Warn(key + " has an invalid value, " + text + " is not a valid byte!");
 			CommentInvalid(key, "BYTE");
 			return def;
 		}
@@ -59,8 +59,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (sbyte.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out sbyte result)) return result;
-            Log.Warn(key + " has an invalid value, " + text + " is not a valid signed byte!");
+			if (sbyte.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out sbyte result)) return result;
+			Log.Warn(key + " has an invalid value, " + text + " is not a valid signed byte!");
 			CommentInvalid(key, "SBYTE");
 			return def;
 		}
@@ -68,8 +68,8 @@ namespace Qurre.API
 		{
 			string rawString = GetRawString(key);
 			if (rawString == "default") return def;
-            if (char.TryParse(rawString, out char result)) return result;
-            Log.Warn(key + " has an invalid value, " + rawString + " is not a valid char!");
+			if (char.TryParse(rawString, out char result)) return result;
+			Log.Warn(key + " has an invalid value, " + rawString + " is not a valid char!");
 			CommentInvalid(key, "CHAR");
 			return def;
 		}
@@ -77,8 +77,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (decimal.TryParse(text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal result)) return result;
-            Log.Warn(key + " has invalid value, " + text + " is not a valid decimal!");
+			if (decimal.TryParse(text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out decimal result)) return result;
+			Log.Warn(key + " has invalid value, " + text + " is not a valid decimal!");
 			CommentInvalid(key, "DECIMAL");
 			return def;
 		}
@@ -86,8 +86,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (double.TryParse(text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out double result)) return result;
-            Log.Warn(key + " has invalid value, " + text + " is not a valid double!");
+			if (double.TryParse(text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out double result)) return result;
+			Log.Warn(key + " has invalid value, " + text + " is not a valid double!");
 			CommentInvalid(key, "DOUBLE");
 			return def;
 		}
@@ -95,8 +95,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (float.TryParse(text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out float result)) return result;
-            Log.Warn(key + " has invalid value, " + text + " is not a valid float!");
+			if (float.TryParse(text.Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out float result)) return result;
+			Log.Warn(key + " has invalid value, " + text + " is not a valid float!");
 			CommentInvalid(key, "FLOAT");
 			return def;
 		}
@@ -104,8 +104,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (int.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out int result)) return result;
-            Log.Warn(key + " has an invalid value, " + text + " is not a valid integer!");
+			if (int.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out int result)) return result;
+			Log.Warn(key + " has an invalid value, " + text + " is not a valid integer!");
 			CommentInvalid(key, "INT");
 			return def;
 		}
@@ -113,8 +113,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (uint.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out uint result)) return result;
-            Log.Warn(key + " has an invalid value, " + text + " is not a valid unsigned integer!");
+			if (uint.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out uint result)) return result;
+			Log.Warn(key + " has an invalid value, " + text + " is not a valid unsigned integer!");
 			CommentInvalid(key, "UINT");
 			return def;
 		}
@@ -122,8 +122,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (long.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out long result)) return result;
-            Log.Warn(key + " has an invalid value, " + text + " is not a valid long!");
+			if (long.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out long result)) return result;
+			Log.Warn(key + " has an invalid value, " + text + " is not a valid long!");
 			CommentInvalid(key, "LONG");
 			return def;
 		}
@@ -131,8 +131,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (ulong.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out ulong result)) return result;
-            Log.Warn(key + " has an invalid value, " + text + " is not a valid unsigned long!");
+			if (ulong.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out ulong result)) return result;
+			Log.Warn(key + " has an invalid value, " + text + " is not a valid unsigned long!");
 			CommentInvalid(key, "ULONG");
 			return def;
 		}
@@ -140,8 +140,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (short.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out short result)) return result;
-            Log.Warn(key + " has an invalid value, " + text + " is not a valid short!");
+			if (short.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out short result)) return result;
+			Log.Warn(key + " has an invalid value, " + text + " is not a valid short!");
 			CommentInvalid(key, "SHORT");
 			return def;
 		}
@@ -149,8 +149,8 @@ namespace Qurre.API
 		{
 			string text = GetRawString(key).ToLower();
 			if (text == "default") return def;
-            if (ushort.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out ushort result)) return result;
-            Log.Warn(key + " has an invalid value, " + text + " is not a valid unsigned short!");
+			if (ushort.TryParse(text, NumberStyles.Any, CultureInfo.InvariantCulture, out ushort result)) return result;
+			Log.Warn(key + " has an invalid value, " + text + " is not a valid unsigned short!");
 			CommentInvalid(key, "USHORT");
 			return def;
 		}
@@ -278,10 +278,10 @@ namespace Qurre.API
 		{
 			var _key = key.ToLower();
 			if (!TryGetString(_key, out string result))
-            {
-                return "default";
-            }
-            return result;
+			{
+				return "default";
+			}
+			return result;
 		}
 	}
 }

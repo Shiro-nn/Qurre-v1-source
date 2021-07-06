@@ -76,7 +76,7 @@ namespace Qurre.API.Controllers
                 Map.Broadcasts.Remove(this);
                 BC.BroadcastComponent.RpcClearElements();
                 if (Map.Broadcasts.FirstOrDefault() != null) Map.Broadcasts.FirstOrDefault().Start();
-                else foreach(Player pl in Player.List) if (pl.Broadcasts.FirstOrDefault() != null && !pl.Broadcasts.First().Active) pl.Broadcasts.First().Start();
+                else foreach (Player pl in Player.List) if (pl.Broadcasts.FirstOrDefault() != null && !pl.Broadcasts.First().Active) pl.Broadcasts.First().Start();
             }
             else
             {

@@ -15,7 +15,7 @@ namespace Qurre.API.Controllers
 			get => Scp914Machine.singleton.NetworkknobState;
 			set => Scp914Machine.singleton.NetworkknobState = value;
 		}
-		public static ConfigEntry<Scp914Mode> Cfg
+		public static ConfigEntry<Scp914Mode> Config
 		{
 			get => Scp914Machine.singleton.configMode;
 			set => Scp914Machine.singleton.configMode = value;
@@ -50,7 +50,7 @@ namespace Qurre.API.Controllers
 				case Scp914Knob.VeryFine: ids = recipe.veryFine; break;
 				default: Log.Error("Qurre.API.Controllers.Scp914.UpgradeItemID"); return -1;
 			}
-			return ids.Count == 0 ? -1 : ids[UnityEngine.Random.Range(0, ids.Count)];
+			return ids.Count == 0 ? -1 : ids[Random.Range(0, ids.Count)];
 		}
 		public class Recipe
 		{
@@ -79,6 +79,12 @@ namespace Qurre.API.Controllers
 			public List<int> oneToOne;
 			public List<int> fine;
 			public List<int> veryFine;
+		}
+		[System.Obsolete("Use Scp914.Config")]
+		public static ConfigEntry<Scp914Mode> Cfg
+		{
+			get => Config;
+			set => Config = value;
 		}
 	}
 }
