@@ -1,5 +1,6 @@
 ﻿using System;
 using HarmonyLib;
+using Qurre.API;
 using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
@@ -30,8 +31,8 @@ namespace Qurre.Patches.Events.player
                 string accessToken = singleton.lockers[lockerId].chambers[chamberNumber].accessToken;
                 Item item = __instance.InteractInv().GetItemByID(__instance.InteractInv().curItem);
                 var ev = new InteractLockerEvent(
-                    API.Player.Get(__instance.gameObject),
-                    singleton.lockers[lockerId],
+                    Player.Get(__instance.gameObject),
+                    singleton.lockers[lockerId].GetLocker(),
                     singleton.lockers[lockerId].chambers[chamberNumber],
                     lockerId,
                     chamberNumber,

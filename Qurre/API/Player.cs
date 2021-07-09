@@ -540,7 +540,6 @@ namespace Qurre.API
 			string nick = Nickname;
 			int id = Id;
 			SetRole(newRole, true);
-			Position = newPosition;
 			MEC.Timing.CallDelayed(0.3f, () =>
 			{
 				Ahp = _ahp;
