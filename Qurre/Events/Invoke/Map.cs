@@ -10,7 +10,6 @@ namespace Qurre.Events.Invoke
         public static void NewBlood(NewBloodEvent ev) => Invokes(ev);
         public static void NewDecal(NewDecalEvent ev) => Invokes(ev);
         public static void Generated() => Invokes();
-        public static void GrenadeExplode(GrenadeExplodeEvent ev) => Invokes(ev);
         public static void SetSeed(SetSeedEvent ev) => Invokes(ev);
         public static void DoorDamage(DoorDamageEvent ev) => Invokes(ev);
         public static void DoorLock(DoorLockEvent ev) => Invokes(ev);

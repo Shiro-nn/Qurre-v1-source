@@ -11,7 +11,6 @@ namespace Qurre.Events
         public static event AllEvents<NewBloodEvent> NewBlood;
         public static event AllEvents<NewDecalEvent> NewDecal;
         public static event AllEvents Generated;
-        public static event AllEvents<GrenadeExplodeEvent> GrenadeExplode;
         public static event AllEvents<SetSeedEvent> SetSeed;
         public static event AllEvents<DoorDamageEvent> DoorDamage;
         public static event AllEvents<DoorLockEvent> DoorLock;
@@ -23,7 +22,6 @@ namespace Qurre.Events
         internal static void Invokes(NewBloodEvent ev) => NewBlood?.invoke(ev);
         internal static void Invokes(NewDecalEvent ev) => NewDecal?.invoke(ev);
         internal static void Invokes() => Generated.invoke();
-        internal static void Invokes(GrenadeExplodeEvent ev) => GrenadeExplode?.invoke(ev);
         internal static void Invokes(SetSeedEvent ev) => SetSeed?.invoke(ev);
         internal static void Invokes(DoorDamageEvent ev) => DoorDamage?.invoke(ev);
         internal static void Invokes(DoorLockEvent ev) => DoorLock?.invoke(ev);

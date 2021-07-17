@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using Interactables.Interobjects.DoorUtils;
-using _door = Interactables.Interobjects.DoorUtils.DoorVariant;
 using Interactables.Interobjects;
 using Mirror;
 using System.Collections.Generic;
@@ -9,12 +8,12 @@ namespace Qurre.API.Controllers
 {
     public class Door
     {
-        internal Door(_door _)
+        internal Door(DoorVariant _)
         {
             DoorVariant = _;
             if (DoorVariant.TryGetComponent<DoorNametagExtension>(out var nametag)) Name = nametag.GetName;
         }
-        public _door DoorVariant { get; internal set; }
+        public DoorVariant DoorVariant { get; internal set; }
         public GameObject GameObject => DoorVariant.gameObject;
         private string name;
         public string Name
@@ -127,7 +126,7 @@ namespace Qurre.API.Controllers
         public List<Room> Rooms { get; } = new List<Room>();
         public static Door Spawn(Vector3 position, DoorPrefabs prefab, Quaternion? rotation = null, DoorPermissions permissions = null)
         {
-            _door doorVariant = Object.Instantiate(Extensions.GetDoorPrefab(prefab));
+            DoorVariant doorVariant = Object.Instantiate(Extensions.GetDoorPrefab(prefab));
             doorVariant.transform.position = position;
             doorVariant.transform.rotation = rotation ?? new Quaternion(0, 0, 0, 0);
             doorVariant.RequiredPermissions = permissions ?? new DoorPermissions();

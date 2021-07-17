@@ -7,7 +7,6 @@ using Mirror;
 using RemoteAdmin;
 using Respawning;
 using Interactables.Interobjects.DoorUtils;
-using _door = Qurre.API.Controllers.Door;
 using _lift = Qurre.API.Controllers.Lift;
 using _locker = Qurre.API.Controllers.Locker;
 using _ragdoll = Qurre.API.Controllers.Ragdoll;
@@ -23,7 +22,7 @@ namespace Qurre.API
 	{
 		public static ListBroadcasts Broadcasts { get; private set; } = new ListBroadcasts(Server.Host);
 		public static CassieList Cassies { get; private set; } = new CassieList();
-		public static List<_door> Doors { get; } = new List<_door>();
+		public static List<Door> Doors { get; } = new List<Door>();
 		public static List<_lift> Lifts { get; } = new List<_lift>();
 		public static List<_locker> Lockers { get; } = new List<_locker>();
 		public static List<Generator> Generators { get; } = new List<Generator>();
@@ -268,7 +267,7 @@ namespace Qurre.API
 				Rooms.Add(new Room(room.gameObject));
 			foreach (var tesla in Server.GetObjectsOf<TeslaGate>()) Teslas.Add(new Tesla(tesla));
 			foreach (var station in Server.GetObjectsOf<WorkStation>()) WorkStations.Add(new _workStation(station));
-			foreach (var door in Server.GetObjectsOf<DoorVariant>()) Doors.Add(new _door(door));
+			foreach (var door in Server.GetObjectsOf<DoorVariant>()) Doors.Add(new Door(door));
 			foreach (var locker in LockerManager.singleton.lockers) Lockers.Add(new _locker(locker));
 			foreach (var interactable in Interface079.singleton.allInteractables)
 			{

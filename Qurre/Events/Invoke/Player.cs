@@ -43,6 +43,8 @@ namespace Qurre.Events.Invoke
         public static void RadioUpdate(RadioUpdateEvent ev) => Invokes(ev);
         public static void TransmitPlayerData(TransmitPlayerDataEvent ev) => Invokes(ev);
         public static void MicroHidUsing(MicroHidUsingEvent ev) => Invokes(ev);
-        public static void RadioUse(RadioUseEvent ev) => Invokes(ev);
+        public static void RadioUsing(RadioUsingEvent ev) => Invokes(ev);
+        public static void FlashExplosion(FlashExplosionEvent ev) => Invokes(ev);
+        public static void FragExplosion(FragExplosionEvent ev) => Invokes(ev);
     }
 }

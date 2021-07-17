@@ -592,9 +592,9 @@ namespace Qurre.API.Events
         public RadioStatus ChangeTo { get; set; }
         public bool Allowed { get; set; }
     }
-    public class RadioUseEvent : EventArgs
+    public class RadioUsingEvent : EventArgs
     {
-        public RadioUseEvent(Player player, Radio radio, float battery, bool allowed = true)
+        public RadioUsingEvent(Player player, Radio radio, float battery, bool allowed = true)
         {
             Player = player;
             Radio = radio;
@@ -625,5 +625,33 @@ namespace Qurre.API.Events
         public Vector3 Position { get; set; }
 
         public bool Invisible { get; set; }
+    }
+    public class FlashExplosionEvent : EventArgs
+    {
+        public FlashExplosionEvent(Player thrower, List<Player> targets, Vector3 position, bool allowed = true)
+        {
+            Thrower = thrower;
+            Targets = targets;
+            Position = position;
+            Allowed = allowed;
+        }
+        public Player Thrower { get; }
+        public List<Player> Targets { get; }
+        public Vector3 Position { get; }
+        public bool Allowed { get; set; }
+    }
+    public class FragExplosionEvent : EventArgs
+    {
+        public FragExplosionEvent(Player thrower, List<Player> targets, Vector3 position, bool allowed = true)
+        {
+            Thrower = thrower;
+            Targets = targets;
+            Position = position;
+            Allowed = allowed;
+        }
+        public Player Thrower { get; }
+        public List<Player> Targets { get; }
+        public Vector3 Position { get; }
+        public bool Allowed { get; set; }
     }
 }

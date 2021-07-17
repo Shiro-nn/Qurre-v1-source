@@ -73,23 +73,6 @@ namespace Qurre.API.Events
         public int Type { get; set; }
         public bool Allowed { get; set; }
     }
-    public class GrenadeExplodeEvent : EventArgs
-    {
-        public GrenadeExplodeEvent(Player thrower, Dictionary<Player, float> targetToDamages, bool isFrag, GameObject grenade, bool allowed = true)
-        {
-            Thrower = thrower ?? Server.Host;
-            TargetToDamages = targetToDamages;
-            IsFrag = isFrag;
-            Grenade = grenade;
-            Allowed = allowed;
-        }
-        public Player Thrower { get; }
-        public Dictionary<Player, float> TargetToDamages { get; }
-        public List<Player> Targets => TargetToDamages.Keys.ToList();
-        public bool IsFrag { get; }
-        public GameObject Grenade { get; }
-        public bool Allowed { get; set; }
-    }
     public class SetSeedEvent : EventArgs
     {
         public SetSeedEvent(int seed) => Seed = seed;
@@ -143,6 +126,17 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Controllers.Lift Lift { get; }
+        public bool Allowed { get; set; }
+    }
+    [Obsolete("Use FlashExplosionEvent/FragExplosionEvent")]
+    public class GrenadeExplodeEvent : EventArgs
+    {
+        public GrenadeExplodeEvent(Player thrower, Dictionary<Player, float> targetToDamages, bool isFrag, GameObject grenade, bool allowed = true) { }
+        public Player Thrower { get; }
+        public Dictionary<Player, float> TargetToDamages { get; }
+        public List<Player> Targets => TargetToDamages.Keys.ToList();
+        public bool IsFrag { get; }
+        public GameObject Grenade { get; }
         public bool Allowed { get; set; }
     }
 }

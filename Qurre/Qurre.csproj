@@ -177,7 +177,9 @@
     <Compile Include="Patches\Events\Map\DoorLock.cs" />
     <Compile Include="Patches\Events\Map\DoorDamage.cs" />
     <Compile Include="Patches\Events\Map\SetSeed.cs" />
-    <Compile Include="Patches\Events\player\UseRadio.cs" />
+    <Compile Include="Patches\Events\player\FragExplosion.cs" />
+    <Compile Include="Patches\Events\player\FlashExplosion.cs" />
+    <Compile Include="Patches\Events\player\UsingRadio.cs" />
     <Compile Include="Patches\Events\player\UsingMicroHid.cs" />
     <Compile Include="Patches\Events\player\Heal.cs" />
     <Compile Include="Patches\Events\player\RadioUpdate.cs" />
@@ -198,7 +200,6 @@
     <Compile Include="Patches\Events\Alpha\Detonate.cs" />
     <Compile Include="Patches\Events\Map\AnnouncementDecontamination.cs" />
     <Compile Include="Patches\Events\Map\NewBlood.cs" />
-    <Compile Include="Patches\Events\Map\GrenadeExplode.cs" />
     <Compile Include="Patches\Events\Map\MTFAnnouncement.cs" />
     <Compile Include="Patches\Events\Map\LCZDecontamination.cs" />
     <Compile Include="Patches\Events\player\Banned.cs" />

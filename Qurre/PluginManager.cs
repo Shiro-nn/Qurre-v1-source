@@ -13,7 +13,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 7, 1);
+		public static Version Version { get; } = new Version(1, 7, 2);
 		private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -39,20 +39,28 @@ namespace Qurre
 			{
 				ServerConsole.AddLog(ex.ToString(), ConsoleColor.Red);
 			}
-			//CheckPlan();
 
 			PatchMethods();
 
 			yield return Timing.WaitForSeconds(0.5f);
 
-			List<string> mods = Directory.GetFiles(PluginsDirectory).ToList();
-
-			foreach (string mod in mods)
+			foreach (string mod in Directory.GetFiles(PluginsDirectory))
 			{
 				if (mod.EndsWith("Qurre.dll")) continue;
-				LoadPlugin(mod);
+                try
+				{
+					Log.Debug($"Loading {mod}");
+					byte[] file = ModLoader.ReadFile(mod);
+					Assembly assembly = Assembly.Load(file);
+					LoadPlugin(assembly);
+				}
+				catch (Exception ex)
+				{
+					Log.Error($"An error occurred while loading {mod}\n{ex}");
+				}
 			}
-			FixAudio();
+			DownloadPlugins();
+
 			Enable();
 		}
 		private static void LoadDependencies()
@@ -73,6 +81,7 @@ namespace Qurre
 				localLoaded.Add(assembly);
 				Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
 			}
+			DownloadDependencies();
 			Log.Custom("Dependencies loaded!", "Loader", ConsoleColor.Green);
 		}
 		private static bool IsLoaded(string a)
@@ -86,14 +95,10 @@ namespace Qurre
 			return false;
 		}
 		private static List<Assembly> localLoaded = new List<Assembly>();
-		public static void LoadPlugin(string mod)
+		public static void LoadPlugin(Assembly assembly)
 		{
-			Log.Debug($"Loading {mod}");
 			try
 			{
-				byte[] file = ModLoader.ReadFile(mod);
-				Assembly assembly = Assembly.Load(file);
-
 				foreach (Type type in assembly.GetTypes())
 				{
 					if (type.IsAbstract)
@@ -130,7 +135,7 @@ namespace Qurre
 			}
 			catch (Exception ex)
 			{
-				Log.Error($"Error while initalizing {mod}!\n{ex}");
+				Log.Error($"An error occurred while processing {assembly.FullName}\n{ex}");
 			}
 		}
 		public static void Enable()
@@ -220,92 +225,60 @@ namespace Qurre
 				Log.Error($"Harmony UnPatching threw an error:\n{ex}");
 			}
 		}
-		private static void FixAudio()
-		{
-			try
-			{
-				var fl = Path.Combine(ManagedAssembliesDirectory, "DissonanceVoip.dll");
-				if (!File.Exists(fl)) UpdateAudio();
-				else
-				{
-					FileVersionInfo Dissonance = FileVersionInfo.GetVersionInfo(fl);
-					if (!Dissonance.LegalCopyright.Contains("Qurre")) UpdateAudio();
-				}
-			}
-			catch (Exception e)
-			{
-				Log.Warn($"Checking for DissonanceVoip update threw an error:\n{e}");
-			}
-		}
-		private static void UpdateAudio()
-		{
-			try
-			{
-				var fl = Path.Combine(ManagedAssembliesDirectory, "DissonanceVoip.dll");
-				if (File.Exists(fl)) File.Delete(fl);
-				ServerConsole.AddLog($"[WARN] [Qurre Loader] DissonanceVoip.dll outdated. Downloading DissonanceVoip.dll", ConsoleColor.Red);
-				WebRequest request = WebRequest.Create("https://cdn.scpsl.store/qurre/audio/DissonanceVoip.dll");
-				WebResponse response = request.GetResponse();
-				Stream responseStream = response.GetResponseStream();
-				Stream fileStream = File.OpenWrite(Path.Combine(ManagedAssembliesDirectory, "DissonanceVoip.dll"));
-				byte[] buffer = new byte[4096];
-				int bytesRead = responseStream.Read(buffer, 0, 4096);
-				while (bytesRead > 0)
-				{
-					fileStream.Write(buffer, 0, bytesRead);
-					bytesRead = responseStream.Read(buffer, 0, 4096);
-				}
-			}
-			catch (Exception e)
-			{
-				Log.Warn($"Updating DissonanceVoip threw an error:\n{e}");
-			}
-		}
-		private static void LoadFromUrl(string link) // Web Loader
+		private static Assembly LoadFromUrl(string link) // Web Loader
 		{
 			try
 			{
 				WebClient wc = new WebClient();
 				Assembly assembly = Assembly.Load(wc.DownloadData(link));
+				return assembly;
 			}
 			catch (Exception e)
 			{
 				Log.Error($"{e}");
+				return null;
 			}
 		}
-		private static void CheckPlan() // Web checker
-		{
+		private static void DownloadDependencies()
+		{/*
 			try
 			{
-				var url = $"http://{Domain}/check";
+				var url = $"http://{Domain}/dependencies";
 				var req = WebRequest.Create(url);
 				var resp = req.GetResponse();
-				using (var sr = new StreamReader(resp.GetResponseStream()))
+				using var sr = new StreamReader(resp.GetResponseStream());
+				var response = sr.ReadToEnd().Trim();
+				foreach (string str in response.Split('\n'))
 				{
-					var response = sr.ReadToEnd().Trim();
-					var a = response.Split(':')[1].Substring(1).Split('<')[0];
-					if (a == "2")
-					{
-						Log.Custom("Qurre plan: Premium", "Plan", ConsoleColor.Green);
-					}
-					else if (a == "3")
-					{
-						Log.Custom("Qurre plan: Gold", "Plan", ConsoleColor.Yellow);
-					}
-					else if (a == "4")
-					{
-						Log.Custom("Qurre plan: Platinum", "Plan", ConsoleColor.White);
-					}
-					else
-					{
-						Log.Custom("Qurre plan: Lite", "Plan", ConsoleColor.Magenta);
-					}
+					Assembly assembly = LoadFromUrl(str);
+					localLoaded.Add(assembly);
+					Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
 				}
 			}
 			catch (Exception ex)
 			{
 				Log.Error($"Plan checking threw an error:\n{ex}");
-			}
+			}*/
+		}
+		private static void DownloadPlugins()
+		{/*
+			try
+			{
+				var url = $"http://{Domain}/plugins";
+				var req = WebRequest.Create(url);
+				var resp = req.GetResponse();
+                using var sr = new StreamReader(resp.GetResponseStream());
+                var response = sr.ReadToEnd().Trim();
+                foreach (string str in response.Split('\n'))
+                {
+                    Assembly assembly = LoadFromUrl(str);
+					LoadPlugin(assembly);
+                }
+            }
+			catch (Exception ex)
+			{
+				Log.Error($"Plan checking threw an error:\n{ex}");
+			}*/
 		}
 	}
 }

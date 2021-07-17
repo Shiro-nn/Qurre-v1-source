@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                var ev = new InteractDoorEvent(API.Player.Get(ply), __instance.GetDoor(), false);
+                var ev = new InteractDoorEvent(Player.Get(ply), __instance.GetDoor(), false);
                 var Bypass = false;
                 var Interact = false;
                 if (__instance.ActiveLocks != 0)

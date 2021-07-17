@@ -558,6 +558,7 @@ namespace Qurre.API
 		}
 		public void ClearBroadcasts() => Broadcasts.Clear();
 		public void Damage(int amount, DamageTypes.DamageType damageType) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, QueryProcessor.PlayerId), GameObject);
+		public void Damage(PlayerStats.HitInfo info) => PlayerStats.HurtPlayer(info, GameObject);
 		public void AddItem(ItemType itemType, float duration = float.NegativeInfinity, int sight = 0, int barrel = 0, int other = 0) =>
 			Inventory.AddNewItem(itemType, duration, sight, barrel, other);
 		public void AddItem(ItemType itemType) => Inventory.AddNewItem(itemType);
@@ -647,6 +648,14 @@ namespace Qurre.API
 		public void EnableEffect(EffectType effect, float duration = 0f, bool addDurationIfActive = false)
 		{
 			if (TryGetEffect(effect, out var pEffect)) PlayerEffectsController.EnableEffect(pEffect, duration, addDurationIfActive);
+		}
+		public void EnableEffect(PlayerEffect effect, float duration = 0, bool addDurationIfActive = false)
+		{
+			PlayerEffectsController.EnableEffect(effect, duration, addDurationIfActive);
+		}
+		public T GetEffect<T>() where T : PlayerEffect
+		{
+			return PlayerEffectsController.GetEffect<T>();
 		}
 		public PlayerEffect GetEffect(EffectType effect)
 		{

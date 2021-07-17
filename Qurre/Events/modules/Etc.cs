@@ -8,6 +8,7 @@ using Dissonance.Config;
 using Dissonance;
 using Dissonance.Networking.Client;
 using UnityEngine;
+using Qurre.API;
 namespace Qurre.Events.modules
 {
     internal class Etc
@@ -63,7 +64,7 @@ namespace Qurre.Events.modules
             for (; ; )
             {
                 yield return float.NegativeInfinity;
-                if (QurreModLoader.Audio.client != null && !QurreModLoader.Audio.client._disconnected)
+                if (Audio.client != null && !Audio.client._disconnected)
                 {
                     int num;
                     for (int i = 0; i < DebugSettings.Instance._levels.Count; i = num + 1)
@@ -71,7 +72,7 @@ namespace Qurre.Events.modules
                         DebugSettings.Instance._levels[i] = LogLevel.Trace;
                         num = i;
                     }
-                    if (QurreModLoader.Audio.client.Update() == ClientStatus.Error)
+                    if (Audio.client.Update() == ClientStatus.Error)
                     {
                         if (Log.debug) Log.Error("Audio Client caused an error.");
                     }
