@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.player
 				switch (command)
 				{
 					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Door:
-						bool boolean = true;
+						bool boolean = false;
                         if (__instance.GetGenerator().Locked)
 						{
 							if (player.Inventory.curItem > ItemType.KeycardJanitor)

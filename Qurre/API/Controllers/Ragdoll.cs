@@ -4,7 +4,11 @@ namespace Qurre.API.Controllers
 {
     public class Ragdoll
     {
-        internal Ragdoll(global::Ragdoll _) => ragdoll = _;
+        internal Ragdoll(global::Ragdoll _)
+        {
+            ragdoll = _;
+            Map.Ragdolls.Add(this);
+        }
         public Ragdoll(RoleType roletype, Vector3 pos, Quaternion rot, Vector3 velocity, PlayerStats.HitInfo info, bool allowRecall, Player owner)
         {
             var role = Server.Host.ClassManager.Classes.SafeGet((int)roletype);
