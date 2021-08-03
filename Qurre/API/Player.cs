@@ -168,16 +168,8 @@ namespace Qurre.API
 			{
 				try
 				{
-					NetworkIdentity identity = Connection.identity;
-					GameObject.transform.localScale = value;
-					ObjectDestroyMessage destroyMessage = new ObjectDestroyMessage();
-					destroyMessage.netId = identity.netId;
-					foreach (GameObject obj in PlayerManager.players)
-					{
-						NetworkConnection playerCon = obj.GetComponent<NetworkIdentity>().connectionToClient;
-						if (obj != GameObject) playerCon.Send(destroyMessage, 0);
-						SendSpawnMessage?.Invoke(null, new object[] { identity, playerCon });
-					}
+					rh.transform.localScale = value;
+					foreach (Player target in List) SendSpawnMessage?.Invoke(null, new object[] { ClassManager.netIdentity, target.Connection });
 				}
 				catch (Exception ex)
 				{
