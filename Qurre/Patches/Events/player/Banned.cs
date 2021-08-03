@@ -1,0 +1,21 @@
+﻿using HarmonyLib;
+using Qurre.API.Events;
+namespace Qurre.Patches.Events.player
+{
+    [HarmonyPatch(typeof(BanHandler), nameof(BanHandler.IssueBan))]
+    internal static class Banned
+    {
+        private static void Postfix(BanDetails ban, BanHandler.BanType banType)
+        {
+            try
+            {
+                var ev = new BannedEvent(string.IsNullOrEmpty(ban.Id) ? null : API.Player.Get(ban.Id), ban, banType);
+                Qurre.Events.Invoke.Player.Banned(ev);
+            }
+            catch (System.Exception e)
+            {
+                Log.Error($"umm, error in patching Player [Banned]:\n{e}\n{e.StackTrace}");
+            }
+        }
+    }
+}
