@@ -630,30 +630,46 @@ namespace Qurre.API.Events
     }
     public class FlashExplosionEvent : EventArgs
     {
-        public FlashExplosionEvent(Player thrower, List<Player> targets, Vector3 position, bool allowed = true)
+        public FlashExplosionEvent(Player thrower, Vector3 position, bool allowed = true)
         {
             Thrower = thrower;
-            Targets = targets;
             Position = position;
             Allowed = allowed;
         }
         public Player Thrower { get; }
+        public Vector3 Position { get; }
+        public bool Allowed { get; set; }
+        [Obsolete("Not used anymore")]
+        public List<Player> Targets { get; }
+    }
+    public class FragExplosionEvent : EventArgs
+    {
+        public FragExplosionEvent(Player thrower, Vector3 position, bool allowed = true)
+        {
+            Thrower = thrower;
+            Position = position;
+            Allowed = allowed;
+        }
+        public Player Thrower { get; }
+        [Obsolete("Not used anymore")]
         public List<Player> Targets { get; }
         public Vector3 Position { get; }
         public bool Allowed { get; set; }
     }
-    public class FragExplosionEvent : EventArgs
+    public class FlashedEvent : EventArgs
     {
-        public FragExplosionEvent(Player thrower, List<Player> targets, Vector3 position, bool allowed = true)
+        public FlashedEvent(Player thrower, Player target, Vector3 position, int ignoreMask, bool allowed)
         {
             Thrower = thrower;
-            Targets = targets;
+            Target = target;
             Position = position;
+            IgnoreMask = ignoreMask;
             Allowed = allowed;
         }
         public Player Thrower { get; }
-        public List<Player> Targets { get; }
+        public Player Target { get; }
         public Vector3 Position { get; }
+        public int IgnoreMask { get; set; }
         public bool Allowed { get; set; }
     }
 }

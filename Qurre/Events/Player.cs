@@ -47,6 +47,7 @@ namespace Qurre.Events
         public static event AllEvents<RadioUsingEvent> RadioUsing;
         public static event AllEvents<FlashExplosionEvent> FlashExplosion;
         public static event AllEvents<FragExplosionEvent> FragExplosion;
+        public static event AllEvents<FlashedEvent> Flashed;
         internal static void Invokes(BannedEvent ev) => Banned.invoke(ev);
         internal static void Invokes(BanEvent ev) => Ban.invoke(ev);
         internal static void Invokes(KickEvent ev) => Kick.invoke(ev);
@@ -89,5 +90,6 @@ namespace Qurre.Events
         internal static void Invokes(RadioUsingEvent ev) => RadioUsing.invoke(ev);
         internal static void Invokes(FlashExplosionEvent ev) => FlashExplosion.invoke(ev);
         internal static void Invokes(FragExplosionEvent ev) => FragExplosion.invoke(ev);
+        internal static void Invokes(FlashedEvent ev) => Flashed.invoke(ev);
     }
 }
