@@ -13,7 +13,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 7, 5);
+		public static Version Version { get; } = new Version(1, 7, 6);
 		private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -28,7 +28,7 @@ namespace Qurre
 		{
 			if (!Directory.Exists(PluginsDirectory))
 			{
-				Log.Warn($"plugins directory not found - creating: {PluginsDirectory}");
+				Log.Warn($"Plugins directory not found - creating: {PluginsDirectory}");
 				Directory.CreateDirectory(PluginsDirectory);
 			}
 			try

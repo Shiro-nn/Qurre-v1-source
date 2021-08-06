@@ -1,7 +1,9 @@
 ﻿using Interactables.Interobjects.DoorUtils;
 using Qurre.API.Controllers;
 using Qurre.API.Objects;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using _lift = Qurre.API.Controllers.Lift;
 using _locker = Qurre.API.Controllers.Locker;
 using _workStation = Qurre.API.Controllers.WorkStation;
@@ -38,5 +40,22 @@ namespace Qurre.API
 		public static _lift GetLift(this Lift lift) => Map.Lifts.FirstOrDefault(x => x.GameObject == lift.gameObject);
 		public static _locker GetLocker(this Locker locker) => Map.Lockers.FirstOrDefault(x => x.Transform == locker.gameObject);
 		public static _workStation GetWorkStation(this WorkStation station) => Map.WorkStations.FirstOrDefault(x => x.GameObject == station.gameObject);
+		public static System.Random Random { get; } = new System.Random();
+		public static void Shuffle<T>(this IList<T> list)
+		{
+			RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
+			int n = list.Count;
+			while (n > 1)
+			{
+				byte[] box = new byte[1];
+				do provider.GetBytes(box);
+				while (!(box[0] < n * (byte.MaxValue / n)));
+				int k = (box[0] % n);
+				n--;
+				T value = list[k];
+				list[k] = list[n];
+				list[n] = value;
+			}
+		}
 	}
 }
