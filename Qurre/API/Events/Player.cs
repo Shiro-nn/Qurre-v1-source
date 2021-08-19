@@ -1,5 +1,6 @@
 ﻿using Assets._Scripts.Dissonance;
 using Grenades;
+using Qurre.API.Controllers;
 using Qurre.API.Objects;
 using System;
 using System.Collections.Generic;
@@ -136,7 +137,7 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Player Player { get; }
-        public UserGroup NewGroup { get; set; }
+        public UserGroup NewGroup { get; }
         public bool Allowed { get; set; }
     }
     public class ItemChangeEvent : EventArgs
@@ -201,7 +202,7 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Player Player { get; internal set; }
-        public Inventory.SyncItemInfo MicroHid { get; internal set; }
+        public Inventory.SyncItemInfo MicroHid { get; }
         public float Energy
         {
             get => Player.MicroHID.NetworkEnergy;
@@ -282,7 +283,7 @@ namespace Qurre.API.Events
         }
         public Player Killer { get; }
         public Player Target { get; }
-        public PlayerStats.HitInfo HitInfo { get; set; }
+        public PlayerStats.HitInfo HitInfo { get; }
         public bool Allowed { get; set; }
     }
     public class InteractEvent : EventArgs
@@ -292,19 +293,19 @@ namespace Qurre.API.Events
     }
     public class InteractDoorEvent : EventArgs
     {
-        public InteractDoorEvent(Player player, Controllers.Door door, bool allowed = true)
+        public InteractDoorEvent(Player player, Door door, bool allowed = true)
         {
             Player = player;
             Door = door;
             Allowed = allowed;
         }
         public Player Player { get; }
-        public Controllers.Door Door { get; set; }
+        public Door Door { get; }
         public bool Allowed { get; set; }
     }
     public class InteractGeneratorEvent : EventArgs
     {
-        public InteractGeneratorEvent(Player player, Controllers.Generator generator, GeneratorStatus status, bool allowed = true)
+        public InteractGeneratorEvent(Player player, Generator generator, GeneratorStatus status, bool allowed = true)
         {
             Player = player;
             Generator = generator;
@@ -312,7 +313,7 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Player Player { get; }
-        public Controllers.Generator Generator { get; }
+        public Generator Generator { get; }
         public GeneratorStatus Status { get; }
         public bool Allowed { get; set; }
     }
@@ -427,8 +428,8 @@ namespace Qurre.API.Events
         }
         public Player Shooter { get; }
         public GameObject Target { get; }
-        public Vector3 Position { get; set; }
-        public WeaponType WeaponType { get; set; }
+        public Vector3 Position { get; }
+        public WeaponType WeaponType { get; }
         public HitBoxType HitboxType { get; }
         public bool Allowed { get; set; }
     }
@@ -481,8 +482,8 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Player Player { get; }
-        public float Hp { get; }
-        public bool Allowed { get; }
+        public float Hp { get; set; }
+        public bool Allowed { get; set; }
     }
     public class MedicalUsedEvent : EventArgs
     {
@@ -517,7 +518,7 @@ namespace Qurre.API.Events
             Player = player;
             Item = item;
         }
-        public float Cooldown { get; set; }
+        public float Cooldown { get; }
         public bool Allowed { get; set; }
         public Player Player { get; }
         public ItemType Item { get; }
@@ -556,14 +557,16 @@ namespace Qurre.API.Events
     }
     public class TeslaTriggerEvent : EventArgs
     {
-        public TeslaTriggerEvent(Player player, bool inHurtingRange, bool triggerable = true)
+        public TeslaTriggerEvent(Player player, Tesla tesla, bool inHurtingRange, bool triggerable = true)
         {
             Player = player;
+            Tesla = tesla;
             InHurtingRange = inHurtingRange;
             Triggerable = triggerable;
         }
         public Player Player { get; }
-        public bool InHurtingRange { get; set; }
+        public Tesla Tesla { get; }
+        public bool InHurtingRange { get; }
         public bool Triggerable { get; set; }
     }
     public class SpawnEvent : EventArgs
@@ -651,10 +654,10 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Player Thrower { get; }
-        [Obsolete("Not used anymore")]
-        public List<Player> Targets { get; }
         public Vector3 Position { get; }
         public bool Allowed { get; set; }
+        [Obsolete("Not used anymore")]
+        public List<Player> Targets { get; }
     }
     public class FlashedEvent : EventArgs
     {
@@ -669,7 +672,7 @@ namespace Qurre.API.Events
         public Player Thrower { get; }
         public Player Target { get; }
         public Vector3 Position { get; }
-        public int IgnoreMask { get; set; }
+        public int IgnoreMask { get; }
         public bool Allowed { get; set; }
     }
 }

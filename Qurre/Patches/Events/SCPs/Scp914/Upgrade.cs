@@ -36,17 +36,20 @@ namespace Qurre.Patches.Events.SCPs.SCP914
                     }
                     catch { }
                 }
-                List<Player> _players = __instance.Scp914_players().Select(player => Player.Get(player.gameObject)).ToList();
-                foreach (Player pl in _players)
+                List<Player> __players = __instance.Scp914_players().Select(player => Player.Get(player.gameObject)).ToList();
+                List<Player> _players = new List<Player>();
+                foreach (Player pl in __players)
                 {
                     var _ev = new UpgradePlayerEvent(__instance, pl, __instance.knobState);
                     Qurre.Events.Invoke.Scp914.UpgradePlayer(_ev);
-                    if (!_ev.Allowed) _players.Remove(pl);
+                    if (_ev.Allowed) _players.Add(pl);
+                    __instance.knobState = _ev.Knob;
                 }
                 var _list_pick = __instance.Scp914_items();
                 if (_list_pick == null) _list_pick = new List<Pickup>();
                 var ev = new UpgradeEvent(__instance, _players, __instance.Scp914_items(), __instance.knobState);
                 Qurre.Events.Invoke.Scp914.Upgrade(ev);
+                __instance.knobState = ev.Knob;
                 var players = ev.Players.Select(player => player.ClassManager).ToList();
                 __instance.MoveObjects(ev.Items, players);
                 try { if (ev.Allowed) __instance.UpgradeObjects(ev.Items, players); } catch { }

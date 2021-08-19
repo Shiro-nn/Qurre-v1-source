@@ -57,6 +57,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                     var ev = new PocketDimensionEscapeEvent(player, pos);
                     Qurre.Events.Invoke.Scp106.PocketDimensionEscape(ev);
                     if (!ev.Allowed) return false;
+                    pos = ev.TeleportPosition;
                     player.ReferenceHub.playerMovementSync.AddSafeTime(2f, false);
                     player.Position = pos;
                     __instance.RemoveCorrosionEffect(player.GameObject);

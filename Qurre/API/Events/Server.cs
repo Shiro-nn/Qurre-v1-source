@@ -102,7 +102,7 @@ namespace Qurre.API.Events
         public Player Sender { get; }
         public Player Target { get; }
         public int Port { get; }
-        public string Reason { get; set; }
+        public string Reason { get; }
         public bool Allowed { get; set; }
     }
     public class ReportLocalEvent : EventArgs
@@ -117,7 +117,7 @@ namespace Qurre.API.Events
         }
         public Player Issuer { get; }
         public Player Target { get; }
-        public string Reason { get; set; }
+        public string Reason { get; }
         public bool GlobalReport { get; set; }
         public bool Allowed { get; set; }
     }

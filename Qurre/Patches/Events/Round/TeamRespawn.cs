@@ -35,11 +35,17 @@ namespace Qurre.Patches.Events.Round
                         int avsp = Mathf.Min(tick, spawnableTeam.MaxWaveSize);
                         if (__instance.RespawnManager_prioritySpawn())
                             list = list.OrderBy(item => item.ClassManager.DeathTime).ToList();
-                        else
-                            list.ShuffleList();
+                        else list.ShuffleList();
                         List<Player> twolist = new List<Player>();
                         var ev = new TeamRespawnEvent(list, avsp, __instance.NextKnownTeam);
                         Qurre.Events.Invoke.Round.TeamRespawn(ev);
+                        if (!ev.Allowed)
+                        {
+                            __instance.NextKnownTeam = SpawnableTeamType.None;
+                            return false;
+                        }
+                        list = ev.Players;
+                        avsp = ev.MaxRespAmount;
                         while (list.Count > avsp) list.RemoveAt(list.Count - 1);
                         list.ShuffleList();
                         foreach (Player targ in list)
@@ -52,7 +58,7 @@ namespace Qurre.Patches.Events.Round
                             }
                             catch { }
                         }
-                        if (twolist.Count > 0 && ev.Allowed)
+                        if (twolist.Count > 0)
                         {
                             RespawnTickets.Singleton.GrantTickets(__instance.NextKnownTeam, -twolist.Count * spawnableTeam.TicketRespawnCost);
                             if (UnitNamingRules.TryGetNamingRule(__instance.NextKnownTeam, out UnitNamingRule rule))
@@ -72,7 +78,7 @@ namespace Qurre.Patches.Events.Round
                 }
                 return false;
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Log.Error($"umm, error in patching Round [TeamRespawn]:\n{e}\n{e.StackTrace}");
                 return true;

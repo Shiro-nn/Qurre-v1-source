@@ -25,7 +25,7 @@ namespace Qurre.Patches.Events.player
                         {
                             if (!teslaGate.PlayerInRange(allHub.Value) || teslaGate.InProgress) continue;
                             if (Player.Get(allHub.Key).Invisible) continue;
-                            var ev = new TeslaTriggerEvent(Player.Get(allHub.Key), teslaGate.PlayerInHurtRange(allHub.Key));
+                            var ev = new TeslaTriggerEvent(Player.Get(allHub.Key), teslaGate.GetTesla(), teslaGate.PlayerInHurtRange(allHub.Key));
                             Qurre.Events.Invoke.Player.TeslaTrigger(ev);
                             if (ev.Triggerable) teslaGate.ServerSideCode();
                         }

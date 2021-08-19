@@ -38,7 +38,7 @@ namespace Qurre.API.Events
         }
         public List<Player> Players { get; }
         public int MaxRespAmount { get; set; }
-        public SpawnableTeamType NextKnownTeam { get; set; }
+        public SpawnableTeamType NextKnownTeam { get; }
         public bool Allowed { get; set; }
     }
 }

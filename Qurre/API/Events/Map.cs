@@ -88,7 +88,7 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Controllers.Door Door { get; }
-        public float Hp { get; }
+        public float Hp { get; set; }
         public DoorDamageType DamageType { get; }
         public bool Allowed { get; set; }
     }

@@ -184,7 +184,7 @@ namespace Qurre.API.Events
         }
         public Scp096 Scp096 { get; }
         public Player Player { get; }
-        public bool Force { get; private set; }
+        public bool Force { get; }
         public bool Allowed { get; set; }
     }
     public class CalmDownEvent : EventArgs

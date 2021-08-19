@@ -9,12 +9,13 @@ namespace Qurre.Patches.Events.Map
     [HarmonyPatch(typeof(BreakableDoor), nameof(BreakableDoor.ServerDamage))]
     internal static class DoorDamage
     {
-        private static bool Prefix(BreakableDoor __instance, float hp, DoorDamageType type)
+        private static bool Prefix(BreakableDoor __instance, ref float hp, DoorDamageType type)
         {
             try
             {
                 var ev = new DoorDamageEvent(Extensions.GetDoor(__instance), hp, type);
                 Qurre.Events.Invoke.Map.DoorDamage(ev);
+                hp = ev.Hp;
                 return ev.Allowed;
             }
             catch (Exception e)

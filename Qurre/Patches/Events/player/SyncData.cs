@@ -7,7 +7,7 @@ namespace Qurre.Patches.Events.player
     [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.CallCmdSyncData))]
     internal static class SyncData
     {
-        private static bool Prefix(AnimationController __instance, byte state, Vector2 v2)
+        private static bool Prefix(AnimationController __instance, ref byte state, Vector2 v2)
         {
             try
             {
@@ -15,6 +15,7 @@ namespace Qurre.Patches.Events.player
                 if (pl == null) return true;
                 var ev = new SyncDataEvent(pl, v2, state);
                 Qurre.Events.Invoke.Player.SyncData(ev);
+                state = ev.CurrentAnimation;
                 return ev.Allowed;
             }
             catch (Exception e)
