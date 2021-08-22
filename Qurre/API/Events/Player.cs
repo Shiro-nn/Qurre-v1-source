@@ -1,10 +1,18 @@
 ﻿using Assets._Scripts.Dissonance;
-using Grenades;
+using InventorySystem.Items;
+using InventorySystem.Items.Firearms.BasicMessages;
+using InventorySystem.Items.MicroHID;
+using InventorySystem.Items.Pickups;
+using InventorySystem.Items.Radio;
+using InventorySystem.Items.ThrowableProjectiles;
+using MapGeneration.Distributors;
 using Qurre.API.Controllers;
 using Qurre.API.Objects;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static CharacterClassManager;
+
 namespace Qurre.API.Events
 {
     public class BannedEvent : EventArgs
@@ -21,11 +29,11 @@ namespace Qurre.API.Events
     }
     public class BanEvent : EventArgs
     {
-        private int duration;
+        private long duration;
         private Player target;
         private Player issuer;
         private bool _allowed;
-        public BanEvent(Player target, Player issuer, int duration, string reason, string fullMessage, bool allowed = true)
+        public BanEvent(Player target, Player issuer, long duration, string reason, string fullMessage, bool allowed = true)
         {
             Duration = duration;
             Target = target;
@@ -34,7 +42,7 @@ namespace Qurre.API.Events
             FullMessage = fullMessage;
             Allowed = allowed;
         }
-        public int Duration
+        public long Duration
         {
             get => duration;
             set
@@ -142,31 +150,34 @@ namespace Qurre.API.Events
     }
     public class ItemChangeEvent : EventArgs
     {
-        public ItemChangeEvent(Player player, Inventory.SyncItemInfo oldItem, Inventory.SyncItemInfo newItem)
+        public ItemChangeEvent(Player player, Item oldItem, Item newItem, bool allowed = true)
         {
             Player = player;
             OldItem = oldItem;
             NewItem = newItem;
+            Allowed = allowed;
         }
         public Player Player { get; }
-        public Inventory.SyncItemInfo OldItem { get; set; }
-        public Inventory.SyncItemInfo NewItem { get; }
+        public Item OldItem { get; set; }
+        public Item NewItem { get; }
+        public bool Allowed { get; set; }
     }
     public class RoleChangeEvent : EventArgs
     {
-        public RoleChangeEvent(Player player, RoleType newRole, List<ItemType> items, bool savePos, bool escaped)
+        public RoleChangeEvent(Player player, RoleType newRole, bool savePos, SpawnReason reason, bool allowed = true)
         {
             Player = player;
             NewRole = newRole;
-            Items = items;
             SavePos = savePos;
-            Escaped = escaped;
+            Reason = reason;
+            Allowed = allowed;
         }
         public Player Player { get; }
         public RoleType NewRole { get; set; }
         public List<ItemType> Items { get; }
-        public bool Escaped { get; set; }
         public bool SavePos { get; set; }
+        public SpawnReason Reason { get; set; }
+        public bool Allowed { get; set; }
     }
     public class DeadEvent : EventArgs
     {
@@ -194,21 +205,23 @@ namespace Qurre.API.Events
     }
     public class MicroHidUsingEvent : EventArgs
     {
-        public MicroHidUsingEvent(Player player, Inventory.SyncItemInfo microHid, MicroHID.MicroHidState state, bool allowed = true)
+        public MicroHidUsingEvent(Player player, MicroHIDItem microHid, HidState state, bool allowed = true)
         {
             Player = player;
             MicroHid = microHid;
             State = state;
             Allowed = allowed;
+            Coefficient = 1;
         }
         public Player Player { get; internal set; }
-        public Inventory.SyncItemInfo MicroHid { get; }
+        public MicroHIDItem MicroHid { get; }
         public float Energy
         {
-            get => Player.MicroHID.NetworkEnergy;
-            set => Player.MicroHID.NetworkEnergy = value;
+            get => MicroHid.RemainingEnergy;
+            set => MicroHid.RemainingEnergy = value;
         }
-        public MicroHID.MicroHidState State { get; set; }
+        public HidState State { get; set; }
+        public float Coefficient { get; set; }
         public bool Allowed { get; set; }
     }
     public class CuffEvent : EventArgs
@@ -238,7 +251,6 @@ namespace Qurre.API.Events
     public class DamageEvent : EventArgs
     {
         private PlayerStats.HitInfo hitInformations;
-        private DamageTypes.DamageType damageType = DamageTypes.None;
         public DamageEvent(Player attacker, Player target, PlayerStats.HitInfo hitInformations, bool allowed = true)
         {
             Attacker = attacker;
@@ -254,17 +266,7 @@ namespace Qurre.API.Events
             private set => hitInformations = value;
         }
         public int Time => hitInformations.Time;
-        public DamageTypes.DamageType DamageType
-        {
-            get
-            {
-                if (damageType == DamageTypes.None)
-                    damageType = DamageTypes.FromIndex(hitInformations.Tool);
-
-                return damageType;
-            }
-        }
-        public int Tool => hitInformations.Tool;
+        public DamageTypes.DamageType DamageType => hitInformations.Tool;
         public float Amount
         {
             get => hitInformations.Amount;
@@ -333,20 +335,14 @@ namespace Qurre.API.Events
     }
     public class InteractLockerEvent : EventArgs
     {
-        public InteractLockerEvent(Player player, Controllers.Locker locker, LockerChamber lockerChamber, byte lockerId, byte chamberId, bool allowed)
+        public InteractLockerEvent(Player player, Controllers.Locker locker, bool allowed)
         {
             Player = player;
             Locker = locker;
-            Chamber = lockerChamber;
-            LockerId = lockerId;
-            ChamberId = chamberId;
             Allowed = allowed;
         }
         public Player Player { get; }
         public Controllers.Locker Locker { get; }
-        public LockerChamber Chamber { get; }
-        public byte LockerId { get; }
-        public byte ChamberId { get; }
         public bool Allowed { get; set; }
     }
     public class IcomSpeakEvent : EventArgs
@@ -361,37 +357,37 @@ namespace Qurre.API.Events
     }
     public class DroppingItemEvent : EventArgs
     {
-        public DroppingItemEvent(Player player, Inventory.SyncItemInfo item, bool allowed = true)
+        public DroppingItemEvent(Player player, Item item, bool allowed = true)
         {
             Player = player;
             Item = item;
             Allowed = allowed;
         }
         public Player Player { get; }
-        public Inventory.SyncItemInfo Item { get; set; }
+        public Item Item { get; set; }
         public bool Allowed { get; set; }
     }
     public class DropItemEvent : EventArgs
     {
-        public DropItemEvent(Player player, Pickup pickup)
+        public DropItemEvent(Player player, Item item)
         {
             Player = player;
-            Pickup = pickup;
+            Item = item;
         }
         public Player Player { get; }
-        public Pickup Pickup { get; }
+        public Item Item { get; }
     }
     public class PickupItemEvent : EventArgs
     {
-        public PickupItemEvent(Player player, Pickup pickup, bool allowed = true)
+        public PickupItemEvent(Player player, Item item, bool allowed = true)
         {
             Allowed = allowed;
             Player = player;
-            Pickup = pickup;
+            Item = item;
         }
         public bool Allowed { get; set; }
         public Player Player { get; }
-        public Pickup Pickup { get; }
+        public Item Item { get; }
     }
     public class JoinEvent : EventArgs
     {
@@ -405,32 +401,28 @@ namespace Qurre.API.Events
     }
     public class RechargeWeaponEvent : EventArgs
     {
-        public RechargeWeaponEvent(Player player, bool animationOnly, bool allowed = true)
+        public RechargeWeaponEvent(Player player, Item item, RequestType request, bool allowed = true)
         {
             Player = player;
-            AnimationOnly = animationOnly;
+            Item = item;
+            Request = request;
             Allowed = allowed;
         }
         public Player Player { get; }
-        public bool AnimationOnly { get; }
+        public Item Item { get; }
+        public RequestType Request { get; }
         public bool Allowed { get; set; }
     }
     public class ShootingEvent : EventArgs
     {
-        public ShootingEvent(Player shooter, GameObject target, Vector3 position, WeaponType wt, HitBoxType hitboxType, bool allowed = true)
+        public ShootingEvent(Player shooter, ShotMessage msg, bool allowed = true)
         {
             Shooter = shooter;
-            Target = target;
-            Position = position;
-            WeaponType = wt;
-            HitboxType = hitboxType;
+            Message = msg;
             Allowed = allowed;
         }
         public Player Shooter { get; }
-        public GameObject Target { get; }
-        public Vector3 Position { get; }
-        public WeaponType WeaponType { get; }
-        public HitBoxType HitboxType { get; }
+        public ShotMessage Message { get; }
         public bool Allowed { get; set; }
     }
     public class SpeakEvent : EventArgs
@@ -485,43 +477,39 @@ namespace Qurre.API.Events
         public float Hp { get; set; }
         public bool Allowed { get; set; }
     }
-    public class MedicalUsedEvent : EventArgs
+    public class ItemUsedEvent : EventArgs
     {
-        public MedicalUsedEvent(Player player, ItemType item)
+        public ItemUsedEvent(Player player, ItemIdentifier item)
         {
             Player = player;
             Item = item;
         }
         public Player Player { get; }
-        public ItemType Item { get; }
+        public ItemIdentifier Item { get; }
     }
-    public class MedicalUsingEvent : EventArgs
+    public class ItemUsingEvent : EventArgs
     {
-        public MedicalUsingEvent(Player player, ItemType item, float cooldown, bool allowed = true)
+        public ItemUsingEvent(Player player, Item item, bool allowed = true)
         {
-            Cooldown = cooldown;
             Allowed = allowed;
             Player = player;
             Item = item;
         }
-        public float Cooldown { get; set; }
-        public bool Allowed { get; set; }
         public Player Player { get; }
-        public ItemType Item { get; }
+        public Item Item { get; }
+        public bool Allowed { get; set; }
     }
-    public class MedicalStoppingEvent : EventArgs
+    public class ItemStoppingEvent : EventArgs
     {
-        public MedicalStoppingEvent(Player player, ItemType item, float cooldown, bool allowed = true)
+        public ItemStoppingEvent(Player player, Item item, bool allowed = true)
         {
-            Cooldown = cooldown;
             Allowed = allowed;
             Player = player;
             Item = item;
         }
-        public float Cooldown { get; }
-        public bool Allowed { get; set; }
         public Player Player { get; }
-        public ItemType Item { get; }
+        public Item Item { get; }
+        public bool Allowed { get; set; }
     }
     public class SyncDataEvent : EventArgs
     {
@@ -537,22 +525,18 @@ namespace Qurre.API.Events
         public byte CurrentAnimation { get; set; }
         public bool Allowed { get; set; }
     }
-    public class ThrowGrenadeEvent : EventArgs
+    public class ThrowItemEvent : EventArgs
     {
-        public ThrowGrenadeEvent(Player player, GrenadeManager grenadeManager, int id, bool slow, double fuseTime, bool allowed = true)
+        public ThrowItemEvent(Player player, Item item, ThrowableNetworkHandler.RequestType request, bool allowed = true)
         {
             Player = player;
-            GrenadeManager = grenadeManager;
-            Id = id;
-            Slow = slow;
-            FuseTime = fuseTime;
+            Item = item;
+            Request = request;
             Allowed = allowed;
         }
         public Player Player { get; }
-        public GrenadeManager GrenadeManager { get; }
-        public int Id { get; }
-        public bool Slow { get; set; }
-        public double FuseTime { get; set; }
+        public Item Item { get; }
+        public ThrowableNetworkHandler.RequestType Request { get; set; }
         public bool Allowed { get; set; }
     }
     public class TeslaTriggerEvent : EventArgs
@@ -585,21 +569,23 @@ namespace Qurre.API.Events
     }
     public class RadioUpdateEvent : EventArgs
     {
-        public RadioUpdateEvent(Player player, Radio radio, RadioStatus changeTo, bool allowed = true)
+        public RadioUpdateEvent(Player player, RadioItem radio, RadioStatus changeTo, bool enabled, bool allowed = true)
         {
             Player = player;
             Radio = radio;
             ChangeTo = changeTo;
+            Enabled = enabled;
             Allowed = allowed;
         }
         public Player Player { get; private set; }
-        public Radio Radio { get; private set; }
+        public RadioItem Radio { get; private set; }
         public RadioStatus ChangeTo { get; set; }
+        public bool Enabled { get; set; }
         public bool Allowed { get; set; }
     }
     public class RadioUsingEvent : EventArgs
     {
-        public RadioUsingEvent(Player player, Radio radio, float battery, bool allowed = true)
+        public RadioUsingEvent(Player player, RadioItem radio, byte battery, bool allowed = true)
         {
             Player = player;
             Radio = radio;
@@ -607,8 +593,8 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Player Player { get; private set; }
-        public Radio Radio { get; private set; }
-        public float Battery { get; set; }
+        public RadioItem Radio { get; private set; }
+        public byte Battery { get; set; }
         public bool Allowed { get; set; }
     }
     public class TransmitPlayerDataEvent : EventArgs
@@ -633,46 +619,44 @@ namespace Qurre.API.Events
     }
     public class FlashExplosionEvent : EventArgs
     {
-        public FlashExplosionEvent(Player thrower, Vector3 position, bool allowed = true)
+        public FlashExplosionEvent(Player thrower, FlashbangGrenade grenade, Vector3 position, bool allowed = true)
         {
             Thrower = thrower;
+            Grenade = grenade;
             Position = position;
             Allowed = allowed;
         }
         public Player Thrower { get; }
+        public FlashbangGrenade Grenade { get; }
         public Vector3 Position { get; }
         public bool Allowed { get; set; }
-        [Obsolete("Not used anymore")]
-        public List<Player> Targets { get; }
     }
     public class FragExplosionEvent : EventArgs
     {
-        public FragExplosionEvent(Player thrower, Vector3 position, bool allowed = true)
+        public FragExplosionEvent(Player thrower, ExplosionGrenade grenade, Vector3 position, bool allowed = true)
         {
             Thrower = thrower;
+            Grenade = grenade;
             Position = position;
             Allowed = allowed;
         }
         public Player Thrower { get; }
+        public ExplosionGrenade Grenade { get; }
         public Vector3 Position { get; }
         public bool Allowed { get; set; }
-        [Obsolete("Not used anymore")]
-        public List<Player> Targets { get; }
     }
     public class FlashedEvent : EventArgs
     {
-        public FlashedEvent(Player thrower, Player target, Vector3 position, int ignoreMask, bool allowed)
+        public FlashedEvent(Player thrower, Player target, Vector3 position, bool allowed)
         {
             Thrower = thrower;
             Target = target;
             Position = position;
-            IgnoreMask = ignoreMask;
             Allowed = allowed;
         }
         public Player Thrower { get; }
         public Player Target { get; }
         public Vector3 Position { get; }
-        public int IgnoreMask { get; }
         public bool Allowed { get; set; }
     }
 }

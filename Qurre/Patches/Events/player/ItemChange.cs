@@ -1,36 +1,26 @@
 ﻿using HarmonyLib;
+using InventorySystem;
+using InventorySystem.Items;
+using Qurre.API;
 using Qurre.API.Events;
-using Qurre.Events.Invoke;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(Inventory), nameof(Inventory.CallCmdSetUnic))]
+    [HarmonyPatch(typeof(Inventory), nameof(Inventory.CurInstance), MethodType.Setter)]
     internal static class ItemChange
     {
-        private static void Prefix(Inventory __instance, int i)
+        internal static bool Prefix(Inventory __instance, ItemBase value)
         {
             try
             {
-                if (__instance.itemUniq == i)
-                    return;
-                int oI = __instance.GetItemIndex();
-                if (oI == -1 && i == -1)
-                    return;
-                Inventory.SyncItemInfo old = oI == -1
-                    ? new Inventory.SyncItemInfo() { id = ItemType.None }
-                    : __instance.GetItemInHand();
-                Inventory.SyncItemInfo newi = new Inventory.SyncItemInfo() { id = ItemType.None };
-                foreach (Inventory.SyncItemInfo item in __instance.items)
-                    if (item.uniq == i)
-                        newi = item;
-                var ev = new ItemChangeEvent(API.Player.Get(__instance.gameObject), old, newi);
-                Player.ItemChange(ev);
-                oI = __instance.GetItemIndex();
-                if (oI != -1)
-                    __instance.items[oI] = ev.OldItem;
+                if (__instance.CurInstance == value) return true;
+                var ev = new ItemChangeEvent(Player.Get(__instance._hub), __instance.CurInstance.GetItem(), value.GetItem());
+                Qurre.Events.Invoke.Player.ItemChange(ev);
+                return ev.Allowed;
             }
             catch (System.Exception e)
             {
                 Log.Error($"umm, error in patching Player [ItemChange]:\n{e}\n{e.StackTrace}");
+                return true;
             }
         }
     }

@@ -1,31 +1,24 @@
-﻿using Mirror;
-using QurreModLoader;
-using System.Linq;
+﻿using MapGeneration.Distributors;
+using Mirror;
 using UnityEngine;
 namespace Qurre.API.Controllers
 {
     public class Generator
     {
-        internal Generator(Generator079 g, bool main)
+        internal Generator(Scp079Generator g)
         {
             generator = g;
-            Main = main;
+            positionsync = generator.GetComponent<StructurePositionSync>();
         }
-        private Generator079 generator;
-        private Pickup tablet;
+        private Scp079Generator generator;
+        private readonly StructurePositionSync positionsync;
         public GameObject GameObject => generator.gameObject;
-        public readonly bool Main;
         public string Name => GameObject.name;
         public Transform Transform => GameObject.transform;
         public Vector3 Position
         {
             get => Transform.position;
-            set
-            {
-                NetworkServer.UnSpawn(GameObject);
-                Transform.position = value;
-                NetworkServer.Spawn(GameObject);
-            }
+            set => positionsync.Network_position = value;
         }
         public Quaternion Rotation
         {
@@ -49,86 +42,33 @@ namespace Qurre.API.Controllers
         }
         public bool Open
         {
-            get => generator.NetworkisDoorOpen;
+            get => generator.HasFlag(generator._flags, Scp079Generator.GeneratorFlags.Open);
             set
             {
-                generator.Gen_doorAnimationCooldown(1.5f);
-                generator.NetworkisDoorOpen = value;
-                generator.Generator_RpcDoSound(!value);
+                generator.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, value);
+                generator._targetCooldown = generator._doorToggleCooldownTime;
             }
         }
         public bool Locked
         {
-            get => !generator.NetworkisDoorUnlocked;
+            get => !generator.HasFlag(generator._flags, Scp079Generator.GeneratorFlags.Unlocked);
             set
             {
-                if (value == Locked) return;
-                generator.NetworkisDoorUnlocked = !value;
-                generator.Gen_doorAnimationCooldown(0.5f);
+                generator.ServerSetFlag(Scp079Generator.GeneratorFlags.Unlocked, !value);
+                generator._targetCooldown = generator._unlockCooldownTime;
             }
         }
-        public bool TabletConnected
+        public bool Active
         {
-            get => generator.isTabletConnected;
+            get => generator.Activating;
             set
             {
-                if (value)
-                {
-                    if (!TabletConnected) generator.NetworkisTabletConnected = true;
-                }
-                else
-                {
-                    if (TabletConnected) generator.EjectTablet();
-                }
+                generator.Activating = value;
+                if (value) generator._leverStopwatch.Restart();
+                generator._targetCooldown = generator._doorToggleCooldownTime;
             }
         }
-        public Pickup ConnectedTablet
-        {
-            get => tablet;
-            set
-            {
-                tablet = value;
-                if (value != null)
-                {
-                    TabletConnected = true;
-                    value.Delete();
-                }
-                else TabletConnected = false;
-            }
-        }
-        public float Voltage
-        {
-            get => generator.localVoltage;
-            set => generator.localVoltage = value;
-        }
-        public float RemainingPowerUp
-        {
-            get => generator.remainingPowerup;
-            set => generator.Generator_SetTime(value);
-        }
-        public Room Room => Map.Rooms.FirstOrDefault(x => x.Name.ToLower() == generator.CurRoom.ToLower());
-        public Vector3 TabletEjectionPoint => generator.tabletEjectionPoint.position;
-        public bool Overcharged => Heavy.ForcedOvercharge || generator.Generator_localTime() <= 0f;
-        public void Overcharge()
-        {
-            if (Overcharged) return;
-            Locked = false;
-            Heavy.ActiveGenerators++;
-            generator.NetworkremainingPowerup = 0f;
-            generator.Generator_localTime(0f);
-            generator.EjectTablet();
-            generator.Generator_RpcNotify(Heavy.ActiveGenerators);
-            if (Heavy.ActiveGenerators < 5)
-                Respawning.RespawnEffectsController.PlayCassieAnnouncement(string.Concat(new object[]
-                {
-                        "JAM_",
-                        Random.Range(0, 100).ToString("000"),
-                        "_",
-                        Random.Range(2, 5),
-                        " SCP079RECON",
-                        Heavy.ActiveGenerators
-                }), false, true);
-            else Recontainer079.BeginContainment(false);
-        }
+        public bool Engaged { get => generator.Engaged; set => generator.Engaged = value; }
+        public short Time { get => generator._syncTime; set => generator.Network_syncTime = value; }
     }
 }

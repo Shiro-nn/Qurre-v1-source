@@ -4,7 +4,7 @@ using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
-    [HarmonyPatch(typeof(Scp106PlayerScript), nameof(Scp106PlayerScript.CallCmdMakePortal))]
+    [HarmonyPatch(typeof(Scp106PlayerScript), nameof(Scp106PlayerScript.UserCode_CmdMakePortal))]
     internal static class PortalCreate
     {
         private static bool Prefix(Scp106PlayerScript __instance)
@@ -18,7 +18,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                 Qurre.Events.Invoke.Scp106.PortalCreate(ev);
                 Debug.DrawRay(__instance.transform.position, -__instance.transform.up, Color.red, 10f);
                 if (ev.Allowed && __instance.iAm106 && !__instance.goingViaThePortal && rayCastHit)
-                    __instance.SetPortalPosition(ev.Position);
+                    __instance.SetPortalPosition(Vector3.zero, ev.Position);
                 return false;
             }
             catch (System.Exception e)

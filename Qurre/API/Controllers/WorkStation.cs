@@ -1,13 +1,14 @@
-﻿using Mirror;
+﻿using InventorySystem.Items.Firearms.Attachments;
+using Mirror;
+using Qurre.API.Objects;
 using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.API.Controllers
 {
     public class WorkStation
     {
-        private Pickup connectedtablet;
-        private readonly global::WorkStation workStation;
-        internal WorkStation(global::WorkStation station)
+        private readonly WorkstationController workStation;
+        internal WorkStation(WorkstationController station)
         {
             workStation = station;
         }
@@ -18,7 +19,7 @@ namespace Qurre.API.Controllers
             bench.gameObject.transform.localScale = scale;
             bench.gameObject.transform.rotation = Quaternion.Euler(rotation);
             NetworkServer.Spawn(bench);
-            workStation = bench.GetComponent<global::WorkStation>();
+            workStation = bench.GetComponent<WorkstationController>();
             Map.WorkStations.Add(this);
         }
         public GameObject GameObject => workStation.gameObject;
@@ -54,49 +55,20 @@ namespace Qurre.API.Controllers
                 NetworkServer.Spawn(GameObject);
             }
         }
-        public bool TabletConnected
+        public Player KnownUser
         {
-            get => workStation.NetworkisTabletConnected;
-            set
-            {
-
-                if (value)
-                {
-                    workStation.NetworkisTabletConnected = true;
-                    workStation.WS_animationCooldown(6.5f);
-                }
-                else
-                {
-                    if (ConnectedTablet != null && TabletOwner != null) TabletOwner.AddItem(ConnectedTablet.itemId, ConnectedTablet.durability);
-                    TabletOwner = null;
-                    workStation.NetworkisTabletConnected = false;
-                    workStation.WS_animationCooldown(3.5f);
-
-                }
-            }
+            get => Player.Get(workStation._knownUser);
+            set => workStation._knownUser = value.ReferenceHub;
         }
-        public Pickup ConnectedTablet
+        public WorkstationStatus Status
         {
-            get => connectedtablet;
-            set
-            {
-                connectedtablet = value;
-                if (value != null)
-                {
-                    TabletConnected = true;
-                    value.Delete();
-                }
-                else TabletConnected = false;
-            }
+            get => (WorkstationStatus)workStation.Status;
+            set => workStation.NetworkStatus = (byte)value;
         }
-        public Player TabletOwner
+        public bool Activated
         {
-            get => workStation.Network_playerConnected == null ? null : Player.Get(workStation.Network_playerConnected);
-            set
-            {
-                if (value == null) workStation.Network_playerConnected = null;
-                else workStation.Network_playerConnected = value.GameObject;
-            }
+            get => Status == WorkstationStatus.Online;
+            set => Status = value ? WorkstationStatus.Online : WorkstationStatus.Offline;
         }
         public static WorkStation Create(Vector3 position, Vector3 rotation, Vector3 scale) => new WorkStation(position, rotation, scale);
     }

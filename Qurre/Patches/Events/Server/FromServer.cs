@@ -5,17 +5,17 @@ using Qurre.API.Events;
 using RemoteAdmin;
 namespace Qurre.Patches.Events.Server
 {
-    [HarmonyPatch(typeof(QueryProcessor), "ProcessGameConsoleQuery", new Type[] { typeof(string), typeof(bool) })]
+    [HarmonyPatch(typeof(QueryProcessor), nameof(QueryProcessor.ProcessGameConsoleQuery))]
     internal static class FromServer
     {
-        private static bool Prefix(QueryProcessor __instance, string query, bool encrypted)
+        private static bool Prefix(QueryProcessor __instance, string query)
         {
             try
             {
                 string[] allarguments = query.Split(' ');
                 string name = allarguments[0].ToLower();
                 string[] args = allarguments.Skip(1).ToArray();
-                var ev = new SendingConsoleEvent(API.Server.Host, query, name, args, encrypted, "", "white", true);
+                var ev = new SendingConsoleEvent(API.Server.Host, query, name, args, "", "white", true);
                 Qurre.Events.Invoke.Server.SendingConsole(ev);
                 if (!string.IsNullOrEmpty(ev.ReturnMessage))
                 {

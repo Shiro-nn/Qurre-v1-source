@@ -1,19 +1,39 @@
 ﻿using HarmonyLib;
+using InventorySystem.Items.Radio;
 using Qurre.API.Events;
 using Qurre.API.Objects;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(Radio), nameof(Radio.CallCmdUpdatePreset))]
+    [HarmonyPatch(typeof(RadioItem), nameof(RadioItem.ServerProcessCmd))]
     internal static class RadioUpdate
     {
-        private static bool Prefix(Radio __instance, ref byte preset)
+        private static bool Prefix(RadioItem __instance, RadioMessages.RadioCommand command)
         {
             try
             {
-                var ev = new RadioUpdateEvent(API.Player.Get(__instance.gameObject), __instance, (RadioStatus)preset);
+                bool enabled = __instance._enabled;
+                byte rangeId = __instance._rangeId;
+                switch (command)
+                {
+                    case RadioMessages.RadioCommand.Enable:
+                        enabled = true;
+                        break;
+                    case RadioMessages.RadioCommand.Disable:
+                        enabled = false;
+                        break;
+                    case RadioMessages.RadioCommand.ChangeRange:
+                        rangeId += 1;
+                        if (rangeId >= __instance.Ranges.Length) rangeId = 0;
+                        break;
+                }
+                var ev = new RadioUpdateEvent(API.Player.Get(__instance.gameObject), __instance, (RadioStatus)rangeId, enabled);
                 Qurre.Events.Invoke.Player.RadioUpdate(ev);
-                preset = (byte)ev.ChangeTo;
-                return ev.Allowed;
+                if (!ev.Allowed) return false;
+                __instance._enabled = ev.Enabled;
+                if (!__instance._enabled) __instance._radio.ForceDisableRadio();
+                __instance._radio.NetworkcurRangeId = (byte)ev.ChangeTo;
+                __instance.SendStatusMessage();
+                return false;
             }
             catch (System.Exception e)
             {

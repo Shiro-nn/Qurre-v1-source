@@ -31,7 +31,7 @@ namespace Qurre.API.Controllers
 		public static void CancelDetonation() => AlphaWarheadController.CancelDetonation();
 		public static void Stop() => AlphaWarheadController.CancelDetonation();
 		public static void Detonate() => AlphaWarheadController.Detonate();
-		public static void Shake() => AlphaWarheadController.CallRpcShake(false);
+		public static void Shake() => AlphaWarheadController.UserCode_RpcShake(false);
 		public static bool Enabled
 		{
 			get => AlphaWarheadNukesitePanel.Networkenabled;

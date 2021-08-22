@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using InventorySystem;
 using QurreModLoader;
 namespace Qurre.API
 {

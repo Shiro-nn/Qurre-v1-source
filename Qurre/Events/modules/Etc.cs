@@ -56,7 +56,7 @@ namespace Qurre.Events.modules
         private static void ChangeRole(RoleChangeEvent ev)
         {
             if (ev.Player?.IsHost != false || string.IsNullOrEmpty(ev.Player.UserId)) return;
-            if (ev.NewRole == RoleType.Spectator) ev.Player.Inventory.ServerDropAll();
+            if (ev.NewRole == RoleType.Spectator) ev.Player.Inventory.DropAll();
         }
         private static void RoundRestart() => API.Map.ClearObjects();
         private static IEnumerator<float> UpdateAudioClient()
@@ -88,43 +88,50 @@ namespace Qurre.Events.modules
         {
             if ((ev.Name == "bc" || ev.Name == "broadcast") && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
             {
+                ev.Prefix = ev.Name.ToUpper();
                 ev.Allowed = false;
                 if (ev.Args.Length == 0)
                 {
-                    ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Example: bc time message.", false, true, "");
+                    ev.Success = false;
+                    ev.ReplyMessage = "Example: bc time message.";
                     return;
                 }
                 if (!ushort.TryParse(ev.Args[0], out ushort num8) || num8 < 1)
                 {
-                    ev.CommandSender.RaReply(ev.Name.ToUpper() + "#First argument must be a positive integer.", false, true, "");
+                    ev.Success = false;
+                    ev.ReplyMessage = "First argument must be a positive integer.";
                     return;
                 }
                 string text16 = ev.Command.Substring(ev.Name.Length + ev.Args[0].Length + 2);
                 API.Map.Broadcast(text16, System.Convert.ToUInt16(ev.Args[0])); ev.Success = true;
-                ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Broadcast sent.", false, true, "");
+                ev.ReplyMessage = "Broadcast sent.";
             }
             else if (ev.Name == "pbc" && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
             {
+                ev.Prefix = ev.Name.ToUpper();
                 ev.Allowed = false;
                 if (ev.Args.Length == 0)
                 {
-                    ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Example: pbc id time message.", false, true, "");
-                    return;
-                }
-                if (!ushort.TryParse(ev.Args[0], out ushort pi) || pi < 1)
-                {
-                    ev.CommandSender.RaReply(ev.Name.ToUpper() + "#First argument must be a positive integer.", false, true, "");
+                    ev.Success = false;
+                    ev.ReplyMessage = "Example: pbc id time message.";
                     return;
                 }
                 if (!ushort.TryParse(ev.Args[1], out ushort num8) || num8 < 1)
                 {
-                    ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Second argument must be a positive integer.", false, true, "");
+                    ev.Success = false;
+                    ev.ReplyMessage = "Second argument must be a positive integer.";
                     return;
                 }
                 string text16 = ev.Command.Substring(ev.Name.Length + ev.Args[0].Length + ev.Args[1].Length + 3);
-                var pl = API.Player.Get(pi);
-                pl.Broadcast(text16, System.Convert.ToUInt16(ev.Args[1])); ev.Success = true;
-                ev.CommandSender.RaReply(ev.Name.ToUpper() + "#Broadcast sent.", false, true, "");
+                foreach (string strs in ev.Args[0].Split('.'))
+                {
+                    if (ushort.TryParse(strs, out ushort pi) && pi > 0)
+                    {
+                        var pl = API.Player.Get(pi);
+                        pl.Broadcast(text16, System.Convert.ToUInt16(ev.Args[1]));
+                    }
+                }
+                ev.ReplyMessage = "Broadcast sent.";
             }
         }
         private static void Fix079(DoorLockEvent ev)

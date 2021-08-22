@@ -4,7 +4,7 @@ using Qurre.API.Events;
 using UnityEngine;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.CallCmdSyncData))]
+    [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.UserCode_CmdSyncData))]
     internal static class SyncData
     {
         private static bool Prefix(AnimationController __instance, ref byte state, Vector2 v2)

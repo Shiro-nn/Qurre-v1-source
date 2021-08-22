@@ -20,7 +20,7 @@ namespace Qurre.Patches.Events.Alpha
                 Qurre.Events.Invoke.Alpha.Stopping(ev);
                 return ev.Allowed && !API.Controllers.Alpha.Locked;
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Log.Error($"umm, error in patching Alpha [Stopping]:\n{e}\n{e.StackTrace}");
                 return true;

@@ -7,7 +7,7 @@ using System;
 using UnityEngine;
 namespace Qurre.Patches.Events.Map
 {
-    [HarmonyPatch(typeof(SeedSynchronizer), "Start")]
+    [HarmonyPatch(typeof(SeedSynchronizer), nameof(SeedSynchronizer.Start))]
     internal static class SetSeed
     {
         private static bool Prefix(SeedSynchronizer __instance)

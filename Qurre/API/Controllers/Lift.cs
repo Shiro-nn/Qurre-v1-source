@@ -16,7 +16,7 @@ namespace Qurre.API.Controllers
         public Quaternion Rotation => Transform.localRotation;
         public Vector3 Scale => Transform.localScale;
         public _lift.Status Status { get => _lift.status; set => _lift.SetStatus(value); }
-        public bool Locked { get => _lift.LiftLock(); set => _lift.LiftLock(value); }
+        public bool Locked { get => _lift.LiftLock(); set => _lift.SetLock(_lift.LiftLock(), value); }
         public float MaxDistance { get => _lift.maxDistance; set => _lift.maxDistance = value; }
         public float MovingSpeed { get => _lift.movingSpeed; set => _lift.movingSpeed = value; }
         public bool Operative { get => _lift.operative; set => _lift.operative = value; }

@@ -2,7 +2,7 @@
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
-    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.CallCmdContain106))]
+    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdContain106))]
     internal static class Contain
     {
         private static bool Prefix(CharacterClassManager __instance)

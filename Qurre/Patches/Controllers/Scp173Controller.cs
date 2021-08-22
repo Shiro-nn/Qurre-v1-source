@@ -1,29 +1,33 @@
 ﻿using HarmonyLib;
+using PlayableScps;
 using Qurre.API;
-using System;
 using UnityEngine;
 namespace Qurre.Patches.Controllers
 {
-    [HarmonyPatch(typeof(Scp173PlayerScript), "LookFor173")]
+    [HarmonyPatch(typeof(Scp173), nameof(Scp173.UpdateObservers))]
     internal static class Scp173Controller
     {
-        private static bool Prefix(bool __result, Scp173PlayerScript __instance, GameObject scp)
+        private static void Prefix(Scp173 __instance, out int __state) => __state = __instance._observingPlayers.Count;
+        private static void Postfix(Scp173 __instance, int __state)
         {
-            try
+            var peanut = Player.Get(__instance.Hub);
+            foreach (var ply in __instance._observingPlayers)
             {
-                var player = Player.Get(__instance.gameObject);
-                var _scp = Player.Get(scp);
-                if (!__result) return true;
-                if (player.Team == Team.SCP && !Plugin.Config.GetBool("Qurre_ScpTrigger173", false))
-                    return false;
-                if (_scp.Role == RoleType.Scp173 && _scp.Scp173Controller.IgnoredPlayers.Contains(player))
-                    return false;
-                return true;
-            }
-            catch (Exception e)
-            {
-                Log.Error($"umm, error in patching Controllers [Scp173Controller]:\n{e}\n{e.StackTrace}");
-                return true;
+                var player = Player.Get(ply.gameObject);
+                var flag = false;
+                if (player.Invisible || player.Team == Team.SCP) flag = true;
+                if (peanut.Scp173Controller.IgnoredPlayers.Contains(player)) flag = true;
+                if (flag)
+                {
+                    __instance._observingPlayers.Remove(player.ReferenceHub);
+                    __instance._isObserved = __instance._observingPlayers.Count > 0;
+                    if (__state != __instance._observingPlayers.Count && __instance._blinkCooldownRemaining > 0f)
+                    {
+                        __instance._blinkCooldownRemaining = Mathf.Max(0f, __instance._blinkCooldownRemaining + (__instance._observingPlayers.Count - __state));
+                        if (__instance._blinkCooldownRemaining <= 0f)
+                            __instance.BlinkReady = true;
+                    }
+                }
             }
         }
     }

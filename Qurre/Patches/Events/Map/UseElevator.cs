@@ -4,7 +4,7 @@ using Qurre.API.Events;
 using System;
 namespace Qurre.Patches.Events.Map
 {
-	[HarmonyPatch(typeof(Lift), "UseLift")]
+	[HarmonyPatch(typeof(Lift), nameof(Lift.UseLift))]
 	internal static class UseElevator
 	{
 		private static bool Prefix(Lift __instance, ref bool __result)

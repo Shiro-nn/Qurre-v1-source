@@ -2,8 +2,8 @@
 {
     public enum GeneratorStatus
     {
-        TabletInjected,
-        TabledEjected,
+        Activated,
+        Disabled,
         Unlocked,
         OpenDoor,
         CloseDoor

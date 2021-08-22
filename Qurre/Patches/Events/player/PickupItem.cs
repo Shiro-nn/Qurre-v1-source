@@ -1,23 +1,31 @@
 ﻿using System;
 using HarmonyLib;
+using InventorySystem.Searching;
+using Mirror;
+using Qurre.API;
 using Qurre.API.Events;
-using Searching;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(ItemSearchCompletor), nameof(ItemSearchCompletor.Complete))]
+    [HarmonyPatch(typeof(SearchCoordinator), nameof(SearchCoordinator.ContinuePickupServer))]
     internal static class PickupItem
     {
-        private static bool Prefix(ItemSearchCompletor __instance)
+        private static bool Prefix(SearchCoordinator __instance)
         {
             try
             {
-                var item = __instance.ItemSearchCompletor_TargetPickup();
+                var item = __instance.Completor.TargetPickup;
                 if (item == null) return true;
-                var ev = new PickupItemEvent(API.Player.Get(__instance.ItemSearchCompletor_Hub().gameObject), item);
+                if (!__instance.Completor.ValidateUpdate())
+                {
+                    __instance.SessionPipe.Invalidate();
+                    return false;
+                }
+                if (NetworkTime.time < __instance.SessionPipe.Session.FinishTime) return false;
+                var ev = new PickupItemEvent(Player.Get(__instance.Hub), item.GetItem());
                 Qurre.Events.Invoke.Player.PickupItem(ev);
-                if (!ev.Allowed) __instance.ItemSearchCompletor_TargetPickup().InUse = false;
-                return ev.Allowed;
+                if (ev.Allowed) __instance.Completor.Complete();
+                else __instance.SessionPipe.Invalidate();
+                return false;
             }
             catch (Exception e)
             {

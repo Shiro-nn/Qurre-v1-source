@@ -7,10 +7,15 @@ using System.Reflection;
 using UnityEngine;
 using static QurreModLoader.umm;
 using Hints;
-using Grenades;
 using CustomPlayerEffects;
 using RemoteAdmin;
 using Qurre.API.Controllers;
+using InventorySystem;
+using InventorySystem.Items;
+using InventorySystem.Items.ThrowableProjectiles;
+using InventorySystem.Disarming;
+using MapGeneration;
+using InventorySystem.Items.Firearms.Modules;
 namespace Qurre.API
 {
 	public class Player
@@ -20,7 +25,6 @@ namespace Qurre.API
 		private string ui;
 		private string _tag = "";
 		private Radio radio;
-		private MicroHID microHID;
 		private Escape escape;
 		public Player(ReferenceHub RH)
 		{
@@ -28,8 +32,10 @@ namespace Qurre.API
 			Scp079Controller = new Scp079(this);
 			Scp096Controller = new Scp096(this);
 			Scp106Controller = new Scp106(this);
-			Scp173Controller = new Scp173(this);
+			Scp173Controller = new Scp173();
 			Broadcasts = new ListBroadcasts(this);
+			Inventory = new InventoryManager(this);
+			Ammo = new AmmoBoxManager(this);
 		}
 		public Player(GameObject gameObject) => rh = ReferenceHub.GetHub(gameObject);
 		public static Dictionary<GameObject, Player> Dictionary { get; } = new Dictionary<GameObject, Player>();
@@ -52,7 +58,6 @@ namespace Qurre.API
 		public readonly Scp106 Scp106Controller;
 		public readonly Scp173 Scp173Controller;
 		public ListBroadcasts Broadcasts { get; }
-		public GrenadeManager GrenadeManager => rh.GetComponent<GrenadeManager>();
 		public GameConsoleTransmission GameConsoleTransmission => rh.GetComponent<GameConsoleTransmission>();
 		public GameObject GameObject
 		{
@@ -63,17 +68,15 @@ namespace Qurre.API
 			}
 		}
 		public Radio Radio { get { if (radio == null) { radio = GameObject.GetComponent<Radio>(); } return radio; } }
-		public MicroHID MicroHID { get { if (microHID == null) { microHID = GameObject.GetComponent<MicroHID>(); } return microHID; } }
 		public Escape Escape { get { if (escape == null) { escape = ClassManager.GetComponent<Escape>(); } return escape; } }
-		public AmmoBox Ammo => rh.ammoBox;
+		public AmmoBoxManager Ammo { get; }
 		public HintDisplay HintDisplay => rh.hints;
 		public Transform CameraTransform => rh.PlayerCameraReference;
-		public Inventory Inventory => rh.inventory;
+		public InventoryManager Inventory { get; internal set; }
+		public Inventory DefaultInventory => rh.inventory;
 		public NetworkIdentity NetworkIdentity => rh.networkIdentity;
-		public Handcuffs Handcuffs => rh.handcuffs;
 		public ServerRoles ServerRoles => rh.serverRoles;
 		public CharacterClassManager ClassManager => rh.characterClassManager;
-		public WeaponManager WeaponManager => rh.weaponManager;
 		public AnimationController AnimationController => rh.animationController;
 		public PlayerStats PlayerStats => rh.playerStats;
 		public Scp079PlayerScript Scp079PlayerScript => rh.scp079PlayerScript;
@@ -120,27 +123,33 @@ namespace Qurre.API
 		public bool Overwatch
 		{
 			get => ServerRoles.OverwatchEnabled();
-			set => ServerRoles.CallTargetSetOverwatch(NetworkIdentity.connectionToClient, value);
+			set => ServerRoles.UserCode_TargetSetOverwatch(NetworkIdentity.connectionToClient, value);
 		}
 		public Player Cuffer
 		{
-			get => CufferId == -1 && ReferenceHub.handcuffs.NetworkForceCuff ? Server.Host : Get(CufferId);
+			get
+			{
+				foreach (DisarmedPlayers.DisarmedEntry disarmed in DisarmedPlayers.Entries)
+					if (Get(disarmed.DisarmedPlayer) == this) return Get(disarmed.Disarmer);
+				return null;
+			}
+
 			set
 			{
-				if (value == null)
+				for (int i = 0; i < DisarmedPlayers.Entries.Count; i++)
 				{
-					CufferId = -1;
-					return;
+					if (DisarmedPlayers.Entries[i].DisarmedPlayer == DefaultInventory.netId)
+					{
+						DisarmedPlayers.Entries.RemoveAt(i);
+						break;
+					}
 				}
-				CufferId = value.Id;
+
+				if (value != null)
+					DefaultInventory.SetDisarmedStatus(value.DefaultInventory);
 			}
 		}
-		public int CufferId
-		{
-			get => Handcuffs.NetworkCufferId;
-			set => Handcuffs.NetworkCufferId = value;
-		}
-		public bool Cuffed => CufferId != -1;
+		public bool Cuffed => DisarmedPlayers.IsDisarmed(DefaultInventory);
 		public Vector3 Position
 		{
 			get => rh.playerMovementSync.GetRealPosition();
@@ -193,22 +202,11 @@ namespace Qurre.API
 		}
 		public Team Team => GetTeam(Role);
 		public Side Side => GetSide(Team);
+		public Faction Faction => ClassManager.Faction;
 		public RoleType Role
 		{
 			get => ClassManager.CurClass;
 			set => SetRole(value);
-		}
-		public Fraction Fraction => ClassManager.Fraction;
-		public bool IsReloading => WeaponManager.IsReloading();
-		public bool Zoomed
-		{
-			get => WeaponManager.NetworksyncZoomed;
-			set => WeaponManager.NetworksyncZoomed = value;
-		}
-		public bool InFlash
-		{
-			get => WeaponManager.NetworksyncFlash;
-			set => WeaponManager.NetworksyncFlash = value;
 		}
 		public PlayerMovementState MoveState
 		{
@@ -257,32 +255,52 @@ namespace Qurre.API
 		}
 		public float AhpDecay
 		{
-			get => PlayerStats.artificialHpDecay;
-			set => PlayerStats.artificialHpDecay = value;
+			get => PlayerStats.NetworkArtificialHpDecay;
+			set => PlayerStats.NetworkArtificialHpDecay = value;
 		}
-		public float Ahp
+		public ushort Ahp
 		{
-			get => PlayerStats.unsyncedArtificialHealth;
+			get => PlayerStats.NetworkArtificialHealth;
 			set
 			{
-				PlayerStats.unsyncedArtificialHealth = value;
-				if (value > MaxAhp) MaxAhp = (int)value;
+				PlayerStats.NetworkArtificialHealth = value;
+				if (value > MaxAhp) MaxAhp = value;
 			}
 		}
 		public int MaxAhp
 		{
-			get => PlayerStats.maxArtificialHealth;
-			set => PlayerStats.maxArtificialHealth = value;
+			get => PlayerStats.NetworkMaxArtificialHealth;
+			set => PlayerStats.NetworkMaxArtificialHealth = value;
 		}
-		public Inventory.SyncItemInfo CurrentItem
+		public ItemIdentifier CurrentItem
 		{
-			get => Inventory.GetItemInHand();
-			set => Inventory.SetCurItem(value.id);
+			get => DefaultInventory.NetworkCurItem;
+			set => DefaultInventory.NetworkCurItem = value;
 		}
-		public List<Inventory.SyncItemInfo> AllItems => Inventory.items.ToList();
-		public int CurrentItemIndex => Inventory.GetItemIndex();
-		public ItemType ItemInHand { get => Inventory.curItem; set => Inventory.SetCurItem(value); }
-		public Inventory.SyncItemInfo ItemInfoInHand { get => Inventory.GetItemInHand(); }
+		public ItemBase CurInstance
+		{
+			get => DefaultInventory.CurInstance;
+			set => DefaultInventory.CurInstance = value;
+		}
+		public List<Item> AllItems => Inventory.Items;
+		public ItemType ItemTypeInHand => DefaultInventory.CurItem.TypeId;
+		public Item ItemInHand
+		{
+			get => DefaultInventory.CurItem == ItemIdentifier.None ? Item.None : Item.AllItems[DefaultInventory.CurItem.SerialNumber];
+			set
+			{
+				if (value == null || !Inventory.Items.Contains(value))
+				{
+					DefaultInventory.NetworkCurItem = ItemIdentifier.None;
+					DefaultInventory.CurInstance = null;
+				}
+
+				if (!ItemInHand.ItemBase.CanHolster() || !value.ItemBase.CanEquip()) return;
+
+				DefaultInventory.NetworkCurItem = new ItemIdentifier(value.Type, value.Serial);
+				DefaultInventory.CurInstance = value.ItemBase;
+			}
+		}
 		public Stamina Stamina => rh.fpc.staminaController();
 		public float StaminaUsage
 		{
@@ -296,12 +314,8 @@ namespace Qurre.API
 		}
 		public Room Room
 		{
-			get
-			{
-				if (Vector3.Distance(Vector3.up * -1997, Position) <= 50) return Extensions.GetRoom(RoomType.Pocket);
-				return Map.Rooms.FirstOrDefault(x => x.GameObject == ReferenceHub.localCurrentRoomEffects.CurRoom());
-			}
-			set => Position = value.Position;
+			get => Map.FindRoom(GameObject);
+			set => Position = value.Position + Vector3.up * 2;
 		}
 		public CommandSender Sender
 		{
@@ -319,12 +333,12 @@ namespace Qurre.API
 		}
 		public string RoleColor
 		{
-			get => ServerRoles.NetworkMyColor;
+			get => ServerRoles.Network_myColor;
 			set => ServerRoles.SetColor(value);
 		}
 		public string RoleName
 		{
-			get => ServerRoles.NetworkMyText;
+			get => ServerRoles.Network_myText;
 			set => ServerRoles.SetText(value);
 		}
 		public string UnitName
@@ -345,22 +359,30 @@ namespace Qurre.API
 		}
 
 		public int Ping => Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer.Peers[Connection.connectionId].Ping;
-		public uint Ammo5
+		public ushort Ammo12gauge
 		{
-			get { try { return Ammo[0]; } catch { return 0; } }
-			set { try { Ammo[0] = value; } catch { } }
+			get { try { return Ammo[AmmoType.Ammo12gauge]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo12gauge] = value; } catch { } }
 		}
-
-		public uint Ammo7
+		public ushort Ammo556x45
 		{
-			get { try { return Ammo[1]; } catch { return 0; } }
-			set { try { Ammo[1] = value; } catch { } }
+			get { try { return Ammo[AmmoType.Ammo556x45]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo556x45] = value; } catch { } }
 		}
-
-		public uint Ammo9
+		public ushort Ammo44cal
 		{
-			get { try { return Ammo[2]; } catch { return 0; } }
-			set { try { Ammo[2] = value; } catch { } }
+			get { try { return Ammo[AmmoType.Ammo44cal]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo44cal] = value; } catch { } }
+		}
+		public ushort Ammo762x39
+		{
+			get { try { return Ammo[AmmoType.Ammo762x39]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo762x39] = value; } catch { } }
+		}
+		public ushort Ammo9x19
+		{
+			get { try { return Ammo[AmmoType.Ammo9x19]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo9x19] = value; } catch { } }
 		}
 		public static IEnumerable<Player> Get(Team team) => List.Where(player => player.Team == team);
 		public static IEnumerable<Player> Get(RoleType role) => List.Where(player => player.Role == role);
@@ -372,6 +394,7 @@ namespace Qurre.API
 			Dictionary.TryGetValue(gameObject, out Player player);
 			return player;
 		}
+		public static Player Get(uint netId) => ReferenceHub.TryGetHubNetID(netId, out ReferenceHub hub) ? Get(hub) : null;
 		public static Player Get(int playerId)
 		{
 			if (IdPlayers.ContainsKey(playerId)) return IdPlayers[playerId];
@@ -507,7 +530,7 @@ namespace Qurre.API
 			var component = ClassManager;
 			var writer = NetworkWriterPool.GetWriter();
 			writer.WriteVector3(pos);
-			writer.WritePackedInt32(type);
+			writer.WriteInt32(type);
 			writer.WriteSingle(size);
 			var msg = new RpcMessage
 			{
@@ -519,7 +542,7 @@ namespace Qurre.API
 			Connection.Send(msg);
 			NetworkWriterPool.Recycle(writer);
 		}
-		public void SetRole(RoleType newRole, bool lite = false, bool escape = false) => ClassManager.SetClassIDAdv(newRole, lite, escape);
+		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
 			var ih = ItemInHand;
@@ -539,7 +562,7 @@ namespace Qurre.API
 				Position = newPosition;
 				ItemInHand = ih;
 			});
-			if (spawnRagdoll) Controllers.Ragdoll.Create(role, pos, default, default, new PlayerStats.HitInfo(999, nick, damageType, id), false, this);
+			if (spawnRagdoll) Controllers.Ragdoll.Create(role, pos, default, default, new PlayerStats.HitInfo(999, nick, damageType, id, false), false, this);
 		}
 		public Controllers.Broadcast Broadcast(string message, ushort time, bool instant = false) => Broadcast(time, message, instant);
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)
@@ -549,44 +572,31 @@ namespace Qurre.API
 			return bc;
 		}
 		public void ClearBroadcasts() => Broadcasts.Clear();
-		public void Damage(int amount, DamageTypes.DamageType damageType) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, QueryProcessor.PlayerId), GameObject);
+		public void Damage(int amount, DamageTypes.DamageType damageType) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, QueryProcessor.PlayerId, true), GameObject);
 		public void Damage(PlayerStats.HitInfo info) => PlayerStats.HurtPlayer(info, GameObject);
-		public void AddItem(ItemType itemType, float duration = float.NegativeInfinity, int sight = 0, int barrel = 0, int other = 0) =>
-			Inventory.AddNewItem(itemType, duration, sight, barrel, other);
-		public void AddItem(ItemType itemType) => Inventory.AddNewItem(itemType);
-		public void AddItem(Inventory.SyncItemInfo item) => Inventory.AddNewItem(item.id, item.durability, item.modSight, item.modBarrel, item.modOther);
-		public void DropItem(Inventory.SyncItemInfo item)
+		public void AddItem(ItemType itemType, float durabillity = float.NegativeInfinity, uint weaponAttachments = 0)
 		{
-			Inventory.SetPickup(item.id, item.durability, Position, Inventory.camera.transform.rotation, item.modSight, item.modBarrel, item.modOther);
-			Inventory.items.Remove(item);
+			Inventory.Add(new Item(itemType)
+			{
+				Durabillity = durabillity,
+				WeaponAttachments = weaponAttachments
+			});
 		}
-		public void DropItems() => Inventory.ServerDropAll();
+		public void AddItem(ItemType itemType) => Inventory.Add(itemType);
+		public void DropItem(Item item) => Inventory.Drop(item);
+		public void DropItems() => Inventory.DropAll();
 		public bool HasItem(ItemType targetItem)
 		{
-			foreach (Inventory.SyncItemInfo item in Inventory.items.Where(x => x.id == targetItem)) return true;
+			foreach (var item in Inventory.Items.Where(x => x.Type == targetItem)) return true;
 			return false;
 		}
-		public void RemoveItem(Inventory.SyncItemInfo item) => Inventory.items.Remove(item);
-		public void RemoveItem() => Inventory.items.Remove(ReferenceHub.inventory.GetItemInHand());
-		public void SetInventory(List<Inventory.SyncItemInfo> items)
-		{
-			ClearInventory();
-			foreach (Inventory.SyncItemInfo item in items) Inventory.AddNewItem(item.id, item.durability, item.modSight, item.modBarrel, item.modOther);
-		}
-		public void ClearInventory() => Inventory.items.Clear();
+		public void RemoveItem(Item item) => Inventory.Remove(item);
+		public void RemoveItem() => Inventory.Remove(ItemInHand);
+		public void ClearInventory() => Inventory.Clear();
 		public void Ban(int duration, string reason, string issuer = "API") => PlayerManager.localPlayer.GetComponent<BanPlayer>().BanUser(GameObject, duration, reason, issuer, false);
 		public void Kick(string reason, string issuer = "API") => Ban(0, reason, issuer);
-		public void Handcuff(Player player)
-		{
-			if (Handcuffs == null) return;
-			if (Handcuffs.CufferId < 0 &&
-				player.Inventory.items.Any((Inventory.SyncItemInfo item) => item.id == ItemType.Disarmer) &&
-				Vector3.Distance(player.Position, Position) <= 130f)
-				Handcuffs.NetworkCufferId = player.Id;
-		}
-		public void Uncuff() => Handcuffs.NetworkCufferId = -1;
 		public void Disconnect(string reason = null) => ServerConsole.Disconnect(GameObject, string.IsNullOrEmpty(reason) ? "" : reason);
-		public void Kill(DamageTypes.DamageType damageType = default) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(-1f, "WORLD", damageType, 0), GameObject);
+		public void Kill(DamageTypes.DamageType damageType = default) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(-1f, "WORLD", damageType, 0, true), GameObject);
 		public void ChangeModel(RoleType newModel)
 		{
 			GameObject gameObject = GameObject;
@@ -621,19 +631,34 @@ namespace Qurre.API
 				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
 			}
 		}
+		public ThrowableItem ThrowGrenade(GrenadeType type, bool fullForce = true)
+		{
+			ThrowableItem throwable = type switch
+			{
+				GrenadeType.Flashbang => (ThrowableItem)DefaultInventory.CreateItemInstance(ItemType.GrenadeFlash, true),
+				_ => (ThrowableItem)DefaultInventory.CreateItemInstance(type == GrenadeType.Scp018 ? ItemType.SCP018 : ItemType.GrenadeHE, true),
+			};
+			ThrowItem(throwable, fullForce);
+			return throwable;
+		}
+		public void ThrowItem(ThrowableItem throwable, bool fullForce = true)
+		{
+			throwable.Owner = ReferenceHub;
+			throwable.ServerThrow(fullForce);
+		}
 		public bool GetEffectActive<T>() where T : PlayerEffect
 		{
-			if (PlayerEffectsController.AllEffects.TryGetValue(typeof(T), out PlayerEffect playerEffect)) return playerEffect.Enabled;
+			if (PlayerEffectsController.AllEffects.TryGetValue(typeof(T), out PlayerEffect playerEffect)) return playerEffect.IsEnabled;
 			return false;
 		}
 		public void DisableAllEffects()
 		{
-			foreach (KeyValuePair<Type, PlayerEffect> effect in PlayerEffectsController.AllEffects) if (effect.Value.Enabled) effect.Value.ServerDisable();
+			foreach (KeyValuePair<Type, PlayerEffect> effect in PlayerEffectsController.AllEffects) if (effect.Value.IsEnabled) effect.Value.IsEnabled = false;
 		}
 		public void DisableEffect<T>() where T : PlayerEffect => PlayerEffectsController.DisableEffect<T>();
 		public void DisableEffect(EffectType effect)
 		{
-			if (TryGetEffect(effect, out var pEffect)) pEffect.ServerDisable();
+			if (TryGetEffect(effect, out var pEffect)) pEffect.IsEnabled = false;
 		}
 		public void EnableEffect<T>(float duration = 0f, bool addDurationIfActive = false) where T : PlayerEffect => PlayerEffectsController.EnableEffect<T>(duration, addDurationIfActive);
 		public bool EnableEffect(string effect, float duration = 0f, bool addDurationIfActive = false) => PlayerEffectsController.EnableByString(effect, duration, addDurationIfActive);
@@ -693,21 +718,18 @@ namespace Qurre.API
 				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
 			}
 		}
-		public static void ShowHitmark()
-		{
-			foreach (Player pl in List) pl.WeaponManager.CallRpcConfirmShot(true, 13);
-		}
-		public void Blink() => rh.GetComponent<Scp173PlayerScript>().CallRpcBlinkTime();
-		public void PlayNeckSnapSound() => rh.GetComponent<Scp173PlayerScript>().CallRpcSyncAudio();
-		public void PlayFallSound() => rh.falldamage.CallRpcDoSound();
-		public void Redirect(float timeOffset, ushort port) => PlayerStats.CallRpcRoundrestartRedirect(timeOffset, port);
-		public void PlayReloadAnimation(sbyte weapon = 0) => WeaponManager.CallRpcReload(weapon);
+		public void ShowHitmark() => GameObject.GetComponent<SingleBulletHitreg>().ShowHitIndicator(PlayerStats.netId, 0.01f, Position);
+		public void PlayFallSound() => rh.falldamage.UserCode_RpcDoSound();
+		public void Redirect(float timeOffset, ushort port) => PlayerStats.UserCode_RpcRoundrestartRedirect(timeOffset, port);
 
 		private Team GetTeam(RoleType rt)
 		{
 			switch (rt)
 			{
-				case RoleType.ChaosInsurgency:
+				case RoleType.ChaosConscript:
+				case RoleType.ChaosMarauder:
+				case RoleType.ChaosRepressor:
+				case RoleType.ChaosRifleman:
 					return Team.CHI;
 				case RoleType.Scientist:
 					return Team.RSC;
@@ -725,10 +747,10 @@ namespace Qurre.API
 				case RoleType.Spectator:
 					return Team.RIP;
 				case RoleType.FacilityGuard:
-				case RoleType.NtfCadet:
-				case RoleType.NtfLieutenant:
-				case RoleType.NtfCommander:
-				case RoleType.NtfScientist:
+				case RoleType.NtfCaptain:
+				case RoleType.NtfPrivate:
+				case RoleType.NtfSergeant:
+				case RoleType.NtfSpecialist:
 					return Team.MTF;
 				case RoleType.Tutorial:
 					return Team.TUT;
@@ -759,18 +781,18 @@ namespace Qurre.API
 			RoleType newRole = RoleType.None;
 			var changeTeam = false;
 
-			if (Handcuffs.ForceCuff && CharacterClassManager.ForceCuffedChangeTeam)
+			if (CharacterClassManager.ForceCuffedChangeTeam)
 				changeTeam = true;
 
 			if (Cuffed && CharacterClassManager.CuffedChangeTeam)
 			{
 				switch (Role)
 				{
-					case RoleType.Scientist when Cuffer.Fraction == Fraction.FoundationEnemy:
+					case RoleType.Scientist when Cuffer.Faction == Faction.FoundationEnemy:
 						changeTeam = true;
 						break;
 
-					case RoleType.ClassD when Cuffer.Fraction == Fraction.FoundationStaff:
+					case RoleType.ClassD when Cuffer.Faction == Faction.FoundationStaff:
 						changeTeam = true;
 						break;
 				}
@@ -779,16 +801,16 @@ namespace Qurre.API
 			switch (Role)
 			{
 				case RoleType.ClassD when changeTeam:
-					newRole = RoleType.NtfCadet;
+					newRole = RoleType.NtfPrivate;
 					break;
 
 				case RoleType.ClassD:
 				case RoleType.Scientist when changeTeam:
-					newRole = RoleType.ChaosInsurgency;
+					newRole = RoleType.ChaosConscript;
 					break;
 
 				case RoleType.Scientist:
-					newRole = RoleType.NtfScientist;
+					newRole = RoleType.NtfSpecialist;
 					break;
 			}
 			if (newRole == RoleType.None) return;
@@ -799,7 +821,7 @@ namespace Qurre.API
 
 			var isClassD = Role == RoleType.ClassD;
 
-			ClassManager.SetPlayersClass(newRole, GameObject, false, true);
+			ClassManager.SetPlayersClass(newRole, GameObject, CharacterClassManager.SpawnReason.Escaped, true);
 
 			Escape.TargetShowEscapeMessage(Connection, isClassD, changeTeam);
 
@@ -831,14 +853,14 @@ namespace Qurre.API
 					break;
 			}
 		}
-		public void TeleportToRoom(RoomType room)
+		public void TeleportToRoom(RoomName room)
 		{
 			Vector3 roompos = Extensions.GetRoom(room).Position + Vector3.up * 2;
 			Position = roompos;
 		}
 		public void TeleportToRandomRoom()
 		{
-			RoomType room = (RoomType)UnityEngine.Random.Range(1, 48);
+			RoomName room = (RoomName)UnityEngine.Random.Range(1, 48);
 			Position = Extensions.GetRoom(room).Position + Vector3.up * 2;
 		}
 		public void TeleportToDoor(DoorType door)
@@ -851,19 +873,33 @@ namespace Qurre.API
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
 		}
-
-
-		[Obsolete("Use Player.Cuffed")]
-		public bool IsCuffed => Cuffed;
-		[Obsolete("Use Player.Zoomed")]
-		public bool IsZooming => Zoomed;
-		[Obsolete("Use Player.Scp106Controller.CreatePortal")]
-		public void Create106Portal() => rh.scp106PlayerScript.CallCmdMakePortal();
-		[Obsolete("Use Player.Scp106Controller.UsePortal")]
-		public void Use106Portal() => rh.scp106PlayerScript.CallCmdUsePortal();
-		[Obsolete("Use Player.Scp106Controller.PlayTeleportAnimation")]
-		public void Play106TeleportAnimation() => rh.scp106PlayerScript.CallRpcTeleportAnimation();
-		[Obsolete("Use Player.Scp106Controller.PlayContainAnimation")]
-		public void Play106ContainAnimation() => rh.scp106PlayerScript.CallRpcContainAnimation();
+		public class AmmoBoxManager
+		{
+			private readonly Player player;
+			internal AmmoBoxManager(Player pl) => player = pl;
+			public ushort this[AmmoType ammo]
+			{
+				get => player.DefaultInventory.UserInventory.ReserveAmmo[(ItemType)ammo];
+				set => player.DefaultInventory.UserInventory.ReserveAmmo[(ItemType)ammo] = value;
+			}
+		}
+		public class InventoryManager
+		{
+			private readonly Player player;
+			internal InventoryManager(Player pl) => player = pl;
+			public Item this[int index] => Items[index];
+			public List<Item> Items => player.DefaultInventory.UserInventory.Items.Select(x => Item.AllItems[x.Key]).ToList();
+			public void Add(Item item) => item.PickUp(player);
+			public void Add(ItemType type) => new Item(type, player);
+			public void Add(int id) => new Item(id, player);
+			public void Remove(Item item) => item.Destroy();
+			public void Drop(Item item) => item.Drop(player.Position);
+			public void DropAll() => player.DefaultInventory.ServerDropEverything();
+			public void Clear()
+			{
+				foreach (var item in Items)
+					item.Destroy();
+			}
+		}
 	}
 }

@@ -41,7 +41,7 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                     Qurre.Events.Invoke.Scp049.FinishRecall(ev);
                     if (!ev.Allowed) return false;
                     RoundSummary.changed_into_zombies++;
-                    target.characterClassManager.SetClassID(RoleType.Scp0492);
+                    target.characterClassManager.SetClassID(RoleType.Scp0492, CharacterClassManager.SpawnReason.Revived);
                     target.GetComponent<PlayerStats>().Health =
                         target.characterClassManager.Classes.Get(RoleType.Scp0492).maxHP;
                     if (rgd.CompareTag("Ragdoll"))

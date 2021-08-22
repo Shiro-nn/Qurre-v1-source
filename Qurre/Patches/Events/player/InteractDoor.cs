@@ -35,7 +35,7 @@ namespace Qurre.Patches.Events.player
                 }
                 if (!Bypass && (Interact = __instance.AllowInteracting(ply, colliderId)))
                 {
-                    if (ply.characterClassManager.CurClass == RoleType.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.curItem, ply)) ev.Allowed = true;
+                    if (ply.characterClassManager.CurClass == RoleType.Scp079 || __instance.RequiredPermissions.CheckPermissions(ply.inventory.CurInstance, ply)) ev.Allowed = true;
                     else ev.Allowed = false;
                 }
                 Qurre.Events.Invoke.Player.InteractDoor(ev);

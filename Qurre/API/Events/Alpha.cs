@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Interactables.Interobjects.DoorUtils;
+using System;
 using System.Collections.Generic;
 namespace Qurre.API.Events
 {
@@ -24,14 +25,14 @@ namespace Qurre.API.Events
     }
     public class EnableAlphaPanelEvent : EventArgs
     {
-        public EnableAlphaPanelEvent(Player player, List<string> permissions, bool allowed = true)
+        public EnableAlphaPanelEvent(Player player, KeycardPermissions permissions, bool allowed = true)
         {
             Player = player;
             Permissions = permissions;
             Allowed = allowed;
         }
         public Player Player { get; }
-        public List<string> Permissions { get; }
+        public KeycardPermissions Permissions { get; }
         public bool Allowed { get; set; }
     }
 }

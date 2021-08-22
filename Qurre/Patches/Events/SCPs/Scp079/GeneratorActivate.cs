@@ -1,26 +1,23 @@
 ﻿using HarmonyLib;
+using MapGeneration.Distributors;
 using Qurre.API;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
+using static MapGeneration.Distributors.Scp079Generator;
 namespace Qurre.Patches.Events.SCPs.SCP079
 {
-    [HarmonyPatch(typeof(Generator079), nameof(Generator079.CheckFinish))]
+    [HarmonyPatch(typeof(Scp079Generator), nameof(Scp079Generator.ServerSetFlag))]
     internal static class GeneratorActivate
     {
-        private static bool Prefix(Generator079 __instance)
+        private static bool Prefix(Scp079Generator __instance, GeneratorFlags flag, bool state)
         {
             try
             {
-                if (__instance.Generator_prevFinish() || __instance.Generator_localTime() > 0.0)
-                    return false;
+                if (flag != GeneratorFlags.Engaged) return true;
+                if (!state) return true;
                 var ev = new GeneratorActivateEvent(__instance.GetGenerator());
                 Qurre.Events.Invoke.Scp079.GeneratorActivate(ev);
-                __instance.Generator_prevFinish(true);
-                __instance.epsenRenderer.sharedMaterial = __instance.matLetGreen;
-                __instance.epsdisRenderer.sharedMaterial = __instance.matLedBlack;
-                __instance.Generator_asource().PlayOneShot(__instance.unlockSound);
-                API.Round.ActiveGenerators++;
-                return false;
+                if (ev.Allowed) API.Round.ActiveGenerators++;
+                return ev.Allowed;
             }
             catch (System.Exception e)
             {

@@ -4,7 +4,7 @@ using UnityEngine;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
-    [HarmonyPatch(typeof(Scp106PlayerScript), nameof(Scp106PlayerScript.CallCmdUsePortal))]
+    [HarmonyPatch(typeof(Scp106PlayerScript), nameof(Scp106PlayerScript.UserCode_CmdUsePortal))]
     internal static class PortalUsing
     {
         private static bool Prefix(Scp106PlayerScript __instance)

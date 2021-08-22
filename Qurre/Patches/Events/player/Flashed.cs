@@ -1,25 +1,36 @@
 ﻿using CustomPlayerEffects;
 using HarmonyLib;
+using InventorySystem.Items.ThrowableProjectiles;
 using Qurre.API;
 using Qurre.API.Events;
 using System;
 using UnityEngine;
 namespace Qurre.Patches.Events.player
 {
-	[HarmonyPatch(typeof(Flashed), nameof(Flashed.Flashable))]
+	[HarmonyPatch(typeof(FlashbangGrenade), nameof(FlashbangGrenade.ProcessPlayer))]
 	internal static class FlashedPatch
 	{
-		private static bool Prefix(Flashed __instance, ref bool __result, ReferenceHub throwerPlayerHub, Vector3 sourcePosition, int ignoreMask)
+		private static bool Prefix(FlashbangGrenade __instance, ReferenceHub hub)
 		{
 			try
 			{
-				Player thrower = Player.Get(throwerPlayerHub);
-				Player target = Player.Get(__instance.Hub);
-				bool allowed = __instance.Hub != throwerPlayerHub && throwerPlayerHub.weaponManager.GetShootPermission(__instance.Hub.characterClassManager.CurRole.team)
-					&& !Physics.Linecast(sourcePosition, __instance.Hub.PlayerCameraReference.position, ignoreMask);
-				var ev = new FlashedEvent(thrower, target, sourcePosition, ignoreMask, allowed);
+				Player thrower = Player.Get(__instance.PreviousOwner.Hub);
+				Player target = Player.Get(hub);
+				Vector3 vector = __instance.transform.position - hub.PlayerCameraReference.position;
+				float num = vector.magnitude;
+				float num2 = __instance._deafenDurationOverDistance.Evaluate(num);
+				if (num2 > 0f) target.EnableEffect<Deafened>(num2, true);
+				if (hub.transform.position.y > 900f) num /= __instance._surfaceZoneDistanceIntensifier;
+				float num3 = __instance._blindingOverDistance.Evaluate(num) * __instance._blindingOverDot.Evaluate(Vector3.Dot(hub.PlayerCameraReference.forward, vector.normalized));
+				bool allowed = false;
+				if (num3 > 0f) allowed = true;
+				var ev = new FlashedEvent(thrower, target, __instance.transform.position, allowed);
 				Qurre.Events.Invoke.Player.Flashed(ev);
-				__result = ev.Allowed;
+				if (ev.Allowed)
+				{
+					target.EnableEffect<Flashed>(num3, true);
+					target.EnableEffect<Blinded>(num3 + __instance._additionalBlurDuration, true);
+				}
 				return false;
 			}
 			catch (Exception e)

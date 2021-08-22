@@ -8,7 +8,7 @@ namespace Qurre.Events.Invoke
         public static void AnnouncementDecontaminationZDecon(AnnouncementDecontaminationEvent ev) => Invokes(ev);
         public static void MTFAnnouncement(MTFAnnouncementEvent ev) => Invokes(ev);
         public static void NewBlood(NewBloodEvent ev) => Invokes(ev);
-        public static void NewDecal(NewDecalEvent ev) => Invokes(ev);
+        public static void PlaceBulletHole(PlaceBulletHoleEvent ev) => Invokes(ev);
         public static void Generated() => Invokes();
         public static void SetSeed(SetSeedEvent ev) => Invokes(ev);
         public static void DoorDamage(DoorDamageEvent ev) => Invokes(ev);

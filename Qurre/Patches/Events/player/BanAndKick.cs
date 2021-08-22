@@ -10,7 +10,7 @@ namespace Qurre.Patches.Events.player
     [HarmonyPatch(typeof(BanPlayer), nameof(BanPlayer.BanUser), new[] { typeof(GameObject), typeof(int), typeof(string), typeof(string), typeof(bool) })]
     internal static class BanAndKick
     {
-        private static bool Prefix(GameObject user, int duration, string reason, string issuer, bool isGlobalBan)
+        private static bool Prefix(GameObject user, long duration, string reason, string issuer, bool isGlobalBan)
         {
             try
             {

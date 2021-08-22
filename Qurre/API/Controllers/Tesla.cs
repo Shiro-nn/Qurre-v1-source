@@ -58,8 +58,8 @@ namespace Qurre.API.Controllers
         public float SizeOfTrigger { get => Gate.sizeOfTrigger; set => Gate.sizeOfTrigger = value; }
         public void Trigger(bool instant = false)
         {
-            if (instant) Gate.RpcInstantTesla();
-            else Gate.CallRpcPlayAnimation();
+            if (instant) Gate.UserCode_RpcInstantBurst();
+            else Gate.RpcPlayAnimation();
         }
         public void Destroy() => Object.Destroy(Gate.gameObject);
     }

@@ -1,29 +1,59 @@
-﻿using Qurre.API.Objects;
+﻿using MapGeneration.Distributors;
+using __locker = MapGeneration.Distributors.Locker;
+using Qurre.API.Objects;
 using System.Collections.Generic;
 using UnityEngine;
+using Mirror;
+using InventorySystem.Items.Pickups;
+
 namespace Qurre.API.Controllers
 {
     public class Locker
     {
-        internal Locker(global::Locker locker) => _locker = locker;
-        private global::Locker _locker;
-        public GameObject GameObject => _locker.gameObject.gameObject;
-        public Transform Transform => _locker.gameObject;
-        public global::Locker GlobalLocker => _locker;
+        internal Locker(__locker locker)
+        {
+            _locker = locker;
+            List<Chamber> list = new List<Chamber>();
+            foreach (var _ in _locker.Chambers) list.Add(new Chamber(_));
+            Chambers = list.ToArray();
+        }
+        private __locker _locker;
+        public GameObject GameObject => _locker.gameObject;
+        public Transform Transform => _locker.transform;
+        public __locker GlobalLocker => _locker;
         public string Name => _locker.name;
-        public Vector3 Position => Transform.position;
-        public Quaternion Rotation => Transform.localRotation;
-        public Vector3 Scale => Transform.localScale;
-        public bool SpawnOnOpen { get => _locker.SpawnOnOpen; set => _locker.SpawnOnOpen = value; }
-        public bool TriggeredByDoor { get => _locker.TriggeredByDoor; set => _locker.TriggeredByDoor = value; }
-        public List<global::Locker.ItemToSpawn> ItemsToSpawn { get => _locker._itemsToSpawn; set => _locker._itemsToSpawn = value; }
-        public List<Pickup> AssignedPickups { get => _locker._assignedPickups; set => _locker._assignedPickups = value; }
-        public Vector3 SortingTorque { get => _locker.sortingTorque; set => _locker.sortingTorque = value; }
-        public bool СhambersProcessed { get => _locker._chambersProcessed; set => _locker._chambersProcessed = value; }
-        public int СhanceOfSpawn { get => _locker.chanceOfSpawn; set => _locker.chanceOfSpawn = value; }
-        public LockerChamber[] Сhambers { get => _locker.chambers; set => _locker.chambers = value; }
-        public bool AnyVirtual { get => _locker.AnyVirtual; set => _locker.AnyVirtual = value; }
-        public bool Spawned { get => _locker.Spawned; set => _locker.Spawned = value; }
+        public Vector3 Position
+        {
+            get => Transform.position;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.position = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public Quaternion Rotation
+        {
+            get => Transform.rotation;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.rotation = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public Vector3 Scale
+        {
+            get => Transform.localScale;
+            set
+            {
+                NetworkServer.UnSpawn(GameObject);
+                Transform.localScale = value;
+                NetworkServer.Spawn(GameObject);
+            }
+        }
+        public LockerLoot[] Loot => _locker.Loot;
+        public Chamber[] Chambers { get; private set; }
         public LockerType Type
         {
             get
@@ -40,10 +70,28 @@ namespace Qurre.API.Controllers
                 };
             }
         }
-        public void AssignPickup(Pickup p) => _locker.AssignPickup(p);
-        public void DoorTrigger() => _locker.DoorTrigger();
-        public void LockPickups(bool state, uint chamberId, bool anyOpen) => _locker.LockPickups(state, chamberId, anyOpen);
-        public void ProcessChambers() => _locker.ProcessChambers();
-        public void SpawnItem(global::Locker.ItemToSpawn item) => _locker.SpawnItem(item);
+        public class Chamber
+        {
+            public LockerChamber LockerChamber { get; private set; }
+            internal Chamber(LockerChamber _chamber) => LockerChamber = _chamber;
+            public void SpawnItem(ItemType id, int amount) => LockerChamber.SpawnItem(id, amount);
+            public HashSet<ItemPickupBase> ToBeSpawned => LockerChamber._toBeSpawned;
+            public bool Opened
+            {
+                get => LockerChamber.IsOpen;
+                set => LockerChamber.IsOpen = value;
+            }
+            public ItemType[] AcceptableItems
+            {
+                get => LockerChamber.AcceptableItems;
+                set => LockerChamber.AcceptableItems = value;
+            }
+            public bool CanInteract => LockerChamber.CanInteract;
+            public float Cooldown
+            {
+                get => LockerChamber._targetCooldown;
+                set => LockerChamber._targetCooldown = value;
+            }
+        }
     }
 }

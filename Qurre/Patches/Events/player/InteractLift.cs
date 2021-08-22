@@ -6,7 +6,7 @@ using UnityEngine;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.CallCmdUseElevator), typeof(GameObject))]
+    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdUseElevator), typeof(GameObject))]
     internal static class InteractLift
     {
         private static bool Prefix(PlayerInteract __instance, GameObject elevator)
@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.player
             try
             {
                 if (!__instance.RateLimit().CanExecute(true) ||
-                    (__instance.InteractCuff().CufferId > 0 && !DisarmedInteract()) || elevator == null)
+                    (Player.Get(__instance._hub).Cuffed && !PlayerInteract.CanDisarmedInteract) || elevator == null)
                     return false;
                 Lift lift = elevator.GetComponent<Lift>();
                 if (lift == null) return false;

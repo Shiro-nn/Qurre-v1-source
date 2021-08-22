@@ -9,7 +9,7 @@ namespace Qurre.Events
         public static event AllEvents<AnnouncementDecontaminationEvent> AnnouncementDecontaminationZDecon;
         public static event AllEvents<MTFAnnouncementEvent> MTFAnnouncement;
         public static event AllEvents<NewBloodEvent> NewBlood;
-        public static event AllEvents<NewDecalEvent> NewDecal;
+        public static event AllEvents<PlaceBulletHoleEvent> PlaceBulletHole;
         public static event AllEvents Generated;
         public static event AllEvents<SetSeedEvent> SetSeed;
         public static event AllEvents<DoorDamageEvent> DoorDamage;
@@ -20,7 +20,7 @@ namespace Qurre.Events
         internal static void Invokes(AnnouncementDecontaminationEvent ev) => AnnouncementDecontaminationZDecon?.invoke(ev);
         internal static void Invokes(MTFAnnouncementEvent ev) => MTFAnnouncement?.invoke(ev);
         internal static void Invokes(NewBloodEvent ev) => NewBlood?.invoke(ev);
-        internal static void Invokes(NewDecalEvent ev) => NewDecal?.invoke(ev);
+        internal static void Invokes(PlaceBulletHoleEvent ev) => PlaceBulletHole?.invoke(ev);
         internal static void Invokes() => Generated.invoke();
         internal static void Invokes(SetSeedEvent ev) => SetSeed?.invoke(ev);
         internal static void Invokes(DoorDamageEvent ev) => DoorDamage?.invoke(ev);

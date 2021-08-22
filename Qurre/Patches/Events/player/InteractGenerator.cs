@@ -1,46 +1,31 @@
 ﻿using System;
 using HarmonyLib;
-using Mirror;
+using Interactables.Interobjects.DoorUtils;
+using MapGeneration.Distributors;
 using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
-using QurreModLoader;
-using UnityEngine;
 namespace Qurre.Patches.Events.player
 {
-	[HarmonyPatch(typeof(Generator079), nameof(Generator079.Interact))]
+	[HarmonyPatch(typeof(Scp079Generator), nameof(Scp079Generator.ServerInteract))]
 	internal static class InteractGenerator
 	{
-		private static bool Prefix(Generator079 __instance, GameObject person, PlayerInteract.Generator079Operations command)
+		private static bool Prefix(Scp079Generator __instance, ReferenceHub ply, byte colliderId)
 		{
 			try
 			{
-				Player player = Player.Get(person);
-				if (player == null)
-					return true;
-				if (__instance.Gen_doorAnimationCooldown() > 0f || __instance.Gen_deniedCooldown() > 0f)
-					return false;
-				switch (command)
+				Player player = Player.Get(ply);
+				if (player == null) return true;
+				if (__instance._cooldownStopwatch.IsRunning && __instance._cooldownStopwatch.Elapsed.TotalSeconds < __instance._targetCooldown) return false;
+				if (colliderId != 0 && !__instance.HasFlag(__instance._flags, Scp079Generator.GeneratorFlags.Open)) return false;
+				__instance._cooldownStopwatch.Stop();
+				switch (colliderId)
 				{
-					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Door:
-						bool boolean = false;
-                        if (__instance.GetGenerator().Locked)
+					case 0:
+						if (__instance.HasFlag(__instance._flags, Scp079Generator.GeneratorFlags.Unlocked))
 						{
-							if (player.Inventory.curItem > ItemType.KeycardJanitor)
-							{
-								string[] permissions = player.Inventory.GetItemByID(player.Inventory.curItem).permissions;
-								for (int i = 0; i < permissions.Length; i++)
-									if (permissions[i] == "ARMORY_LVL_2" || player.BypassMode)
-										boolean = true;
-							}
-							var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.Unlocked, boolean);
-							Qurre.Events.Invoke.Player.InteractGenerator(ev1);
-							if (ev1.Allowed) __instance.GetGenerator().Locked = false;
-							else __instance.RpcDenied();
-						}
-                        else
-						{
-							switch (__instance.isDoorOpen)
+							bool boolean = false;
+							switch (__instance.GetGenerator().Open)
 							{
 								case false:
 									var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.OpenDoor);
@@ -53,39 +38,54 @@ namespace Qurre.Patches.Events.player
 									boolean = ev2.Allowed;
 									break;
 							}
-							if (boolean) __instance.OpenClose(person);
+							if (boolean) __instance.ServerSetFlag(Scp079Generator.GeneratorFlags.Open, !__instance.HasFlag(__instance._flags, Scp079Generator.GeneratorFlags.Open));
 							else __instance.RpcDenied();
+							__instance._targetCooldown = __instance._doorToggleCooldownTime;
+						}
+						else
+						{
+							bool boolean = false;
+							InventorySystem.Items.Keycards.KeycardItem keycardItem;
+							if (ply.inventory.CurInstance != null && (keycardItem = ply.inventory.CurInstance as InventorySystem.Items.Keycards.KeycardItem) != null &&
+								keycardItem.Permissions.HasFlagFast(__instance._requiredPermission))
+								boolean = true;
+							var _ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.Unlocked, boolean);
+							Qurre.Events.Invoke.Player.InteractGenerator(_ev);
+							if (_ev.Allowed) __instance.GetGenerator().Locked = false;
+							else __instance.RpcDenied();
+							__instance._targetCooldown = __instance._unlockCooldownTime;
 						}
 						break;
-					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Tablet:
-						if (__instance.isTabletConnected || !__instance.isDoorOpen || __instance.Generator_localTime() <= 0.0 || Generator079.mainGenerator.forcedOvercharge)
-							break;
-						Inventory component = person.GetComponent<Inventory>();
-						using (SyncList<Inventory.SyncItemInfo>.SyncListEnumerator enumerator = component.items.GetEnumerator())
+					case 1:
+						if ((ply.characterClassManager.IsHuman() || __instance.Activating) && !__instance.Engaged)
 						{
-							while (enumerator.MoveNext())
+							var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.Activated);
+							Qurre.Events.Invoke.Player.InteractGenerator(ev1);
+							if (ev1.Allowed)
 							{
-								Inventory.SyncItemInfo current = enumerator.Current;
-								if (current.id == ItemType.WeaponManagerTablet)
-								{
-									var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabletInjected);
-									Qurre.Events.Invoke.Player.InteractGenerator(ev1);
-									if (ev1.Allowed)
-									{
-										component.items.Remove(current);
-										__instance.NetworkisTabletConnected = true;
-									}
-									break;
-								}
+								__instance.Activating = !__instance.Activating;
+								if (__instance.Activating) __instance._leverStopwatch.Restart();
+								__instance._targetCooldown = __instance._doorToggleCooldownTime;
 							}
-							break;
 						}
-					case (PlayerInteract.Generator079Operations)PlayerInteract.Generator079Operations.Cancel:
-						var ev = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.TabledEjected);
-						Qurre.Events.Invoke.Player.InteractGenerator(ev);
-						if (ev.Allowed) __instance.EjectTablet();
+						break;
+					case 2:
+						if (__instance.Activating && !__instance.Engaged)
+						{
+							var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.Disabled);
+							Qurre.Events.Invoke.Player.InteractGenerator(ev1);
+							if (ev1.Allowed)
+							{
+								__instance.ServerSetFlag(Scp079Generator.GeneratorFlags.Activating, false);
+								__instance._targetCooldown = __instance._unlockCooldownTime;
+							}
+						}
+						break;
+					default:
+						__instance._targetCooldown = 1f;
 						break;
 				}
+				__instance._cooldownStopwatch.Restart();
 				return false;
 			}
 			catch (Exception e)

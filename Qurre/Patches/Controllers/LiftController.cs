@@ -4,7 +4,7 @@ using System;
 using System.Linq;
 namespace Qurre.Patches.Controllers
 {
-    [HarmonyPatch(typeof(Lift), "Start")]
+    [HarmonyPatch(typeof(Lift), nameof(Lift.Start))]
     internal static class LiftController
     {
         private static void Postfix(Lift __instance)

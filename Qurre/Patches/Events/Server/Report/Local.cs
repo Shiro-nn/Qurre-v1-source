@@ -3,7 +3,7 @@ using Qurre.API;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.Server.Report
 {
-    [HarmonyPatch(typeof(CheaterReport), nameof(CheaterReport.CallCmdReport))]
+    [HarmonyPatch(typeof(CheaterReport), nameof(CheaterReport.UserCode_CmdReport))]
     internal static class Local
     {
         private static bool Prefix(CheaterReport __instance, int playerId, string reason, ref bool notifyGm)

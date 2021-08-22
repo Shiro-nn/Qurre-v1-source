@@ -53,9 +53,9 @@ namespace Qurre.Events.Invoke
     public static class Scp914
     {
         public static void Activating(ActivatingEvent ev) => Invokes(ev);
-        public static void ChangeKnob(ChangeKnobEvent ev) => Invokes(ev);
         public static void Upgrade(UpgradeEvent ev) => Invokes(ev);
         public static void UpgradePlayer(UpgradePlayerEvent ev) => Invokes(ev);
+        public static void UpgradePickup(UpgradePickupEvent ev) => Invokes(ev);
     }
     #endregion
 }

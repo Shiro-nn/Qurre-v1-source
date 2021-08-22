@@ -24,7 +24,7 @@ namespace Qurre.Patches.Events.Map
             }
         }
     }
-    [HarmonyPatch(typeof(DoorEventOpenerExtension), "Trigger")]
+    [HarmonyPatch(typeof(DoorEventOpenerExtension), nameof(DoorEventOpenerExtension.Trigger))]
     internal static class DoorOpen
     {
         private static bool Prefix(DoorEventOpenerExtension __instance, DoorEventOpenerExtension.OpenerEventType eventType)

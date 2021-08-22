@@ -44,13 +44,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp_publicized, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Assembly-CSharp_publicized">
       <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
-    <Reference Include="DissonanceVoip, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>D:\scp\SCPSL_Data\Managed\DissonanceVoip.dll</HintPath>
+    <Reference Include="DissonanceVoip">
+      <HintPath>..\lib\DissonanceVoip.dll</HintPath>
     </Reference>
     <Reference Include="Mirror">
       <HintPath>..\lib\Mirror.dll</HintPath>
@@ -95,6 +93,8 @@
   <ItemGroup>
     <Compile Include="API\Audio.cs" />
     <Compile Include="API\Config.cs" />
+    <Compile Include="API\Controllers\Camera.cs" />
+    <Compile Include="API\Controllers\Item.cs" />
     <Compile Include="API\Controllers\Locker.cs" />
     <Compile Include="API\DataBase\DataBase.cs" />
     <Compile Include="API\Controllers\Broadcast.cs" />
@@ -113,11 +113,13 @@
     <Compile Include="API\Controllers\Heavy.cs" />
     <Compile Include="API\Controllers\Generator.cs" />
     <Compile Include="API\Controllers\Lift.cs" />
+    <Compile Include="API\Objects\AmmoType.cs" />
+    <Compile Include="API\Objects\ItemState.cs" />
+    <Compile Include="API\Objects\WorkstationStatus.cs" />
     <Compile Include="API\Objects\ConfigObjects.cs" />
     <Compile Include="API\Objects\DoorPrefabs.cs" />
     <Compile Include="API\Objects\LockerType.cs" />
     <Compile Include="API\Objects\RemovableObject.cs" />
-    <Compile Include="API\Objects\WeaponType.cs" />
     <Compile Include="API\Objects\RadioStatus.cs" />
     <Compile Include="API\Objects\GrenadeType.cs" />
     <Compile Include="API\Objects\TeamUnitType.cs" />
@@ -132,10 +134,8 @@
     <Compile Include="API\Events\Round.cs" />
     <Compile Include="API\Events\SCPs.cs" />
     <Compile Include="API\Events\Server.cs" />
-    <Compile Include="API\Item.cs" />
     <Compile Include="API\Map.cs" />
     <Compile Include="API\Objects\DoorType.cs" />
-    <Compile Include="API\Objects\RoomType.cs" />
     <Compile Include="API\Objects\EffectType.cs" />
     <Compile Include="API\Objects\GeneratorStatus.cs" />
     <Compile Include="API\Controllers\Room.cs" />
@@ -162,21 +162,21 @@
     <Compile Include="Events\modules\Main.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Patches\Controllers\CassieController.cs" />
-    <Compile Include="Patches\Controllers\Scp914Controller.cs" />
-    <Compile Include="Patches\Controllers\Scp173Controller.cs" />
+    <Compile Include="Patches\Controllers\ItemController.cs" />
+    <Compile Include="Patches\Controllers\LockerInitial.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
+    <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\etc\Audio.cs" />
     <Compile Include="Patches\etc\EscapeFix.cs" />
-    <Compile Include="Patches\etc\Scale.cs" />
     <Compile Include="Patches\etc\Invisible.cs" />
-    <Compile Include="Patches\etc\Translation.cs" />
     <Compile Include="Patches\etc\MaxHpFix.cs" />
-    <Compile Include="Patches\etc\RespawnCassie.cs" />
     <Compile Include="Patches\etc\UnitName.cs" />
+    <Compile Include="Patches\Events\Map\PlaceBulletHole.cs" />
     <Compile Include="Patches\Events\Map\UseElevator.cs" />
     <Compile Include="Patches\Events\Map\DoorLock.cs" />
     <Compile Include="Patches\Events\Map\DoorDamage.cs" />
     <Compile Include="Patches\Events\Map\SetSeed.cs" />
+    <Compile Include="Patches\Events\player\Disarmed.cs" />
     <Compile Include="Patches\Events\player\Flashed.cs" />
     <Compile Include="Patches\Events\player\FragExplosion.cs" />
     <Compile Include="Patches\Events\player\FlashExplosion.cs" />
@@ -209,13 +209,11 @@
     <Compile Include="Patches\Events\player\Speak.cs" />
     <Compile Include="Patches\Events\player\InteractGenerator.cs" />
     <Compile Include="Patches\Events\player\TeslaTrigger.cs" />
-    <Compile Include="Patches\Events\player\ThrowGrenade.cs" />
+    <Compile Include="Patches\Events\player\ThrowItem.cs" />
     <Compile Include="Patches\Events\player\SyncData.cs" />
-    <Compile Include="Patches\Events\player\UsedMedical.cs" />
-    <Compile Include="Patches\Events\player\UsingMedical.cs" />
-    <Compile Include="Patches\Events\player\StoppingMedicalUsing.cs" />
+    <Compile Include="Patches\Events\player\ItemUsed.cs" />
+    <Compile Include="Patches\Events\player\ItemUsing.cs" />
     <Compile Include="Patches\Events\player\Shoot.cs" />
-    <Compile Include="Patches\Events\player\UnCuff.cs" />
     <Compile Include="Patches\Events\player\RechargeWeapon.cs" />
     <Compile Include="Patches\Events\player\PickupItem.cs" />
     <Compile Include="Patches\Events\player\Leave.cs" />
@@ -228,7 +226,6 @@
     <Compile Include="Patches\Events\player\InteractDoor.cs" />
     <Compile Include="Patches\Events\player\Interact.cs" />
     <Compile Include="Patches\Events\player\Damage.cs" />
-    <Compile Include="Patches\Events\player\Cuff.cs" />
     <Compile Include="Patches\Events\player\RoleChange.cs" />
     <Compile Include="Patches\Events\player\ItemChange.cs" />
     <Compile Include="Patches\Events\player\GroupChange.cs" />
@@ -250,7 +247,7 @@
     <Compile Include="Patches\Events\SCPs\Scp106\PortalCreate.cs" />
     <Compile Include="Patches\Events\SCPs\Scp106\PortalUsing.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\Activating.cs" />
-    <Compile Include="Patches\Events\SCPs\Scp914\ChangeKnob.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp914\UpgradePlayer.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\Upgrade.cs" />
     <Compile Include="Patches\Events\Server\Console.cs" />
     <Compile Include="Patches\Events\Server\RA.cs" />

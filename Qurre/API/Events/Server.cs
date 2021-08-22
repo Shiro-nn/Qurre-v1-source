@@ -66,7 +66,6 @@ namespace Qurre.API.Events
             string message,
             string name,
             string[] args,
-            bool isEncrypted,
             string returnMessage = "",
             string color = "white",
             bool allowed = true)
@@ -75,7 +74,6 @@ namespace Qurre.API.Events
             Message = message;
             Name = name;
             Args = args;
-            IsEncrypted = isEncrypted;
             ReturnMessage = returnMessage;
             Color = color;
             Allowed = allowed;
@@ -84,7 +82,6 @@ namespace Qurre.API.Events
         public string Message { get; }
         public string Name { get; }
         public string[] Args { get; }
-        public bool IsEncrypted { get; private set; }
         public string ReturnMessage { get; set; }
         public string Color { get; set; }
         public bool Allowed { get; set; }

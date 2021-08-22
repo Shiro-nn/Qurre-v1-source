@@ -4,10 +4,10 @@ using Qurre.API;
 using System;
 namespace Qurre.Patches.Controllers
 {
-    [HarmonyPatch(typeof(DoorSpawnpoint), "Start")]
+    [HarmonyPatch(typeof(DoorSpawnpoint), nameof(DoorSpawnpoint.Start))]
     internal static class DoorController
     {
-        private static bool Prefix(DoorSpawnpoint __instance)
+        private static void Postfix(DoorSpawnpoint __instance)
         {
             try
             {
@@ -31,7 +31,6 @@ namespace Qurre.Patches.Controllers
             {
                 Log.Error($"umm, error in patching Controllers [DoorController]:\n{e}\n{e.StackTrace}");
             }
-            return true;
         }
     }
 }

@@ -4,7 +4,7 @@ using HarmonyLib;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(DissonanceUserSetup), nameof(DissonanceUserSetup.CallCmdAltIsActive))]
+    [HarmonyPatch(typeof(DissonanceUserSetup), nameof(DissonanceUserSetup.UserCode_CmdAltIsActive))]
     internal static class Speak
     {
         private static bool Prefix(DissonanceUserSetup __instance, bool value)

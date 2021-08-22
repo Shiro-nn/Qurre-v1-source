@@ -1,7 +1,5 @@
 ﻿using Interactables.Interobjects.DoorUtils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 namespace Qurre.API.Events
 {
@@ -57,20 +55,20 @@ namespace Qurre.API.Events
         public float Multiplier { get; set; }
         public bool Allowed { get; set; }
     }
-    public class NewDecalEvent : EventArgs
+    public class PlaceBulletHoleEvent : EventArgs
     {
-        public NewDecalEvent(Player owner, Vector3 position, Quaternion rotation, int type, bool allowed = true)
+        public PlaceBulletHoleEvent(Player owner, Ray ray, RaycastHit hit, bool allowed = true)
         {
             Owner = owner;
-            Position = position;
-            Rotation = rotation;
-            Type = type;
+            Ray = ray;
+            Position = hit.point;
+            Rotation = hit.normal;
             Allowed = allowed;
         }
         public Player Owner { get; }
+        public Ray Ray { get; set; }
         public Vector3 Position { get; set; }
-        public Quaternion Rotation { get; set; }
-        public int Type { get; set; }
+        public Vector3 Rotation { get; set; }
         public bool Allowed { get; set; }
     }
     public class SetSeedEvent : EventArgs
@@ -126,17 +124,6 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Controllers.Lift Lift { get; }
-        public bool Allowed { get; set; }
-    }
-    [Obsolete("Use FlashExplosionEvent/FragExplosionEvent")]
-    public class GrenadeExplodeEvent : EventArgs
-    {
-        public GrenadeExplodeEvent(Player thrower, Dictionary<Player, float> targetToDamages, bool isFrag, GameObject grenade, bool allowed = true) { }
-        public Player Thrower { get; }
-        public Dictionary<Player, float> TargetToDamages { get; }
-        public List<Player> Targets => TargetToDamages.Keys.ToList();
-        public bool IsFrag { get; }
-        public GameObject Grenade { get; }
         public bool Allowed { get; set; }
     }
 }

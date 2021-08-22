@@ -66,13 +66,13 @@ namespace Qurre.Events
     public static class Scp914
     {
         public static event AllEvents<ActivatingEvent> Activating;
-        public static event AllEvents<ChangeKnobEvent> ChangeKnob;
         public static event AllEvents<UpgradeEvent> Upgrade;
         public static event AllEvents<UpgradePlayerEvent> UpgradePlayer;
+        public static event AllEvents<UpgradePickupEvent> UpgradePickup;
         internal static void Invokes(ActivatingEvent ev) => Activating.invoke(ev);
-        internal static void Invokes(ChangeKnobEvent ev) => ChangeKnob.invoke(ev);
         internal static void Invokes(UpgradeEvent ev) => Upgrade?.invoke(ev);
         internal static void Invokes(UpgradePlayerEvent ev) => UpgradePlayer?.invoke(ev);
+        internal static void Invokes(UpgradePickupEvent ev) => UpgradePickup?.invoke(ev);
     }
     #endregion
 }

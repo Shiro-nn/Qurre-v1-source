@@ -1,25 +1,23 @@
-﻿using Grenades;
-using HarmonyLib;
+﻿using HarmonyLib;
+using InventorySystem.Items.ThrowableProjectiles;
 using Qurre.API;
 using Qurre.API.Events;
 using System;
 using UnityEngine;
 namespace Qurre.Patches.Events.player
 {
-	[HarmonyPatch(typeof(FragGrenade), nameof(FragGrenade.ServersideExplosion))]
+	[HarmonyPatch(typeof(ExplosionGrenade), nameof(ExplosionGrenade.Explode))]
 	internal static class FragExplosionPatch
 	{
-		private static bool Prefix(FragGrenade __instance, ref bool __result)
+		private static bool Prefix(ExplosionGrenade __instance)
 		{
 			try
 			{
-				Player thrower = Player.Get(__instance.thrower.gameObject);
+				Player thrower = Player.Get(__instance.PreviousOwner.Hub);
 				Vector3 position = __instance.transform.position;
-				var ev = new FragExplosionEvent(thrower, position);
+				var ev = new FragExplosionEvent(thrower, __instance, position);
 				Qurre.Events.Invoke.Player.FragExplosion(ev);
-				if (ev.Allowed) return true;
-				__result = false;
-				return false;
+				return ev.Allowed;
 			}
 			catch (Exception e)
 			{

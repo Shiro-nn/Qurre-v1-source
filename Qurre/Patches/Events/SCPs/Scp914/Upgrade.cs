@@ -1,58 +1,49 @@
-﻿using System.Linq;
-using Scp914;
+﻿using Scp914;
 using HarmonyLib;
 using Mirror;
 using UnityEngine;
 using Qurre.API;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
 using System.Collections.Generic;
+using NorthwoodLib.Pools;
+using InventorySystem.Items.Pickups;
+
 namespace Qurre.Patches.Events.SCPs.SCP914
 {
-    [HarmonyPatch(typeof(Scp914Machine), nameof(Scp914Machine.ProcessItems))]
+    [HarmonyPatch(typeof(Scp914Upgrader), nameof(Scp914Upgrader.Upgrade))]
     internal static class Upgrade
     {
-        private static bool Prefix(Scp914Machine __instance)
+        private static bool Prefix(Collider[] intake, Vector3 moveVector, Scp914Mode mode, Scp914KnobSetting setting)
         {
             try
             {
                 if (!NetworkServer.active) return true;
-                if (__instance.intake == null || __instance.inputSize == null) return true;
-                Collider[] colliderArray = Physics.OverlapBox(__instance.intake.position, __instance.inputSize / 2f);
-                __instance.Scp914_players().Clear();
-                __instance.Scp914_items().Clear();
-                foreach (Collider collider in colliderArray)
+				HashSet<GameObject> hashSet = HashSetPool<GameObject>.Shared.Rent();
+				bool upgradeDropped = (mode & Scp914Mode.Dropped) == Scp914Mode.Dropped;
+				bool upgradeInventory = (mode & Scp914Mode.Inventory) == Scp914Mode.Inventory;
+				bool heldOnly = upgradeInventory && (mode & Scp914Mode.Held) == Scp914Mode.Held;
+				var players = new List<Player>();
+				var items = new List<ItemPickupBase>();
+                foreach (var collider in intake)
                 {
-                    try
+                    var gameObject = collider.transform.root.gameObject;
+                    if (hashSet.Add(gameObject))
                     {
-                        if (collider == null) continue;
-                        CharacterClassManager plrs = collider.GetComponent<CharacterClassManager>();
-                        if (plrs != null) __instance.Scp914_players().Add(plrs);
-                        else
-                        {
-                            Pickup picks = collider.GetComponent<Pickup>();
-                            if (picks != null) __instance.Scp914_items().Add(picks);
-                        }
+                        if (ReferenceHub.TryGetHub(gameObject, out var ply)) players.Add(Player.Get(ply));
+                        else if (gameObject.TryGetComponent<ItemPickupBase>(out var pickup)) items.Add(pickup);
                     }
-                    catch { }
                 }
-                List<Player> __players = __instance.Scp914_players().Select(player => Player.Get(player.gameObject)).ToList();
-                List<Player> _players = new List<Player>();
-                foreach (Player pl in __players)
-                {
-                    var _ev = new UpgradePlayerEvent(__instance, pl, __instance.knobState);
-                    Qurre.Events.Invoke.Scp914.UpgradePlayer(_ev);
-                    if (_ev.Allowed) _players.Add(pl);
-                    __instance.knobState = _ev.Knob;
-                }
-                var _list_pick = __instance.Scp914_items();
-                if (_list_pick == null) _list_pick = new List<Pickup>();
-                var ev = new UpgradeEvent(__instance, _players, __instance.Scp914_items(), __instance.knobState);
+                var ev = new UpgradeEvent(players, items, moveVector, mode, setting);
                 Qurre.Events.Invoke.Scp914.Upgrade(ev);
-                __instance.knobState = ev.Knob;
-                var players = ev.Players.Select(player => player.ClassManager).ToList();
-                __instance.MoveObjects(ev.Items, players);
-                try { if (ev.Allowed) __instance.UpgradeObjects(ev.Items, players); } catch { }
+                if (!ev.Allowed) return false;
+                players = ev.Players;
+                items = ev.Items;
+                moveVector = ev.Move;
+                mode = ev.Mode;
+                setting = ev.Setting;
+                foreach (var ply in players) Scp914Upgrader.ProcessPlayer(ply.ReferenceHub, upgradeInventory, heldOnly, moveVector, setting);
+                foreach (var item in items) Scp914Upgrader.ProcessPickup(item, upgradeDropped, moveVector, setting);
+                HashSetPool<GameObject>.Shared.Return(hashSet);
                 return false;
             }
             catch (System.Exception e)

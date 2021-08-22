@@ -1,4 +1,9 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using InventorySystem.Items;
+using InventorySystem.Items.Firearms.Attachments;
+using InventorySystem.Items.Pickups;
+using MapGeneration;
+using MapGeneration.Distributors;
 using Qurre.API.Controllers;
 using Qurre.API.Objects;
 using System.Collections.Generic;
@@ -11,17 +16,6 @@ namespace Qurre.API
 {
 	public static class Extensions
 	{
-		public static WeaponType GetWeaponType(this ItemType item)
-		{
-			if (item == ItemType.GunCOM15) return WeaponType.Com15;
-			if (item == ItemType.GunE11SR) return WeaponType.Epsilon11;
-			if (item == ItemType.GunLogicer) return WeaponType.Logicer;
-			if (item == ItemType.GunMP7) return WeaponType.MP7;
-			if (item == ItemType.GunProject90) return WeaponType.Project90;
-			if (item == ItemType.GunUSP) return WeaponType.USP;
-			if (item == ItemType.MicroHID) return WeaponType.MicroHID;
-			return WeaponType.None;
-		}
 		public static DoorVariant DoorPrefabLCZ { get; internal set; }
 		public static DoorVariant DoorPrefabHCZ { get; internal set; }
 		public static DoorVariant DoorPrefabEZ { get; internal set; }
@@ -31,15 +25,18 @@ namespace Qurre.API
 			else if (prefab == DoorPrefabs.DoorHCZ) return DoorPrefabHCZ;
 			else return DoorPrefabEZ;
 		}
-		public static Room GetRoom(RoomType type) => Map.Rooms.FirstOrDefault(x => x.Type == type);
+		public static Room GetRoom(RoomName type) => Map.Rooms.FirstOrDefault(x => x.Type == type);
 		public static Door GetDoor(DoorType type) => Map.Doors.FirstOrDefault(x => x.Type == type);
 		public static _lift GetLift(LiftType type) => Map.Lifts.FirstOrDefault(x => x.Type == type);
 		public static Door GetDoor(this DoorVariant door) => Map.Doors.FirstOrDefault(x => x.GameObject == door.gameObject);
-		public static Generator GetGenerator(this Generator079 generator079) => Map.Generators.FirstOrDefault(x => x.GameObject == generator079.gameObject);
+		public static Generator GetGenerator(this Scp079Generator generator079) => Map.Generators.FirstOrDefault(x => x.GameObject == generator079.gameObject);
 		public static Tesla GetTesla(this TeslaGate teslaGate) => Map.Teslas.FirstOrDefault(x => x.GameObject == teslaGate.gameObject);
 		public static _lift GetLift(this Lift lift) => Map.Lifts.FirstOrDefault(x => x.GameObject == lift.gameObject);
-		public static _locker GetLocker(this Locker locker) => Map.Lockers.FirstOrDefault(x => x.Transform == locker.gameObject);
-		public static _workStation GetWorkStation(this WorkStation station) => Map.WorkStations.FirstOrDefault(x => x.GameObject == station.gameObject);
+		public static _locker GetLocker(this MapGeneration.Distributors.Locker locker) => Map.Lockers.FirstOrDefault(x => x.Transform == locker.gameObject);
+		public static _workStation GetWorkStation(this WorkstationController station) => Map.WorkStations.FirstOrDefault(x => x.GameObject == station.gameObject);
+		public static Item GetItem(this ItemBase itembase) => Map.Items.FirstOrDefault(x => x.ItemBase == itembase);
+		public static Item GetItem(this ItemPickupBase pickupbase) => Map.Items.FirstOrDefault(x => x.PickupBase == pickupbase);
+		public static Item GetItem(this ushort serial) => Map.Items.FirstOrDefault(x => x.Serial == serial);
 		public static System.Random Random { get; } = new System.Random();
 		public static void Shuffle<T>(this IList<T> list)
 		{

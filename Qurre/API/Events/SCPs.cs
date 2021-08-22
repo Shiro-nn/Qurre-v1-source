@@ -1,4 +1,5 @@
-﻿using PlayableScps;
+﻿using InventorySystem.Items.Pickups;
+using PlayableScps;
 using Scp914;
 using System;
 using System.Collections.Generic;
@@ -8,74 +9,81 @@ namespace Qurre.API.Events
     #region scp914
     public class ActivatingEvent : EventArgs
     {
-        public ActivatingEvent(Player player, double duration, bool allowed = true)
+        public ActivatingEvent(Player player, float duration, bool allowed = true)
         {
             Player = player;
             Duration = duration;
             Allowed = allowed;
         }
         public Player Player { get; }
-        public double Duration { get; set; }
-        public bool Allowed { get; set; }
-    }
-    public class ChangeKnobEvent : EventArgs
-    {
-        private Scp914Knob knobSetting;
-        public ChangeKnobEvent(Player player, Scp914Knob knobSetting, bool allowed = true)
-        {
-            Player = player;
-            KnobSetting = knobSetting;
-            Allowed = allowed;
-        }
-        public Player Player { get; }
-        public Scp914Knob KnobSetting
-        {
-            get => knobSetting;
-            set => knobSetting = value > Scp914Machine.knobStateMax ? Scp914Machine.knobStateMin : value;
-        }
+        public float Duration { get; set; }
         public bool Allowed { get; set; }
     }
     public class UpgradeEvent : EventArgs
     {
-        public UpgradeEvent(Scp914Machine scp914, List<Player> players, List<Pickup> items, Scp914Knob knob, bool allowed = true)
+        public UpgradeEvent(List<Player> players, List<ItemPickupBase> items, Vector3 moveVector, Scp914Mode mode, Scp914KnobSetting setting, bool allowed = true)
         {
-            Scp914 = scp914;
             Players = players;
             Items = items;
-            Knob = knob;
+            Move = moveVector;
+            Mode = mode;
+            Setting = setting;
             Allowed = allowed;
         }
-        public Scp914Machine Scp914 { get; }
         public List<Player> Players { get; }
-        public List<Pickup> Items { get; }
-        public Scp914Knob Knob { get; set; }
+        public List<ItemPickupBase> Items { get; }
+        public Vector3 Move { get; set; }
+        public Scp914Mode Mode { get; set; }
+        public Scp914KnobSetting Setting { get; set; }
         public bool Allowed { get; set; }
     }
     public class UpgradePlayerEvent : EventArgs
     {
-        public UpgradePlayerEvent(Scp914Machine scp914, Player player, Scp914Knob knob, bool allowed = true)
+        public UpgradePlayerEvent(Player player, bool upgradeInventory, bool heldOnly, Vector3 moveVector, Scp914KnobSetting setting, bool allowed = true)
         {
-            Scp914 = scp914;
             Player = player;
-            Knob = knob;
+            UpgradeInventory = upgradeInventory;
+            HeldOnly = heldOnly;
+            Move = moveVector;
+            Setting = setting;
             Allowed = allowed;
         }
-        public Scp914Machine Scp914 { get; }
         public Player Player { get; }
-        public Scp914Knob Knob { get; set; }
+        public bool UpgradeInventory { get; set; }
+        public bool HeldOnly { get; set; }
+        public Vector3 Move { get; set; }
+        public Scp914KnobSetting Setting { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class UpgradePickupEvent : EventArgs
+    {
+        public UpgradePickupEvent(ItemPickupBase pickup, bool upgradeDropped, Vector3 moveVector, Scp914KnobSetting setting, bool allowed = true)
+        {
+            Pickup = pickup;
+            UpgradeDropped = upgradeDropped;
+            Move = moveVector;
+            Setting = setting;
+            Allowed = allowed;
+        }
+        public ItemPickupBase Pickup { get; }
+        public bool UpgradeDropped { get; set; }
+        public Vector3 Move { get; set; }
+        public Scp914KnobSetting Setting { get; set; }
         public bool Allowed { get; set; }
     }
     #endregion
     #region scp173
     public class BlinkEvent : EventArgs
     {
-        public BlinkEvent(Player scp, HashSet<Player> players)
+        public BlinkEvent(Player scp, Vector3 pos, bool allowed = true)
         {
-            Players = players;
             Scp = scp;
+            Position = pos;
+            Allowed = allowed;
         }
         public Player Scp { get; }
-        public HashSet<Player> Players { get; }
+        public Vector3 Position { get; set; }
+        public bool Allowed { get; set; }
     }
     #endregion
     #region scp106
@@ -217,8 +225,13 @@ namespace Qurre.API.Events
     #region scp079
     public class GeneratorActivateEvent : EventArgs
     {
-        public GeneratorActivateEvent(Controllers.Generator generator) => Generator = generator;
+        public GeneratorActivateEvent(Controllers.Generator generator, bool allowed = true)
+        {
+            Generator = generator;
+            Allowed = allowed;
+        }
         public Controllers.Generator Generator { get; }
+        public bool Allowed { get; set; }
     }
     public class GetEXPEvent : EventArgs
     {

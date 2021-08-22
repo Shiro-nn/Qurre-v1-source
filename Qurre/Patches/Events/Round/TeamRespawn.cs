@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
+using NorthwoodLib.Pools;
 using Qurre.API;
 using Qurre.API.Events;
 using Respawning;
 using Respawning.NamingRules;
 using UnityEngine;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.Round
 {
     [HarmonyPatch(typeof(RespawnManager), nameof(RespawnManager.Spawn))]
@@ -17,65 +17,74 @@ namespace Qurre.Patches.Events.Round
         {
             try
             {
-                if (!RespawnWaveGenerator.SpawnableTeams.TryGetValue(__instance.NextKnownTeam, out SpawnableTeam spawnableTeam) ||
-                    __instance.NextKnownTeam == SpawnableTeamType.None)
-                    ServerConsole.AddLog($"umm, team {__instance.NextKnownTeam} is undefined", ConsoleColor.Red);
-                else
+                SpawnableTeamHandlerBase spawnableTeamHandlerBase;
+                if (!RespawnWaveGenerator.SpawnableTeams.TryGetValue(__instance.NextKnownTeam, out spawnableTeamHandlerBase) || __instance.NextKnownTeam == SpawnableTeamType.None)
                 {
-                    List<Player> list = Player.List.Where(p => p.Role == RoleType.Spectator && !p.Overwatch).ToList();
-                    if (list.Count > 0)
+                    ServerConsole.AddLog("Fatal error. Team '" + __instance.NextKnownTeam + "' is undefined.", ConsoleColor.Red);
+                    return false;
+                }
+                List<Player> list = Player.List.Where(p => p.Role == RoleType.Spectator && !p.Overwatch).ToList();
+                if (__instance._prioritySpawn) list = (from item in list orderby item.ClassManager.DeathTime select item).ToList();
+                else list.ShuffleList();
+                int num = RespawnTickets.Singleton.GetAvailableTickets(__instance.NextKnownTeam);
+                if (RespawnTickets.Singleton.IsFirstWave) RespawnTickets.Singleton.IsFirstWave = false;
+                if (num == 0)
+                {
+                    num = 5;
+                    RespawnTickets.Singleton.GrantTickets(SpawnableTeamType.ChaosInsurgency, 5, true);
+                }
+                int num2 = Mathf.Min(num, spawnableTeamHandlerBase.MaxWaveSize);
+                var ev = new TeamRespawnEvent(list, num2, __instance.NextKnownTeam);
+                Qurre.Events.Invoke.Round.TeamRespawn(ev);
+                if (!ev.Allowed)
+                {
+                    __instance.NextKnownTeam = SpawnableTeamType.None;
+                    return false;
+                }
+                list = ev.Players;
+                num2 = ev.MaxRespAmount;
+                while (list.Count > num2) list.RemoveAt(list.Count - 1);
+                list.ShuffleList();
+                List<Player> list2 = ListPool<Player>.Shared.Rent();
+                Queue<RoleType> queue = new Queue<RoleType>();
+                spawnableTeamHandlerBase.GenerateQueue(queue, list.Count);
+                foreach (Player pl in list)
+                {
+                    try
                     {
-                        RespawnTickets singleton = RespawnTickets.Singleton;
-                        int tick = singleton.GetAvailableTickets(__instance.NextKnownTeam);
-                        if (tick == 0)
-                        {
-                            tick = RespawnTickets.DefaultTeamAmount;
-                            RespawnTickets.Singleton.GrantTickets(RespawnTickets.DefaultTeam, RespawnTickets.DefaultTeamAmount, true);
-                        }
-                        int avsp = Mathf.Min(tick, spawnableTeam.MaxWaveSize);
-                        if (__instance.RespawnManager_prioritySpawn())
-                            list = list.OrderBy(item => item.ClassManager.DeathTime).ToList();
-                        else list.ShuffleList();
-                        List<Player> twolist = new List<Player>();
-                        var ev = new TeamRespawnEvent(list, avsp, __instance.NextKnownTeam);
-                        Qurre.Events.Invoke.Round.TeamRespawn(ev);
-                        if (!ev.Allowed)
-                        {
-                            __instance.NextKnownTeam = SpawnableTeamType.None;
-                            return false;
-                        }
-                        list = ev.Players;
-                        avsp = ev.MaxRespAmount;
-                        while (list.Count > avsp) list.RemoveAt(list.Count - 1);
-                        list.ShuffleList();
-                        foreach (Player targ in list)
-                        {
-                            try
-                            {
-                                RoleType classid = spawnableTeam.ClassQueue[Mathf.Min(twolist.Count, spawnableTeam.ClassQueue.Length - 1)];
-                                targ.ClassManager.SetPlayersClass(classid, targ.GameObject);
-                                twolist.Add(targ);
-                            }
-                            catch { }
-                        }
-                        if (twolist.Count > 0)
-                        {
-                            RespawnTickets.Singleton.GrantTickets(__instance.NextKnownTeam, -twolist.Count * spawnableTeam.TicketRespawnCost);
-                            if (UnitNamingRules.TryGetNamingRule(__instance.NextKnownTeam, out UnitNamingRule rule))
-                            {
-                                rule.GenerateNew(__instance.NextKnownTeam, out string regular);
-                                foreach (Player pl in twolist)
-                                {
-                                    pl.ClassManager.NetworkCurSpawnableTeamType = (byte)__instance.NextKnownTeam;
-                                    pl.ClassManager.NetworkCurUnitName = regular;
-                                }
-                                rule.PlayEntranceAnnouncement(regular);
-                            }
-                            RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, __instance.NextKnownTeam);
-                        }
-                        __instance.NextKnownTeam = SpawnableTeamType.None;
+                        RoleType classid = queue.Dequeue();
+                        pl.ClassManager.SetPlayersClass(classid, pl.GameObject, CharacterClassManager.SpawnReason.Respawn, false);
+                        list2.Add(pl);
+                        ServerLogs.AddLog(ServerLogs.Modules.ClassChange, $"Player {pl.ReferenceHub.LoggedNameFromRefHub()} respawned as {classid}.", ServerLogs.ServerLogType.GameEvent, false);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (pl != null && pl.ReferenceHub != null)
+                            ServerLogs.AddLog(ServerLogs.Modules.ClassChange, $"Player {pl.ReferenceHub.LoggedNameFromRefHub()} couldn't be spawned. Err msg: {ex.Message}",
+                                ServerLogs.ServerLogType.GameEvent, false);
+                        else ServerLogs.AddLog(ServerLogs.Modules.ClassChange, "Couldn't spawn a player - target's ReferenceHub is null.", ServerLogs.ServerLogType.GameEvent, false);
                     }
                 }
+                if (list2.Count > 0)
+                {
+                    ServerLogs.AddLog(ServerLogs.Modules.ClassChange, $"RespawnManager has successfully spawned {list2.Count} players as {__instance.NextKnownTeam}!",
+                        ServerLogs.ServerLogType.GameEvent, false);
+                    RespawnTickets.Singleton.GrantTickets(__instance.NextKnownTeam, -list2.Count * spawnableTeamHandlerBase.TicketRespawnCost, false);
+                    if (UnitNamingRules.TryGetNamingRule(__instance.NextKnownTeam, out UnitNamingRule unitNamingRule))
+                    {
+                        string text;
+                        unitNamingRule.GenerateNew(__instance.NextKnownTeam, out text);
+                        foreach (Player pl in list2)
+                        {
+                            pl.ClassManager.NetworkCurSpawnableTeamType = (byte)__instance.NextKnownTeam;
+                            pl.ClassManager.NetworkCurUnitName = text;
+                        }
+                        unitNamingRule.PlayEntranceAnnouncement(text);
+                    }
+                    RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, __instance.NextKnownTeam);
+                }
+                ListPool<ReferenceHub>.Shared.Return(list2.Select(x => x.ReferenceHub).ToList());
+                __instance.NextKnownTeam = SpawnableTeamType.None;
                 return false;
             }
             catch (Exception e)

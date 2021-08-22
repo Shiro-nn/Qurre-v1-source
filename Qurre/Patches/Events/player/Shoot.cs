@@ -1,31 +1,29 @@
 ﻿using System;
 using HarmonyLib;
+using InventorySystem.Items.Firearms;
+using InventorySystem.Items.Firearms.BasicMessages;
+using Mirror;
 using Qurre.API;
 using Qurre.API.Events;
-using UnityEngine;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(WeaponManager), nameof(WeaponManager.CallCmdShoot))]
+    [HarmonyPatch(typeof(FirearmBasicMessagesHandler), nameof(FirearmBasicMessagesHandler.ServerShotReceived))]
     internal static class Shoot
     {
-        private static bool Prefix(WeaponManager __instance, GameObject target, HitBoxType hitboxType, Vector3 targetPos)
+        private static bool Prefix(NetworkConnection conn, ShotMessage msg)
         {
             try
             {
-                if (!__instance.RateLimit().CanExecute(true)) return false;
-                int itemIndex = __instance.Weapon_hub().inventory.GetItemIndex();
-                if (itemIndex < 0 || itemIndex >= __instance.Weapon_hub().inventory.items.Count || __instance.curWeapon < 0 ||
-                    ((__instance.Weapon_reloadCooldown() > 0.0 || __instance.Weapon_fireCooldown() > 0.0) &&
-                     !__instance.isLocalPlayer) || __instance.Weapon_hub().inventory.curItem != __instance.weapons[__instance.curWeapon].inventoryID ||
-                     __instance.Weapon_hub().inventory.items[itemIndex].durability <= 0.0)
-                    return false;
-                Player Target = null;
-                if (target != null) Target = Player.Get(target);
-                Player player = Player.Get(__instance.gameObject);
-                var ev = new ShootingEvent(Player.Get(__instance.gameObject), target, targetPos, player.ItemInHand.GetWeaponType(), hitboxType);
+                if (!ReferenceHub.TryGetHub(conn.identity.gameObject, out ReferenceHub referenceHub)) return false;
+                Player pl = Player.Get(referenceHub);
+                if (msg.ShooterWeaponSerial != pl.CurrentItem.SerialNumber) return false;
+                Firearm firearm;
+                if ((firearm = pl.CurInstance as Firearm) == null) return false;
+                if (!firearm.ActionModule.ServerAuthorizeShot()) return false;
+                var ev = new ShootingEvent(pl, msg);
                 Qurre.Events.Invoke.Player.Shooting(ev);
-                return ev.Allowed;
+                if (ev.Allowed) firearm.HitregModule.ServerProcessShot(msg);
+                return false;
             }
             catch (Exception e)
             {

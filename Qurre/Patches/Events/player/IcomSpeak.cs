@@ -4,7 +4,7 @@ using Qurre.API.Events;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(Intercom), nameof(Intercom.CallCmdSetTransmit))]
+    [HarmonyPatch(typeof(Intercom), nameof(Intercom.UserCode_CmdSetTransmit))]
     internal static class IcomSpeak
     {
         private static bool Prefix(Intercom __instance, bool player)

@@ -1,22 +1,22 @@
 ﻿using HarmonyLib;
+using InventorySystem.Items.Radio;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(Radio), nameof(Radio.UseBattery))]
+    [HarmonyPatch(typeof(RadioItem), nameof(RadioItem.Update))]
     internal static class UsingRadio
     {
-        private static bool Prefix(Radio __instance)
+        private static bool Prefix(RadioItem __instance)
         {
             try
             {
-                if (__instance.CheckRadio() && __instance.inv.items[__instance.myRadio].id == ItemType.Radio)
+                if (__instance._enabled && __instance.OwnerInventory.CurItem.TypeId == ItemType.Radio)
                 {
-                    float num = __instance.inv.items[__instance.myRadio].durability - 1.67f * (1f / __instance.presets[__instance.curPreset].powerTime) * (__instance.isTransmitting ? 3 : 1);
-                    var ev = new RadioUsingEvent(API.Player.Get(__instance.gameObject), __instance, num);
+                    var ev = new RadioUsingEvent(API.Player.Get(__instance.gameObject), __instance, __instance.BatteryPercent);
                     Qurre.Events.Invoke.Player.RadioUsing(ev);
                     if (!ev.Allowed) return false;
-                    num = ev.Battery;
-                    if (num > -1f && num < 101f) __instance.inv.items.ModifyDuration(__instance.myRadio, num);
+                    __instance.BatteryPercent = ev.Battery;
+                    __instance.SendStatusMessage();
                 }
                 return false;
             }

@@ -1,63 +1,29 @@
 ﻿using System;
 using HarmonyLib;
+using MapGeneration.Distributors;
 using Qurre.API;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.CallCmdUseLocker))]
+    [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
     internal static class InteractLocker
     {
-        private static bool Prefix(PlayerInteract __instance, byte lockerId, byte chamberNumber)
+        private static bool Prefix(Locker __instance, ReferenceHub ply, byte colliderId)
         {
             try
             {
-                if (!__instance.RateLimit().CanExecute(true) ||
-                    (__instance.InteractCuff().CufferId > 0 && !DisarmedInteract()))
-                    return false;
-                LockerManager singleton = LockerManager.singleton;
-                if (lockerId >= singleton.lockers.Length)
-                    return false;
-                if (!__instance.ChckDis(singleton.lockers[lockerId].gameObject.position) ||
-                    !singleton.lockers[lockerId].supportsStandarizedAnimation)
-                    return false;
-                if (chamberNumber >= singleton.lockers[lockerId].chambers.Length)
-                    return false;
-                if (singleton.lockers[lockerId].chambers[chamberNumber].doorAnimator == null)
-                    return false;
-                if (!singleton.lockers[lockerId].chambers[chamberNumber].CooldownAtZero())
-                    return false;
-                singleton.lockers[lockerId].chambers[chamberNumber].SetCooldown();
-                string accessToken = singleton.lockers[lockerId].chambers[chamberNumber].accessToken;
-                Item item = __instance.InteractInv().GetItemByID(__instance.InteractInv().curItem);
-                var ev = new InteractLockerEvent(
-                    Player.Get(__instance.gameObject),
-                    singleton.lockers[lockerId].GetLocker(),
-                    singleton.lockers[lockerId].chambers[chamberNumber],
-                    lockerId,
-                    chamberNumber,
-                    string.IsNullOrEmpty(accessToken) || (item != null && item.permissions.Contains(accessToken)) || __instance.ServerRolesInteract().BypassMode);
+                if (colliderId >= __instance.Chambers.Length || !__instance.Chambers[colliderId].CanInteract) return false;
+                bool allow = true;
+                if (!__instance.CheckPerms(__instance.Chambers[colliderId].RequiredPermissions, ply) && !ply.serverRoles.BypassMode)
+                    allow = false;
+                var ev = new InteractLockerEvent(Player.Get(ply), __instance.GetLocker(), allow);
                 Qurre.Events.Invoke.Player.InteractLocker(ev);
-                if (ev.Allowed)
+                if (!ev.Allowed) __instance.RpcPlayDenied(colliderId);
+                else
                 {
-                    bool boolean = (singleton.openLockers[lockerId] & 1 << chamberNumber) != 1 << chamberNumber;
-                    singleton.ModifyOpen(lockerId, chamberNumber, boolean);
-                    singleton.RpcDoSound(lockerId, chamberNumber, boolean);
-                    bool anyOpen = true;
-                    for (int i = 0; i < singleton.lockers[lockerId].chambers.Length; i++)
-                    {
-                        if ((singleton.openLockers[lockerId] & 1 << i) == 1 << i)
-                        {
-                            anyOpen = false;
-                            break;
-                        }
-                    }
-                    if (singleton.lockers[lockerId] == null) return true;
-                    try { singleton.lockers[lockerId].LockPickups(!boolean, chamberNumber, anyOpen); } catch { return true; }
-                    if (!string.IsNullOrEmpty(accessToken)) singleton.RpcChangeMaterial(lockerId, chamberNumber, false);
+                    __instance.Chambers[colliderId].SetDoor(!__instance.Chambers[colliderId].IsOpen, __instance._grantedBeep);
+                    __instance.RefreshOpenedSyncvar();
                 }
-                else singleton.RpcChangeMaterial(lockerId, chamberNumber, true);
-                __instance.OnInteract();
                 return false;
             }
             catch (Exception e)

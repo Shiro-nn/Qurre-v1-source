@@ -6,7 +6,7 @@ using System.Linq;
 using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.Server
 {
-	[HarmonyPatch(typeof(CommandProcessor), "ProcessQuery", new Type[] { typeof(string), typeof(CommandSender) })]
+	[HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery), new Type[] { typeof(string), typeof(CommandSender) })]
 	internal static class RemoteAdminCommand
 	{
 		private static bool Prefix(string q, CommandSender sender)

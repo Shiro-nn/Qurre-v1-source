@@ -12,10 +12,10 @@ using _locker = Qurre.API.Controllers.Locker;
 using _ragdoll = Qurre.API.Controllers.Ragdoll;
 using _workStation = Qurre.API.Controllers.WorkStation;
 using Qurre.API.Controllers;
-using static QurreModLoader.umm;
-using Grenades;
 using LightContainmentZoneDecontamination;
 using MapGeneration;
+using InventorySystem.Items.Firearms.Attachments;
+using Scp914;
 namespace Qurre.API
 {
 	public static class Map
@@ -28,6 +28,7 @@ namespace Qurre.API
 		public static List<Generator> Generators { get; } = new List<Generator>();
 		public static List<_ragdoll> Ragdolls { get; } = new List<_ragdoll>();
 		public static List<Room> Rooms { get; } = new List<Room>();
+		public static List<Controllers.Camera> Cameras { get; } = new List<Controllers.Camera>();
 		public static List<Tesla> Teslas { get; } = new List<Tesla>();
 		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
 
@@ -62,7 +63,7 @@ namespace Qurre.API
 		public static bool FemurBreakerState
 		{
 			get => Object.FindObjectOfType<LureSubjectContainer>().allowContain;
-			set => Object.FindObjectOfType<LureSubjectContainer>().SetState(value);
+			set => Object.FindObjectOfType<LureSubjectContainer>().SetState(FemurBreakerState, value);
 		}
 		public static float Seed => SeedSynchronizer.Seed;
 		public static float BreakableWindowHp
@@ -73,7 +74,7 @@ namespace Qurre.API
 				foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>()) window.health = value;
 			}
 		}
-		public static List<Pickup> Pickups => Object.FindObjectsOfType<Pickup>().ToList();
+		public static List<Item> Items => Item.AllItems.Select(x => x.Value).ToList();
 		public static Controllers.Broadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
 			var bc = new Controllers.Broadcast(Server.Host, message, duration);
@@ -86,12 +87,34 @@ namespace Qurre.API
 			GameObject randomPosition = Object.FindObjectOfType<SpawnpointManager>().GetRandomPosition(roleType);
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
 		}
+		private static readonly RaycastHit[] CachedRaycast = new RaycastHit[1];
+		public static Room FindRoom(GameObject objectInRoom)
+		{
+			var rooms = Rooms;
+			Room room = null;
+			const string playerTag = "Player";
+			if (!objectInRoom.CompareTag(playerTag)) room = objectInRoom.GetComponentInParent<Room>();
+			else
+			{
+				var ply = Player.Get(objectInRoom);
+				if (ply.Role == RoleType.Scp079) room = FindRoom(ply.Scp079Controller.Camera.gameObject);
+			}
+			if (room == null)
+			{
+				Ray ray = new Ray(objectInRoom.transform.position, Vector3.down);
+				if (Physics.RaycastNonAlloc(ray, CachedRaycast, 10, 1 << 0, QueryTriggerInteraction.Ignore) == 1)
+					room = CachedRaycast[0].collider.gameObject.GetComponentInParent<Room>();
+			}
+			if (room == null && rooms.Count != 0)
+				room = rooms[rooms.Count - 1];
+			return room;
+		}
 		public static void SpawnGrenade(string grenadeType, Vector3 position)
 		{
 			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));
 			grenade.transform.position = position;
 			NetworkServer.Spawn(grenade);
-		}
+		}/*
 		public static void SpawnGrenade(bool frag, Vector3 position)
 		{
 			GrenadeManager gm = Server.Host.GrenadeManager;
@@ -122,7 +145,7 @@ namespace Qurre.API
 			component2.Grenade_FullInitData(component, position, Quaternion.identity, Vector3.zero, Vector3.zero, Team.RIP);
 			component2.NetworkfuseTime = 0.10000000149011612;
 			NetworkServer.Spawn(component2.gameObject);
-		}
+		}*/
 		public static GameObject SpawnBot(RoleType role, string name, float health, Vector3 position, Vector3 rotation, Vector3 scale)
 		{
 			GameObject gameObject = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
@@ -157,7 +180,7 @@ namespace Qurre.API
 			NetworkServer.Spawn(hub.gameObject);
 			return hub.gameObject;
 		}
-		public static void ContainSCP106(ReferenceHub executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().CallRpcContain106(executor.gameObject);
+		public static void ContainSCP106(Player executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().UserCode_RpcContain106(executor.GameObject);
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
 		public static void SetIntercomSpeaker(Player player)
 		{
@@ -225,7 +248,7 @@ namespace Qurre.API
 					break;
 			}
 			CharacterClassManager component2 = gameObject.GetComponent<CharacterClassManager>();
-			NineTailedFoxAnnouncer.AnnounceScpTermination(component2.Classes.SafeGet(rt), new PlayerStats.HitInfo(-1f, killer?.Nickname ?? "", DamageTypes.None, killer?.Id ?? (-1)), "");
+			NineTailedFoxAnnouncer.AnnounceScpTermination(component2.Classes.SafeGet(rt), new PlayerStats.HitInfo(-1f, killer?.Nickname ?? "", DamageTypes.None, killer?.Id ?? (-1), false), "");
 		}
 		public static void DecontaminateLCZ()
 		{
@@ -237,22 +260,22 @@ namespace Qurre.API
 			switch (removable)
 			{
 				case RemovableObject.Doors:
-					foreach (DoorVariant door in Object.FindObjectsOfType<DoorVariant>()) Object.Destroy(door.gameObject);
+					foreach (Door door in Doors) Object.Destroy(door.GameObject);
 					break;
 				case RemovableObject.Generators:
-					foreach (Generator079 generator in Object.FindObjectsOfType<Generator079>()) Object.Destroy(generator.gameObject);
+					foreach (Generator generator in Generators) Object.Destroy(generator.GameObject);
 					break;
 				case RemovableObject.Lockers:
-					foreach (LockerManager locker in Object.FindObjectsOfType<LockerManager>()) Object.Destroy(locker.gameObject);
+					foreach (_locker locker in Lockers) Object.Destroy(locker.GameObject);
 					break;
 				case RemovableObject.Teslagates:
-					foreach (TeslaGate teslaGate in Object.FindObjectsOfType<TeslaGate>()) Object.Destroy(teslaGate.gameObject);
+					foreach (Tesla teslaGate in Teslas) Object.Destroy(teslaGate.GameObject);
 					break;
 				case RemovableObject.Windows:
 					foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>()) Object.Destroy(window.gameObject);
 					break;
 				case RemovableObject.Workstations:
-					foreach (WorkStation workStation in Object.FindObjectsOfType<WorkStation>()) Object.Destroy(workStation.gameObject);
+					foreach (_workStation workStation in WorkStations) Object.Destroy(workStation.GameObject);
 					break;
 				case RemovableObject.Rooms:
 					foreach (NetworkIdentity netId in Object.FindObjectsOfType<NetworkIdentity>()) if (netId.name.Contains("All")) Object.Destroy(netId);
@@ -263,28 +286,32 @@ namespace Qurre.API
 		{
 			Broadcasts = new ListBroadcasts(Server.Host);
 			Cassies = new CassieList();
-			foreach (var room in Server.GetObjectsOf<Transform>().Where(x => x.CompareTag("Room") || x.name == "Root_*&*Outside Cams" || x.name == "PocketWorld"))
-				Rooms.Add(new Room(room.gameObject));
-			foreach (var tesla in Server.GetObjectsOf<TeslaGate>()) Teslas.Add(new Tesla(tesla));
-			foreach (var station in Server.GetObjectsOf<WorkStation>()) WorkStations.Add(new _workStation(station));
-			foreach (var door in Server.GetObjectsOf<DoorVariant>()) Doors.Add(new Door(door));
-			foreach (var locker in LockerManager.singleton.lockers) Lockers.Add(new _locker(locker));
-			foreach (var interactable in Interface079.singleton.allInteractables)
+			foreach (var room in RoomIdentifier.AllRoomIdentifiers)
 			{
-				foreach (var zoneroom in interactable.currentZonesAndRooms)
+				var _room = new Room(room);
+				Rooms.Add(_room);
+				Cameras.AddRange(_room.Cameras);
+			}
+			foreach (var tesla in Server.GetObjectsOf<TeslaGate>()) Teslas.Add(new Tesla(tesla));
+			foreach (var station in WorkstationController.AllWorkstations) WorkStations.Add(new _workStation(station));
+			foreach (var door in Server.GetObjectsOf<DoorVariant>()) Doors.Add(new Door(door));
+			foreach (var pair in Scp079Interactable.InteractablesByRoomId)
+			{
+				foreach (var interactable in pair.Value)
 				{
 					try
 					{
-						var room = Rooms.FirstOrDefault(x => x.Name == zoneroom.currentRoom);
+						var room = Rooms.FirstOrDefault(x => x.Id == pair.Key);
 						var door = interactable.GetComponentInParent<DoorVariant>();
 						if (room == null || door == null) continue;
-						var sdoor = Doors.FirstOrDefault(x => x.GameObject == door.gameObject);
+						var sdoor = door.GetDoor();
 						sdoor.Rooms.Add(room);
 						room.Doors.Add(sdoor);
 					}
 					catch { }
 				}
 			}
+			Controllers.Scp914.Scp914Controller = Object.FindObjectOfType<Scp914Controller>();
 		}
 		internal static void ClearObjects()
 		{
@@ -296,7 +323,6 @@ namespace Qurre.API
 			Generators.Clear();
 			WorkStations.Clear();
 			Ragdolls.Clear();
-			Heavy.Recontained079 = false;
 		}
 	}
 }

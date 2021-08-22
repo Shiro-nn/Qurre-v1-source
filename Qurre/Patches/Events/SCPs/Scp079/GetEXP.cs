@@ -4,7 +4,7 @@ using UnityEngine;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.SCP079
 {
-    [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.CallRpcGainExp))]
+    [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.UserCode_RpcGainExp))]
     internal static class GetEXP
     {
         private static bool Prefix(Scp079PlayerScript __instance, ExpGainType type, RoleType details)
@@ -75,7 +75,7 @@ namespace Qurre.Patches.Events.SCPs.SCP079
                             }
                             if (ev.Amount != 0f)
                             {
-                                float num4 = 1f / Mathf.Clamp(__instance.levels[__instance.NetworkcurLvl].manaPerSecond / 1.5f, 1f, 7f);
+                                float num4 = 1f / Mathf.Clamp(__instance.levels[__instance.Lvl].manaPerSecond / 1.5f, 1f, 7f);
                                 ev.Amount = Mathf.Round(ev.Amount * num4 * 10f) / 10f;
                             }
                             break;

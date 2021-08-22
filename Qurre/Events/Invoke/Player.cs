@@ -31,11 +31,11 @@ namespace Qurre.Events.Invoke
         public static void Shooting(ShootingEvent ev) => Invokes(ev);
         public static void RagdollSpawn(RagdollSpawnEvent ev) => Invokes(ev);
         public static void Heal(HealEvent ev) => Invokes(ev);
-        public static void MedicalStopping(MedicalStoppingEvent ev) => Invokes(ev);
-        public static void MedicalUsing(MedicalUsingEvent ev) => Invokes(ev);
-        public static void MedicalUsed(MedicalUsedEvent ev) => Invokes(ev);
+        public static void ItemStopping(ItemStoppingEvent ev) => Invokes(ev);
+        public static void ItemUsing(ItemUsingEvent ev) => Invokes(ev);
+        public static void ItemUsed(ItemUsedEvent ev) => Invokes(ev);
         public static void SyncData(SyncDataEvent ev) => Invokes(ev);
-        public static void ThrowGrenade(ThrowGrenadeEvent ev) => Invokes(ev);
+        public static void ThrowItem(ThrowItemEvent ev) => Invokes(ev);
         public static void TeslaTrigger(TeslaTriggerEvent ev) => Invokes(ev);
         public static void InteractGenerator(InteractGeneratorEvent ev) => Invokes(ev);
         public static void Speak(SpeakEvent ev) => Invokes(ev);

@@ -31,7 +31,7 @@ namespace Qurre.Patches.Events.Round
             while (instance != null)
             {
                 while (RoundSummary.RoundLock || !RoundSummary.RoundInProgress() || (instance.RoundSummary_keepRoundOnOne() && PlayerManager.players.Count < 2)
-                    || RoundStart.RoundLenght.TotalSeconds <= 3)
+                    || RoundStart.RoundLength.TotalSeconds <= 3)
                     yield return Timing.WaitForOneFrame;
                 RoundSummary.SumInfo_ClassList list = default;
                 foreach (GameObject player in PlayerManager.players)
@@ -73,24 +73,24 @@ namespace Qurre.Patches.Events.Round
                 int mtf_team = list.mtf_and_guards + list.scientists;
                 int d_team = list.chaos_insurgents + list.class_ds;
                 int scp_team = list.scps_except_zombies + list.zombies;
-                if (list.class_ds == 0 && mtf_team == 0) instance.RoundSummary_roundEnded(true);
+                if (list.class_ds == 0 && mtf_team == 0) instance.RoundEnded = true;
                 else
                 {
                     int count = 0;
                     if (mtf_team > 0) ++count;
                     if (d_team > 0) ++count;
                     if (scp_team > 0) ++count;
-                    if (count <= 1) instance.RoundSummary_roundEnded(true);
+                    if (count <= 1) instance.RoundEnded = true;
                 }
-                var ev = new CheckEvent((RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Draw, list, instance.RoundSummary_roundEnded());
+                var ev = new CheckEvent((RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Draw, list, instance.RoundEnded);
                 if (mtf_team > 0)
                     if (RoundSummary.escaped_ds == 0 && RoundSummary.escaped_scientists != 0) ev.LeadingTeam = (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.FacilityForces;
                     else ev.LeadingTeam = RoundSummary.escaped_ds != 0 ? (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.ChaosInsurgency : (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Anomalies;
                 Qurre.Events.Invoke.Round.Check(ev);
                 list = ev.ClassList;
-                instance.RoundSummary_roundEnded(ev.RoundEnd);
-                if(API.Round.ForceEnd) instance.RoundSummary_roundEnded(API.Round.ForceEnd);
-                if (instance.RoundSummary_roundEnded())
+                instance.RoundEnded = ev.RoundEnd;
+                if(API.Round.ForceEnd) instance.RoundEnded = API.Round.ForceEnd;
+                if (instance.RoundEnded)
                 {
                     byte i1;
                     for (i1 = 0; i1 < 75; ++i1)

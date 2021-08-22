@@ -1,25 +1,26 @@
 ﻿using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
+using QurreModLoader;
 using UnityEngine;
 namespace Qurre.Patches.Events.Alpha
 {
-    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.CallCmdDetonateWarhead))]
+    [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdDetonateWarhead))]
     internal static class Starting
     {
         private static bool Prefix(PlayerInteract __instance)
         {
             try
             {
-                if (!QurreModLoader.umm.RateLimit(__instance).CanExecute(true) || (QurreModLoader.umm.InteractCuff(__instance).CufferId > 0 && !QurreModLoader.umm.DisarmedInteract()))
+                if (!__instance.CanInteract || !__instance._playerInteractRateLimit.CanExecute(true))
                     return false;
                 GameObject gameObject = GameObject.Find("OutsitePanelScript");
-                if (!__instance.ChckDis(gameObject.transform.position) || !AlphaWarheadOutsitePanel.nukeside.enabled) return false;
-                if (!gameObject.GetComponent<AlphaWarheadOutsitePanel>().keycardEntered || Recontainer079.isLocked) return false;
+                if (!__instance.ChckDis(gameObject.transform.position) || !AlphaWarheadOutsitePanel.nukeside.enabled || !gameObject.GetComponent<AlphaWarheadOutsitePanel>().keycardEntered)
+                    return false;
                 AlphaWarheadController.Host.doorsOpen = false;
                 ServerLogs.AddLog(ServerLogs.Modules.Warhead, "Countdown started.", ServerLogs.ServerLogType.GameEvent);
-                if ((QurreModLoader.umm.AWC_resumeScenario() == -1 && AlphaWarheadController.Host.scenarios_start[QurreModLoader.umm.AWC_startScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation) ||
-                    (QurreModLoader.umm.AWC_resumeScenario() != -1 && AlphaWarheadController.Host.scenarios_resume[QurreModLoader.umm.AWC_resumeScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation))
+                if ((umm.AWC_resumeScenario() == -1 && AlphaWarheadController.Host.scenarios_start[umm.AWC_startScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation) ||
+                    (umm.AWC_resumeScenario() != -1 && AlphaWarheadController.Host.scenarios_resume[umm.AWC_resumeScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation))
                 {
                     var ev = new AlphaStartEvent(Player.Get(__instance.gameObject) ?? API.Server.Host);
                     Qurre.Events.Invoke.Alpha.Starting(ev);

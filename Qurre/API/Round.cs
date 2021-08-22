@@ -12,7 +12,7 @@ namespace Qurre.API
         private static RespawnManager rm => RespawnManager.Singleton;
         private static RoundSummary rs => RoundSummary.singleton;
         internal static bool ForceEnd { get; set; } = false;
-        public static TimeSpan ElapsedTime => RoundStart.RoundLenght;
+        public static TimeSpan ElapsedTime => RoundStart.RoundLength;
         public static DateTime StartedTime => DateTime.Now - ElapsedTime;
         public static int CurrentRound { get; internal set; } = 0;
         public static int ActiveGenerators { get; internal set; } = 0;
@@ -22,7 +22,7 @@ namespace Qurre.API
             set => rm._timeForNextSequence(value + (float)rm._stopwatch().Elapsed.TotalSeconds);
         }
         public static bool Started => RoundSummary.RoundInProgress();
-        public static bool Ended => rs.RoundSummary_roundEnded();
+        public static bool Ended => rs.RoundEnded;
         public static bool Lock
         {
             get => RoundSummary.RoundLock;

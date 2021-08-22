@@ -1,21 +1,14 @@
-﻿using System.Linq;
-namespace Qurre.API.Controllers
+﻿namespace Qurre.API.Controllers
 {
     public static class Heavy
     {
-        public static bool ForcedOvercharge => Generator079.mainGenerator.forcedOvercharge;
-        public static byte ActiveGenerators { get => ForcedOvercharge ? (byte)5 : Generator079.mainGenerator.totalVoltage; internal set => Generator079.mainGenerator.totalVoltage = value; }
-        public static bool Recontained079 { get; internal set; } = false;
-        public static void Recontain079(bool forced = true) => Recontainer079.BeginContainment(forced);
-        public static void Overcharge(bool forced = true)
+        private static Recontainer079 Container => Server.GetObjectOf<Recontainer079>();
+        public static byte ActiveGenerators { get => (byte)Container._prevEngaged; }
+        public static bool Recontained079 => Container._alreadyRecontained && Container._delayStopwatch.Elapsed.TotalSeconds > Container._activationDelay;
+        public static void Overcharge()
         {
-            if (forced)
-            {
-                NineTailedFoxAnnouncer.singleton.ServerOnlyAddGlitchyPhrase("ALLSECURED . SCP 0 7 9 RECONTAINMENT SEQUENCE COMMENCING . FORCEOVERCHARGE", 0.1f, 0.07f);
-                Generator079.mainGenerator.forcedOvercharge = true;
-                Recontain079(forced);
-            }
-            else foreach (var gen in Map.Generators.Where(x => !x.Overcharged)) gen.Overcharge();
+            Container.TryKill079();
+            Container.PlayAnnouncement(Container._announcementSuccess + " Unknown", 1f);
         }
     }
 }

@@ -28,8 +28,8 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                             Qurre.Events.Invoke.Scp106.FemurBreakerEnter(ev);
                             if (ev.Allowed)
                             {
-                                Stats.HurtPlayer(new PlayerStats.HitInfo(10000f, "WORLD", DamageTypes.Lure, 0), player);
-                                __instance.LureSubjectContainer().SetState(true);
+                                Stats.HurtPlayer(new PlayerStats.HitInfo(10000f, "WORLD", DamageTypes.Lure, 0, true), player);
+                                __instance.LureSubjectContainer().SetState(false, true);
                             }
                         }
                     }

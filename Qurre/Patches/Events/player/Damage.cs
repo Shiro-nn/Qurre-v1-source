@@ -16,10 +16,11 @@ namespace Qurre.Patches.Events.player
 				Player attacker = Player.Get(info.IsPlayer ? info.RHub.gameObject : __instance.gameObject);
 				Player target = Player.Get(go);
 				if (target == null || target.IsHost) return true;
-				if (info.GetDamageType() == DamageTypes.Recontainment && target.Role == RoleType.Scp079)
+				if (info.Tool == DamageTypes.Recontainment && target.Role == RoleType.Scp079)
 				{
 					var eventArgs = new DeadEvent(null, target, info);
 					Qurre.Events.Invoke.Player.Dead(eventArgs);
+					return true;
 				}
 				if (attacker == null || attacker.IsHost) return true;
 				var ev = new DamageEvent(attacker, target, info);
