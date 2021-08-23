@@ -4,10 +4,9 @@ using Mirror;
 using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(BanPlayer), nameof(BanPlayer.BanUser), new[] { typeof(GameObject), typeof(int), typeof(string), typeof(string), typeof(bool) })]
+    [HarmonyPatch(typeof(BanPlayer), nameof(BanPlayer.BanUser), new[] { typeof(GameObject), typeof(long), typeof(string), typeof(string), typeof(bool) })]
     internal static class BanAndKick
     {
         private static bool Prefix(GameObject user, long duration, string reason, string issuer, bool isGlobalBan)
@@ -26,7 +25,7 @@ namespace Qurre.Patches.Events.player
                 string message = Plugin.Config.GetString("Qurre_BanOrKick_msg", $"You have been %bok%.").Replace("%bok%", umm);
                 if (!string.IsNullOrEmpty(reason))
                     message = $"{message} {Plugin.Config.GetString("Qurre_reason", "Reason")}: {reason}";
-                if (!IsVerified() || !targetPlayer.BypassMode)
+                if (!ServerStatic.PermissionsHandler.IsVerified || !targetPlayer.BypassMode)
                 {
                     if (duration > 0)
                     {

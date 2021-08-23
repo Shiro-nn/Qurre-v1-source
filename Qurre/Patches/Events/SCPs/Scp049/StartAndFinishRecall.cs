@@ -2,7 +2,6 @@
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP049
 {
     [HarmonyPatch(typeof(PlayableScps.Scp049), nameof(PlayableScps.Scp049.BodyCmd_ByteAndGameObject))]
@@ -14,7 +13,7 @@ namespace Qurre.Patches.Events.SCPs.SCP049
             {
                 if (num == 2)
                 {
-                    if (!__instance.RateLimit().CanExecute() || go == null)
+                    if (!__instance._interactRateLimit.CanExecute() || go == null)
                         return false;
                     Ragdoll rgd = go.GetComponent<Ragdoll>();
                     if (rgd == null)
@@ -31,9 +30,9 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                     }
                     if (target == null)
                         return false;
-                    if (!__instance.Scp049_recallInProgressServer() ||
-                        target.gameObject != __instance.Scp049_recallObjectServer() ||
-                        __instance.Scp049_recallProgressServer() < 0.85f)
+                    if (!__instance._recallInProgressServer ||
+                        target.gameObject != __instance._recallObjectServer ||
+                        __instance._recallProgressServer < 0.85f)
                         return false;
                     if (target.characterClassManager.CurClass != RoleType.Spectator)
                         return false;
@@ -46,15 +45,15 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                         target.characterClassManager.Classes.Get(RoleType.Scp0492).maxHP;
                     if (rgd.CompareTag("Ragdoll"))
                         NetworkServer.Destroy(rgd.gameObject);
-                    __instance.Scp049_recallInProgressServer(false);
-                    __instance.Scp049_recallObjectServer(null);
-                    __instance.Scp049_recallProgressServer(0f);
+                    __instance._recallInProgressServer = false;
+                    __instance._recallObjectServer = null;
+                    __instance._recallProgressServer = 0f;
                     return false;
                 }
                 if (num != 1)
                     return true;
                 {
-                    if (!__instance.RateLimit().CanExecute())
+                    if (!__instance._interactRateLimit.CanExecute())
                         return false;
                     if (go == null)
                         return false;
@@ -81,9 +80,9 @@ namespace Qurre.Patches.Events.SCPs.SCP049
                     var ev = new StartRecallEvent(API.Player.Get(__instance.Hub.gameObject), API.Player.Get(target.gameObject));
                     Qurre.Events.Invoke.Scp049.StartRecall(ev);
                     if (!ev.Allowed) return false;
-                    __instance.Scp049_recallObjectServer(target.gameObject);
-                    __instance.Scp049_recallProgressServer(0f);
-                    __instance.Scp049_recallInProgressServer(true);
+                    __instance._recallObjectServer = target.gameObject;
+                    __instance._recallProgressServer = 0f;
+                    __instance._recallInProgressServer = true;
                     return false;
                 }
             }

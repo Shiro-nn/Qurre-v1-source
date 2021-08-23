@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using LightContainmentZoneDecontamination;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.Map
 {
     [HarmonyPatch(typeof(DecontaminationController), nameof(DecontaminationController.UpdateSpeaker))]
@@ -11,10 +10,10 @@ namespace Qurre.Patches.Events.Map
         {
             try
             {
-                var ev = new AnnouncementDecontaminationEvent(QurreModLoader.umm.DC_nextPhase(__instance), hard);
+                var ev = new AnnouncementDecontaminationEvent(__instance._nextPhase, hard);
                 Qurre.Events.Invoke.Map.AnnouncementDecontaminationZDecon(ev);
                 hard = ev.IsGlobal;
-                __instance.Set_DC_nextPhase(ev.Id);
+                __instance._nextPhase = ev.Id;
                 return ev.Allowed;
             }
             catch (System.Exception e)

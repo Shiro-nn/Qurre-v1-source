@@ -4,7 +4,7 @@ using Mirror;
 using RemoteAdmin;
 namespace Qurre.Patches.etc
 {
-	[HarmonyPatch(typeof(CustomBroadcastTrigger), "IsUserActivated")]
+	[HarmonyPatch(typeof(CustomBroadcastTrigger), nameof(CustomBroadcastTrigger.IsUserActivated))]
 	internal static class FixAudio1
 	{
 		public static bool Prefix(CustomBroadcastTrigger __instance, ref bool __result)
@@ -61,10 +61,10 @@ namespace Qurre.Patches.etc
 			return result;
 		}
 	}
-	[HarmonyPatch(typeof(VoiceBroadcastTrigger), "ShouldActivate")]
+	[HarmonyPatch(typeof(VoiceBroadcastTrigger), nameof(VoiceBroadcastTrigger.ShouldActivate))]
 	internal static class FixAudio4
 	{
-		public static bool Prefix(VoiceBroadcastTrigger __instance, ref bool __result, bool intent)
+		public static bool Prefix(VoiceBroadcastTrigger __instance, ref bool __result)
 		{
 			bool flag = __instance.GetComponent<QueryProcessor>().PlayerId >= 9000 || __instance.GetComponent<NetworkIdentity>().connectionToClient == null;
 			bool result;

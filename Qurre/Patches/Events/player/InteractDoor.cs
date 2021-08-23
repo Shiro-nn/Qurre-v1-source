@@ -3,7 +3,6 @@ using HarmonyLib;
 using Interactables.Interobjects.DoorUtils;
 using Qurre.API;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(DoorVariant), nameof(DoorVariant.ServerInteract), new Type[] { typeof(ReferenceHub), typeof(byte) })]
@@ -42,7 +41,7 @@ namespace Qurre.Patches.Events.player
                 if (ev.Allowed && Interact)
                 {
                     __instance.NetworkTargetState = !__instance.TargetState;
-                    __instance._triggerPlayer(ply);
+                    __instance._triggerPlayer = ply;
                 }
                 else if (Bypass)
                 {

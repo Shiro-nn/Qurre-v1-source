@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using static QurreModLoader.umm;
 namespace Qurre.API.Controllers
 {
 	public static class Alpha
@@ -47,8 +46,8 @@ namespace Qurre.API.Controllers
 		}
 		public static bool Locked
 		{
-			get => AlphaWarheadController.Alpha_isLocked();
-			set => AlphaWarheadController.Alpha_isLocked(value);
+			get => AlphaWarheadController._isLocked;
+			set => AlphaWarheadController._isLocked = value;
 		}
 		public static int Cooldown
 		{
@@ -65,8 +64,8 @@ namespace Qurre.API.Controllers
 			}
 			public static float LeverStatus
 			{
-				get => Panel.Alpha_leverStatus();
-				set => Panel.Alpha_leverStatus(value);
+				get => Panel._leverStatus;
+				set => Panel._leverStatus = value;
 			}
 			public static bool Locked { get; set; } = false;
 			public static Transform Lever => Panel.lever;

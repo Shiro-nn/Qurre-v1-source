@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                if (__instance.CurInstance == value) return true;
+                if (__instance.CurInstance == value) return false;
                 var ev = new ItemChangeEvent(Player.Get(__instance._hub), Item.Get(__instance.CurInstance), Item.Get(value));
                 Qurre.Events.Invoke.Player.ItemChange(ev);
                 return ev.Allowed;

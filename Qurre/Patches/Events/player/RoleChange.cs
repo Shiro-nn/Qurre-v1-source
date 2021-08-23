@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.player
             {
                 if (!NetworkServer.active) return false;
                 API.Player pl = API.Player.Get(ply);
-                if (pl.ReferenceHub.isDedicatedServer || !pl.ReferenceHub.Ready) return false;
+                if (pl == null || pl.ReferenceHub == null || pl.ReferenceHub.isDedicatedServer || !pl.ReferenceHub.Ready) return false;
                 var ev = new RoleChangeEvent(pl, classid, lite, spawnReason);
                 Player.RoleChange(ev);
                 if (!ev.Allowed) return false;

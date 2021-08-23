@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
-using QurreModLoader;
 using UnityEngine;
 namespace Qurre.Patches.Events.Alpha
 {
@@ -12,21 +11,16 @@ namespace Qurre.Patches.Events.Alpha
         {
             try
             {
-                if (!__instance.CanInteract || !__instance._playerInteractRateLimit.CanExecute(true))
-                    return false;
+                if (!__instance.CanInteract) return false;
+                if (!__instance._playerInteractRateLimit.CanExecute(true)) return false;
                 GameObject gameObject = GameObject.Find("OutsitePanelScript");
-                if (!__instance.ChckDis(gameObject.transform.position) || !AlphaWarheadOutsitePanel.nukeside.enabled || !gameObject.GetComponent<AlphaWarheadOutsitePanel>().keycardEntered)
-                    return false;
-                AlphaWarheadController.Host.doorsOpen = false;
-                ServerLogs.AddLog(ServerLogs.Modules.Warhead, "Countdown started.", ServerLogs.ServerLogType.GameEvent);
-                if ((umm.AWC_resumeScenario() == -1 && AlphaWarheadController.Host.scenarios_start[umm.AWC_startScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation) ||
-                    (umm.AWC_resumeScenario() != -1 && AlphaWarheadController.Host.scenarios_resume[umm.AWC_resumeScenario()].SumTime() == AlphaWarheadController.Host.timeToDetonation))
-                {
-                    var ev = new AlphaStartEvent(Player.Get(__instance.gameObject) ?? API.Server.Host);
-                    Qurre.Events.Invoke.Alpha.Starting(ev);
-                    if (!ev.Allowed) return false;
-                    AlphaWarheadController.Host.NetworkinProgress = true;
-                }
+                if (!__instance.ChckDis(gameObject.transform.position) || !AlphaWarheadOutsitePanel.nukeside.enabled || !gameObject.GetComponent<AlphaWarheadOutsitePanel>().keycardEntered) return false;
+                var ev = new AlphaStartEvent(Player.Get(__instance.gameObject) ?? API.Server.Host);
+                Qurre.Events.Invoke.Alpha.Starting(ev);
+                if (!ev.Allowed) return false;
+                AlphaWarheadController.Host.StartDetonation();
+                ReferenceHub component = __instance.GetComponent<ReferenceHub>();
+                ServerLogs.AddLog(ServerLogs.Modules.Warhead, component.LoggedNameFromRefHub() + " started the Alpha Warhead detonation.", ServerLogs.ServerLogType.GameEvent, false);
                 __instance.OnInteract();
                 return false;
             }

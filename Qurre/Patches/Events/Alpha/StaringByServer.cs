@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
+using System;
 namespace Qurre.Patches.Events.Alpha
 {
     [HarmonyPatch(typeof(AlphaWarheadController), nameof(AlphaWarheadController.StartDetonation))]
@@ -11,15 +11,20 @@ namespace Qurre.Patches.Events.Alpha
             try
             {
                 __instance.doorsOpen = false;
-                if ((AWC_resumeScenario() != -1 || __instance.scenarios_start[AWC_startScenario()].SumTime() != (double)__instance.timeToDetonation) && (AWC_resumeScenario() == -1 || __instance.scenarios_resume[AWC_resumeScenario()].SumTime() != (double)__instance.timeToDetonation))
-                    return false;
-                var ev = new AlphaStartEvent(API.Server.Host);
-                Qurre.Events.Invoke.Alpha.Starting(ev);
-                if (!ev.Allowed) return false;
-                __instance.NetworkinProgress = true;
+                ServerLogs.AddLog(global::ServerLogs.Modules.Warhead, "Countdown started.", ServerLogs.ServerLogType.GameEvent, false);
+                if ((AlphaWarheadController._resumeScenario == -1 &&
+                    Math.Abs(__instance.scenarios_start[AlphaWarheadController._startScenario].SumTime() - __instance.timeToDetonation) < 0.0001f) ||
+                    (AlphaWarheadController._resumeScenario != -1 &&
+                    Math.Abs(__instance.scenarios_resume[AlphaWarheadController._resumeScenario].SumTime() - __instance.timeToDetonation) < 0.0001f))
+                {
+                    var ev = new AlphaStartEvent(API.Server.Host);
+                    Qurre.Events.Invoke.Alpha.Starting(ev);
+                    if (!ev.Allowed) return false;
+                    __instance.NetworkinProgress = true;
+                }
                 return false;
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Log.Error($"umm, error in patching Alpha [StaringByServer]:\n{e}\n{e.StackTrace}");
                 return true;

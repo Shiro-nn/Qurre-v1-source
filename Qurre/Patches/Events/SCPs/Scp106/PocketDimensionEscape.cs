@@ -5,7 +5,6 @@ using LightContainmentZoneDecontamination;
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
     [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnTriggerEnter))]
@@ -19,7 +18,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
 
                 var component = other.GetComponent<NetworkIdentity>();
                 if (component == null) return false;
-                var type = __instance.Pocket_type();
+                var type = __instance.type;
                 var player = API.Player.Get(component?.gameObject);
                 if (player == null) return false;
                 if (type == PocketDimensionTeleport.PDTeleportType.Killer || BlastDoor.OneDoor.isClosed)

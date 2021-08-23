@@ -7,7 +7,6 @@ using HarmonyLib;
 using MEC;
 using Qurre.API.Events;
 using UnityEngine;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.Round
 {
     [HarmonyPatch(typeof(RoundSummary), nameof(RoundSummary.Start))]
@@ -30,7 +29,7 @@ namespace Qurre.Patches.Events.Round
         {
             while (instance != null)
             {
-                while (RoundSummary.RoundLock || !RoundSummary.RoundInProgress() || (instance.RoundSummary_keepRoundOnOne() && PlayerManager.players.Count < 2)
+                while (RoundSummary.RoundLock || !RoundSummary.RoundInProgress() || (instance._keepRoundOnOne && PlayerManager.players.Count < 2)
                     || RoundStart.RoundLength.TotalSeconds <= 3)
                     yield return Timing.WaitForOneFrame;
                 RoundSummary.SumInfo_ClassList list = default;

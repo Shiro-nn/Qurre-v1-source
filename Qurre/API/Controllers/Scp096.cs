@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using static QurreModLoader.umm;
 namespace Qurre.API.Controllers
 {
     public class Scp096
@@ -45,7 +44,7 @@ namespace Qurre.API.Controllers
             set
             {
                 if (!Is096) return;
-                Scp.Scp096_EnrageTimeLeft(value);
+                Scp.EnrageTimeLeft = value;
             }
         }
         public PlayableScps.Scp096PlayerState RageState
@@ -104,7 +103,7 @@ namespace Qurre.API.Controllers
             get
             {
                 if (!Is096) return new List<Player>();
-                return Scp.Scp096_targets().Select(x => Player.Get(x)).ToList();
+                return Scp._targets.Select(x => Player.Get(x)).ToList();
             }
         }
         public bool CanAttack
@@ -119,19 +118,19 @@ namespace Qurre.API.Controllers
         {
             get
             {
-                if (Is096) return Scp.Scp096_CanCharge();
+                if (Is096) return Scp.CanCharge;
                 return false;
             }
         }
         public void AddTarget(Player player)
         {
-            if (!Is096 || !Scp.Scp096_CanReceiveTargets()) return;
+            if (!Is096 || !Scp.CanReceiveTargets) return;
             Scp.AddTarget(player.GameObject);
         }
         public void RemoveTarget(Player player)
         {
             if (!Is096) return;
-            Scp.Scp096_targets().Remove(player.ReferenceHub);
+            Scp._targets.Remove(player.ReferenceHub);
         }
         public void ChargeDoor(Door door)
         {

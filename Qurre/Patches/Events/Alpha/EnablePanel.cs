@@ -15,8 +15,7 @@ namespace Qurre.Patches.Events.Alpha
                 GameObject gameObject = GameObject.Find("OutsitePanelScript");
                 if (!__instance.ChckDis(gameObject.transform.position)) return false;
                 InventorySystem.Items.Keycards.KeycardItem keycardItem = __instance._inv.CurInstance as InventorySystem.Items.Keycards.KeycardItem;
-                if (__instance._sr.BypassMode || (keycardItem != null &&
-                    keycardItem.Permissions.HasFlag(Interactables.Interobjects.DoorUtils.KeycardPermissions.AlphaWarhead)))
+                if (__instance._sr.BypassMode || (keycardItem != null && keycardItem.Permissions.HasFlag(Interactables.Interobjects.DoorUtils.KeycardPermissions.AlphaWarhead)))
                 {
                     var ev = new EnableAlphaPanelEvent(Player.Get(__instance.gameObject), keycardItem.Permissions);
                     Qurre.Events.Invoke.Alpha.EnablePanel(ev);

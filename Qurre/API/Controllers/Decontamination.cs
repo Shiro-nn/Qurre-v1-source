@@ -1,5 +1,4 @@
 ﻿using LightContainmentZoneDecontamination;
-using static QurreModLoader.umm;
 namespace Qurre.API.Controllers
 {
     public static class Decontamination
@@ -10,8 +9,8 @@ namespace Qurre.API.Controllers
             get => DecontaminationController.Singleton.disableDecontamination;
             set => DecontaminationController.Singleton.disableDecontamination = value;
         }
-        public static bool Locked { get => Controller.DCLocked(); set => Controller.DCLocked(value); }
-        public static bool InProgress => Controller.DCBegun();
+        public static bool Locked { get => Controller._stopUpdating; set => Controller._stopUpdating = value; }
+        public static bool InProgress => Controller._decontaminationBegun;
         public static void InstantStart() => Controller.FinishDecontamination();
     }
 }

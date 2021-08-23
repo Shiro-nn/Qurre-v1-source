@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using static QurreModLoader.umm;
 using Hints;
 using CustomPlayerEffects;
 using RemoteAdmin;
@@ -122,7 +121,7 @@ namespace Qurre.API
 		public bool RemoteAdminAccess => ServerRoles.RemoteAdmin;
 		public bool Overwatch
 		{
-			get => ServerRoles.OverwatchEnabled();
+			get => ServerRoles.OverwatchEnabled;
 			set => ServerRoles.UserCode_TargetSetOverwatch(NetworkIdentity.connectionToClient, value);
 		}
 		public Player Cuffer
@@ -297,16 +296,16 @@ namespace Qurre.API
 				Inventory.ServerSelectItem(value.Serial);
 			}
 		}
-		public Stamina Stamina => rh.fpc.staminaController();
+		public Stamina Stamina => rh.fpc.staminaController;
 		public float StaminaUsage
 		{
-			get => rh.fpc.staminaController().StaminaUse * 100;
-			set => rh.fpc.staminaController().StaminaUse = (value / 100f);
+			get => rh.fpc.staminaController.StaminaUse * 100;
+			set => rh.fpc.staminaController.StaminaUse = (value / 100f);
 		}
 		public string GroupName
 		{
-			get => ServerStatic.GetPermissionsHandler()._members().TryGetValue(UserId, out string groupName) ? groupName : null;
-			set => ServerStatic.GetPermissionsHandler()._members()[UserId] = value;
+			get => ServerStatic.GetPermissionsHandler()._members.TryGetValue(UserId, out string groupName) ? groupName : null;
+			set => ServerStatic.GetPermissionsHandler()._members[UserId] = value;
 		}
 		public Room Room
 		{
@@ -317,14 +316,14 @@ namespace Qurre.API
 		{
 			get
 			{
-				if (IsHost) return _scs;
-				return QueryProcessor._sender();
+				if (IsHost) return ServerConsole._scs;
+				return QueryProcessor._sender;
 			}
 		}
 		public bool GlobalRemoteAdmin => ServerRoles.RemoteAdminMode == ServerRoles.AccessMode.GlobalAccess;
 		public UserGroup Group
 		{
-			get => ServerRoles.UserGroup();
+			get => ServerRoles.Group;
 			set => ServerRoles.SetGroup(value, false, false, value.Cover);
 		}
 		public string RoleColor
@@ -478,7 +477,7 @@ namespace Qurre.API
 		public void RaLogin()
 		{
 			ServerRoles.RemoteAdmin = true;
-			ServerRoles.Permissions = ServerRoles._globalPerms();
+			ServerRoles.Permissions = ServerRoles._globalPerms;
 			ServerRoles.RemoteAdminMode = GlobalRemoteAdmin ? ServerRoles.AccessMode.GlobalAccess : ServerRoles.AccessMode.PasswordOverride;
 			ServerRoles.TargetOpenRemoteAdmin(Connection, false);
 		}

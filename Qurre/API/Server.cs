@@ -71,8 +71,8 @@ namespace Qurre.API
         public static void Restart()
         {
             ServerConsole.AddOutputEntry(default(ServerOutput.ExitActionRestartEntry));
-            umm.SetNextRoundAction(ServerStatic.NextRoundAction.Restart);
-            umm.StaticChangeLevel(true);
+            ServerStatic.StopNextRound = ServerStatic.NextRoundAction.Restart;
+            PlayerStats.StaticChangeLevel(true);
         }
         public static void InvokeStaticMethod(this Type type, string methodName, object[] param)
         {

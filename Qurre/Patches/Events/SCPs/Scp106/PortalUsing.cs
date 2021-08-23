@@ -11,7 +11,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
         {
             try
             {
-                if (!QurreModLoader.umm.RateLimit(__instance).CanExecute(false))
+                if (!__instance._interactRateLimit.CanExecute(false))
                     return false;
                 var ev = new PortalUsingEvent(API.Player.Get(__instance.gameObject), __instance.portalPosition);
                 Qurre.Events.Invoke.Scp106.PortalUsing(ev);

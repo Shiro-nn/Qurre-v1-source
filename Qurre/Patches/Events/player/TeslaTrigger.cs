@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using HarmonyLib;
+using Mirror;
 using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(TeslaGateController), nameof(TeslaGateController.FixedUpdate))]
@@ -15,11 +15,12 @@ namespace Qurre.Patches.Events.player
             try
             {
                 if (__instance == null) return false;
+                if (!NetworkServer.active) return false;
                 foreach (KeyValuePair<GameObject, ReferenceHub> allHub in ReferenceHub.GetAllHubs())
                 {
                     if (allHub.Value.characterClassManager.CurClass == RoleType.Spectator)
                         continue;
-                    foreach (TeslaGate teslaGate in __instance?.TeslaGates())
+                    foreach (TeslaGate teslaGate in __instance.TeslaGates)
                     {
                         if (teslaGate != null)
                         {

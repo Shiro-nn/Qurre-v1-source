@@ -26,14 +26,10 @@ namespace Qurre.Patches.Events.player
                         if (rangeId >= __instance.Ranges.Length) rangeId = 0;
                         break;
                 }
+                rangeId--;
                 var ev = new RadioUpdateEvent(API.Player.Get(__instance.gameObject), __instance, (RadioStatus)rangeId, enabled);
                 Qurre.Events.Invoke.Player.RadioUpdate(ev);
-                if (!ev.Allowed) return false;
-                __instance._enabled = ev.Enabled;
-                if (!__instance._enabled) __instance._radio.ForceDisableRadio();
-                __instance._radio.NetworkcurRangeId = (byte)ev.ChangeTo;
-                __instance.SendStatusMessage();
-                return false;
+                return ev.Allowed;
             }
             catch (System.Exception e)
             {

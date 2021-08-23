@@ -11,10 +11,9 @@ namespace Qurre.Patches.Events.Alpha
         private static bool Prefix(AlphaWarheadController __instance, GameObject disabler)
         {
             try
-            {
-                if (!__instance.inProgress || __instance.timeToDetonation <= 10.0)
-                    return false;
-                if (__instance.timeToDetonation <= 15.0 && disabler != null)
+			{
+				if (!__instance.inProgress || __instance.timeToDetonation <= 10f || __instance._isLocked) return false;
+				if (__instance.timeToDetonation <= 15.0 && disabler != null)
                     __instance.GetComponent<PlayerStats>().TargetAchieve(disabler.GetComponent<NetworkIdentity>().connectionToClient, "thatwasclose");
                 var ev = new AlphaStopEvent(API.Player.Get(disabler) ?? API.Server.Host);
                 Qurre.Events.Invoke.Alpha.Stopping(ev);

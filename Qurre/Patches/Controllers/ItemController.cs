@@ -26,7 +26,7 @@ namespace Qurre.Patches.Controllers
             }
         }
     }
-    [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerDropItem))]
+    /*[HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerDropItem))]
     internal static class ItemController_Drop
     {
         internal static void Postfix(ushort itemSerial)
@@ -57,7 +57,7 @@ namespace Qurre.Patches.Controllers
                 Log.Error($"umm, error in patching Controllers [ItemController => CreatePickup]:\n{e}\n{e.StackTrace}");
             }
         }
-    }/*
+    }
     [HarmonyPatch(typeof(InventoryExtensions), nameof(InventoryExtensions.ServerRemoveItem))]
     internal static class ItemController3
     {
@@ -72,7 +72,7 @@ namespace Qurre.Patches.Controllers
                 Log.Error($"umm, error in patching Controllers [ItemController => RemoveItem]:\n{e}\n{e.StackTrace}");
             }
         }
-    }*/
+    }
     [HarmonyPatch(typeof(ItemDistributor), nameof(ItemDistributor.CreatePickup))]
     internal static class ItemController4
     {
@@ -131,5 +131,5 @@ namespace Qurre.Patches.Controllers
                 return true;
             }
         }
-    }
+    }*/
 }

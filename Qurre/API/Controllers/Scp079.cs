@@ -1,7 +1,6 @@
 ﻿using Mirror;
 using System.Collections.Generic;
 using System.Linq;
-using static QurreModLoader.umm;
 namespace Qurre.API.Controllers
 {
     public class Scp079
@@ -13,7 +12,7 @@ namespace Qurre.API.Controllers
         public Scp079PlayerScript.Ability079[] Abilities { get => script.abilities; set => script.abilities = value; }
         public byte Lvl { get => (byte)(script.Lvl + 1); set => script.Lvl = (byte)(value - 1); }
         public Scp079PlayerScript.Level079[] Lvls { get => script.levels; set => script.levels = value; }
-        public string Speaker { get => script.Speaker; set => script.Scp079_speaker(value); }
+        public string Speaker { get => script.Speaker; set => script.Speaker = value; }
         public float Exp { get => script.Exp; set => script.Exp = value; }
         public float Energy { get => script.Mana; set => script.Mana = value; }
         public float MaxEnergy { get => script.maxMana; set => script.NetworkmaxMana = value; }

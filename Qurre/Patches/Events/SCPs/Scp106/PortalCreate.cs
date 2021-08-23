@@ -1,7 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
     [HarmonyPatch(typeof(Scp106PlayerScript), nameof(Scp106PlayerScript.UserCode_CmdMakePortal))]
@@ -11,7 +10,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
         {
             try
             {
-                if (!__instance.RateLimit().CanExecute(true))
+                if (!__instance._interactRateLimit.CanExecute(true))
                     return false;
                 bool rayCastHit = Physics.Raycast(new Ray(__instance.transform.position, -__instance.transform.up), out RaycastHit raycastHit, 10f, __instance.teleportPlacementMask);
                 var ev = new PortalCreateEvent(API.Player.Get(__instance.gameObject), raycastHit.point - Vector3.up);

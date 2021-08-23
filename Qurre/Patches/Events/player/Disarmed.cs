@@ -13,6 +13,7 @@ namespace Qurre.Patches.Events.player
 		{
 			try
 			{
+				if (inv == null || disarmer == null) return true;
 				Player target = Player.Get(inv._hub);
 				Player cuffer = Player.Get(disarmer._hub);
                 if (!DisarmedPlayers.IsDisarmed(inv))

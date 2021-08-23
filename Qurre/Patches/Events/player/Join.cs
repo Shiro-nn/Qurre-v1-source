@@ -8,7 +8,7 @@ namespace Qurre.Patches.Events.player
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkIsVerified), MethodType.Setter)]
     internal static class Join
     {
-        private static void Prefix(CharacterClassManager __instance, bool value)
+        internal static void Prefix(CharacterClassManager __instance, bool value)
         {
             try
             {

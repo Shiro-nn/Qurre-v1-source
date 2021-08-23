@@ -1,7 +1,6 @@
 ﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(Intercom), nameof(Intercom.UserCode_CmdSetTransmit))]
@@ -11,7 +10,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                if (!__instance.RateLimit().CanExecute(true) || Intercom.AdminSpeaking) return false;
+                if (!__instance._interactRateLimit.CanExecute(true) || Intercom.AdminSpeaking) return false;
                 var ev = new IcomSpeakEvent(player ? API.Player.Get(__instance.gameObject) : null);
                 if (player)
                 {

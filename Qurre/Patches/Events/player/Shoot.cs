@@ -17,12 +17,12 @@ namespace Qurre.Patches.Events.player
                 if (!ReferenceHub.TryGetHub(conn.identity.gameObject, out ReferenceHub referenceHub)) return false;
                 Player pl = Player.Get(referenceHub);
                 if (msg.ShooterWeaponSerial != pl.CurrentItem.SerialNumber) return false;
-                Firearm firearm;
-                if ((firearm = pl.CurInstance as Firearm) == null) return false;
+                Firearm firearm = pl.CurInstance as Firearm;
+                if (firearm == null) return false;
                 if (!firearm.ActionModule.ServerAuthorizeShot()) return false;
                 var ev = new ShootingEvent(pl, msg);
                 Qurre.Events.Invoke.Player.Shooting(ev);
-                if (ev.Allowed) firearm.HitregModule.ServerProcessShot(msg);
+                try { if (ev.Allowed) firearm.HitregModule.ServerProcessShot(msg); } catch { }
                 return false;
             }
             catch (Exception e)

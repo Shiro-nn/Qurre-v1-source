@@ -11,6 +11,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
+                if (!__instance._mSyncRateLimit.CanExecute(true)) return false;
                 var pl = API.Player.Get(__instance.gameObject);
                 if (pl == null) return true;
                 var ev = new SyncDataEvent(pl, v2, state);

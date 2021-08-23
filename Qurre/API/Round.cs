@@ -4,7 +4,6 @@ using Respawning;
 using Respawning.NamingRules;
 using System;
 using UnityEngine;
-using static QurreModLoader.umm;
 namespace Qurre.API
 {
     public static class Round
@@ -18,8 +17,8 @@ namespace Qurre.API
         public static int ActiveGenerators { get; internal set; } = 0;
         public static float NextRespawn
         {
-            get => rm._timeForNextSequence() - (float)rm._stopwatch().Elapsed.TotalSeconds;
-            set => rm._timeForNextSequence(value + (float)rm._stopwatch().Elapsed.TotalSeconds);
+            get => rm._timeForNextSequence - (float)rm._stopwatch.Elapsed.TotalSeconds;
+            set => rm._timeForNextSequence = value + (float)rm._stopwatch.Elapsed.TotalSeconds;
         }
         public static bool Started => RoundSummary.RoundInProgress();
         public static bool Ended => rs.RoundEnded;
@@ -78,7 +77,5 @@ namespace Qurre.API
         public static void ForceTeamRespawn(bool isCI) => RespawnManager.Singleton.ForceSpawnTeam(isCI ? SpawnableTeamType.ChaosInsurgency : SpawnableTeamType.NineTailedFox);
         public static void CallCICar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
         public static void CallMTFHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
-        [Obsolete("Use Server.InvokeStaticMethod")]
-        public static void InvokeStaticMethod(Type type, string methodName, object[] param) => type.InvokeStaticMethod(methodName, param);
     }
 }

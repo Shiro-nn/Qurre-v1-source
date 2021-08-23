@@ -1,6 +1,5 @@
 ﻿using Qurre.API.Objects;
 using UnityEngine;
-using static QurreModLoader.umm;
 using _lift = Lift;
 namespace Qurre.API.Controllers
 {
@@ -15,8 +14,8 @@ namespace Qurre.API.Controllers
         public Vector3 Position => Transform.position;
         public Quaternion Rotation => Transform.localRotation;
         public Vector3 Scale => Transform.localScale;
-        public _lift.Status Status { get => _lift.status; set => _lift.SetStatus(value); }
-        public bool Locked { get => _lift.LiftLock(); set => _lift.SetLock(_lift.LiftLock(), value); }
+        public _lift.Status Status { get => _lift.status; set => _lift.SetStatus((byte)value); }
+        public bool Locked { get => _lift._locked; set => _lift.SetLock(Locked, value); }
         public float MaxDistance { get => _lift.maxDistance; set => _lift.maxDistance = value; }
         public float MovingSpeed { get => _lift.movingSpeed; set => _lift.movingSpeed = value; }
         public bool Operative { get => _lift.operative; set => _lift.operative = value; }

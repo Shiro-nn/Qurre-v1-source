@@ -539,7 +539,7 @@ namespace Qurre.API.Events
         }
         public Player Player { get; }
         public Item Item { get; }
-        public ThrowableNetworkHandler.RequestType Request { get; set; }
+        public ThrowableNetworkHandler.RequestType Request { get; }
         public bool Allowed { get; set; }
     }
     public class TeslaTriggerEvent : EventArgs
@@ -582,13 +582,13 @@ namespace Qurre.API.Events
         }
         public Player Player { get; private set; }
         public RadioItem Radio { get; private set; }
-        public RadioStatus ChangeTo { get; set; }
-        public bool Enabled { get; set; }
+        public RadioStatus ChangeTo { get; }
+        public bool Enabled { get; }
         public bool Allowed { get; set; }
     }
     public class RadioUsingEvent : EventArgs
     {
-        public RadioUsingEvent(Player player, RadioItem radio, byte battery, bool allowed = true)
+        public RadioUsingEvent(Player player, RadioItem radio, float battery, bool allowed = true)
         {
             Player = player;
             Radio = radio;
@@ -597,7 +597,7 @@ namespace Qurre.API.Events
         }
         public Player Player { get; private set; }
         public RadioItem Radio { get; private set; }
-        public byte Battery { get; set; }
+        public float Battery { get; set; }
         public bool Allowed { get; set; }
     }
     public class TransmitPlayerDataEvent : EventArgs

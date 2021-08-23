@@ -10,15 +10,14 @@ namespace Qurre.Patches.Events.player
     [HarmonyPatch(typeof(ThrowableNetworkHandler), nameof(ThrowableNetworkHandler.ServerProcessMessages))]
     internal static class ThrowItemPatch
     {
-        private static bool Prefix(NetworkConnection conn, ref ThrowableNetworkHandler.ThrowableItemMessage msg)
+        private static bool Prefix(NetworkConnection conn, ThrowableNetworkHandler.ThrowableItemMessage msg)
         {
             try
             {
-                ReferenceHub hub;
-                if (!ReferenceHub.TryGetHubNetID(conn.identity.netId, out hub) || hub.inventory.CurItem.SerialNumber != msg.Serial || !(hub.inventory.CurInstance is ThrowableItem)) return false;
+                if (!ReferenceHub.TryGetHubNetID(conn.identity.netId, out ReferenceHub hub) ||
+                    hub.inventory.CurItem.SerialNumber != msg.Serial || !(hub.inventory.CurInstance is ThrowableItem)) return false;
                 var ev = new ThrowItemEvent(Player.Get(hub), Item.Get(msg.Serial), msg.Request);
                 Qurre.Events.Invoke.Player.ThrowItem(ev);
-                msg = new ThrowableNetworkHandler.ThrowableItemMessage(msg.Serial, ev.Request, msg.CameraRotation, msg.CameraPosition);
                 return ev.Allowed;
             }
             catch (Exception e)

@@ -2,7 +2,6 @@
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
-using static QurreModLoader.umm;
 namespace Qurre.Patches.Events.SCPs.SCP106
 {
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.AllowContain))]
@@ -16,7 +15,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                     return false;
                 foreach (GameObject player in PlayerManager.players)
                 {
-                    if (Vector3.Distance(player.transform.position, __instance.LureSubjectContainer().transform.position) <
+                    if (Vector3.Distance(player.transform.position, __instance._lureSpj.transform.position) <
                         1.97000002861023)
                     {
                         CharacterClassManager CCM = player.GetComponent<CharacterClassManager>();
@@ -29,7 +28,7 @@ namespace Qurre.Patches.Events.SCPs.SCP106
                             if (ev.Allowed)
                             {
                                 Stats.HurtPlayer(new PlayerStats.HitInfo(10000f, "WORLD", DamageTypes.Lure, 0, true), player);
-                                __instance.LureSubjectContainer().SetState(false, true);
+                                __instance._lureSpj.SetState(false, true);
                             }
                         }
                     }
