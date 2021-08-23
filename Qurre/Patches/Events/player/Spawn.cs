@@ -11,6 +11,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
+                try { if (__instance == null || __instance.gameObject == null) return true; } catch { return true; }
                 Role curRole = __instance.CurRole;
                 if (!__instance._wasAnytimeAlive && __instance.CurClass != RoleType.Spectator && __instance.CurClass != RoleType.None) __instance._wasAnytimeAlive = true;
                 __instance.InitSCPs();
@@ -52,7 +53,9 @@ namespace Qurre.Patches.Events.player
                             }
                             else pos = __instance.DeathPosition;
                         }
-                        var ev = new SpawnEvent(API.Player.Get(__instance.gameObject), __instance.CurClass, pos, rotY);
+                        var __pl = API.Player.Get(__instance.gameObject);
+                        if (__pl == null) __pl = API.Server.Host;
+                        var ev = new SpawnEvent(__pl, __instance.CurClass, pos, rotY);
                         Qurre.Events.Invoke.Player.Spawn(ev);
                         __instance._pms.OnPlayerClassChange(ev.Position, ev.RotationY);
                         if (!__instance.SpawnProtected && CharacterClassManager.EnableSP && CharacterClassManager.SProtectedTeam.Contains((int)curRole.team))
@@ -62,7 +65,7 @@ namespace Qurre.Patches.Events.player
                             __instance.ProtectedTime = Time.time;
                         }
                     }
-                    if (!__instance.isLocalPlayer) API.Player.Get(__instance.gameObject).MaxHp = curRole.maxHP;
+                    try { if (!__instance.isLocalPlayer) API.Player.Get(__instance.gameObject).MaxHp = curRole.maxHP; } catch { }
                 }
                 __instance.Scp0492.iAm049_2 = __instance.CurClass == RoleType.Scp0492;
                 __instance.Scp106.iAm106 = __instance.CurClass == RoleType.Scp106;

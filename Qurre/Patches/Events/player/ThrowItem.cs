@@ -3,6 +3,7 @@ using HarmonyLib;
 using InventorySystem.Items.ThrowableProjectiles;
 using Mirror;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
@@ -15,7 +16,7 @@ namespace Qurre.Patches.Events.player
             {
                 ReferenceHub hub;
                 if (!ReferenceHub.TryGetHubNetID(conn.identity.netId, out hub) || hub.inventory.CurItem.SerialNumber != msg.Serial || !(hub.inventory.CurInstance is ThrowableItem)) return false;
-                var ev = new ThrowItemEvent(Player.Get(hub), msg.Serial.GetItem(), msg.Request);
+                var ev = new ThrowItemEvent(Player.Get(hub), Item.Get(msg.Serial), msg.Request);
                 Qurre.Events.Invoke.Player.ThrowItem(ev);
                 msg = new ThrowableNetworkHandler.ThrowableItemMessage(msg.Serial, ev.Request, msg.CameraRotation, msg.CameraPosition);
                 return ev.Allowed;

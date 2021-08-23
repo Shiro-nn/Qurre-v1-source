@@ -5,6 +5,12 @@ namespace Qurre.Patches.etc
     [HarmonyPatch(typeof(HitboxIdentity), nameof(HitboxIdentity.CheckFriendlyFire), new[] { typeof(ReferenceHub), typeof(ReferenceHub), typeof(bool) })]
     internal static class FriendlyFire
     {
-        private static bool Prefix(ReferenceHub attacker, ref bool __result) => !(__result = Player.Get(attacker).FriendlyFire || Server.FriendlyFire);
+        private static bool Prefix(ReferenceHub attacker, ref bool __result)
+        {
+            if (Player.Get(attacker) == null) return true;
+            __result = Player.Get(attacker).FriendlyFire || Server.FriendlyFire;
+            Log.Info(__result);
+            return !__result;
+        }
     }
 }

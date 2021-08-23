@@ -56,7 +56,7 @@ namespace Qurre.Events.modules
         private static void ChangeRole(RoleChangeEvent ev)
         {
             if (ev.Player?.IsHost != false || string.IsNullOrEmpty(ev.Player.UserId)) return;
-            if (ev.NewRole == RoleType.Spectator) ev.Player.Inventory.DropAll();
+            if (ev.NewRole == RoleType.Spectator) ev.Player.DropItems();
         }
         private static void RoundRestart() => API.Map.ClearObjects();
         private static IEnumerator<float> UpdateAudioClient()

@@ -16,6 +16,8 @@ using LightContainmentZoneDecontamination;
 using MapGeneration;
 using InventorySystem.Items.Firearms.Attachments;
 using Scp914;
+using Qurre.API.Controllers.Items;
+using InventorySystem.Items.Pickups;
 namespace Qurre.API
 {
 	public static class Map
@@ -31,7 +33,19 @@ namespace Qurre.API
 		public static List<Controllers.Camera> Cameras { get; } = new List<Controllers.Camera>();
 		public static List<Tesla> Teslas { get; } = new List<Tesla>();
 		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
-
+		public static List<Pickup> Pickups
+		{
+			get
+			{
+				List<Pickup> pickups = new List<Pickup>();
+				foreach (ItemPickupBase itemPickupBase in Object.FindObjectsOfType<ItemPickupBase>())
+				{
+					if (Pickup.Get(itemPickupBase) is Pickup pickup)
+						pickups.Add(pickup);
+				}
+				return pickups;
+			}
+		}
 		public static float WalkSpeedMultiplier
 		{
 			get => ServerConfigSynchronizer.Singleton.NetworkHumanWalkSpeedMultiplier;
@@ -74,7 +88,6 @@ namespace Qurre.API
 				foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>()) window.health = value;
 			}
 		}
-		public static List<Item> Items => Item.AllItems.Select(x => x.Value).ToList();
 		public static Controllers.Broadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
 			var bc = new Controllers.Broadcast(Server.Host, message, duration);
@@ -312,6 +325,8 @@ namespace Qurre.API
 				}
 			}
 			Controllers.Scp914.Scp914Controller = Object.FindObjectOfType<Scp914Controller>();
+			Item.BaseToItem.Clear();
+			Pickup.BaseToItem.Clear();
 		}
 		internal static void ClearObjects()
 		{

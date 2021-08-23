@@ -12,10 +12,11 @@ using RemoteAdmin;
 using Qurre.API.Controllers;
 using InventorySystem;
 using InventorySystem.Items;
-using InventorySystem.Items.ThrowableProjectiles;
 using InventorySystem.Disarming;
 using MapGeneration;
 using InventorySystem.Items.Firearms.Modules;
+using InventorySystem.Items.Firearms.Attachments;
+using Qurre.API.Controllers.Items;
 namespace Qurre.API
 {
 	public class Player
@@ -26,6 +27,7 @@ namespace Qurre.API
 		private string _tag = "";
 		private Radio radio;
 		private Escape escape;
+		internal readonly List<Item> ItemsValue = new List<Item>(8);
 		public Player(ReferenceHub RH)
 		{
 			rh = RH;
@@ -34,7 +36,6 @@ namespace Qurre.API
 			Scp106Controller = new Scp106(this);
 			Scp173Controller = new Scp173();
 			Broadcasts = new ListBroadcasts(this);
-			Inventory = new InventoryManager(this);
 			Ammo = new AmmoBoxManager(this);
 		}
 		public Player(GameObject gameObject) => rh = ReferenceHub.GetHub(gameObject);
@@ -72,8 +73,7 @@ namespace Qurre.API
 		public AmmoBoxManager Ammo { get; }
 		public HintDisplay HintDisplay => rh.hints;
 		public Transform CameraTransform => rh.PlayerCameraReference;
-		public InventoryManager Inventory { get; internal set; }
-		public Inventory DefaultInventory => rh.inventory;
+		public Inventory Inventory => rh.inventory;
 		public NetworkIdentity NetworkIdentity => rh.networkIdentity;
 		public ServerRoles ServerRoles => rh.serverRoles;
 		public CharacterClassManager ClassManager => rh.characterClassManager;
@@ -138,7 +138,7 @@ namespace Qurre.API
 			{
 				for (int i = 0; i < DisarmedPlayers.Entries.Count; i++)
 				{
-					if (DisarmedPlayers.Entries[i].DisarmedPlayer == DefaultInventory.netId)
+					if (DisarmedPlayers.Entries[i].DisarmedPlayer == Inventory.netId)
 					{
 						DisarmedPlayers.Entries.RemoveAt(i);
 						break;
@@ -146,10 +146,10 @@ namespace Qurre.API
 				}
 
 				if (value != null)
-					DefaultInventory.SetDisarmedStatus(value.DefaultInventory);
+					Inventory.SetDisarmedStatus(value.Inventory);
 			}
 		}
-		public bool Cuffed => DisarmedPlayers.IsDisarmed(DefaultInventory);
+		public bool Cuffed => DisarmedPlayers.IsDisarmed(Inventory);
 		public Vector3 Position
 		{
 			get => rh.playerMovementSync.GetRealPosition();
@@ -218,6 +218,7 @@ namespace Qurre.API
 		public NetworkConnection Connection => Scp079PlayerScript.connectionToClient;
 		public bool IsHost => ClassManager.IsHost;
 		public bool FriendlyFire { get; set; }
+		public bool Zoomed { get; internal set; } = false;
 		public bool Invisible { get; set; }
 		public bool BypassMode
 		{
@@ -274,31 +275,26 @@ namespace Qurre.API
 		}
 		public ItemIdentifier CurrentItem
 		{
-			get => DefaultInventory.NetworkCurItem;
-			set => DefaultInventory.NetworkCurItem = value;
+			get => Inventory.NetworkCurItem;
+			set => Inventory.NetworkCurItem = value;
 		}
 		public ItemBase CurInstance
 		{
-			get => DefaultInventory.CurInstance;
-			set => DefaultInventory.CurInstance = value;
+			get => Inventory.CurInstance;
+			set => Inventory.CurInstance = value;
 		}
-		public List<Item> AllItems => Inventory.Items;
-		public ItemType ItemTypeInHand => DefaultInventory.CurItem.TypeId;
+		public IReadOnlyCollection<Item> AllItems => ItemsValue.AsReadOnly();
+		public ItemType ItemTypeInHand => Inventory.CurItem.TypeId;
 		public Item ItemInHand
 		{
-			get => DefaultInventory.CurItem == ItemIdentifier.None ? Item.None : Item.AllItems[DefaultInventory.CurItem.SerialNumber];
+			get => Item.Get(Inventory.CurInstance);
+
 			set
 			{
-				if (value == null || !Inventory.Items.Contains(value))
-				{
-					DefaultInventory.NetworkCurItem = ItemIdentifier.None;
-					DefaultInventory.CurInstance = null;
-				}
+				if (!Inventory.UserInventory.Items.TryGetValue(value.Serial, out _))
+					AddItem(value.Base);
 
-				if (!ItemInHand.ItemBase.CanHolster() || !value.ItemBase.CanEquip()) return;
-
-				DefaultInventory.NetworkCurItem = new ItemIdentifier(value.Type, value.Serial);
-				DefaultInventory.CurInstance = value.ItemBase;
+				Inventory.ServerSelectItem(value.Serial);
 			}
 		}
 		public Stamina Stamina => rh.fpc.staminaController();
@@ -359,30 +355,30 @@ namespace Qurre.API
 		}
 
 		public int Ping => Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer.Peers[Connection.connectionId].Ping;
-		public ushort Ammo12gauge
+		public ushort Ammo12Gauge
 		{
-			get { try { return Ammo[AmmoType.Ammo12gauge]; } catch { return 0; } }
-			set { try { Ammo[AmmoType.Ammo12gauge] = value; } catch { } }
+			get { try { return Ammo[AmmoType.Ammo12Gauge]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo12Gauge] = value; } catch { } }
 		}
-		public ushort Ammo556x45
+		public ushort Ammo556
 		{
-			get { try { return Ammo[AmmoType.Ammo556x45]; } catch { return 0; } }
-			set { try { Ammo[AmmoType.Ammo556x45] = value; } catch { } }
+			get { try { return Ammo[AmmoType.Ammo556]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo556] = value; } catch { } }
 		}
-		public ushort Ammo44cal
+		public ushort Ammo44Cal
 		{
-			get { try { return Ammo[AmmoType.Ammo44cal]; } catch { return 0; } }
-			set { try { Ammo[AmmoType.Ammo44cal] = value; } catch { } }
+			get { try { return Ammo[AmmoType.Ammo44Cal]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo44Cal] = value; } catch { } }
 		}
-		public ushort Ammo762x39
+		public ushort Ammo762
 		{
-			get { try { return Ammo[AmmoType.Ammo762x39]; } catch { return 0; } }
-			set { try { Ammo[AmmoType.Ammo762x39] = value; } catch { } }
+			get { try { return Ammo[AmmoType.Ammo762]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo762] = value; } catch { } }
 		}
-		public ushort Ammo9x19
+		public ushort Ammo9
 		{
-			get { try { return Ammo[AmmoType.Ammo9x19]; } catch { return 0; } }
-			set { try { Ammo[AmmoType.Ammo9x19] = value; } catch { } }
+			get { try { return Ammo[AmmoType.Ammo9]; } catch { return 0; } }
+			set { try { Ammo[AmmoType.Ammo9] = value; } catch { } }
 		}
 		public static IEnumerable<Player> Get(Team team) => List.Where(player => player.Team == team);
 		public static IEnumerable<Player> Get(RoleType role) => List.Where(player => player.Role == role);
@@ -574,25 +570,120 @@ namespace Qurre.API
 		public void ClearBroadcasts() => Broadcasts.Clear();
 		public void Damage(int amount, DamageTypes.DamageType damageType) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, QueryProcessor.PlayerId, true), GameObject);
 		public void Damage(PlayerStats.HitInfo info) => PlayerStats.HurtPlayer(info, GameObject);
-		public void AddItem(ItemType itemType, float durabillity = float.NegativeInfinity, uint weaponAttachments = 0)
+		public Item AddItem(ItemType itemType)
 		{
-			Inventory.Add(new Item(itemType)
+			Item item = Item.Get(Inventory.ServerAddItem(itemType));
+			AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, item.Base);
+			if (item is Firearm firearm) firearm.Ammo = firearm.MaxAmmo;
+			return item;
+		}
+		public void AddItem(ItemType itemType, int amount)
+		{
+			if (amount > 0)
 			{
-				Durabillity = durabillity,
-				WeaponAttachments = weaponAttachments
-			});
+				for (int i = 0; i < amount; i++)
+					AddItem(itemType);
+			}
 		}
-		public void AddItem(ItemType itemType) => Inventory.Add(itemType);
-		public void DropItem(Item item) => Inventory.Drop(item);
-		public void DropItems() => Inventory.DropAll();
-		public bool HasItem(ItemType targetItem)
+		public void AddItem(List<ItemType> items)
 		{
-			foreach (var item in Inventory.Items.Where(x => x.Type == targetItem)) return true;
-			return false;
+			if (items.Count > 0)
+			{
+				for (int i = 0; i < items.Count; i++)
+					AddItem(items[i]);
+			}
 		}
-		public void RemoveItem(Item item) => Inventory.Remove(item);
-		public void RemoveItem() => Inventory.Remove(ItemInHand);
-		public void ClearInventory() => Inventory.Clear();
+		public void AddItem(Item item) => AddItem(item.Base);
+		public Item AddItem(Pickup pickup) => Item.Get(Inventory.ServerAddItem(pickup.Type, pickup.Serial, pickup.Base));
+		public Item AddItem(ItemBase itemBase)
+		{
+			Item item = Item.Get(itemBase);
+			Inventory.UserInventory.Items[itemBase.PickupDropModel.NetworkInfo.Serial] = itemBase;
+
+			itemBase.OnAdded(itemBase.PickupDropModel);
+			if (itemBase is InventorySystem.Items.Firearms.Firearm firearm)
+				AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, firearm);
+			ItemsValue.Add(item);
+
+			Inventory.SendItemsNextFrame = true;
+			return item;
+		}
+		public void AddItem(Item item, int amount)
+		{
+			if (amount > 0)
+			{
+				for (int i = 0; i < amount; i++)
+					AddItem(item);
+			}
+		}
+		public void AddItem(List<Item> items)
+		{
+			if (items.Count > 0)
+			{
+				for (int i = 0; i < items.Count; i++)
+					AddItem(items[i]);
+			}
+		}
+		public void DropItem(Item item) => Inventory.ServerDropItem(item.Serial);
+		public bool HasItem(ItemType item) => Inventory.UserInventory.Items.Any(tempItem => tempItem.Value.ItemTypeId == item);
+		public int CountItems(ItemType item) => Inventory.UserInventory.Items.Count(tempItem => tempItem.Value.ItemTypeId == item);
+		public bool RemoveItem(ushort id)
+		{
+			if (!Inventory.UserInventory.Items.TryGetValue(id, out ItemBase @base))
+				return false;
+			Inventory.ServerRemoveItem(id, @base.PickupDropModel);
+			return true;
+		}
+		public bool RemoveItem(ItemBase item)
+		{
+			if (ItemsValue.All(i => i.Base != item))
+				return false;
+			ItemsValue.Remove(Item.Get(item));
+			Inventory.ServerRemoveItem(item.PickupDropModel.NetworkInfo.Serial, item.PickupDropModel);
+			return true;
+		}
+		public bool RemoveItem(Item item) => RemoveItem(item.Base);
+		public bool RemoveHandItem() => RemoveItem(ItemInHand);
+		public void ResetInventory(List<ItemType> newItems)
+		{
+			ClearInventory();
+			if (newItems.Count > 0)
+			{
+				foreach (ItemType item in newItems)
+					AddItem(item);
+			}
+		}
+		public void ResetInventory(List<ItemBase> newItems)
+		{
+			ClearInventory();
+			if (newItems.Count > 0)
+			{
+				foreach (ItemBase item in newItems)
+					AddItem(item);
+			}
+		}
+		public void ClearInventory()
+		{
+			Inventory.UserInventory.Items.Clear();
+			Inventory.SendItemsNextFrame = true;
+			ItemsValue.Clear();
+		}
+		public void DropItems() => Inventory.ServerDropEverything();
+		public Throwable ThrowGrenade(GrenadeType type, bool fullForce = true)
+		{
+			Throwable throwable = type switch
+			{
+				GrenadeType.Flashbang => new FlashGrenade(ItemType.GrenadeFlash),
+				_ => new ExplosiveGrenade(type == GrenadeType.Scp018 ? ItemType.SCP018 : ItemType.GrenadeHE),
+			};
+			ThrowItem(throwable, fullForce);
+			return throwable;
+		}
+		public void ThrowItem(Throwable throwable, bool fullForce = true)
+		{
+			throwable.Base.Owner = ReferenceHub;
+			throwable.Throw(fullForce);
+		}
 		public void Ban(int duration, string reason, string issuer = "API") => PlayerManager.localPlayer.GetComponent<BanPlayer>().BanUser(GameObject, duration, reason, issuer, false);
 		public void Kick(string reason, string issuer = "API") => Ban(0, reason, issuer);
 		public void Disconnect(string reason = null) => ServerConsole.Disconnect(GameObject, string.IsNullOrEmpty(reason) ? "" : reason);
@@ -630,21 +721,6 @@ namespace Qurre.API
 				object[] param = new object[] { component, connectionToClient };
 				typeof(NetworkServer).InvokeStaticMethod("SendSpawnMessage", param);
 			}
-		}
-		public ThrowableItem ThrowGrenade(GrenadeType type, bool fullForce = true)
-		{
-			ThrowableItem throwable = type switch
-			{
-				GrenadeType.Flashbang => (ThrowableItem)DefaultInventory.CreateItemInstance(ItemType.GrenadeFlash, true),
-				_ => (ThrowableItem)DefaultInventory.CreateItemInstance(type == GrenadeType.Scp018 ? ItemType.SCP018 : ItemType.GrenadeHE, true),
-			};
-			ThrowItem(throwable, fullForce);
-			return throwable;
-		}
-		public void ThrowItem(ThrowableItem throwable, bool fullForce = true)
-		{
-			throwable.Owner = ReferenceHub;
-			throwable.ServerThrow(fullForce);
 		}
 		public bool GetEffectActive<T>() where T : PlayerEffect
 		{
@@ -781,9 +857,6 @@ namespace Qurre.API
 			RoleType newRole = RoleType.None;
 			var changeTeam = false;
 
-			if (CharacterClassManager.ForceCuffedChangeTeam)
-				changeTeam = true;
-
 			if (Cuffed && CharacterClassManager.CuffedChangeTeam)
 			{
 				switch (Role)
@@ -879,26 +952,8 @@ namespace Qurre.API
 			internal AmmoBoxManager(Player pl) => player = pl;
 			public ushort this[AmmoType ammo]
 			{
-				get => player.DefaultInventory.UserInventory.ReserveAmmo[(ItemType)ammo];
-				set => player.DefaultInventory.UserInventory.ReserveAmmo[(ItemType)ammo] = value;
-			}
-		}
-		public class InventoryManager
-		{
-			private readonly Player player;
-			internal InventoryManager(Player pl) => player = pl;
-			public Item this[int index] => Items[index];
-			public List<Item> Items => player.DefaultInventory.UserInventory.Items.Select(x => Item.AllItems[x.Key]).ToList();
-			public void Add(Item item) => item.PickUp(player);
-			public void Add(ItemType type) => new Item(type, player);
-			public void Add(int id) => new Item(id, player);
-			public void Remove(Item item) => item.Destroy();
-			public void Drop(Item item) => item.Drop(player.Position);
-			public void DropAll() => player.DefaultInventory.ServerDropEverything();
-			public void Clear()
-			{
-				foreach (var item in Items)
-					item.Destroy();
+				get => player.Inventory.UserInventory.ReserveAmmo[ammo.GetItemType()];
+				set => player.Inventory.UserInventory.ReserveAmmo[ammo.GetItemType()] = value;
 			}
 		}
 	}

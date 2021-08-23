@@ -27,7 +27,6 @@ namespace Qurre.Patches.Events.player
                     Player.Dead(new DeadEvent(API.Server.Host, ev.Player, new PlayerStats.HitInfo(-1, "Dedicated Server", DamageTypes.None, 0, true)));
                 classid = ev.NewRole;
                 pl.ClassManager.SetClassIDAdv(classid, lite, spawnReason, false);
-                ply.GetComponent<FirstPersonController>().ResetStamina();
                 pl.PlayerStats.SetHPAmount(__instance.Classes.SafeGet(classid).maxHP);
                 return false;
             }

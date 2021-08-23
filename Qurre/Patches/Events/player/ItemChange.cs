@@ -2,6 +2,7 @@
 using InventorySystem;
 using InventorySystem.Items;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
@@ -13,7 +14,7 @@ namespace Qurre.Patches.Events.player
             try
             {
                 if (__instance.CurInstance == value) return true;
-                var ev = new ItemChangeEvent(Player.Get(__instance._hub), __instance.CurInstance.GetItem(), value.GetItem());
+                var ev = new ItemChangeEvent(Player.Get(__instance._hub), Item.Get(__instance.CurInstance), Item.Get(value));
                 Qurre.Events.Invoke.Player.ItemChange(ev);
                 return ev.Allowed;
             }

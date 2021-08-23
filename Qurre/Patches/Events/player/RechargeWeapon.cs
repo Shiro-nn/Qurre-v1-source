@@ -2,6 +2,7 @@
 using HarmonyLib;
 using InventorySystem.Items.Firearms.BasicMessages;
 using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
@@ -12,10 +13,18 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                if (msg.Serial.GetItem() == null) return true;
-                var ev = new RechargeWeaponEvent(msg.Serial.GetItem().Holder, msg.Serial.GetItem(), msg.Request);
-                Qurre.Events.Invoke.Player.RechargeWeapon(ev);
-                return ev.Allowed;
+                Item item = Item.Get(msg.Serial);
+                if (item == null) return true;
+                if (msg.Request == RequestType.AdsIn) item.Owner.Zoomed = true;
+                else if (msg.Request == RequestType.AdsOut) item.Owner.Zoomed = false;
+                else if (msg.Request == RequestType.Reload)
+                {
+                    Player pl = item.Owner;
+                    var ev = new RechargeWeaponEvent(pl, item, msg.Request);
+                    Qurre.Events.Invoke.Player.RechargeWeapon(ev);
+                    return ev.Allowed;
+                }
+                return true;
             }
             catch (Exception e)
             {

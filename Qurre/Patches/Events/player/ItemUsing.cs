@@ -1,8 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 using InventorySystem.Items.Usables;
-using Mirror;
-using Qurre.API;
+using Qurre.API.Controllers;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
@@ -15,13 +14,17 @@ namespace Qurre.Patches.Events.player
             {
                 if (msg.Status == StatusMessage.StatusType.Start)
                 {
-                    var ev = new ItemUsingEvent(msg.ItemSerial.GetItem().Holder, msg.ItemSerial.GetItem());
+                    Item item = Item.Get(msg.ItemSerial);
+                    if (item == null) return true;
+                    var ev = new ItemUsingEvent(item.Owner, item);
                     Qurre.Events.Invoke.Player.ItemUsing(ev);
                     return ev.Allowed;
                 }
                 else
                 {
-                    var ev = new ItemStoppingEvent(msg.ItemSerial.GetItem().Holder, msg.ItemSerial.GetItem());
+                    Item item = Item.Get(msg.ItemSerial);
+                    if (item == null) return true;
+                    var ev = new ItemStoppingEvent(item.Owner, item);
                     Qurre.Events.Invoke.Player.ItemStopping(ev);
                     return ev.Allowed;
                 }

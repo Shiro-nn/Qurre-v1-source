@@ -23,6 +23,8 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -94,6 +96,18 @@
     <Compile Include="API\Audio.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
+    <Compile Include="API\Controllers\Items\Ammo.cs" />
+    <Compile Include="API\Controllers\Items\Armor.cs" />
+    <Compile Include="API\Controllers\Items\ExplosiveGrenade.cs" />
+    <Compile Include="API\Controllers\Items\Firearm.cs" />
+    <Compile Include="API\Controllers\Items\FlashGrenade.cs" />
+    <Compile Include="API\Controllers\Items\Flashlight.cs" />
+    <Compile Include="API\Controllers\Items\Keycard.cs" />
+    <Compile Include="API\Controllers\Items\MicroHid.cs" />
+    <Compile Include="API\Controllers\Items\Radio.cs" />
+    <Compile Include="API\Controllers\Items\Usable.cs" />
+    <Compile Include="API\Controllers\Items\Throwable.cs" />
+    <Compile Include="API\Controllers\Items\Pickup.cs" />
     <Compile Include="API\Controllers\Item.cs" />
     <Compile Include="API\Controllers\Locker.cs" />
     <Compile Include="API\DataBase\DataBase.cs" />
@@ -114,13 +128,15 @@
     <Compile Include="API\Controllers\Generator.cs" />
     <Compile Include="API\Controllers\Lift.cs" />
     <Compile Include="API\Objects\AmmoType.cs" />
+    <Compile Include="API\Objects\KeycardPermissions.cs" />
+    <Compile Include="API\Objects\RadioStatusSettings.cs" />
+    <Compile Include="API\Objects\RadioStatus.cs" />
     <Compile Include="API\Objects\ItemState.cs" />
     <Compile Include="API\Objects\WorkstationStatus.cs" />
     <Compile Include="API\Objects\ConfigObjects.cs" />
     <Compile Include="API\Objects\DoorPrefabs.cs" />
     <Compile Include="API\Objects\LockerType.cs" />
     <Compile Include="API\Objects\RemovableObject.cs" />
-    <Compile Include="API\Objects\RadioStatus.cs" />
     <Compile Include="API\Objects\GrenadeType.cs" />
     <Compile Include="API\Objects\TeamUnitType.cs" />
     <Compile Include="API\Objects\LiftType.cs" />

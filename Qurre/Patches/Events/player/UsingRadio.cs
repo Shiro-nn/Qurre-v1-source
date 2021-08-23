@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.player
             {
                 if (__instance._enabled && __instance.OwnerInventory.CurItem.TypeId == ItemType.Radio)
                 {
-                    var ev = new RadioUsingEvent(API.Player.Get(__instance.gameObject), __instance, __instance.BatteryPercent);
+                    var ev = new RadioUsingEvent(API.Player.Get(__instance._radio._hub), __instance, __instance.BatteryPercent);
                     Qurre.Events.Invoke.Player.RadioUsing(ev);
                     if (!ev.Allowed) return false;
                     __instance.BatteryPercent = ev.Battery;

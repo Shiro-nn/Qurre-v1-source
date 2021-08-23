@@ -7,7 +7,7 @@ namespace Qurre.Patches.Events.player
     [HarmonyPatch(typeof(Consumable), nameof(Consumable.ServerOnUsingCompleted))]
     internal static class ItemUsedPatch
     {
-        private static void Postfix(Consumable __instance)
+        private static void Prefix(Consumable __instance)
         {
             try
             {

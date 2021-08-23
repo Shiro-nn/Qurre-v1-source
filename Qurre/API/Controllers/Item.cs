@@ -1,368 +1,141 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using InventorySystem;
 using InventorySystem.Items;
-using InventorySystem.Items.Firearms;
+using InventorySystem.Items.Armor;
+using firearm = InventorySystem.Items.Firearms.Firearm;
 using InventorySystem.Items.Firearms.Ammo;
+using InventorySystem.Items.Flashlight;
+using InventorySystem.Items.Keycards;
 using InventorySystem.Items.MicroHID;
 using InventorySystem.Items.Pickups;
 using InventorySystem.Items.Radio;
+using InventorySystem.Items.ThrowableProjectiles;
+using InventorySystem.Items.Usables;
 using Mirror;
-using Qurre.API.Objects;
+using Qurre.API.Controllers.Items;
 using UnityEngine;
+using InventorySystem.Items.Firearms;
 namespace Qurre.API.Controllers
 {
     public class Item
     {
         public static Item None { get; } = new Item(-1);
-        public static Dictionary<ushort, Item> AllItems { get; } = new Dictionary<ushort, Item>();
-        private bool deactivated = false;
-        public Item(ItemType type)
-        {
-            Serial = ItemSerialGenerator.GenerateNext();
-            AllItems[Serial] = this;
-            Id = (int)type;
-            Name = type.ToString();
-            CustomItem = false;
-            Type = type;
-            if (InventoryItemLoader.AvailableItems.TryGetValue(type, out var examplebase))
-            {
-                Category = examplebase.Category;
-                TierFlags = examplebase.TierFlags;
-                ThrowSettings = examplebase.ThrowSettings;
-                Weight = examplebase.Weight;
-            }
-        }
-        public Item(ItemType type, Player player) : this(type) => PickUp(player);
-        public Item(ItemType type, Vector3 pos) : this(type) => Drop(pos);
-        public Item(int id)
+        private Item(int id)
         {
             if (id == -1 && None == null)
             {
-                Id = -1;
                 Type = ItemType.None;
-                Name = "None";
-                return;
-            }
-
-            Serial = ItemSerialGenerator.GenerateNext();
-            AllItems[Serial] = this;
-            Id = id;
-
-            if (id >= 0 && id <= Manager.Highest)
-            {
-                CustomItem = false;
-                Type = (ItemType)id;
-                Name = Type.ToString();
-            }
-            else
-            {
-                CustomItem = true;
-                Type = Manager.GetBaseType(id);
-                Name = Manager.GetName(id);
-            }
-
-            if (InventoryItemLoader.AvailableItems.TryGetValue(Type, out var examplebase))
-            {
-                Category = examplebase.Category;
-                TierFlags = examplebase.TierFlags;
-                ThrowSettings = examplebase.ThrowSettings;
-                Weight = examplebase.Weight;
             }
         }
-        public Item(int id, Player player) : this(id) => PickUp(player);
-        public Item(int id, Vector3 pos) : this(id) => Drop(pos);
+        internal static readonly Dictionary<ItemBase, Item> BaseToItem = new Dictionary<ItemBase, Item>();
+        private ushort id;
         public Item(ItemBase itemBase)
         {
-            Serial = itemBase.OwnerInventory.UserInventory.Items.FirstOrDefault(x => x.Value == itemBase).Key;
-            AllItems[Serial] = this;
-            Id = (int)itemBase.ItemTypeId;
-            Name = itemBase.ItemTypeId.ToString();
-            CustomItem = false;
+            Base = itemBase;
             Type = itemBase.ItemTypeId;
-            Category = itemBase.Category;
-            TierFlags = itemBase.TierFlags;
-            ThrowSettings = ItemBase.ThrowSettings;
-            Weight = itemBase.Weight;
-
-            ItemBase = itemBase;
+            Serial = Base.OwnerInventory.UserInventory.Items.FirstOrDefault(i => i.Value == Base).Key;
+            if (Serial == 0) Serial = ItemSerialGenerator.GenerateNext();
+            BaseToItem.Add(itemBase, this);
         }
-        public Item(ItemPickupBase pickupBase)
-        {
-            Serial = pickupBase.Info.Serial;
-            AllItems[Serial] = this;
-            Id = (int)pickupBase.Info.ItemId;
-            Name = pickupBase.Info.ItemId.ToString();
-            CustomItem = false;
-            Type = pickupBase.Info.ItemId;
-            if (InventoryItemLoader.AvailableItems.TryGetValue(Type, out var examplebase))
-            {
-                Category = examplebase.Category;
-                TierFlags = examplebase.TierFlags;
-                ThrowSettings = ThrowSettings;
-            }
-            Weight = pickupBase.Info.Weight;
-            PickupBase = pickupBase;
-        }
-
-        public readonly int Id;
-        public readonly string Name;
-        public readonly bool CustomItem;
-        public readonly ItemType Type;
-        public readonly ItemCategory Category;
-        public ItemTierFlags TierFlags { get; }
-        public ushort Serial { get; }
-        public ItemThrowSettings ThrowSettings { get; set; }
-        public float Weight { get; }
-
-        public GameObject GameObject => ItemBase == null ? PickupBase.gameObject : ItemBase.gameObject;
-        public ItemBase ItemBase { get; internal set; }
-        public ItemPickupBase PickupBase { get; internal set; }
-
-        public ItemState State
+        public Item(ItemType type) : this(Server.Host.Inventory.CreateItemInstance(type, false)) { }
+        public ushort Serial
         {
             get
             {
-                if (deactivated) return ItemState.Destroyed;
-                if (ItemBase != null) return ItemState.Inventory;
-                if (PickupBase != null) return ItemState.Map;
-                return ItemState.Despawned;
+                id = Base.OwnerInventory.UserInventory.Items.FirstOrDefault(i => i.Value == Base).Key;
+                return id;
+            }
+            internal set
+            {
+                if (value == 0) value = ItemSerialGenerator.GenerateNext();
+                if (Base == null || Base.PickupDropModel == null)
+                    return;
+                Base.PickupDropModel.Info.Serial = value;
+                Base.PickupDropModel.NetworkInfo = Base.PickupDropModel.Info;
+                id = value;
             }
         }
-
-        public Player Holder => PickupBase == null ? Player.Get(ItemBase.Owner) : Player.Get(PickupBase.PreviousOwner.Hub);
-
-        private Vector3 position = Vector3.zero;
-        public Vector3 Position
+        public Vector3 Scale { get; set; } = Vector3.one;
+        public ItemBase Base { get; }
+        public ItemType Type { get; internal set; }
+        public float Weight => Base.Weight;
+        public Player Owner
         {
             get
             {
-                if (ItemBase != null) return Holder.Position;
-                if (PickupBase != null) return PickupBase.Info.Position;
-                return position;
-            }
-            set
-            {
-                if (PickupBase != null)
-                {
-                    PickupBase.Rb.position = position;
-                    PickupBase.RefreshPositionAndRotation();
-                }
-                position = value;
+                if(Base != null) return Player.Get(Base.Owner);
+                return Server.Host;
             }
         }
-        private Quaternion rotation = default;
-        public Quaternion Rotation
+        public static Item Get(ItemBase itemBase)
         {
-            get
-            {
-                if (ItemBase != null) return Holder.FullRotation;
-                if (PickupBase != null) return PickupBase.transform.rotation;
-                return rotation;
-            }
-            set
-            {
-                if (PickupBase != null)
-                {
-                    PickupBase.transform.rotation = rotation;
-                    PickupBase.RefreshPositionAndRotation();
-                }
-                rotation = value;
-            }
-        }
-        private Vector3 scale = Vector3.one;
-        public Vector3 Scale
-        {
-            get => scale;
-            set
-            {
-                if (PickupBase != null)
-                {
-                    NetworkServer.UnSpawn(PickupBase.gameObject);
-                    PickupBase.transform.localScale = value;
-                    NetworkServer.Spawn(PickupBase.gameObject);
-                }
-                scale = value;
-            }
-        }
-        public float Durabillity
-        {
-            get
-            {
-                switch (Category)
-                {
-                    case ItemCategory.Radio:
-                        if (State == ItemState.Inventory) return (ItemBase as RadioItem).BatteryPercent;
-                        else if (State == ItemState.Map) return (PickupBase as RadioPickup).SavedBattery * 100;
-                        break;
-                    case ItemCategory.MicroHID:
-                        if (State == ItemState.Inventory) return (ItemBase as MicroHIDItem).RemainingEnergy * 100;
-                        else if (State == ItemState.Map) return (PickupBase as MicroHIDPickup).Energy * 100;
-                        break;
-                    case ItemCategory.Firearm:
-                        if (State == ItemState.Inventory) return (ItemBase as Firearm).Status.Ammo;
-                        else if (State == ItemState.Map) return (PickupBase as FirearmPickup).Status.Ammo;
-                        break;
-                    case ItemCategory.Ammo:
-                        if (State == ItemState.Map) return (PickupBase as AmmoPickup).SavedAmmo;
-                        break;
-                }
-                return 0;
-            }
-            set
-            {
-                switch (Category)
-                {
-                    case ItemCategory.Radio:
-                        if (State == ItemState.Inventory) (ItemBase as RadioItem)._battery = value / 100;
-                        else if (State == ItemState.Map) (PickupBase as RadioPickup).SavedBattery = value / 100;
-                        break;
-                    case ItemCategory.MicroHID:
-                        if (State == ItemState.Inventory) (ItemBase as MicroHIDItem).RemainingEnergy = value / 100;
-                        else if (State == ItemState.Map) (PickupBase as MicroHIDPickup).Energy = value / 100;
-                        break;
-                    case ItemCategory.Firearm:
-                        if (State == ItemState.Inventory)
-                        {
-                            var arm = ItemBase as Firearm;
-                            arm.Status = new FirearmStatus((byte)value, arm.Status.Flags, arm.Status.Attachments);
-                        }
-                        else if (State == ItemState.Map)
-                        {
-                            var armpickup = PickupBase as FirearmPickup;
-                            armpickup.Status = new FirearmStatus((byte)value, armpickup.Status.Flags, armpickup.Status.Attachments);
-                        }
-                        break;
+            if (itemBase == null)
+                return null;
 
-                    case ItemCategory.Ammo:
-                        if (State == ItemState.Map) (PickupBase as AmmoPickup).SavedAmmo = (ushort)value;
-                        break;
-                }
-            }
-        }
-        public uint WeaponAttachments
-        {
-            get
-            {
-                if (ItemBase is Firearm arm)
-                {
-                    return arm.Status.Attachments;
-                }
-                else if (PickupBase is FirearmPickup armpickup)
-                {
-                    return armpickup.Status.Attachments;
-                }
-                return 0;
-            }
-            set
-            {
-                if (ItemBase is Firearm arm)
-                {
-                    var newstatus = new FirearmStatus(arm.Status.Ammo, arm.Status.Flags, value);
-                    arm.OnStatusChanged(arm.Status, newstatus);
-                }
-                else if (PickupBase is FirearmPickup armpickup)
-                {
-                    armpickup.NetworkStatus = new FirearmStatus(armpickup.Status.Ammo, armpickup.Status.Flags, value);
-                }
-            }
-        }
+            if (BaseToItem.ContainsKey(itemBase))
+                return BaseToItem[itemBase];
 
-        public void PickUp(Player player)
-        {
-            switch (State)
+            return itemBase switch
             {
-                case ItemState.Map:
-                    player.DefaultInventory.ServerAddItem(Type, Serial, PickupBase);
-                    break;
-                case ItemState.Despawned:
-                    player.DefaultInventory.ServerAddItem(Type, Serial);
-                    break;
-                case ItemState.Inventory:
-                    Despawn();
-                    player.DefaultInventory.ServerAddItem(Type, Serial);
-                    break;
-            }
+                firearm firearm => new Items.Firearm(firearm),
+                KeycardItem keycard => new Keycard(keycard),
+                UsableItem usable => new Usable(usable),
+                RadioItem radio => new Items.Radio(radio),
+                MicroHIDItem micro => new MicroHid(micro),
+                BodyArmor armor => new Armor(armor),
+                AmmoItem ammo => new Ammo(ammo),
+                FlashlightItem flashlight => new Flashlight(flashlight),
+                ThrowableItem throwable => throwable.Projectile switch
+                {
+                    FlashbangGrenade _ => new FlashGrenade(throwable),
+                    ExplosionGrenade _ => new ExplosiveGrenade(throwable),
+                    _ => new Throwable(throwable),
+                },
+                _ => new Item(itemBase),
+            };
         }
-        public void Drop(Vector3 position)
+        public static Item Get(ushort serial)
         {
-            switch (State)
-            {
-                case ItemState.Map: Position = position; break;
+            var _ = Object.FindObjectsOfType<ItemBase>().Where(x => x.ItemSerial == serial);
+            if (_.Count() == 0) return null;
+            return Get(_.First());
+        }
+        public void Give(Player player) => player.AddItem(Base);
+        public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default)
+        {
+            Base.PickupDropModel.Info.ItemId = Type;
+            Base.PickupDropModel.Info.Position = position;
+            Base.PickupDropModel.Info.Weight = Weight;
+            Base.PickupDropModel.Info.Rotation = new LowPrecisionQuaternion(rotation);
+            Base.PickupDropModel.NetworkInfo = Base.PickupDropModel.Info;
 
-                case ItemState.Inventory:
-                    Despawn();
-                    goto case ItemState.Despawned;
+            ItemPickupBase ipb = Object.Instantiate(Base.PickupDropModel, position, rotation);
+            if (ipb is FirearmPickup firearmPickup)
+            {
+                if (this is Items.Firearm firearm)
+                {
+                    firearmPickup.Status = new FirearmStatus(firearm.Ammo, FirearmStatusFlags.MagazineInserted, firearmPickup.Status.Attachments);
+                }
+                else
+                {
+                    byte ammo = Base switch
+                    {
+                        AutomaticFirearm auto => auto._baseMaxAmmo,
+                        Shotgun shotgun => shotgun._ammoCapacity,
+                        Revolver _ => 6,
+                        _ => 0,
+                    };
+                    firearmPickup.Status = new FirearmStatus(ammo, FirearmStatusFlags.MagazineInserted, firearmPickup.Status.Attachments);
+                }
 
-                case ItemState.Despawned:
-                    if (InventoryItemLoader.AvailableItems.TryGetValue(Type, out var examplebase))
-                        ReferenceHub.LocalHub.inventory.ServerCreatePickup(examplebase, new PickupSyncInfo
-                        {
-                            ItemId = Type,
-                            Serial = Serial,
-                            Weight = Weight
-                        }, true);
+                firearmPickup.NetworkStatus = firearmPickup.Status;
+            }
 
-                    Position = position;
-                    break;
-            }
-        }
-        public void Drop()
-        {
-            switch (State)
-            {
-                case ItemState.Inventory: Holder.DefaultInventory.ServerDropItem(Serial); break;
-                case ItemState.Despawned: Drop(Position); break;
-            }
-        }
-        public void Despawn()
-        {
-            if (ItemBase != null) ItemBase.OwnerInventory.ServerRemoveItem(Serial, null);
-            if (PickupBase != null) NetworkServer.Destroy(PickupBase.gameObject);
-        }
-        public void Destroy()
-        {
-            Despawn();
-            AllItems.Remove(Serial);
-            deactivated = true;
-        }
-        public class Information
-        {
-            public int ID;
-            public ItemType BasedItemType;
-            public string Name;
-        }
-        public static class Manager
-        {
-            public const int Highest = (int)ItemType.GunShotgun;
-            private static readonly List<Information> custom = new List<Information>();
-            public static ItemType GetBaseType(int id)
-            {
-                if (id >= 0 && id <= 35) return (ItemType)id;
-                if (!IsIDRegistered(id)) return ItemType.None;
-                var item = custom.FirstOrDefault(x => x.ID == id);
-                return item.BasedItemType;
-            }
-            public static string GetName(int id)
-            {
-                if (id >= 0 && id <= Highest) return ((ItemType)id).ToString();
-                if (!IsIDRegistered(id)) return "";
-                var item = custom.FirstOrDefault(x => x.ID == id);
-                return item.Name;
-            }
-            public static Information GetInfo(int id) => custom.FirstOrDefault(x => x.ID == id);
-            public static void RegisterCustomItem(Information info)
-            {
-                if (info.ID >= 0 && info.ID <= Highest) return;
-                if (custom.Select(x => x.ID).Contains(info.ID)) return;
-                custom.Add(info);
-            }
-            public static bool IsIDRegistered(int id)
-            {
-                if (id >= 0 && id <= Highest) return true;
-                if (custom.Any(x => x.ID == id)) return true;
-                return false;
-            }
+            NetworkServer.Spawn(ipb.gameObject);
+            ipb.InfoReceived(default, Base.PickupDropModel.NetworkInfo);
+            Pickup pickup = Pickup.Get(ipb);
+            pickup.Scale = Scale;
+            return pickup;
         }
     }
 }

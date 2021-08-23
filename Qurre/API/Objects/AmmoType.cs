@@ -2,10 +2,26 @@
 {
     public enum AmmoType
     {
-        Ammo12gauge = 13,
-        Ammo556x45 = 16,
-        Ammo44cal = 21,
-        Ammo762x39,
-        Ammo9x19
+        None,
+        /// <summary>
+        /// Used by <see cref="ItemType.GunE11SR"/>
+        /// </summary>
+        Ammo556,
+        /// <summary>
+        /// Used by and <see cref="ItemType.GunLogicer"/>
+        /// </summary>
+        Ammo762,
+        /// <summary>
+        /// Used by <see cref="ItemType.GunCOM15"/>
+        /// </summary>
+        Ammo9,
+        /// <summary>
+        /// Used by <see cref="ItemType.GunShotgun"/>
+        /// </summary>
+        Ammo12Gauge,
+        /// <summary>
+        /// 44 caliber.
+        /// </summary>
+        Ammo44Cal,
     }
 }

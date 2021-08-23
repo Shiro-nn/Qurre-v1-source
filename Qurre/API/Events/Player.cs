@@ -7,6 +7,7 @@ using InventorySystem.Items.Radio;
 using InventorySystem.Items.ThrowableProjectiles;
 using MapGeneration.Distributors;
 using Qurre.API.Controllers;
+using Qurre.API.Controllers.Items;
 using Qurre.API.Objects;
 using System;
 using System.Collections.Generic;
@@ -152,6 +153,8 @@ namespace Qurre.API.Events
     {
         public ItemChangeEvent(Player player, Item oldItem, Item newItem, bool allowed = true)
         {
+            if (oldItem == null) oldItem = Item.None;
+            if (newItem == null) newItem = Item.None;
             Player = player;
             OldItem = oldItem;
             NewItem = newItem;
@@ -379,15 +382,15 @@ namespace Qurre.API.Events
     }
     public class PickupItemEvent : EventArgs
     {
-        public PickupItemEvent(Player player, Item item, bool allowed = true)
+        public PickupItemEvent(Player player, Pickup pickup, bool allowed = true)
         {
             Allowed = allowed;
             Player = player;
-            Item = item;
+            Pickup = pickup;
         }
         public bool Allowed { get; set; }
         public Player Player { get; }
-        public Item Item { get; }
+        public Pickup Pickup { get; }
     }
     public class JoinEvent : EventArgs
     {

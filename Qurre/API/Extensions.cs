@@ -34,9 +34,30 @@ namespace Qurre.API
 		public static _lift GetLift(this Lift lift) => Map.Lifts.FirstOrDefault(x => x.GameObject == lift.gameObject);
 		public static _locker GetLocker(this MapGeneration.Distributors.Locker locker) => Map.Lockers.FirstOrDefault(x => x.Transform == locker.gameObject);
 		public static _workStation GetWorkStation(this WorkstationController station) => Map.WorkStations.FirstOrDefault(x => x.GameObject == station.gameObject);
-		public static Item GetItem(this ItemBase itembase) => Map.Items.FirstOrDefault(x => x.ItemBase == itembase);
-		public static Item GetItem(this ItemPickupBase pickupbase) => Map.Items.FirstOrDefault(x => x.PickupBase == pickupbase);
-		public static Item GetItem(this ushort serial) => Map.Items.FirstOrDefault(x => x.Serial == serial);
+		public static ItemType GetItemType(this AmmoType type)
+		{
+            return type switch
+            {
+                AmmoType.Ammo556 => ItemType.Ammo556x45,
+                AmmoType.Ammo762 => ItemType.Ammo762x39,
+                AmmoType.Ammo9 => ItemType.Ammo9x19,
+                AmmoType.Ammo12Gauge => ItemType.Ammo12gauge,
+                AmmoType.Ammo44Cal => ItemType.Ammo44cal,
+                _ => ItemType.None,
+            };
+		}
+		public static AmmoType GetAmmoType(this ItemType type)
+		{
+			return type switch
+			{
+				ItemType.Ammo9x19 => AmmoType.Ammo9,
+				ItemType.Ammo556x45 => AmmoType.Ammo556,
+				ItemType.Ammo762x39 => AmmoType.Ammo762,
+				ItemType.Ammo12gauge => AmmoType.Ammo12Gauge,
+				ItemType.Ammo44cal => AmmoType.Ammo44Cal,
+				_ => AmmoType.None,
+			};
+		}
 		public static System.Random Random { get; } = new System.Random();
 		public static void Shuffle<T>(this IList<T> list)
 		{
