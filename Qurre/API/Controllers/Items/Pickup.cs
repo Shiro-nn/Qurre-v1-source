@@ -64,6 +64,72 @@ namespace Qurre.API.Controllers.Items
         }
         public ItemPickupBase Base { get; }
         public ItemType Type => Base.NetworkInfo.ItemId;
+        private ItemCategory category = ItemCategory.None;
+        public ItemCategory Category
+        {
+            get
+            {
+                if (category == ItemCategory.None) category = Get();
+                return category;
+                ItemCategory Get()
+                {
+                    switch (Type)
+                    {
+                        case ItemType.KeycardChaosInsurgency:
+                        case ItemType.KeycardContainmentEngineer:
+                        case ItemType.KeycardFacilityManager:
+                        case ItemType.KeycardGuard:
+                        case ItemType.KeycardJanitor:
+                        case ItemType.KeycardNTFCommander:
+                        case ItemType.KeycardNTFLieutenant:
+                        case ItemType.KeycardNTFOfficer:
+                        case ItemType.KeycardO5:
+                        case ItemType.KeycardResearchCoordinator:
+                        case ItemType.KeycardScientist:
+                        case ItemType.KeycardZoneManager:
+                            return ItemCategory.Keycard;
+                        case ItemType.Medkit:
+                        case ItemType.Adrenaline:
+                        case ItemType.Painkillers:
+                            return ItemCategory.Medical;
+                        case ItemType.Radio:
+                            return ItemCategory.Radio;
+                        case ItemType.GunAK:
+                        case ItemType.GunCOM15:
+                        case ItemType.GunCOM18:
+                        case ItemType.GunCrossvec:
+                        case ItemType.GunE11SR:
+                        case ItemType.GunFSP9:
+                        case ItemType.GunLogicer:
+                        case ItemType.GunRevolver:
+                        case ItemType.GunShotgun:
+                            return ItemCategory.Firearm;
+                        case ItemType.GrenadeFlash:
+                        case ItemType.GrenadeHE:
+                            return ItemCategory.Grenade;
+                        case ItemType.SCP018:
+                        case ItemType.SCP207:
+                        case ItemType.SCP268:
+                        case ItemType.SCP500:
+                            return ItemCategory.SCPItem;
+                        case ItemType.MicroHID:
+                            return ItemCategory.MicroHID;
+                        case ItemType.Ammo12gauge:
+                        case ItemType.Ammo44cal:
+                        case ItemType.Ammo556x45:
+                        case ItemType.Ammo762x39:
+                        case ItemType.Ammo9x19:
+                            return ItemCategory.Ammo;
+                        case ItemType.ArmorCombat:
+                        case ItemType.ArmorHeavy:
+                        case ItemType.ArmorLight:
+                            return ItemCategory.Armor;
+                        default:
+                            return ItemCategory.None;
+                    }
+                }
+            }
+        }
         public bool Locked
         {
             get => Base.NetworkInfo.Locked;

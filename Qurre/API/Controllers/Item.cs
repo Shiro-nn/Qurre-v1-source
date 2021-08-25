@@ -25,6 +25,7 @@ namespace Qurre.API.Controllers
             if (id == -1 && None == null)
             {
                 Type = ItemType.None;
+                Category = ItemCategory.None;
             }
         }
         internal static readonly Dictionary<ItemBase, Item> BaseToItem = new Dictionary<ItemBase, Item>();
@@ -33,6 +34,7 @@ namespace Qurre.API.Controllers
         {
             Base = itemBase;
             Type = itemBase.ItemTypeId;
+            Category = itemBase.Category;
             Serial = Base.OwnerInventory.UserInventory.Items.FirstOrDefault(i => i.Value == Base).Key;
             if (Serial == 0) Serial = ItemSerialGenerator.GenerateNext();
             BaseToItem.Add(itemBase, this);
@@ -58,6 +60,7 @@ namespace Qurre.API.Controllers
         public Vector3 Scale { get; set; } = Vector3.one;
         public ItemBase Base { get; }
         public ItemType Type { get; internal set; }
+        public ItemCategory Category { get; internal set; }
         public float Weight => Base.Weight;
         public Player Owner
         {

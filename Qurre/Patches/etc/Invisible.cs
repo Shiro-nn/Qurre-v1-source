@@ -116,6 +116,7 @@ namespace Qurre.Patches.etc
                         pos = ev.Position;
                         rotation = ev.Rotation;
                         showinvoid = ev.Invisible;
+                        if (player == playerToShow) showinvoid = false;
 
                         if (showinvoid) __instance._transmitBuffer[k] = new PlayerPositionData(Vector3.up * 6000f, 0.0f, playerToShow.Id);
                         else __instance._transmitBuffer[k] = new PlayerPositionData(pos, rotation, playerToShow.Id);

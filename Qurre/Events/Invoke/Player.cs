@@ -47,5 +47,6 @@ namespace Qurre.Events.Invoke
         public static void FlashExplosion(FlashExplosionEvent ev) => Invokes(ev);
         public static void FragExplosion(FragExplosionEvent ev) => Invokes(ev);
         public static void Flashed(FlashedEvent ev) => Invokes(ev);
+        public static void DropAmmo(DropAmmoEvent ev) => Invokes(ev);
     }
 }

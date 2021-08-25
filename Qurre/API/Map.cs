@@ -110,7 +110,7 @@ namespace Qurre.API
 			else
 			{
 				var ply = Player.Get(objectInRoom);
-				if (ply.Role == RoleType.Scp079) room = FindRoom(ply.Scp079Controller.Camera.gameObject);
+				if (ply.Role == RoleType.Scp079) room = FindRoom(ply.Scp079Controller.Camera079.gameObject);
 			}
 			if (room == null)
 			{

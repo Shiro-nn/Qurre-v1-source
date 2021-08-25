@@ -662,4 +662,18 @@ namespace Qurre.API.Events
         public Vector3 Position { get; }
         public bool Allowed { get; set; }
     }
+    public class DropAmmoEvent : EventArgs
+    {
+        public DropAmmoEvent(Player player, AmmoType type, ushort amount, bool allowed = true)
+        {
+            Player = player;
+            Type = type;
+            Amount = amount;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public AmmoType Type { get; set; }
+        public ushort Amount { get; set; }
+        public bool Allowed { get; set; }
+    }
 }

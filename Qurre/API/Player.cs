@@ -479,13 +479,13 @@ namespace Qurre.API
 			ServerRoles.RemoteAdmin = true;
 			ServerRoles.Permissions = ServerRoles._globalPerms;
 			ServerRoles.RemoteAdminMode = GlobalRemoteAdmin ? ServerRoles.AccessMode.GlobalAccess : ServerRoles.AccessMode.PasswordOverride;
-			ServerRoles.TargetOpenRemoteAdmin(Connection, false);
+			ServerRoles.TargetOpenRemoteAdmin(false);
 		}
 		public void RaLogout()
 		{
 			ServerRoles.RemoteAdmin = false;
 			ServerRoles.RemoteAdminMode = ServerRoles.AccessMode.LocalAccess;
-			ServerRoles.TargetCloseRemoteAdmin(Connection);
+			ServerRoles.TargetCloseRemoteAdmin();
 		}
 		public void ExecuteCommand(string command, bool RA = true) => GameCore.Console.singleton.TypeCommand(RA ? "/" : "" + command, Sender);
 		public void OpenReportWindow(string text) => GameConsoleTransmission.SendToClient(Connection, "[REPORTING] " + text, "white");
@@ -540,6 +540,8 @@ namespace Qurre.API
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
+			var items = new List<Item>();
+			foreach (var item in AllItems) items.Add(item);
 			var ih = ItemInHand;
 			var _ahp = Ahp;
 			if (damageType == null) damageType = DamageTypes.Com15;
@@ -556,6 +558,7 @@ namespace Qurre.API
 				Rotation = newRotation;
 				Position = newPosition;
 				ItemInHand = ih;
+				ResetInventory(items);
 			});
 			if (spawnRagdoll) Controllers.Ragdoll.Create(role, pos, default, default, new PlayerStats.HitInfo(999, nick, damageType, id, false), false, this);
 		}
@@ -658,6 +661,15 @@ namespace Qurre.API
 			if (newItems.Count > 0)
 			{
 				foreach (ItemBase item in newItems)
+					AddItem(item);
+			}
+		}
+		public void ResetInventory(List<Item> newItems)
+		{
+			ClearInventory();
+			if (newItems.Count > 0)
+			{
+				foreach (Item item in newItems)
 					AddItem(item);
 			}
 		}
