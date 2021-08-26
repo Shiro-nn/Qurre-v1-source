@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.SCPs.SCP096
+namespace Qurre.Patches.Events.SCPs.Scp096
 {
     [HarmonyPatch(typeof(PlayableScps.Scp096), nameof(PlayableScps.Scp096.AddTarget))]
     internal static class AddTargetLook

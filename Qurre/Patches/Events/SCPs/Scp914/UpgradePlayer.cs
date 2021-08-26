@@ -4,8 +4,7 @@ using UnityEngine;
 using Qurre.API;
 using Qurre.API.Events;
 using InventorySystem.Items.Pickups;
-
-namespace Qurre.Patches.Events.SCPs.SCP914
+namespace Qurre.Patches.Events.SCPs.Scp914
 {
     [HarmonyPatch(typeof(Scp914Upgrader), nameof(Scp914Upgrader.ProcessPlayer))]
     internal static class UpgradePlayer

@@ -1,12 +1,12 @@
 ﻿using HarmonyLib;
 using Qurre.API.Events;
-using Scp096 = PlayableScps.Scp096;
-namespace Qurre.Patches.Events.SCPs.SCP096
+using scp096 = PlayableScps.Scp096;
+namespace Qurre.Patches.Events.SCPs.Scp096
 {
-    [HarmonyPatch(typeof(Scp096), nameof(Scp096.Enrage))]
+    [HarmonyPatch(typeof(scp096), nameof(scp096.Enrage))]
     internal static class Enrage
     {
-        private static bool Prefix(Scp096 __instance)
+        private static bool Prefix(scp096 __instance)
         {
             try
             {

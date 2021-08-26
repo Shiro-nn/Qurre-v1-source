@@ -5,7 +5,7 @@ using LightContainmentZoneDecontamination;
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.SCPs.SCP106
+namespace Qurre.Patches.Events.SCPs.Scp106
 {
     [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnTriggerEnter))]
     internal static class PocketDimensionEscape

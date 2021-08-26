@@ -23,6 +23,7 @@ namespace Qurre.Patches.Events.player
                 if (!ev.Allowed)
                 {
                     __instance.TargetPickup.Info.InUse = false;
+                    __instance.TargetPickup.Info.Locked = false;
                     __instance.TargetPickup.NetworkInfo = __instance.TargetPickup.Info;
                 }
                 try

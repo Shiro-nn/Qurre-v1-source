@@ -2,7 +2,7 @@
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.SCPs.SCP106
+namespace Qurre.Patches.Events.SCPs.Scp106
 {
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.AllowContain))]
     internal static class FemurBreakerEnter

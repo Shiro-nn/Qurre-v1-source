@@ -1,28 +1,60 @@
-﻿using HarmonyLib;
-using NorthwoodLib.Pools;
+﻿using Footprinting;
+using HarmonyLib;
+using InventorySystem.Items;
+using InventorySystem.Items.Armor;
 using Qurre.API;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-using static HarmonyLib.AccessTools;
+using System;
+using UnityEngine;
 namespace Qurre.Patches.etc
 {
     [HarmonyPatch(typeof(HitboxIdentity), nameof(HitboxIdentity.CheckFriendlyFire), new[] { typeof(ReferenceHub), typeof(ReferenceHub), typeof(bool) })]
     internal static class FriendlyFire
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator generator)
+        internal static bool Prefix(ref bool __result, ReferenceHub attacker)
         {
-            List<CodeInstruction> newInstructions = ListPool<CodeInstruction>.Shared.Rent(instructions);
-            Label continueLabel = generator.DefineLabel();
-            newInstructions.InsertRange(0, new[]
+            if (Player.Get(attacker) == null) return true;
+            __result = Player.Get(attacker).FriendlyFire || Server.FriendlyFire;
+            return !__result;
+        }
+    }
+    [HarmonyPatch(typeof(HitboxIdentity), nameof(HitboxIdentity.Damage))]
+    internal static class FriendlyFire_Fix_Damage
+    {
+        internal static bool Prefix(HitboxIdentity __instance, ref bool __result, float damage, IDamageDealer item, Footprint attackerFootprint)
+		{
+            try
             {
-                new CodeInstruction(OpCodes.Ldarg_0),
-                new CodeInstruction(OpCodes.Call, Method(typeof(Player), nameof(Player.Get), new[] { typeof(ReferenceHub) })),
-                new CodeInstruction(OpCodes.Callvirt, PropertyGetter(typeof(Player), nameof(Player.FriendlyFire))),
-                new CodeInstruction(OpCodes.Starg, 2),
-            });
-            for (int z = 0; z < newInstructions.Count; z++)
-                yield return newInstructions[z];
-            ListPool<CodeInstruction>.Shared.Return(newInstructions);
+                if (attackerFootprint.NetId != __instance.NetworkId)
+                {
+                    Role role = __instance.TargetHub.characterClassManager.Classes.SafeGet(attackerFootprint.Role);
+                    Role curRole = __instance.TargetHub.characterClassManager.CurRole;
+                    if (!HitboxIdentity.CheckFriendlyFire(attackerFootprint.Hub, __instance.TargetHub, false))
+                    {
+                        __result = false;
+                        return false;
+                    }
+                    if (Misc.GetFaction(role.team) == Misc.GetFaction(curRole.team)) damage *= PlayerStats.FriendlyFireFactor;
+                }
+                HitboxIdentity.DamagePercent damagePercent = item.UseHitboxMultipliers ? __instance._dmgMultiplier : HitboxIdentity.DamagePercent.Body;
+                if (item.UseHitboxMultipliers) damage *= (float)damagePercent / 100f;
+                int bulletPenetrationPercent = Mathf.RoundToInt(item.ArmorPenetration * 100f);
+                if (__instance.TargetHub.inventory.TryGetBodyArmor(out BodyArmor bodyArmor))
+                {
+                    if (damagePercent == HitboxIdentity.DamagePercent.Headshot) damage = BodyArmorUtils.ProcessDamage(bodyArmor.HelmetEfficacy, damage, bulletPenetrationPercent);
+                    else if (damagePercent == HitboxIdentity.DamagePercent.Body) damage = BodyArmorUtils.ProcessDamage(bodyArmor.VestEfficacy, damage, bulletPenetrationPercent);
+                }
+                else if (__instance.TargetHub.scpsController.CurrentScp is PlayableScps.Interfaces.IArmoredScp armoredScp)
+                    damage = BodyArmorUtils.ProcessDamage(armoredScp.GetArmorEfficacy(), damage, bulletPenetrationPercent);
+                __instance.TargetHub.playerStats.HurtPlayer(new PlayerStats.HitInfo(damage, attackerFootprint.LoggedHubName, item.DamageType, attackerFootprint.PlayerId, false),
+                    __instance.TargetHub.gameObject, false, true);
+                __result = true;
+                return false;
+            }
+            catch (Exception e)
+            {
+                Log.Error($"umm, error in patching Modules [FriendlyFire Fix Damage]:\n{e}\n{e.StackTrace}");
+                return true;
+            }
         }
     }
 }

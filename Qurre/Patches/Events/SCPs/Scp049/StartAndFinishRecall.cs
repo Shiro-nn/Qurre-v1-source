@@ -2,7 +2,7 @@
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.SCPs.SCP049
+namespace Qurre.Patches.Events.SCPs.Scp049
 {
     [HarmonyPatch(typeof(PlayableScps.Scp049), nameof(PlayableScps.Scp049.BodyCmd_ByteAndGameObject))]
     internal static class StartAndFinishRecall

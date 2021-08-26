@@ -14,8 +14,22 @@ namespace Qurre.API.Controllers
             ragdoll.NetworkallowRecall = allowRecall;
             ragdoll.NetworkPlayerVelo = velocity;
             NetworkServer.Spawn(gameobject);
+            _id = owner.Id;
             Map.Ragdolls.Add(this);
         }
+        public Ragdoll(RoleType roletype, Vector3 pos, Quaternion rot, Vector3 velocity, PlayerStats.HitInfo info, bool allowRecall, string nickname, int id, int ownerId)
+        {
+            var role = Server.Host.ClassManager.Classes.SafeGet((int)roletype);
+            var gameobject = Object.Instantiate(role.model_ragdoll, pos + role.ragdoll_offset.position, Quaternion.Euler(rot.eulerAngles + role.ragdoll_offset.rotation));
+            ragdoll = gameobject.GetComponent<global::Ragdoll>();
+            ragdoll.Networkowner = new global::Ragdoll.Info(nickname, nickname, info, role, id);
+            ragdoll.NetworkallowRecall = allowRecall;
+            ragdoll.NetworkPlayerVelo = velocity;
+            NetworkServer.Spawn(gameobject);
+            _id = ownerId;
+            Map.Ragdolls.Add(this);
+        }
+        private int _id = 0;
         private readonly global::Ragdoll ragdoll;
         public GameObject GameObject => ragdoll.gameObject;
         public string Name => ragdoll.name;
@@ -51,9 +65,10 @@ namespace Qurre.API.Controllers
         }
         public Player Owner
         {
-            get => Player.Get(ragdoll.owner.PlayerId);
+            get => Player.Get(_id);
             set
             {
+                _id = value.Id;
                 ragdoll.owner.PlayerId = value.Id;
                 ragdoll.owner.Nick = value.Nickname;
                 ragdoll.owner.ownerHLAPI_id = value.UserId;
@@ -71,5 +86,7 @@ namespace Qurre.API.Controllers
         }
         public static Ragdoll Create(RoleType roletype, Vector3 pos, Quaternion rot, Vector3 velocity, PlayerStats.HitInfo info, bool allowRecall, Player owner)
             => new Ragdoll(roletype, pos, rot, velocity, info, allowRecall, owner);
+        public static Ragdoll Create(RoleType roletype, Vector3 pos, Quaternion rot, Vector3 velocity, PlayerStats.HitInfo info, bool allowRecall, string nickname, int id, int ownerId)
+            => new Ragdoll(roletype, pos, rot, velocity, info, allowRecall, nickname, id, ownerId);
     }
 }

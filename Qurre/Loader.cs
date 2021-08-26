@@ -3,7 +3,7 @@ using Qurre.API;
 using System.IO;
 namespace Qurre
 {
-    public class Loader
+    internal class Loader
     {
         public static void QurreLoad()
         {

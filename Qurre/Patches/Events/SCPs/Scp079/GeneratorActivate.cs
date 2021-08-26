@@ -3,7 +3,7 @@ using MapGeneration.Distributors;
 using Qurre.API;
 using Qurre.API.Events;
 using static MapGeneration.Distributors.Scp079Generator;
-namespace Qurre.Patches.Events.SCPs.SCP079
+namespace Qurre.Patches.Events.SCPs.Scp079
 {
     [HarmonyPatch(typeof(Scp079Generator), nameof(Scp079Generator.ServerSetFlag))]
     internal static class GeneratorActivate

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using InventorySystem.Items.Pickups;
-
+using KeyPerms = Interactables.Interobjects.DoorUtils.KeycardPermissions;
 namespace Qurre.API.Controllers
 {
     public class Locker
@@ -14,7 +14,7 @@ namespace Qurre.API.Controllers
         {
             _locker = locker;
             List<Chamber> list = new List<Chamber>();
-            foreach (var _ in _locker.Chambers) list.Add(new Chamber(_));
+            foreach (var _ in _locker.Chambers) list.Add(new Chamber(_, this));
             Chambers = list.ToArray();
         }
         private __locker _locker;
@@ -70,16 +70,23 @@ namespace Qurre.API.Controllers
                 };
             }
         }
+        public AudioClip GrantedBeep => _locker._grantedBeep;
+        public AudioClip DeniedBeep => _locker._deniedBeep;
         public class Chamber
         {
             public LockerChamber LockerChamber { get; private set; }
-            internal Chamber(LockerChamber _chamber) => LockerChamber = _chamber;
+            public Locker Locker { get; private set; }
+            internal Chamber(LockerChamber _chamber, Locker _locker)
+            {
+                LockerChamber = _chamber;
+                Locker = _locker;
+            }
             public void SpawnItem(ItemType id, int amount) => LockerChamber.SpawnItem(id, amount);
             public HashSet<ItemPickupBase> ToBeSpawned => LockerChamber._toBeSpawned;
             public bool Opened
             {
                 get => LockerChamber.IsOpen;
-                set => LockerChamber.IsOpen = value;
+                set => LockerChamber.SetDoor(value, Locker.GrantedBeep);
             }
             public ItemType[] AcceptableItems
             {
@@ -91,6 +98,11 @@ namespace Qurre.API.Controllers
             {
                 get => LockerChamber._targetCooldown;
                 set => LockerChamber._targetCooldown = value;
+            }
+            public KeycardPermissions Permissions
+            {
+                get => (KeycardPermissions)LockerChamber.RequiredPermissions;
+                set => LockerChamber.RequiredPermissions = (KeyPerms)value;
             }
         }
     }

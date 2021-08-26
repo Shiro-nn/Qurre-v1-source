@@ -8,7 +8,7 @@ namespace Qurre.Patches.Events.player
     [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.HurtPlayer))]
     internal static class Damage
 	{
-		public static bool Prefix(PlayerStats __instance, ref PlayerStats.HitInfo info, GameObject go)
+		public static bool Prefix(PlayerStats __instance, ref bool __result, ref PlayerStats.HitInfo info, GameObject go)
 		{
 			try
 			{
@@ -27,12 +27,20 @@ namespace Qurre.Patches.Events.player
 				if (ev.Target.IsHost) return true;
 				Qurre.Events.Invoke.Player.Damage(ev);
 				info = ev.HitInformations;
-				if (!ev.Allowed) return false;
+				if (!ev.Allowed)
+				{
+					__result = false;
+					return false;
+				}
 				if (!ev.Target.GodMode && (ev.Amount == -1 || ev.Amount >= (ev.Target.Hp + ev.Target.Ahp)))
 				{
 					var dE = new DiesEvent(ev.Attacker, ev.Target, ev.HitInformations);
 					Qurre.Events.Invoke.Player.Dies(dE);
-					if (!dE.Allowed) return false;
+					if (!dE.Allowed)
+					{
+						__result = false;
+						return false;
+					}
 				}
 				return true;
 			}

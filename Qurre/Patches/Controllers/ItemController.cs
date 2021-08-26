@@ -13,8 +13,10 @@ namespace Qurre.Patches.Controllers
         {
             try
             {
+                Item item = Item.Get(__result);
+                if (item == null) return;
                 Player pl = Player.Get(__result.Owner);
-                pl?.ItemsValue.Add(Item.Get(__result));
+                pl?.ItemsValue.Add(item);
             }
             catch (Exception e)
             {

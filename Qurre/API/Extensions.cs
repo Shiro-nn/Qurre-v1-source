@@ -25,7 +25,8 @@ namespace Qurre.API
 			else if (prefab == DoorPrefabs.DoorHCZ) return DoorPrefabHCZ;
 			else return DoorPrefabEZ;
 		}
-		public static Room GetRoom(RoomName type) => Map.Rooms.FirstOrDefault(x => x.Type == type);
+		public static Room GetRoom(RoomName type) => Map.Rooms.FirstOrDefault(x => x.RoomName == type);
+		public static Room GetRoom(RoomType type) => Map.Rooms.FirstOrDefault(x => x.Type == type);
 		public static Door GetDoor(DoorType type) => Map.Doors.FirstOrDefault(x => x.Type == type);
 		public static _lift GetLift(LiftType type) => Map.Lifts.FirstOrDefault(x => x.Type == type);
 		public static Door GetDoor(this DoorVariant door) => Map.Doors.FirstOrDefault(x => x.GameObject == door.gameObject);

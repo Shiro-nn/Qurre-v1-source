@@ -2,7 +2,7 @@
 using Scp914;
 using Qurre.API.Events;
 using System;
-namespace Qurre.Patches.Events.SCPs.SCP914
+namespace Qurre.Patches.Events.SCPs.Scp914
 {
     [HarmonyPatch(typeof(Scp914Controller), nameof(Scp914Controller.ServerInteract))]
     internal static class Activating

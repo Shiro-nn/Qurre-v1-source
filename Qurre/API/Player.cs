@@ -258,13 +258,13 @@ namespace Qurre.API
 			get => PlayerStats.NetworkArtificialHpDecay;
 			set => PlayerStats.NetworkArtificialHpDecay = value;
 		}
-		public ushort Ahp
+		public float Ahp
 		{
-			get => PlayerStats.NetworkArtificialHealth;
+			get => PlayerStats.GetAhpValue();
 			set
 			{
-				PlayerStats.NetworkArtificialHealth = value;
-				if (value > MaxAhp) MaxAhp = value;
+				PlayerStats.SafeSetAhpValue(value);
+				if (value > MaxAhp) MaxAhp = (int)value;
 			}
 		}
 		public int MaxAhp
@@ -540,27 +540,25 @@ namespace Qurre.API
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
-			var items = new List<Item>();
-			foreach (var item in AllItems) items.Add(item);
+			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, Nickname, 0, Id);
+			var items = AllItems.ToList();
 			var ih = ItemInHand;
 			var _ahp = Ahp;
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (newPosition == default) newPosition = Position;
 			if (newRotation == default) newRotation = Rotation;
-			Vector3 pos = Position;
-			RoleType role = Role;
-			string nick = Nickname;
-			int id = Id;
-			SetRole(newRole, true);
+			SetRole(newRole, false, CharacterClassManager.SpawnReason.Died);
 			MEC.Timing.CallDelayed(0.3f, () =>
 			{
 				Ahp = _ahp;
 				Rotation = newRotation;
 				Position = newPosition;
-				ItemInHand = ih;
-				ResetInventory(items);
+				MEC.Timing.CallDelayed(0.3f, () =>
+				{
+					ResetInventory(items);
+					ItemInHand = ih;
+				});
 			});
-			if (spawnRagdoll) Controllers.Ragdoll.Create(role, pos, default, default, new PlayerStats.HitInfo(999, nick, damageType, id, false), false, this);
 		}
 		public Controllers.Broadcast Broadcast(string message, ushort time, bool instant = false) => Broadcast(time, message, instant);
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)
@@ -570,7 +568,11 @@ namespace Qurre.API
 			return bc;
 		}
 		public void ClearBroadcasts() => Broadcasts.Clear();
-		public void Damage(int amount, DamageTypes.DamageType damageType) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, "WORLD", damageType, QueryProcessor.PlayerId, true), GameObject);
+		public bool Damage(int amount, DamageTypes.DamageType damageType, Player attacker = null)
+		{
+			if (attacker == null) attacker = this;
+			return attacker.PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, attacker.Nickname, damageType, attacker.Id, false), GameObject);
+		}
 		public void Damage(PlayerStats.HitInfo info) => PlayerStats.HurtPlayer(info, GameObject);
 		public Item AddItem(ItemType itemType)
 		{
@@ -937,14 +939,14 @@ namespace Qurre.API
 					break;
 			}
 		}
-		public void TeleportToRoom(RoomName room)
+		public void TeleportToRoom(RoomType room)
 		{
 			Vector3 roompos = Extensions.GetRoom(room).Position + Vector3.up * 2;
 			Position = roompos;
 		}
 		public void TeleportToRandomRoom()
 		{
-			RoomName room = (RoomName)UnityEngine.Random.Range(1, 48);
+			RoomType room = (RoomType)UnityEngine.Random.Range(1, 48);
 			Position = Extensions.GetRoom(room).Position + Vector3.up * 2;
 		}
 		public void TeleportToDoor(DoorType door)

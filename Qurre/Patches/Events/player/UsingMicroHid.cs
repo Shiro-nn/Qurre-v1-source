@@ -65,7 +65,7 @@ namespace Qurre.Patches.Events.player
                         break;
 
                     case HidState.Firing:
-                        if (__instance._stopwatch.Elapsed.TotalSeconds > 1.7000000476837158)
+                        if (__instance._stopwatch.Elapsed.TotalSeconds > 1.7)
                         {
                             num = 0.13f;
                             __instance.Fire();

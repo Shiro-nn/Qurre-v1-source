@@ -2,7 +2,7 @@
 using HarmonyLib;
 using UnityEngine;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.SCPs.SCP079
+namespace Qurre.Patches.Events.SCPs.Scp079
 {
     [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.UserCode_RpcGainExp))]
     internal static class GetEXP

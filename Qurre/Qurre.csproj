@@ -128,6 +128,8 @@
     <Compile Include="API\Controllers\Generator.cs" />
     <Compile Include="API\Controllers\Lift.cs" />
     <Compile Include="API\Objects\AmmoType.cs" />
+    <Compile Include="API\Objects\ScpAttackType.cs" />
+    <Compile Include="API\Objects\RoomType.cs" />
     <Compile Include="API\Objects\KeycardPermissions.cs" />
     <Compile Include="API\Objects\RadioStatusSettings.cs" />
     <Compile Include="API\Objects\RadioStatus.cs" />
@@ -183,6 +185,7 @@
     <Compile Include="Patches\Controllers\RagdollController.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\etc\Audio.cs" />
+    <Compile Include="Patches\etc\FixItemDestroy.cs" />
     <Compile Include="Patches\etc\EscapeFix.cs" />
     <Compile Include="Patches\etc\Invisible.cs" />
     <Compile Include="Patches\etc\UnitName.cs" />
@@ -201,6 +204,9 @@
     <Compile Include="Patches\Events\player\Heal.cs" />
     <Compile Include="Patches\Events\player\RadioUpdate.cs" />
     <Compile Include="Patches\Events\player\Dead.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp049\Attack.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp049\AttackZombie.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\Attack.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\Windup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\Blink.cs" />
     <Compile Include="Patches\Controllers\GeneratorController.cs" />
@@ -262,9 +268,11 @@
     <Compile Include="Patches\Events\SCPs\Scp106\Contain.cs" />
     <Compile Include="Patches\Events\SCPs\Scp106\PortalCreate.cs" />
     <Compile Include="Patches\Events\SCPs\Scp106\PortalUsing.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp173\Attack.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\Activating.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradePlayer.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\Upgrade.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp939\Attack.cs" />
     <Compile Include="Patches\Events\Server\Console.cs" />
     <Compile Include="Patches\Events\Server\RA.cs" />
     <Compile Include="Patches\Events\Server\FromServer.cs" />

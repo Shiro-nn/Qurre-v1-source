@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.SCPs.SCP079
+namespace Qurre.Patches.Events.SCPs.Scp079
 {
     [HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.TargetLevelChanged))]
     internal static class GetLVL

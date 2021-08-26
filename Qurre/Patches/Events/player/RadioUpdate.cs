@@ -11,6 +11,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
+                if (__instance == null || __instance.gameObject == null) return true;
                 bool enabled = __instance._enabled;
                 byte rangeId = __instance._rangeId;
                 switch (command)

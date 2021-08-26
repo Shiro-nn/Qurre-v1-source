@@ -1,13 +1,13 @@
 ﻿using HarmonyLib;
-using PlayableScps;
 using Qurre.API.Events;
 using System;
-namespace Qurre.Patches.Events.SCPs.SCP096
+using scp096 = PlayableScps.Scp096;
+namespace Qurre.Patches.Events.SCPs.Scp096
 {
-    [HarmonyPatch(typeof(Scp096), nameof(Scp096.Windup))]
+    [HarmonyPatch(typeof(scp096), nameof(scp096.Windup))]
     internal static class WindUp
     {
-        private static bool Prefix(Scp096 __instance, bool force = false)
+        private static bool Prefix(scp096 __instance, bool force = false)
         {
             try
             {
@@ -22,10 +22,10 @@ namespace Qurre.Patches.Events.SCPs.SCP096
             }
         }
     }
-    [HarmonyPatch(typeof(Scp096), nameof(Scp096.PreWindup))]
+    [HarmonyPatch(typeof(scp096), nameof(scp096.PreWindup))]
     internal static class PreWindup
     {
-        private static bool Prefix(Scp096 __instance)
+        private static bool Prefix(scp096 __instance)
         {
             try
             {

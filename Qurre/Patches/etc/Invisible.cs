@@ -12,7 +12,7 @@ namespace Qurre.Patches.etc
     [HarmonyPatch(typeof(PlayerPositionManager), "TransmitData")]
     internal static class InvisiblePatch
     {
-        private static bool Prefix(PlayerPositionManager __instance)
+        internal static bool Prefix(PlayerPositionManager __instance)
         {
             try
             {

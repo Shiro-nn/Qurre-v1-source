@@ -338,14 +338,16 @@ namespace Qurre.API.Events
     }
     public class InteractLockerEvent : EventArgs
     {
-        public InteractLockerEvent(Player player, Controllers.Locker locker, bool allowed)
+        public InteractLockerEvent(Player player, Controllers.Locker locker, Controllers.Locker.Chamber chamber, bool allowed)
         {
             Player = player;
             Locker = locker;
+            Chamber = chamber;
             Allowed = allowed;
         }
         public Player Player { get; }
         public Controllers.Locker Locker { get; }
+        public Controllers.Locker.Chamber Chamber { get; }
         public bool Allowed { get; set; }
     }
     public class IcomSpeakEvent : EventArgs
@@ -674,6 +676,20 @@ namespace Qurre.API.Events
         public Player Player { get; }
         public AmmoType Type { get; set; }
         public ushort Amount { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class ScpAttackEvent : EventArgs
+    {
+        public ScpAttackEvent(Player scp, Player target, ScpAttackType type, bool allowed = true)
+        {
+            Scp = scp;
+            Target = target;
+            Type = type;
+            Allowed = allowed;
+        }
+        public Player Scp { get; }
+        public Player Target { get; }
+        public ScpAttackType Type { get; set; }
         public bool Allowed { get; set; }
     }
 }

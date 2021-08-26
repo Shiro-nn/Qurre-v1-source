@@ -7,8 +7,7 @@ using Qurre.API.Events;
 using System.Collections.Generic;
 using NorthwoodLib.Pools;
 using InventorySystem.Items.Pickups;
-
-namespace Qurre.Patches.Events.SCPs.SCP914
+namespace Qurre.Patches.Events.SCPs.Scp914
 {
     [HarmonyPatch(typeof(Scp914Upgrader), nameof(Scp914Upgrader.Upgrade))]
     internal static class Upgrade
@@ -18,12 +17,12 @@ namespace Qurre.Patches.Events.SCPs.SCP914
             try
             {
                 if (!NetworkServer.active) return true;
-				HashSet<GameObject> hashSet = HashSetPool<GameObject>.Shared.Rent();
-				bool upgradeDropped = (mode & Scp914Mode.Dropped) == Scp914Mode.Dropped;
-				bool upgradeInventory = (mode & Scp914Mode.Inventory) == Scp914Mode.Inventory;
-				bool heldOnly = upgradeInventory && (mode & Scp914Mode.Held) == Scp914Mode.Held;
-				var players = new List<Player>();
-				var items = new List<ItemPickupBase>();
+                HashSet<GameObject> hashSet = HashSetPool<GameObject>.Shared.Rent();
+                bool upgradeDropped = (mode & Scp914Mode.Dropped) == Scp914Mode.Dropped;
+                bool upgradeInventory = (mode & Scp914Mode.Inventory) == Scp914Mode.Inventory;
+                bool heldOnly = upgradeInventory && (mode & Scp914Mode.Held) == Scp914Mode.Held;
+                var players = new List<Player>();
+                var items = new List<ItemPickupBase>();
                 foreach (var collider in intake)
                 {
                     var gameObject = collider.transform.root.gameObject;

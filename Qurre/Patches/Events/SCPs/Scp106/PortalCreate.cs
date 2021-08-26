@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.SCPs.SCP106
+namespace Qurre.Patches.Events.SCPs.Scp106
 {
     [HarmonyPatch(typeof(Scp106PlayerScript), nameof(Scp106PlayerScript.UserCode_CmdMakePortal))]
     internal static class PortalCreate
