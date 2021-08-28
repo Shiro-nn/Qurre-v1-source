@@ -43,6 +43,7 @@ namespace Qurre.Patches.Events.player
                 var fixList = new Dictionary<string, Player>();
                 foreach (var pl in Player.ArgsPlayers.Where(x => x.Value == player)) fixList.Add(pl.Key, pl.Value);
                 foreach (var pl in fixList) Player.ArgsPlayers.Remove(pl.Key);
+                player.Scp173Controller.IgnoredPlayers.Clear();
             }
             catch (Exception e)
             {

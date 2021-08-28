@@ -189,6 +189,7 @@
     <Compile Include="Patches\etc\EscapeFix.cs" />
     <Compile Include="Patches\etc\Invisible.cs" />
     <Compile Include="Patches\etc\UnitName.cs" />
+    <Compile Include="Patches\Events\Map\ScpDeadAnnouncement.cs" />
     <Compile Include="Patches\Events\Map\PlaceBulletHole.cs" />
     <Compile Include="Patches\Events\Map\UseElevator.cs" />
     <Compile Include="Patches\Events\Map\DoorLock.cs" />

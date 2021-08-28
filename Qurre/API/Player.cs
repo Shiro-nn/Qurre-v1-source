@@ -479,13 +479,13 @@ namespace Qurre.API
 			ServerRoles.RemoteAdmin = true;
 			ServerRoles.Permissions = ServerRoles._globalPerms;
 			ServerRoles.RemoteAdminMode = GlobalRemoteAdmin ? ServerRoles.AccessMode.GlobalAccess : ServerRoles.AccessMode.PasswordOverride;
-			ServerRoles.TargetOpenRemoteAdmin(false);
+			ServerRoles.TargetOpenRemoteAdmin(Connection, false);
 		}
 		public void RaLogout()
 		{
 			ServerRoles.RemoteAdmin = false;
 			ServerRoles.RemoteAdminMode = ServerRoles.AccessMode.LocalAccess;
-			ServerRoles.TargetCloseRemoteAdmin();
+			ServerRoles.TargetCloseRemoteAdmin(Connection);
 		}
 		public void ExecuteCommand(string command, bool RA = true) => GameCore.Console.singleton.TypeCommand(RA ? "/" : "" + command, Sender);
 		public void OpenReportWindow(string text) => GameConsoleTransmission.SendToClient(Connection, "[REPORTING] " + text, "white");
@@ -542,7 +542,6 @@ namespace Qurre.API
 		{
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, Nickname, 0, Id);
 			var items = AllItems.ToList();
-			var ih = ItemInHand;
 			var _ahp = Ahp;
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (newPosition == default) newPosition = Position;
@@ -553,11 +552,7 @@ namespace Qurre.API
 				Ahp = _ahp;
 				Rotation = newRotation;
 				Position = newPosition;
-				MEC.Timing.CallDelayed(0.3f, () =>
-				{
-					ResetInventory(items);
-					ItemInHand = ih;
-				});
+				MEC.Timing.CallDelayed(0.3f, () => ResetInventory(items));
 			});
 		}
 		public Controllers.Broadcast Broadcast(string message, ushort time, bool instant = false) => Broadcast(time, message, instant);

@@ -18,6 +18,8 @@ namespace Qurre.Patches.Events.player
             {
                 Player pl = Player.Get(__instance._hub);
                 Item item = Item.Get(itemSerial);
+                if (item == null) return false;
+                if (pl == null) return false;
                 var ev = new DroppingItemEvent(pl, item);
                 Qurre.Events.Invoke.Player.DroppingItem(ev);
                 try

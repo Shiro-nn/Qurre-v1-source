@@ -70,7 +70,6 @@ namespace Qurre.API
         public static TObject GetObjectOf<TObject>() where TObject : UnityEngine.Object => UnityEngine.Object.FindObjectOfType<TObject>();
         public static void Restart()
         {
-            ServerConsole.AddOutputEntry(default(ServerOutput.ExitActionRestartEntry));
             ServerStatic.StopNextRound = ServerStatic.NextRoundAction.Restart;
             PlayerStats.StaticChangeLevel(true);
         }
