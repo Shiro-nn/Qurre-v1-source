@@ -16,5 +16,6 @@ namespace Qurre.Events.Invoke
         public static void DoorOpen(DoorOpenEvent ev) => Invokes(ev);
         public static void UseLift(UseLiftEvent ev) => Invokes(ev);
         public static void ScpDeadAnnouncement(ScpDeadAnnouncementEvent ev) => Invokes(ev);
+        public static void CreatePickup(CreatePickupEvent ev) => Invokes(ev);
     }
 }

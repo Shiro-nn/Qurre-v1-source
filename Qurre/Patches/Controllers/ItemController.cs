@@ -32,7 +32,7 @@ namespace Qurre.Patches.Controllers
             try
             {
                 Item item = Item.Get(itemSerial);
-                if(item == null) return;
+                if (item == null) return;
                 item.Owner?.ItemsValue.Remove(item);
             }
             catch (Exception e)

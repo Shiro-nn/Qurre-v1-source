@@ -479,13 +479,13 @@ namespace Qurre.API
 			ServerRoles.RemoteAdmin = true;
 			ServerRoles.Permissions = ServerRoles._globalPerms;
 			ServerRoles.RemoteAdminMode = GlobalRemoteAdmin ? ServerRoles.AccessMode.GlobalAccess : ServerRoles.AccessMode.PasswordOverride;
-			ServerRoles.TargetOpenRemoteAdmin(Connection, false);
+			ServerRoles.TargetOpenRemoteAdmin(false);
 		}
 		public void RaLogout()
 		{
 			ServerRoles.RemoteAdmin = false;
 			ServerRoles.RemoteAdminMode = ServerRoles.AccessMode.LocalAccess;
-			ServerRoles.TargetCloseRemoteAdmin(Connection);
+			ServerRoles.TargetCloseRemoteAdmin();
 		}
 		public void ExecuteCommand(string command, bool RA = true) => GameCore.Console.singleton.TypeCommand(RA ? "/" : "" + command, Sender);
 		public void OpenReportWindow(string text) => GameConsoleTransmission.SendToClient(Connection, "[REPORTING] " + text, "white");
@@ -541,7 +541,8 @@ namespace Qurre.API
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, Nickname, 0, Id);
-			var items = AllItems.ToList();
+			var items = new List<ItemType>(8);
+			foreach (var item in AllItems) items.Add(item.Type);
 			var _ahp = Ahp;
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (newPosition == default) newPosition = Position;
@@ -658,15 +659,6 @@ namespace Qurre.API
 			if (newItems.Count > 0)
 			{
 				foreach (ItemBase item in newItems)
-					AddItem(item);
-			}
-		}
-		public void ResetInventory(List<Item> newItems)
-		{
-			ClearInventory();
-			if (newItems.Count > 0)
-			{
-				foreach (Item item in newItems)
 					AddItem(item);
 			}
 		}

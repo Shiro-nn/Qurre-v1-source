@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Linq;
 using HarmonyLib;
 using MapGeneration.Distributors;
 using Qurre.API;
 using Qurre.API.Events;
-using KeyPerms = Interactables.Interobjects.DoorUtils.KeycardPermissions;
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
@@ -15,16 +15,16 @@ namespace Qurre.Patches.Events.player
             {
                 var locker = __instance.GetLocker();
                 if (locker == null) return true;
-                if (colliderId >= locker.Chambers.Length || !locker.Chambers[colliderId].CanInteract) return false;
+                if (colliderId >= __instance.Chambers.Length || !__instance.Chambers[colliderId].CanInteract) return false;
                 bool allow = true;
-                if (!__instance.CheckPerms((KeyPerms)locker.Chambers[colliderId].Permissions, ply) && !ply.serverRoles.BypassMode) allow = false;
-                var chamber = locker.Chambers[colliderId];
-                var ev = new InteractLockerEvent(Player.Get(ply), locker, chamber, allow);
+                if (!__instance.CheckPerms(__instance.Chambers[colliderId].RequiredPermissions, ply) && !ply.serverRoles.BypassMode) allow = false;
+                var chamber = __instance.Chambers[colliderId];
+                var ev = new InteractLockerEvent(Player.Get(ply), locker, locker.Chambers.Where(x => x.LockerChamber == chamber).FirstOrDefault(), allow);
                 Qurre.Events.Invoke.Player.InteractLocker(ev);
                 if (!ev.Allowed) __instance.RpcPlayDenied(colliderId);
                 else
                 {
-                    chamber.Opened = !chamber.Opened;
+                    chamber.SetDoor(!chamber.IsOpen, __instance._grantedBeep);
                     __instance.RefreshOpenedSyncvar();
                 }
                 return false;

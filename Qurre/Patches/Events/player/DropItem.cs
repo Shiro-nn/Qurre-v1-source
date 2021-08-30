@@ -18,8 +18,7 @@ namespace Qurre.Patches.Events.player
             {
                 Player pl = Player.Get(__instance._hub);
                 Item item = Item.Get(itemSerial);
-                if (item == null) return false;
-                if (pl == null) return false;
+                if (item == null || pl == null) return false;
                 var ev = new DroppingItemEvent(pl, item);
                 Qurre.Events.Invoke.Player.DroppingItem(ev);
                 try
@@ -44,8 +43,10 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
+                Player pl = Player.Get(__instance._hub);
                 Item item = Item.Get(itemSerial);
-                var _ev = new DropItemEvent(Player.Get(__instance._hub), item);
+                if (item == null || pl == null) return;
+                var _ev = new DropItemEvent(pl, item);
                 Qurre.Events.Invoke.Player.DropItem(_ev);
                 try
                 {

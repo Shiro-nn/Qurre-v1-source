@@ -1,4 +1,8 @@
 ﻿using Interactables.Interobjects.DoorUtils;
+using InventorySystem;
+using InventorySystem.Items.Pickups;
+using Qurre.API.Controllers;
+using Qurre.API.Controllers.Items;
 using System;
 using UnityEngine;
 namespace Qurre.API.Events
@@ -140,6 +144,18 @@ namespace Qurre.API.Events
         public Role Role { get; }
         public PlayerStats.HitInfo HitInfo { get; set; }
         public string GroupId { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class CreatePickupEvent : EventArgs
+    {
+        public CreatePickupEvent(PickupSyncInfo psi, Inventory inv, bool allowed)
+        {
+            Info = psi;
+            Inventory = inv;
+            Allowed = allowed;
+        }
+        public PickupSyncInfo Info { get; }
+        public Inventory Inventory { get; }
         public bool Allowed { get; set; }
     }
 }
