@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-namespace Qurre.Patches.etc
+namespace Qurre.Patches.Modules
 {
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.UserCode_CmdRegisterEscape))]
     internal static class EscapeFix

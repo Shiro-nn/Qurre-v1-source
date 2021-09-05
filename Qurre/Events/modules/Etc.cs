@@ -9,10 +9,13 @@ using Dissonance;
 using Dissonance.Networking.Client;
 using UnityEngine;
 using Qurre.API;
+using System;
+
 namespace Qurre.Events.modules
 {
-    internal class Etc
+    internal static class Etc
     {
+        internal static Dictionary<API.Player, DateTime> CDScp939 = new Dictionary<API.Player, DateTime>();
         internal static void Load()
         {
             SceneManager.sceneUnloaded += SceneUnloaded;
@@ -23,6 +26,8 @@ namespace Qurre.Events.modules
             Player.SyncData += SyncData;
             Server.SendingRA += FixRaBc;
             Map.DoorLock += Fix079;
+            Player.ScpAttack += CD;
+            Player.Leave += Leave;
             MEC.Timing.RunCoroutine(UpdateAudioClient());
         }
         private static void SceneUnloaded(Scene _)
@@ -52,11 +57,30 @@ namespace Qurre.Events.modules
             {
                 API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#31d400>Qurre v{PluginManager.Version}</color>");
             }
+            CDScp939.Clear();
         }
         private static void ChangeRole(RoleChangeEvent ev)
         {
             if (ev.Player?.IsHost != false || string.IsNullOrEmpty(ev.Player.UserId)) return;
             if (ev.NewRole == RoleType.Spectator) ev.Player.DropItems();
+        }
+        private static void CD(ScpAttackEvent ev)
+        {
+            if (!ev.Allowed) return;
+            if (ev.Scp == null) return;
+            if (ev.Type != API.Objects.ScpAttackType.Scp939) return;
+            if (!CDScp939.ContainsKey(ev.Scp))
+            {
+                CDScp939.Add(ev.Scp, DateTime.Now);
+                return;
+            }
+            if ((DateTime.Now - CDScp939[ev.Scp]).TotalSeconds < 1) ev.Allowed = false;
+            else CDScp939[ev.Scp] = DateTime.Now;
+        }
+        private static void Leave(LeaveEvent ev)
+        {
+            if (!CDScp939.ContainsKey(ev.Player)) return;
+            CDScp939.Remove(ev.Player);
         }
         private static void RoundRestart() => API.Map.ClearObjects();
         private static IEnumerator<float> UpdateAudioClient()

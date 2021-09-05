@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-namespace Qurre.Patches.etc
+namespace Qurre.Patches.Modules
 {
     [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdUsePanel))]
     internal static class NukeLock

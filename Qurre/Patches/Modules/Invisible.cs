@@ -7,7 +7,7 @@ using Qurre.API.Events;
 using System;
 using System.Linq;
 using UnityEngine;
-namespace Qurre.Patches.etc
+namespace Qurre.Patches.Modules
 {
     [HarmonyPatch(typeof(PlayerPositionManager), "TransmitData")]
     internal static class InvisiblePatch

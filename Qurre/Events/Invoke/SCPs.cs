@@ -47,12 +47,14 @@ namespace Qurre.Events.Invoke
     public static class Scp173
     {
         public static void Blink(BlinkEvent ev) => Invokes(ev);
+        public static void TantrumPlace(TantrumPlaceEvent ev) => Invokes(ev);
     }
     #endregion
     #region Scp914
     public static class Scp914
     {
         public static void Activating(ActivatingEvent ev) => Invokes(ev);
+        public static void KnobChange(KnobChangeEvent ev) => Invokes(ev);
         public static void Upgrade(UpgradeEvent ev) => Invokes(ev);
         public static void UpgradePlayer(UpgradePlayerEvent ev) => Invokes(ev);
         public static void UpgradePickup(UpgradePickupEvent ev) => Invokes(ev);

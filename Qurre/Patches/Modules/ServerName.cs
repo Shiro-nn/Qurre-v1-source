@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-namespace Qurre.Patches.etc
+namespace Qurre.Patches.Modules
 {
 	[HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.ReloadServerName))]
-	public class ServerNamePatch
+	public static class ServerNamePatch
 	{
 		internal static void Postfix()
 		{

@@ -2,7 +2,7 @@
 using HarmonyLib;
 using Mirror;
 using RemoteAdmin;
-namespace Qurre.Patches.etc
+namespace Qurre.Patches.Modules
 {
 	[HarmonyPatch(typeof(CustomBroadcastTrigger), nameof(CustomBroadcastTrigger.IsUserActivated))]
 	internal static class FixAudio1

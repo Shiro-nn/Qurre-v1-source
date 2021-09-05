@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-namespace Qurre.Patches.etc
+namespace Qurre.Patches.Modules
 {
     [HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.AddLog))]
     internal static class Console

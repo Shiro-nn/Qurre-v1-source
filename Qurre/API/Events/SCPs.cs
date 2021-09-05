@@ -19,6 +19,18 @@ namespace Qurre.API.Events
         public float Duration { get; set; }
         public bool Allowed { get; set; }
     }
+    public class KnobChangeEvent : EventArgs
+    {
+        public KnobChangeEvent(Player player, Scp914KnobSetting setting, bool allowed = true)
+        {
+            Player = player;
+            Setting = setting;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public Scp914KnobSetting Setting { get; set; }
+        public bool Allowed { get; set; }
+    }
     public class UpgradeEvent : EventArgs
     {
         public UpgradeEvent(List<Player> players, List<ItemPickupBase> items, Vector3 moveVector, Scp914Mode mode, Scp914KnobSetting setting, bool allowed = true)
@@ -83,6 +95,18 @@ namespace Qurre.API.Events
         }
         public Player Scp { get; }
         public Vector3 Position { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class TantrumPlaceEvent : EventArgs
+    {
+        public TantrumPlaceEvent(Player scp, float cooldown = 30, bool allowed = true)
+        {
+            Scp = scp;
+            Cooldown = cooldown;
+            Allowed = allowed;
+        }
+        public Player Scp { get; }
+        public float Cooldown { get; set; }
         public bool Allowed { get; set; }
     }
     #endregion

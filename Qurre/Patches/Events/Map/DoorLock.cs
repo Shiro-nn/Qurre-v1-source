@@ -12,14 +12,7 @@ namespace Qurre.Patches.Events.Map
         {
             try
             {
-                try
-                {
-                    if (__instance == null || __instance.gameObject == null) return true;
-                }
-                catch
-                {
-                    return true;
-                }
+                if (__instance == null || __instance.gameObject == null) return true;
                 var ev = new DoorLockEvent(Extensions.GetDoor(__instance), reason, newState);
                 Qurre.Events.Invoke.Map.DoorLock(ev);
                 return ev.Allowed;

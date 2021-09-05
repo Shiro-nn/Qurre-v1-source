@@ -5,7 +5,7 @@ using InventorySystem.Items.Armor;
 using Qurre.API;
 using System;
 using UnityEngine;
-namespace Qurre.Patches.etc
+namespace Qurre.Patches.Modules
 {
     [HarmonyPatch(typeof(HitboxIdentity), nameof(HitboxIdentity.CheckFriendlyFire), new[] { typeof(ReferenceHub), typeof(ReferenceHub), typeof(bool) })]
     internal static class FriendlyFire
@@ -45,7 +45,7 @@ namespace Qurre.Patches.etc
                 }
                 else if (__instance.TargetHub.scpsController.CurrentScp is PlayableScps.Interfaces.IArmoredScp armoredScp)
                     damage = BodyArmorUtils.ProcessDamage(armoredScp.GetArmorEfficacy(), damage, bulletPenetrationPercent);
-                __instance.TargetHub.playerStats.HurtPlayer(new PlayerStats.HitInfo(damage, attackerFootprint.LoggedHubName, item.DamageType, attackerFootprint.PlayerId, false),
+                attackerFootprint.Hub.playerStats.HurtPlayer(new PlayerStats.HitInfo(damage, attackerFootprint.LoggedHubName, item.DamageType, attackerFootprint.PlayerId, false),
                     __instance.TargetHub.gameObject, false, true);
                 __result = true;
                 return false;

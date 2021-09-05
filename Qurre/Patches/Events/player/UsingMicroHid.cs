@@ -39,7 +39,7 @@ namespace Qurre.Patches.Events.player
                         }
                         else if (__instance._stopwatch.Elapsed.TotalSeconds >= 5.95)
                         {
-                            __instance.State = ((__instance.UserInput == HidUserInput.Fire) ? HidState.Firing : HidState.Primed);
+                            __instance.State = (__instance.UserInput == HidUserInput.Fire) ? HidState.Firing : HidState.Primed;
                             __instance._stopwatch.Restart();
                         }
 
@@ -58,7 +58,7 @@ namespace Qurre.Patches.Events.player
                     case HidState.Primed:
                         if ((__instance.UserInput != HidUserInput.Prime && __instance._stopwatch.Elapsed.TotalSeconds >= 0.34999999403953552) || __instance.RemainingEnergy <= 0f)
                         {
-                            __instance.State = ((__instance.UserInput == HidUserInput.Fire && __instance.RemainingEnergy > 0f) ? HidState.Firing : HidState.PoweringDown);
+                            __instance.State = (__instance.UserInput == HidUserInput.Fire && __instance.RemainingEnergy > 0f) ? HidState.Firing : HidState.PoweringDown;
                             __instance._stopwatch.Restart();
                         }
                         else num = __instance._energyConsumtionCurve.Evaluate(1f);

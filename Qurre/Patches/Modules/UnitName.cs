@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Respawning;
 using Respawning.NamingRules;
-namespace Qurre.Patches.etc
+namespace Qurre.Patches.Modules
 {
 	[HarmonyPatch(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.GenerateNew))]
 	internal class UnitNamePatch

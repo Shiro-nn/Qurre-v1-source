@@ -12,7 +12,6 @@ using Qurre.API.Controllers;
 using InventorySystem;
 using InventorySystem.Items;
 using InventorySystem.Disarming;
-using MapGeneration;
 using InventorySystem.Items.Firearms.Modules;
 using InventorySystem.Items.Firearms.Attachments;
 using Qurre.API.Controllers.Items;
@@ -218,6 +217,7 @@ namespace Qurre.API
 		public bool IsHost => ClassManager.IsHost;
 		public bool FriendlyFire { get; set; }
 		public bool Zoomed { get; internal set; } = false;
+		public bool UseStamina { get; set; } = true;
 		public bool Invisible { get; set; }
 		public bool BypassMode
 		{

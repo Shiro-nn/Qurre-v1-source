@@ -59,17 +59,21 @@ namespace Qurre.Events
     public static class Scp173
     {
         public static event AllEvents<BlinkEvent> Blink;
+        public static event AllEvents<TantrumPlaceEvent> TantrumPlace;
         internal static void Invokes(BlinkEvent ev) => Blink.invoke(ev);
+        internal static void Invokes(TantrumPlaceEvent ev) => TantrumPlace.invoke(ev);
     }
     #endregion
     #region Scp914
     public static class Scp914
     {
         public static event AllEvents<ActivatingEvent> Activating;
+        public static event AllEvents<KnobChangeEvent> KnobChange;
         public static event AllEvents<UpgradeEvent> Upgrade;
         public static event AllEvents<UpgradePlayerEvent> UpgradePlayer;
         public static event AllEvents<UpgradePickupEvent> UpgradePickup;
         internal static void Invokes(ActivatingEvent ev) => Activating.invoke(ev);
+        internal static void Invokes(KnobChangeEvent ev) => KnobChange.invoke(ev);
         internal static void Invokes(UpgradeEvent ev) => Upgrade?.invoke(ev);
         internal static void Invokes(UpgradePlayerEvent ev) => UpgradePlayer?.invoke(ev);
         internal static void Invokes(UpgradePickupEvent ev) => UpgradePickup?.invoke(ev);

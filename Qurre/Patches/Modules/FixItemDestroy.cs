@@ -2,7 +2,7 @@
 using InventorySystem;
 using InventorySystem.Items.Pickups;
 using System;
-namespace Qurre.Patches.etc
+namespace Qurre.Patches.Modules
 {
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.DestroyItemInstance))]
     internal static class FixItemDestroy
