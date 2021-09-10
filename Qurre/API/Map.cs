@@ -18,6 +18,8 @@ using InventorySystem.Items.Firearms.Attachments;
 using Scp914;
 using Qurre.API.Controllers.Items;
 using InventorySystem.Items.Pickups;
+using System;
+
 namespace Qurre.API
 {
 	public static class Map
@@ -33,6 +35,7 @@ namespace Qurre.API
 		public static List<Controllers.Camera> Cameras { get; } = new List<Controllers.Camera>();
 		public static List<Tesla> Teslas { get; } = new List<Tesla>();
 		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
+		public static List<Bot> Bots { get; } = new List<Bot>();
 		public static List<Pickup> Pickups
 		{
 			get
@@ -159,40 +162,6 @@ namespace Qurre.API
 			component2.NetworkfuseTime = 0.10000000149011612;
 			NetworkServer.Spawn(component2.gameObject);
 		}*/
-		public static GameObject SpawnBot(RoleType role, string name, float health, Vector3 position, Vector3 rotation, Vector3 scale)
-		{
-			GameObject gameObject = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
-			CharacterClassManager component = gameObject.GetComponent<CharacterClassManager>();
-			if (component != null)
-			{
-				component.CurClass = role;
-				gameObject.GetComponent<NicknameSync>().DisplayName = name;
-				gameObject.GetComponent<PlayerStats>().Health = health;
-				gameObject.GetComponent<QueryProcessor>().PlayerId = 1337228;
-				gameObject.GetComponent<QueryProcessor>().NetworkPlayerId = 1337228;
-				gameObject.transform.localScale = scale;
-				gameObject.transform.position = position;
-				gameObject.transform.eulerAngles = rotation;
-				if (health == -1) component.GodMode = true;
-				NetworkServer.Spawn(gameObject);
-			}
-			return gameObject;
-		}
-		public static GameObject SpawnPlayer(RoleType role, string name, string userSteamID, Vector3 position, Vector3 rotation, Vector3 scale)
-		{
-			ReferenceHub hub = ReferenceHub.GetHub(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == "Player"));
-
-			hub.characterClassManager.NetworkCurClass = role;
-			hub.characterClassManager.NetworkSyncedUserId = userSteamID;
-			hub.nicknameSync.Network_displayName = name;
-			hub.gameObject.name = "CAMERA1";
-			hub.gameObject.tag = "BOT";
-			hub.gameObject.transform.localScale = scale;
-			hub.gameObject.transform.position = position;
-			hub.gameObject.transform.eulerAngles = rotation;
-			NetworkServer.Spawn(hub.gameObject);
-			return hub.gameObject;
-		}
 		public static void ContainSCP106(Player executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().UserCode_RpcContain106(executor.GameObject);
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
 		public static void SetIntercomSpeaker(Player player)
@@ -295,6 +264,10 @@ namespace Qurre.API
 					break;
 			}
 		}
+		[Obsolete("Use Bot.Create")]
+		public static GameObject SpawnBot(RoleType role, string name, float health, Vector3 position, Vector3 rotation, Vector3 scale) => null;
+		[Obsolete("Use Bot.Create")]
+		public static GameObject SpawnPlayer(RoleType role, string name, string userSteamID, Vector3 position, Vector3 rotation, Vector3 scale) => null;
 		internal static void AddObjects()
 		{
 			Broadcasts = new ListBroadcasts(Server.Host);

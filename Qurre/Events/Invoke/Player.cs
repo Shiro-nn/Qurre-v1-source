@@ -49,6 +49,7 @@ namespace Qurre.Events.Invoke
         public static void Flashed(FlashedEvent ev) => Invokes(ev);
         public static void DropAmmo(DropAmmoEvent ev) => Invokes(ev);
         public static void ScpAttack(ScpAttackEvent ev) => Invokes(ev);
-        public static void WalkingOnSinkhole(WalkingOnSinkholeEvent ev) => Invokes(ev);
+        public static void SinkholeWalking(SinkholeWalkingEvent ev) => Invokes(ev);
+        public static void TantrumWalking(TantrumWalkingEvent ev) => Invokes(ev);
     }
 }

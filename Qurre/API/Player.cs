@@ -41,7 +41,7 @@ namespace Qurre.API
 		public static Dictionary<int, Player> IdPlayers = new Dictionary<int, Player>();
 		public static Dictionary<string, Player> UserIDPlayers { get; set; } = new Dictionary<string, Player>();
 		public static Dictionary<string, Player> ArgsPlayers { get; set; } = new Dictionary<string, Player>();
-		public static IEnumerable<Player> List => Dictionary.Values;
+		public static IEnumerable<Player> List => Dictionary.Values.Where(x => !x.Bot);
 		public ReferenceHub ReferenceHub
 		{
 			get => rh;
@@ -71,6 +71,7 @@ namespace Qurre.API
 		public AmmoBoxManager Ammo { get; }
 		public HintDisplay HintDisplay => rh.hints;
 		public Transform CameraTransform => rh.PlayerCameraReference;
+		public Transform Transform => rh.transform;
 		public Inventory Inventory => rh.inventory;
 		public NetworkIdentity NetworkIdentity => rh.networkIdentity;
 		public ServerRoles ServerRoles => rh.serverRoles;
@@ -81,6 +82,7 @@ namespace Qurre.API
 		public QueryProcessor QueryProcessor => rh.queryProcessor;
 		public PlayerEffectsController PlayerEffectsController => rh.playerEffectsController;
 		public NicknameSync NicknameSync => rh.nicknameSync;
+		public PlayerMovementSync PlayerMovementSync => rh.playerMovementSync;
 		public string Tag
 		{
 			get => _tag;
@@ -95,6 +97,11 @@ namespace Qurre.API
 		{
 			get
 			{
+				if (Bot)
+				{
+					if (ui == null) ui = $"7{UnityEngine.Random.Range(0, 99999999)}{UnityEngine.Random.Range(0, 99999999)}@bot";
+					return ui;
+				}
 				string _ = ClassManager.UserId;
 				if (_.Contains("@"))
 				{
@@ -115,7 +122,11 @@ namespace Qurre.API
 			get => rh.nicknameSync.Network_displayName;
 			set => rh.nicknameSync.Network_displayName = value;
 		}
-		public string Nickname => rh.nicknameSync.Network_myNickSync;
+		public string Nickname
+        {
+			get => rh.nicknameSync.Network_myNickSync;
+			internal set => rh.nicknameSync.Network_myNickSync = value;
+		}
 		public bool DoNotTrack => ServerRoles.DoNotTrack;
 		public bool RemoteAdminAccess => ServerRoles.RemoteAdmin;
 		public bool Overwatch
@@ -160,8 +171,8 @@ namespace Qurre.API
 		}
 		public Vector3 Rotation
 		{
-			get => rh.PlayerCameraReference.forward;
-			set => rh.PlayerCameraReference.forward = value;
+			get => CameraTransform.rotation.eulerAngles;
+			set => CameraTransform.rotation = Quaternion.Euler(value);
 		}
 		public Quaternion FullRotation
 		{
@@ -219,6 +230,7 @@ namespace Qurre.API
 		public bool Zoomed { get; internal set; } = false;
 		public bool UseStamina { get; set; } = true;
 		public bool Invisible { get; set; }
+		public bool Bot { get; internal set; } = false;
 		public bool BypassMode
 		{
 			get => ServerRoles.BypassMode;
@@ -352,7 +364,7 @@ namespace Qurre.API
 			get => ClassManager.DeathTime;
 			set => ClassManager.DeathTime = value;
 		}
-
+		public string GlobalBadge => ServerRoles.NetworkGlobalBadge.Split(new string[] { "Badge text: [" }, StringSplitOptions.None)[1].Split(']')[0];
 		public int Ping => Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer.Peers[Connection.connectionId].Ping;
 		public ushort Ammo12Gauge
 		{

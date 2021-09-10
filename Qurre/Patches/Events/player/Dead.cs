@@ -2,6 +2,7 @@
 using Qurre.API.Events;
 using UnityEngine;
 using Qurre.API;
+using System.Linq;
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.HurtPlayer))]
@@ -17,6 +18,7 @@ namespace Qurre.Patches.Events.player
                 var ev = new DeadEvent(attacker, target, info);
                 Qurre.Events.Invoke.Player.Dead(ev);
                 info = ev.HitInfo;
+                if (target.Bot) API.Map.Bots.FirstOrDefault(x => x.Player == target).Destroy();
             }
             catch (System.Exception e)
             {

@@ -692,9 +692,9 @@ namespace Qurre.API.Events
         public ScpAttackType Type { get; set; }
         public bool Allowed { get; set; }
     }
-    public class WalkingOnSinkholeEvent : EventArgs
+    public class SinkholeWalkingEvent : EventArgs
     {
-        public WalkingOnSinkholeEvent(Player pl, SinkholeEnvironmentalHazard sinkhole, bool allowed = true)
+        public SinkholeWalkingEvent(Player pl, SinkholeEnvironmentalHazard sinkhole, bool allowed = true)
         {
             Player = pl;
             Sinkhole = sinkhole;
@@ -702,6 +702,18 @@ namespace Qurre.API.Events
         }
         public Player Player { get; }
         public SinkholeEnvironmentalHazard Sinkhole { get; }
+        public bool Allowed { get; set; }
+    }
+    public class TantrumWalkingEvent : EventArgs
+    {
+        public TantrumWalkingEvent(Player pl, TantrumEnvironmentalHazard tantrum, bool allowed = true)
+        {
+            Player = pl;
+            Tantrum = tantrum;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public TantrumEnvironmentalHazard Tantrum { get; }
         public bool Allowed { get; set; }
     }
 }

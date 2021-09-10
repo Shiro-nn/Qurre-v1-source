@@ -11,7 +11,9 @@ namespace Qurre.Patches.Controllers
 		{
 			try
 			{
+				if (__instance == null || __instance.Hub == null) return true;
 				var peanut = Player.Get(__instance.Hub);
+				if (peanut == null) return true;
 				foreach (Player pl in Player.List)
 				{
 					if (pl.Role == RoleType.Spectator || pl == peanut || pl.Team == Team.SCP || peanut.Scp173Controller.IgnoredPlayers.Contains(pl))

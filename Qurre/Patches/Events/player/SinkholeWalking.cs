@@ -7,7 +7,7 @@ using System;
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.DistanceChanged))]
-    internal static class WalkingOnSinkhole
+    internal static class SinkholeWalking
     {
         private static bool Prefix(SinkholeEnvironmentalHazard __instance, ReferenceHub player)
         {
@@ -18,8 +18,8 @@ namespace Qurre.Patches.Events.player
                 var pl = Player.Get(player);
                 if ((pl.Position - __instance.transform.position).sqrMagnitude <= __instance.DistanceToBeAffected * __instance.DistanceToBeAffected)
                 {
-                    var ev = new WalkingOnSinkholeEvent(pl, __instance);
-                    Qurre.Events.Invoke.Player.WalkingOnSinkhole(ev);
+                    var ev = new SinkholeWalkingEvent(pl, __instance);
+                    Qurre.Events.Invoke.Player.SinkholeWalking(ev);
                     if (!ev.Allowed) return false;
                     if (__instance.SCPImmune && (pl.ClassManager == null || pl.ClassManager.IsAnyScp())) return false;
                     pl.EnableEffect<SinkHole>();
@@ -30,7 +30,7 @@ namespace Qurre.Patches.Events.player
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching Player [WalkingOnSinkhole]:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [SinkholeWalking]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

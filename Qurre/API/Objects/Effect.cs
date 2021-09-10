@@ -30,6 +30,7 @@ namespace Qurre.API
                 case EffectType.Scp268: return typeof(Invisible);
                 case EffectType.SinkHole: return typeof(SinkHole);
                 case EffectType.Visuals939: return typeof(Visuals939);
+                case EffectType.Stained: return typeof(Stained);
             }
             throw new InvalidOperationException("Invalid effect enum provided");
         }

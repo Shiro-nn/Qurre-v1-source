@@ -22,6 +22,7 @@ namespace Qurre.Patches.Modules
                 if (__instance._frame != __instance._syncFrequency) return false;
                 __instance._frame = 0;
                 var players = Player.List.ToList();
+                players.AddRange(Map.Bots.Select(x => x.Player));
                 __instance._usedData = players.Count;
                 if (__instance.ReceivedData == null || __instance.ReceivedData.Length < __instance._usedData)
                     __instance.ReceivedData = new PlayerPositionData[__instance._usedData * 2];

@@ -28,6 +28,7 @@ namespace Qurre.Events.modules
             Map.DoorLock += Fix079;
             Player.ScpAttack += CD;
             Player.Leave += Leave;
+            Player.Spawn += FixItems;
             MEC.Timing.RunCoroutine(UpdateAudioClient());
         }
         private static void SceneUnloaded(Scene _)
@@ -81,6 +82,10 @@ namespace Qurre.Events.modules
         {
             if (!CDScp939.ContainsKey(ev.Player)) return;
             CDScp939.Remove(ev.Player);
+        }
+        private static void FixItems(SpawnEvent ev)
+        {
+            if (ev.Player.Inventory.UserInventory.Items.Count == 0 && ev.Player.AllItems.Count != 0) ev.Player.ItemsValue.Clear();
         }
         private static void RoundRestart() => API.Map.ClearObjects();
         private static IEnumerator<float> UpdateAudioClient()

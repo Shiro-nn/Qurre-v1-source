@@ -23,5 +23,6 @@
         Scp268,
         SinkHole,
         Visuals939,
+        Stained,
     }
 }

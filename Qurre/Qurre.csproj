@@ -96,6 +96,7 @@
     <Compile Include="API\Audio.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
+    <Compile Include="API\Controllers\Bot.cs" />
     <Compile Include="API\Controllers\Items\Ammo.cs" />
     <Compile Include="API\Controllers\Items\Armor.cs" />
     <Compile Include="API\Controllers\Items\ExplosiveGrenade.cs" />
@@ -128,6 +129,7 @@
     <Compile Include="API\Controllers\Generator.cs" />
     <Compile Include="API\Controllers\Lift.cs" />
     <Compile Include="API\Objects\AmmoType.cs" />
+    <Compile Include="API\Objects\MovementDirection.cs" />
     <Compile Include="API\Objects\ScpAttackType.cs" />
     <Compile Include="API\Objects\RoomType.cs" />
     <Compile Include="API\Objects\KeycardPermissions.cs" />
@@ -184,11 +186,14 @@
     <Compile Include="Patches\Controllers\LockerInitial.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
+    <Compile Include="Patches\Events\player\TantrumWalking.cs" />
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
-    <Compile Include="Patches\Events\player\WalkingOnSinkhole.cs" />
+    <Compile Include="Patches\Events\player\SinkholeWalking.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
     <Compile Include="Patches\Modules\Audio.cs" />
+    <Compile Include="Patches\Modules\Bot_Mirror.cs" />
+    <Compile Include="Patches\Modules\Bot_Position.cs" />
     <Compile Include="Patches\Modules\UseStamina.cs" />
     <Compile Include="Patches\Modules\FixLiteSpawn.cs" />
     <Compile Include="Patches\Modules\FixItemDestroy.cs" />
