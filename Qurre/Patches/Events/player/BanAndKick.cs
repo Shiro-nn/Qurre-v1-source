@@ -18,84 +18,84 @@ namespace Qurre.Patches.Events.player
                 string userId = null;
                 string address = user.GetComponent<NetworkIdentity>().connectionToClient.address;
                 Player targetPlayer = Player.Get(user);
-                Player issuerPlayer = Player.Get(issuer) ?? API.Server.Host;
+                Player issuerPlayer;
+                if (issuer.Contains("(")) issuerPlayer = Player.Get(issuer.Substring(issuer.LastIndexOf('(') + 1).TrimEnd(')')) ?? API.Server.Host;
+                else issuerPlayer = API.Server.Host;
                 try { if (ConfigFile.ServerConfig.GetBool("online_mode", false)) userId = targetPlayer.UserId; }
                 catch { return false; }
                 string umm = (duration > 0) ? Plugin.Config.GetString("Qurre_banned", "banned") : Plugin.Config.GetString("Qurre_kicked", "kicked");
                 string message = Plugin.Config.GetString("Qurre_BanOrKick_msg", $"You have been %bok%.").Replace("%bok%", umm);
-                if (!string.IsNullOrEmpty(reason))
-                    message = $"{message} {Plugin.Config.GetString("Qurre_reason", "Reason")}: {reason}";
-                if (!ServerStatic.PermissionsHandler.IsVerified || !targetPlayer.BypassMode)
+                if (!string.IsNullOrEmpty(reason)) message = $"{message} {Plugin.Config.GetString("Qurre_reason", "Reason")}: {reason}";
+                if (duration > 0)
                 {
-                    if (duration > 0)
+                    var ev = new BanEvent(targetPlayer, issuerPlayer, duration, reason, message);
+                    Qurre.Events.Invoke.Player.Ban(ev);
+                    duration = ev.Duration;
+                    reason = ev.Reason;
+                    message = ev.FullMessage;
+                    if (!ev.Allowed) return false;
+                    string originalName = string.IsNullOrEmpty(targetPlayer.Nickname)
+                        ? "(no nick)"
+                        : targetPlayer.Nickname;
+                    long issuanceTime = TimeBehaviour.CurrentTimestamp();
+                    long banExpieryTime = TimeBehaviour.GetBanExpirationTime((uint)duration);
+                    try
                     {
-                        var ev = new BanEvent(targetPlayer, issuerPlayer, duration, reason, message);
-                        Qurre.Events.Invoke.Player.Ban(ev);
-                        duration = ev.Duration;
-                        reason = ev.Reason;
-                        message = ev.FullMessage;
-                        if (!ev.Allowed) return false;
-                        string originalName = string.IsNullOrEmpty(targetPlayer.Nickname)
-                            ? "(no nick)"
-                            : targetPlayer.Nickname;
-                        long issuanceTime = TimeBehaviour.CurrentTimestamp();
-                        long banExpieryTime = TimeBehaviour.GetBanExpirationTime((uint)duration);
-                        try
+                        if (userId != null && !isGlobalBan)
                         {
-                            if (userId != null && !isGlobalBan)
+                            BanHandler.IssueBan(
+                                new BanDetails
+                                {
+                                    OriginalName = originalName,
+                                    Id = userId,
+                                    IssuanceTime = issuanceTime,
+                                    Expires = banExpieryTime,
+                                    Reason = reason,
+                                    Issuer = issuer,
+                                }, BanHandler.BanType.UserId);
+
+                            if (!string.IsNullOrEmpty(targetPlayer.UserId))
                             {
                                 BanHandler.IssueBan(
                                     new BanDetails
                                     {
                                         OriginalName = originalName,
-                                        Id = userId,
+                                        Id = targetPlayer.UserId,
                                         IssuanceTime = issuanceTime,
                                         Expires = banExpieryTime,
                                         Reason = reason,
                                         Issuer = issuer,
                                     }, BanHandler.BanType.UserId);
-                                if (!string.IsNullOrEmpty(targetPlayer.UserId))
-                                {
-                                    BanHandler.IssueBan(
-                                        new BanDetails
-                                        {
-                                            OriginalName = originalName,
-                                            Id = targetPlayer.UserId,
-                                            IssuanceTime = issuanceTime,
-                                            Expires = banExpieryTime,
-                                            Reason = reason,
-                                            Issuer = issuer,
-                                        }, BanHandler.BanType.UserId);
-                                }
                             }
                         }
-                        catch { return false; }
-                        try
-                        {
-                            if (ConfigFile.ServerConfig.GetBool("ip_banning", false) || isGlobalBan)
-                            {
-                                BanHandler.IssueBan(
-                                    new BanDetails
-                                    {
-                                        OriginalName = originalName,
-                                        Id = address,
-                                        IssuanceTime = issuanceTime,
-                                        Expires = banExpieryTime,
-                                        Reason = reason,
-                                        Issuer = issuer,
-                                    }, BanHandler.BanType.IP);
-                            }
-                        }
-                        catch { return false; }
                     }
-                    else if (duration == 0)
+                    catch { return false; }
+
+                    try
                     {
-                        var ev = new KickEvent(targetPlayer, issuerPlayer, reason, message);
-                        Qurre.Events.Invoke.Player.Kick(ev);
-                        reason = ev.Reason;
-                        message = ev.FullMessage;
-                        if (!ev.Allowed) return false;
+                        if (ConfigFile.ServerConfig.GetBool("ip_banning", false) || isGlobalBan)
+                        {
+                            BanHandler.IssueBan(
+                                new BanDetails
+                                {
+                                    OriginalName = originalName,
+                                    Id = address,
+                                    IssuanceTime = issuanceTime,
+                                    Expires = banExpieryTime,
+                                    Reason = reason,
+                                    Issuer = issuer,
+                                }, BanHandler.BanType.IP);
+                        }
                     }
+                    catch { return false; }
+                }
+                else if (duration == 0)
+                {
+                    var ev = new KickEvent(targetPlayer, issuerPlayer, reason, message);
+                    Qurre.Events.Invoke.Player.Kick(ev);
+                    reason = ev.Reason;
+                    message = ev.FullMessage;
+                    if (!ev.Allowed) return false;
                 }
                 ServerConsole.Disconnect(targetPlayer.GameObject, message);
                 return false;

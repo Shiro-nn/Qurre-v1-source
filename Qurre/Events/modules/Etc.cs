@@ -29,7 +29,6 @@ namespace Qurre.Events.modules
             Player.ScpAttack += CD;
             Player.Leave += Leave;
             Player.Spawn += FixItems;
-            MEC.Timing.RunCoroutine(UpdateAudioClient());
         }
         private static void SceneUnloaded(Scene _)
         {
@@ -88,26 +87,6 @@ namespace Qurre.Events.modules
             if (ev.Player.Inventory.UserInventory.Items.Count == 0 && ev.Player.AllItems.Count != 0) ev.Player.ItemsValue.Clear();
         }
         private static void RoundRestart() => API.Map.ClearObjects();
-        private static IEnumerator<float> UpdateAudioClient()
-        {
-            for (; ; )
-            {
-                yield return float.NegativeInfinity;
-                if (Audio.client != null && !Audio.client._disconnected)
-                {
-                    int num;
-                    for (int i = 0; i < DebugSettings.Instance._levels.Count; i = num + 1)
-                    {
-                        DebugSettings.Instance._levels[i] = LogLevel.Trace;
-                        num = i;
-                    }
-                    if (Audio.client.Update() == ClientStatus.Error)
-                    {
-                        if (Log.debug) Log.Error("Audio Client caused an error.");
-                    }
-                }
-            }
-        }
         private static void SyncData(SyncDataEvent ev)
         {
             if (ev.Player != null && ev.Player.Escape != null && Vector3.Distance(ev.Player.Position, ev.Player.Escape.worldPosition) < Escape.radius)

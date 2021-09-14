@@ -55,9 +55,11 @@ namespace Qurre.Patches.Events.player
                         }
                         var __pl = API.Player.Get(__instance.gameObject);
                         if (__pl == null) __pl = API.Server.Host;
+                        else __pl.Zoomed = false;
                         var ev = new SpawnEvent(__pl, __instance.CurClass, pos, rotY);
                         Qurre.Events.Invoke.Player.Spawn(ev);
-                        __instance._pms.OnPlayerClassChange(ev.Position, ev.RotationY);
+                        if(!ev.Player.BlockSpawnTeleport) __instance._pms.OnPlayerClassChange(ev.Position, ev.RotationY);
+                        else ev.Player.BlockSpawnTeleport = false;
                         if (!__instance.SpawnProtected && CharacterClassManager.EnableSP && CharacterClassManager.SProtectedTeam.Contains((int)curRole.team))
                         {
                             __instance.GodMode = true;

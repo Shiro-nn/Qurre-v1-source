@@ -231,6 +231,10 @@ namespace Qurre.API
 		public bool UseStamina { get; set; } = true;
 		public bool Invisible { get; set; }
 		public bool Bot { get; internal set; } = false;
+		///<summary>
+		///<para>After spawning, it becomes false again.</para>
+		///</summary>
+		public bool BlockSpawnTeleport { get; set; } = false;
 		public bool BypassMode
 		{
 			get => ServerRoles.BypassMode;
@@ -553,20 +557,50 @@ namespace Qurre.API
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, Nickname, 0, Id);
-			var items = new List<ItemType>(8);
-			foreach (var item in AllItems) items.Add(item.Type);
+			var items = new Dictionary<ItemType, float>(8);
+			foreach (var item in AllItems.Where(x => x != null && x.Base != null))
+			{
+				float ammo = 0;
+				if (item is MicroHid microHid) ammo = microHid.Energy;
+				else if (item is Firearm firearm) ammo = firearm.Ammo;
+				items.Add(item.Type, ammo);
+			}
 			var _ahp = Ahp;
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (newPosition == default) newPosition = Position;
 			if (newRotation == default) newRotation = Rotation;
-			SetRole(newRole, false, CharacterClassManager.SpawnReason.Died);
+			BlockSpawnTeleport = true;
+			if(newRole == Role)
+            {
+				Position = newPosition;
+				Rotation = newRotation;
+				return;
+            }
+			SetRole(newRole, false, CharacterClassManager.SpawnReason.Respawn);
 			MEC.Timing.CallDelayed(0.3f, () =>
 			{
 				Ahp = _ahp;
 				Rotation = newRotation;
-				Position = newPosition;
 				MEC.Timing.CallDelayed(0.3f, () => ResetInventory(items));
+				MEC.Timing.CallDelayed(0.2f, () => Position = newPosition);
 			});
+			void ResetInventory(Dictionary<ItemType, float> newItems)
+			{
+				ClearInventory();
+				if (newItems.Count > 0)
+				{
+					foreach (var item in newItems)
+						AddItem(item.Key, item.Value);
+				}
+				Item AddItem(ItemType itemType, float ammo)
+				{
+					Item item = Item.Get(Inventory.ServerAddItem(itemType));
+					AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, item.Base);
+					if (item is MicroHid microHid) microHid.Energy = ammo;
+					else if (item is Firearm firearm) firearm.Ammo = (byte)ammo;
+					return item;
+				}
+			}
 		}
 		public Controllers.Broadcast Broadcast(string message, ushort time, bool instant = false) => Broadcast(time, message, instant);
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)
@@ -613,8 +647,8 @@ namespace Qurre.API
 			Inventory.UserInventory.Items[itemBase.PickupDropModel.NetworkInfo.Serial] = itemBase;
 
 			itemBase.OnAdded(itemBase.PickupDropModel);
-			if (itemBase is InventorySystem.Items.Firearms.Firearm firearm)
-				AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, firearm);
+            if (itemBase is InventorySystem.Items.Firearms.Firearm)
+				AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, itemBase);
 			ItemsValue.Add(item);
 
 			Inventory.SendItemsNextFrame = true;

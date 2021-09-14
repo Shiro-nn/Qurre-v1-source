@@ -17,7 +17,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -34,6 +34,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\Qurre.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>qurre_ol.ico</ApplicationIcon>
@@ -194,6 +195,8 @@
     <Compile Include="Patches\Modules\Audio.cs" />
     <Compile Include="Patches\Modules\Bot_Mirror.cs" />
     <Compile Include="Patches\Modules\Bot_Position.cs" />
+    <Compile Include="Patches\Modules\FixDoubleSpawn.cs" />
+    <Compile Include="Patches\Modules\FixShoot.cs" />
     <Compile Include="Patches\Modules\UseStamina.cs" />
     <Compile Include="Patches\Modules\FixLiteSpawn.cs" />
     <Compile Include="Patches\Modules\FixItemDestroy.cs" />
