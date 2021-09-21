@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.Resources;
+using System.Reflection;
 using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Qurre")]
 [assembly: AssemblyDescription("Framework for SCP:SL servers with unique functions & api")]
@@ -10,5 +11,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("e1cb0906-b953-41e5-a594-11f65a361ef8")]
-[assembly: AssemblyVersion("1.8.9")]
-[assembly: AssemblyFileVersion("1.8.9")]
+[assembly: AssemblyVersion("1.8.10")]
+[assembly: AssemblyFileVersion("1.8.10")]
+[assembly: NeutralResourcesLanguage("en-US")]

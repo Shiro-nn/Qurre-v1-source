@@ -1,5 +1,5 @@
-﻿using HarmonyLib;
-using Mirror;
+﻿using Footprinting;
+using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
@@ -10,30 +10,28 @@ namespace Qurre.Patches.Events.SCPs.Scp939
 	[HarmonyPatch(typeof(PlayableScps.Scp939), nameof(PlayableScps.Scp939.ServerAttack))]
 	internal static class Attack
 	{
-		internal static bool Prefix(PlayableScps.Scp939 __instance, PlayableScps.Messages.Scp939AttackMessage msg)
+		internal static bool Prefix(PlayableScps.Scp939 __instance, ref bool __result, GameObject target)
 		{
 			try
 			{
 				Player scp = Player.Get(__instance.Hub);
-				if (msg.Victim != null && msg.Victim.TryGetComponent<BreakableWindow>(out var window))
+				__result = false;
+				if (ReferenceHub.TryGetHub(target, out ReferenceHub hub))
 				{
-					__instance._currentBiteCooldown = 1f;
-					scp.Connection.Send(new PlayableScps.Messages.ScpHitmarkerMessage(1.5f));
-					NetworkServer.SendToAll(new PlayableScps.Messages.Scp939OnHitMessage(scp.Id));
-					window.Damage(50f, null, new Footprinting.Footprint(scp.ReferenceHub), Vector3.zero);
+					if (hub.characterClassManager.IsAnyScp()) return false;
+					var pl = Player.Get(hub);
+					var ev = new ScpAttackEvent(scp, pl, ScpAttackType.Scp939);
+					Qurre.Events.Invoke.Player.ScpAttack(ev);
+					if (!ev.Allowed) return false;
+					pl.Damage(50, DamageTypes.Scp939, scp);
+					scp.ClassManager.RpcPlaceBlood(target.transform.position, 0, 2f);
+					pl.EnableEffect(EffectType.Amnesia, 3f, true);
+					__result = true;
 					return false;
 				}
-				Player target = Player.Get(msg.Victim);
-				if (target == null) return false;
-				var ev = new ScpAttackEvent(scp, target, ScpAttackType.Scp939);
-				Qurre.Events.Invoke.Player.ScpAttack(ev);
-				if (!ev.Allowed) return false;
-				__instance._currentBiteCooldown = 1f;
-				scp.Connection.Send(new PlayableScps.Messages.ScpHitmarkerMessage(1.5f));
-				NetworkServer.SendToAll(new PlayableScps.Messages.Scp939OnHitMessage(scp.Id));
-				target.Damage(50, DamageTypes.Scp939, scp);
-				scp.ClassManager.RpcPlaceBlood(target.Position, 0, 2f);
-				target.EnableEffect(EffectType.Amnesia, 3f, true);
+				if (!target.TryGetComponent(out BreakableWindow component)) return false;
+				component.Damage(50f, null, new Footprint(__instance.Hub), Vector3.zero);
+				__result = true;
 				return false;
 			}
 			catch (Exception e)

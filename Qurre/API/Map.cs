@@ -4,7 +4,6 @@ using System.Linq;
 using UnityEngine;
 using Object = UnityEngine.Object;
 using Mirror;
-using RemoteAdmin;
 using Respawning;
 using Interactables.Interobjects.DoorUtils;
 using _lift = Qurre.API.Controllers.Lift;
@@ -24,7 +23,6 @@ namespace Qurre.API
 {
 	public static class Map
 	{
-		public static ListBroadcasts Broadcasts { get; private set; } = new ListBroadcasts(Server.Host);
 		public static CassieList Cassies { get; private set; } = new CassieList();
 		public static List<Door> Doors { get; } = new List<Door>();
 		public static List<_lift> Lifts { get; } = new List<_lift>();
@@ -91,10 +89,9 @@ namespace Qurre.API
 				foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>()) window.health = value;
 			}
 		}
-		public static Controllers.Broadcast Broadcast(string message, ushort duration, bool instant = false)
+		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
-			var bc = new Controllers.Broadcast(Server.Host, message, duration);
-			Broadcasts.Add(bc, instant);
+			var bc = new MapBroadcast(message, duration, instant);
 			return bc;
 		}
 		public static void ClearBroadcasts() => Server.Host.Broadcasts.Clear();
@@ -270,7 +267,6 @@ namespace Qurre.API
 		public static GameObject SpawnPlayer(RoleType role, string name, string userSteamID, Vector3 position, Vector3 rotation, Vector3 scale) => null;
 		internal static void AddObjects()
 		{
-			Broadcasts = new ListBroadcasts(Server.Host);
 			Cassies = new CassieList();
 			foreach (var room in RoomIdentifier.AllRoomIdentifiers)
 			{

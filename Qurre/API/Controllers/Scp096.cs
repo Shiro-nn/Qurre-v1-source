@@ -85,7 +85,7 @@ namespace Qurre.API.Controllers
                     case PlayableScps.Scp096PlayerState.Attacking:
                         if (RageState != PlayableScps.Scp096PlayerState.Enraged)
                             RageState = PlayableScps.Scp096PlayerState.Enraged;
-                        Scp.ServerDoAttack(player.Connection, default);
+                        PlayableScps.Scp096.ServerDoAttack(player.Connection, default);
                         break;
                     case PlayableScps.Scp096PlayerState.Enraging:
                         if (RageState != PlayableScps.Scp096PlayerState.Docile)

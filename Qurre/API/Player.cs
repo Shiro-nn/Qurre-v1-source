@@ -33,10 +33,11 @@ namespace Qurre.API
 			Scp096Controller = new Scp096(this);
 			Scp106Controller = new Scp106(this);
 			Scp173Controller = new Scp173();
-			Broadcasts = new ListBroadcasts(this);
+			Broadcasts = new ListBroadcasts();
 			Ammo = new AmmoBoxManager(this);
+			BlockSpawnTeleport = false;
 		}
-		public Player(GameObject gameObject) => rh = ReferenceHub.GetHub(gameObject);
+		public Player(GameObject gameObject) => new Player(ReferenceHub.GetHub(gameObject));
 		public static Dictionary<GameObject, Player> Dictionary { get; } = new Dictionary<GameObject, Player>();
 		public static Dictionary<int, Player> IdPlayers = new Dictionary<int, Player>();
 		public static Dictionary<string, Player> UserIDPlayers { get; set; } = new Dictionary<string, Player>();
@@ -219,8 +220,8 @@ namespace Qurre.API
 		}
 		public PlayerMovementState MoveState
 		{
-			get => (PlayerMovementState)AnimationController.Network_curMoveState;
-			set => AnimationController.Network_curMoveState = (byte)value;
+			get => AnimationController.MoveState;
+			set => AnimationController.MoveState = value;
 		}
 		public bool IsJumping => AnimationController.curAnim == 2;
 		public string Ip => NetworkIdentity.connectionToClient.address;
@@ -242,8 +243,12 @@ namespace Qurre.API
 		}
 		public bool Muted
 		{
-			get => ClassManager.NetworkMuted;
-			set => ClassManager.NetworkMuted = value;
+			get => rh.dissonanceUserSetup.AdministrativelyMuted;
+			set
+			{
+				if (value) MuteHandler.IssuePersistentMute(UserId);
+				else MuteHandler.RevokePersistentMute(UserId);
+			}
 		}
 		public bool IntercomMuted
 		{
@@ -556,7 +561,7 @@ namespace Qurre.API
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
-			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, Nickname, 0, Id);
+			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, this);
 			var items = new Dictionary<ItemType, float>(8);
 			foreach (var item in AllItems.Where(x => x != null && x.Base != null))
 			{
@@ -940,7 +945,7 @@ namespace Qurre.API
 
 			var isClassD = Role == RoleType.ClassD;
 
-			ClassManager.SetPlayersClass(newRole, GameObject, CharacterClassManager.SpawnReason.Escaped, true);
+			ClassManager.SetPlayersClass(newRole, GameObject, CharacterClassManager.SpawnReason.Escaped, Server.RealEscape);
 
 			Escape.TargetShowEscapeMessage(Connection, isClassD, changeTeam);
 

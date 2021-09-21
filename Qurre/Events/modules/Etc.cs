@@ -74,7 +74,7 @@ namespace Qurre.Events.modules
                 CDScp939.Add(ev.Scp, DateTime.Now);
                 return;
             }
-            if ((DateTime.Now - CDScp939[ev.Scp]).TotalSeconds < 1) ev.Allowed = false;
+            if ((DateTime.Now - CDScp939[ev.Scp]).TotalSeconds < 2) ev.Allowed = false;
             else CDScp939[ev.Scp] = DateTime.Now;
         }
         private static void Leave(LeaveEvent ev)

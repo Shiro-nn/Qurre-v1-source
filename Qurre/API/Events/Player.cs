@@ -432,7 +432,7 @@ namespace Qurre.API.Events
     }
     public class SpeakEvent : EventArgs
     {
-        public SpeakEvent(DissonanceUserSetup userSetup, bool icom, bool radio, bool mimicAs939, bool scpChat, bool ripChat, bool value, bool allowed = true)
+        public SpeakEvent(DissonanceUserSetup userSetup, bool icom, bool radio, bool mimicAs939, bool scpChat, bool ripChat, TriggerType triggerType, Assets._Scripts.Dissonance.RoleType roleType, bool allowed = true)
         {
             UserSetup = userSetup;
             Intercom = icom;
@@ -440,7 +440,8 @@ namespace Qurre.API.Events
             MimicAs939 = mimicAs939;
             ScpChat = scpChat;
             RipChat = ripChat;
-            Value = value;
+            Trigger = triggerType;
+            Role = roleType;
             Allowed = allowed;
         }
         public DissonanceUserSetup UserSetup { get; }
@@ -449,7 +450,8 @@ namespace Qurre.API.Events
         public bool MimicAs939 { get; set; }
         public bool ScpChat { get; set; }
         public bool RipChat { get; set; }
-        public bool Value { get; private set; }
+        public TriggerType Trigger { get; private set; }
+        public Assets._Scripts.Dissonance.RoleType Role { get; private set; }
         public bool Allowed { get; set; }
     }
     public class RagdollSpawnEvent : EventArgs

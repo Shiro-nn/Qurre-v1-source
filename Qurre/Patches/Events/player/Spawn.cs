@@ -59,7 +59,11 @@ namespace Qurre.Patches.Events.player
                         var ev = new SpawnEvent(__pl, __instance.CurClass, pos, rotY);
                         Qurre.Events.Invoke.Player.Spawn(ev);
                         if(!ev.Player.BlockSpawnTeleport) __instance._pms.OnPlayerClassChange(ev.Position, ev.RotationY);
-                        else ev.Player.BlockSpawnTeleport = false;
+                        else
+                        {
+                            ev.Player.BlockSpawnTeleport = false;
+                            __instance._pms._successfullySpawned = true;
+                        }
                         if (!__instance.SpawnProtected && CharacterClassManager.EnableSP && CharacterClassManager.SProtectedTeam.Contains((int)curRole.team))
                         {
                             __instance.GodMode = true;

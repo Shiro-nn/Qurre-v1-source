@@ -14,6 +14,10 @@ namespace Qurre.API
         public static DataBase.DataBase DataBase { get; internal set; }
         public static ushort Port => ModLoader.Port;
         public static string Ip => ServerConsole.Ip;
+        ///<summary>
+        ///<para>if true, then no items will be issued during the escape &amp; the escaped person will not change his location.</para>
+        ///</summary>
+        public static bool RealEscape { get; set; } = false;
         public static string Name
         {
             get => ServerConsole._serverName;
