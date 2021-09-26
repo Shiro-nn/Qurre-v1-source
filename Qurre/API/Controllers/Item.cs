@@ -39,7 +39,7 @@ namespace Qurre.API.Controllers
             if (Serial == 0) Serial = ItemSerialGenerator.GenerateNext();
             BaseToItem.Add(itemBase, this);
         }
-        public Item(ItemType type) : this(Server.Host.Inventory.CreateItemInstance(type, false)) { }
+        public Item(ItemType type) : this(Server.InventoryHost.CreateItemInstance(type, false)) { }
         public ushort Serial
         {
             get

@@ -124,7 +124,7 @@ namespace Qurre.API
 			set => rh.nicknameSync.Network_displayName = value;
 		}
 		public string Nickname
-        {
+		{
 			get => rh.nicknameSync.Network_myNickSync;
 			internal set => rh.nicknameSync.Network_myNickSync = value;
 		}
@@ -220,8 +220,8 @@ namespace Qurre.API
 		}
 		public PlayerMovementState MoveState
 		{
-			get => AnimationController.MoveState;
-			set => AnimationController.MoveState = value;
+			get => (PlayerMovementState)AnimationController.Network_curMoveState;
+			set => AnimationController.Network_curMoveState = (byte)value;
 		}
 		public bool IsJumping => AnimationController.curAnim == 2;
 		public string Ip => NetworkIdentity.connectionToClient.address;
@@ -243,12 +243,8 @@ namespace Qurre.API
 		}
 		public bool Muted
 		{
-			get => rh.dissonanceUserSetup.AdministrativelyMuted;
-			set
-			{
-				if (value) MuteHandler.IssuePersistentMute(UserId);
-				else MuteHandler.RevokePersistentMute(UserId);
-			}
+			get => ClassManager.NetworkMuted;
+			set => ClassManager.NetworkMuted = value;
 		}
 		public bool IntercomMuted
 		{
@@ -559,43 +555,53 @@ namespace Qurre.API
 			NetworkWriterPool.Recycle(writer);
 		}
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
+		private class Changer
+		{
+			internal ItemType Item { get; set; }
+			internal float Dur { get; set; }
+			internal Changer(ItemType item, float dur)
+            {
+				Item = item;
+				Dur = dur;
+            }
+		}
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, this);
-			var items = new Dictionary<ItemType, float>(8);
+			var _ahp = Ahp;
+			if (damageType == null) damageType = DamageTypes.Com15;
+			if (newPosition == default) newPosition = Position;
+			if (newRotation == default) newRotation = Rotation;
+			if (newRole == Role)
+			{
+				Position = newPosition;
+				Rotation = newRotation;
+				return;
+			}
+			var items = new List<Changer>(8);
 			foreach (var item in AllItems.Where(x => x != null && x.Base != null))
 			{
 				float ammo = 0;
 				if (item is MicroHid microHid) ammo = microHid.Energy;
 				else if (item is Firearm firearm) ammo = firearm.Ammo;
-				items.Add(item.Type, ammo);
+				items.Add(new Changer(item.Type, ammo));
 			}
-			var _ahp = Ahp;
-			if (damageType == null) damageType = DamageTypes.Com15;
-			if (newPosition == default) newPosition = Position;
-			if (newRotation == default) newRotation = Rotation;
 			BlockSpawnTeleport = true;
-			if(newRole == Role)
-            {
-				Position = newPosition;
-				Rotation = newRotation;
-				return;
-            }
 			SetRole(newRole, false, CharacterClassManager.SpawnReason.Respawn);
 			MEC.Timing.CallDelayed(0.3f, () =>
 			{
 				Ahp = _ahp;
 				Rotation = newRotation;
-				MEC.Timing.CallDelayed(0.3f, () => ResetInventory(items));
+				MEC.Timing.CallDelayed(0.3f, () => ResetInventory());
 				MEC.Timing.CallDelayed(0.2f, () => Position = newPosition);
 			});
-			void ResetInventory(Dictionary<ItemType, float> newItems)
+			void ResetInventory()
 			{
 				ClearInventory();
-				if (newItems.Count > 0)
+				if (items.Count > 0)
 				{
-					foreach (var item in newItems)
-						AddItem(item.Key, item.Value);
+					foreach (var item in items)
+						AddItem(item.Item, item.Dur);
 				}
 				Item AddItem(ItemType itemType, float ammo)
 				{
@@ -945,6 +951,12 @@ namespace Qurre.API
 
 			var isClassD = Role == RoleType.ClassD;
 
+            if (!Server.RealEscape)
+			{
+				Position = Map.GetRandomSpawnPoint(newRole);
+				BlockSpawnTeleport = true;
+				DropItems();
+			}
 			ClassManager.SetPlayersClass(newRole, GameObject, CharacterClassManager.SpawnReason.Escaped, Server.RealEscape);
 
 			Escape.TargetShowEscapeMessage(Connection, isClassD, changeTeam);

@@ -45,7 +45,7 @@ namespace Qurre.API
         {
             get
             {
-                if (host == null || host.ReferenceHub == null) host = new Player(PlayerManager.localPlayer);
+                if (host == null || host.ReferenceHub == null) host = new Player(PlayerManager.hostHub);
                 return host;
             }
         }

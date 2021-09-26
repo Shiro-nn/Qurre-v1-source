@@ -28,7 +28,12 @@ namespace Qurre.API.Controllers.Items
         public byte Ammo
         {
             get => Base.Status.Ammo;
-            set => Base.Status = new FirearmStatus(value, Base.Status.Flags, Base.Status.Attachments);
+            set
+            {
+                FirearmStatus status = Base._status;
+                Base._status = new FirearmStatus(value, Base.Status.Flags, Base.Status.Attachments);
+                Base.OnStatusChanged(status, Base._status);
+            }
         }
         public byte MaxAmmo => Base.AmmoManagerModule.MaxAmmo;
         public AmmoType AmmoType => Base.AmmoType.GetAmmoType();
@@ -54,7 +59,7 @@ namespace Qurre.API.Controllers.Items
             set
             {
                 if (Base is AutomaticFirearm auto)
-                    auto.ActionModule = new AutomaticAction(Base, auto._semiAutomatic, auto._boltTravelTime, 1f / auto._fireRate, auto._dryfireClipId, auto._triggerClipId, auto._gunshotPitchRandomization, value, auto._recoilPattern, false);
+                    auto.ActionModule = new AutomaticAction(Base, auto._semiAutomatic, auto._boltTravelTime, 1f / auto._fireRate, auto._dryfireClipId, auto._triggerClipId, auto._gunshotPitchRandomization, value, auto._recoilPattern);
                 else Log.Warn("You cannot change the recoil pattern of non-automatic weapons.");
             }
         }

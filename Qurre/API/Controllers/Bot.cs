@@ -67,8 +67,8 @@ namespace Qurre.API.Controllers
         }
         public PlayerMovementState Movement
         {
-            get => Player.AnimationController.MoveState;
-            set => Player.AnimationController.MoveState = value;
+            get => (PlayerMovementState)Player.AnimationController.Network_curMoveState;
+            set => Player.AnimationController.Network_curMoveState = (byte)value;
         }
         public MovementDirection Direction { get; set; }
         public float SneakSpeed { get; set; } = 1.8f;

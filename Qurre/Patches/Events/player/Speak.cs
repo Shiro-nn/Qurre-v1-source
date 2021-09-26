@@ -4,21 +4,21 @@ using HarmonyLib;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(DissonanceUserSetup), nameof(DissonanceUserSetup.EnableSpeaking))]
+    [HarmonyPatch(typeof(DissonanceUserSetup), nameof(DissonanceUserSetup.UserCode_CmdAltIsActive))]
     internal static class Speak
     {
-        private static bool Prefix(DissonanceUserSetup __instance, TriggerType triggerType, Assets._Scripts.Dissonance.RoleType roleType = Assets._Scripts.Dissonance.RoleType.Null)
+        private static bool Prefix(DissonanceUserSetup __instance, bool value)
         {
             try
             {
-                var ev = new SpeakEvent(__instance, __instance.IntercomAsHuman, __instance.RadioAsHuman,
-                    __instance.MimicAs939, __instance.SCPChat, __instance.SpectatorChat, triggerType, roleType);
+                var ev = new SpeakEvent(__instance, __instance.IntercomAsHuman, __instance.RadioAsHuman, __instance.MimicAs939, __instance.SCPChat, __instance.SpectatorChat, value);
                 Qurre.Events.Invoke.Player.Speak(ev);
                 __instance.SCPChat = ev.ScpChat;
                 __instance.SpectatorChat = ev.RipChat;
                 __instance.IntercomAsHuman = ev.Intercom;
-                __instance.MimicAs939 = ev.MimicAs939;
-                __instance.RadioAsHuman = ev.Radio;
+                if (ev.MimicAs939) __instance.MimicAs939 = value;
+                else __instance.MimicAs939 = false;
+                if (ev.Radio) __instance.RadioAsHuman = value;
                 return ev.Allowed;
             }
             catch (Exception e)
