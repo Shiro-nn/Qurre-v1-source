@@ -4,19 +4,19 @@ using Qurre.API.Events;
 using UnityEngine;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.UserCode_CmdSyncData))]
+    [HarmonyPatch(typeof(AnimationController), nameof(AnimationController.RecieveData))]
     internal static class SyncData
     {
-        private static bool Prefix(AnimationController __instance, ref byte state, Vector2 v2)
+        private static bool Prefix(AnimationController __instance)
         {
             try
             {
-                if (!__instance._mSyncRateLimit.CanExecute(true)) return false;
-                var pl = API.Player.Get(__instance.gameObject);
+                Vector3 vector = __instance._hub.transform.InverseTransformDirection(__instance._hub.playerMovementSync.PlayerVelocity);
+                Vector2 movementSpeed = new Vector2(Mathf.Round(vector.z), Mathf.Round(vector.x));
+                var pl = API.Player.Get(__instance._hub);
                 if (pl == null) return true;
-                var ev = new SyncDataEvent(pl, v2, state);
+                var ev = new SyncDataEvent(pl, movementSpeed);
                 Qurre.Events.Invoke.Player.SyncData(ev);
-                state = ev.CurrentAnimation;
                 return ev.Allowed;
             }
             catch (Exception e)

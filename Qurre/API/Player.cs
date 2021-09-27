@@ -220,10 +220,9 @@ namespace Qurre.API
 		}
 		public PlayerMovementState MoveState
 		{
-			get => (PlayerMovementState)AnimationController.Network_curMoveState;
-			set => AnimationController.Network_curMoveState = (byte)value;
+			get => AnimationController.MoveState;
+			set => AnimationController.MoveState = value;
 		}
-		public bool IsJumping => AnimationController.curAnim == 2;
 		public string Ip => NetworkIdentity.connectionToClient.address;
 		public NetworkConnection Connection => Scp079PlayerScript.connectionToClient;
 		public bool IsHost => ClassManager.IsHost;
@@ -243,8 +242,12 @@ namespace Qurre.API
 		}
 		public bool Muted
 		{
-			get => ClassManager.NetworkMuted;
-			set => ClassManager.NetworkMuted = value;
+			get => rh.dissonanceUserSetup.AdministrativelyMuted;
+			set
+			{
+				if (value) MuteHandler.IssuePersistentMute(UserId);
+				else MuteHandler.RevokePersistentMute(UserId);
+			}
 		}
 		public bool IntercomMuted
 		{

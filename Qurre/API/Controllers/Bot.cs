@@ -67,8 +67,8 @@ namespace Qurre.API.Controllers
         }
         public PlayerMovementState Movement
         {
-            get => (PlayerMovementState)Player.AnimationController.Network_curMoveState;
-            set => Player.AnimationController.Network_curMoveState = (byte)value;
+            get => Player.AnimationController.MoveState;
+            set => Player.AnimationController.MoveState = value;
         }
         public MovementDirection Direction { get; set; }
         public float SneakSpeed { get; set; } = 1.8f;
@@ -82,7 +82,7 @@ namespace Qurre.API.Controllers
                 if (GameObject == null) yield break;
                 if (Direction == MovementDirection.Stop)
                 {
-                    Player.AnimationController.Networkspeed = new Vector2(0f, 0f);
+                    Player.AnimationController.CalculateAnimation(new Vector2(0f, 0f));
                     continue;
                 }
                 var wall = false;
@@ -105,7 +105,7 @@ namespace Qurre.API.Controllers
                 switch (Direction)
                 {
                     case MovementDirection.Forward:
-                        Player.AnimationController.Networkspeed = new Vector2(speed, 0f);
+                        Player.AnimationController.CalculateAnimation(new Vector2(speed, 0f));
                         var pos = Position + Player.CameraTransform.forward / 10 * speed;
 
                         if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
@@ -114,7 +114,7 @@ namespace Qurre.API.Controllers
                         break;
 
                     case MovementDirection.BackWards:
-                        Player.AnimationController.Networkspeed = new Vector2(-speed, 0f);
+                        Player.AnimationController.CalculateAnimation(new Vector2(-speed, 0f));
                         pos = Position - Player.CameraTransform.forward / 10 * speed;
 
                         if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
@@ -123,7 +123,7 @@ namespace Qurre.API.Controllers
                         break;
 
                     case MovementDirection.Right:
-                        Player.AnimationController.Networkspeed = new Vector2(0f, speed);
+                        Player.AnimationController.CalculateAnimation(new Vector2(0f, speed));
                         pos = Position + Quaternion.AngleAxis(90, Vector3.up) * Player.CameraTransform.forward / 10 * speed;
 
                         if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
@@ -132,7 +132,7 @@ namespace Qurre.API.Controllers
                         break;
 
                     case MovementDirection.Left:
-                        Player.AnimationController.Networkspeed = new Vector2(0f, -speed);
+                        Player.AnimationController.CalculateAnimation(new Vector2(0f, -speed));
                         pos = Position - Quaternion.AngleAxis(90, Vector3.up) * Player.CameraTransform.forward / 10 * speed;
 
                         if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
@@ -144,7 +144,7 @@ namespace Qurre.API.Controllers
                 if (wall)
                 {
                     Direction = MovementDirection.Stop;
-                    Player.AnimationController.Networkspeed = new Vector2(0f, 0f);
+                    Player.AnimationController.CalculateAnimation(new Vector2(0f, 0f));
                 }
             }
         }

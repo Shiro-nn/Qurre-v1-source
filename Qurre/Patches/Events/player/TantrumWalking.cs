@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.player
                     Qurre.Events.Invoke.Player.TantrumWalking(ev);
                     if (!ev.Allowed) return false;
                     if (__instance.SCPImmune && (pl.ClassManager == null || pl.ClassManager.IsAnyScp())) return false;
-                    pl.EnableEffect(EffectType.Stained, 3f);
+                    pl.EnableEffect(EffectType.Stained, 1f);
                 }
                 return false;
             }
