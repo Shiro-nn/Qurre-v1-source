@@ -4,7 +4,7 @@ using HarmonyLib;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(DissonanceUserSetup), nameof(DissonanceUserSetup.EnableSpeaking))]
+    //[HarmonyPatch(typeof(DissonanceUserSetup), nameof(DissonanceUserSetup.EnableSpeaking))]
     internal static class Speak
     {
         private static bool Prefix(DissonanceUserSetup __instance, TriggerType triggerType, Assets._Scripts.Dissonance.RoleType roleType = Assets._Scripts.Dissonance.RoleType.Null)

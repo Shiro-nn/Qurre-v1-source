@@ -43,7 +43,7 @@ namespace Qurre.Events.modules
             API.Round.ForceEnd = false;
             RoundSummary.RoundLock = false;
             API.Round.ActiveGenerators = 0;
-            if (Plugin.Config.GetBool("Qurre_AllUnit", false))
+            if (Loader.AllUnits)
             {
                 API.Round.AddUnit(API.Objects.TeamUnitType.ClassD, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
                 API.Round.AddUnit(API.Objects.TeamUnitType.ChaosInsurgency, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
@@ -53,7 +53,7 @@ namespace Qurre.Events.modules
                 API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
                 API.Round.AddUnit(API.Objects.TeamUnitType.None, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
             }
-            else if (Plugin.Config.GetBool("Qurre_OnlyTutorialUnit", false))
+            else if (Loader.OnlyTutorialUnit)
             {
                 API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#31d400>Qurre v{PluginManager.Version}</color>");
             }

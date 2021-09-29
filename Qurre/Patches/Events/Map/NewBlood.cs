@@ -15,7 +15,7 @@ namespace Qurre.Patches.Events.Map
                 pos = ev.Position;
                 type = ev.Type;
                 f = ev.Multiplier;
-                return ev.Allowed && Plugin.Config.GetBool("Qurre_spawn_blood", true);
+                return ev.Allowed && Loader.SpawnBlood;
             }
             catch (System.Exception e)
             {

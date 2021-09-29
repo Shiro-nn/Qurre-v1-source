@@ -3,8 +3,13 @@ using Qurre.API;
 using System.IO;
 namespace Qurre
 {
-    internal class Loader
+    internal static class Loader
     {
+        internal static bool AllUnits => Plugin.Config.GetBool("Qurre_AllUnit", false, "Should I show the Qurre version on Units for all roles?");
+        internal static bool OnlyTutorialUnit => Plugin.Config.GetBool("Qurre_OnlyTutorialUnit", false, "Should I show the Qurre version on Units only for the Tutorial role?");
+        internal static bool SpawnBlood => Plugin.Config.GetBool("Qurre_Spawn_Blood", true, "Allow the appearance of blood?");
+        internal static bool ScpTrigger173 => Plugin.Config.GetBool("Qurre_ScpTrigger173", false, "Can other SCPs look at SCP-173?");
+        internal static bool Better268 => Plugin.Config.GetBool("Qurre_Better268", false, "SCP 079 & SCP 096 will not see the wearer of SCP 268");
         public static void QurreLoad()
         {
             Log.Info($"Initializing Qurre...");
@@ -14,16 +19,28 @@ namespace Qurre
                 Directory.CreateDirectory(PluginManager.ConfigsDirectory);
             }
             PluginManager.ConfigsPath = Path.Combine(PluginManager.ConfigsDirectory, $"{QurreModLoader.ModLoader.Port}-cfg.yml");
+            bool first_cfg = false;
             if (!File.Exists(PluginManager.ConfigsPath))
             {
                 File.Create(PluginManager.ConfigsPath).Close();
-                File.WriteAllText(PluginManager.ConfigsPath, "Qurre_debug: false\nQurre_logging: true\nQurre_all_logging: false\nQurre_console_anti_flood: true" +
-                    "\nqurre_spawn_blood: true\nQurre_ScpTrigger173: false\nQurre_AllUnit: false\nQurre_OnlyTutorialUnit: false" +
-                    "\n#SCP 079 and SCP 096 will not see the wearer of SCP 268\nQurre_Better268: false\nQurre_banned: banned\nQurre_kicked: kicked" +
-                    "\nQurre_BanOrKick_msg: You have been %bok%.\nQurre_reason: Reason\n");
+                first_cfg = true;
             }
             Plugin.Config = new Config();
-            Log.debug = Plugin.Config.GetBool("Qurre_debug", false);
+            if (first_cfg)
+            {
+                var _ = false;
+                _ = Log.Debugging;
+                _ = Log.Logging;
+                _ = Log.AllLogging;
+                _ = AllUnits;
+                _ = OnlyTutorialUnit;
+                _ = SpawnBlood;
+                _ = ScpTrigger173;
+                _ = Better268;
+                using StreamWriter sw = new StreamWriter(PluginManager.ConfigsPath, true, System.Text.Encoding.Default);
+                sw.Write("Qurre_Banned: banned\nQurre_Kicked: kicked\nQurre_BanOrKick_msg: You have been %bok%.\nQurre_Reason: Reason\n");
+                sw.Close();
+            }
             Server.DataBase = new API.DataBase.DataBase();
             CustomNetworkManager.Modded = true;
             Timing.RunCoroutine(PluginManager.LoadPlugins());

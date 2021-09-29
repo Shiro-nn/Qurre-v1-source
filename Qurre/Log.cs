@@ -5,9 +5,9 @@ namespace Qurre
 {
 	public static class Log
 	{
-		internal static bool debug;
-		internal static bool Logging => Plugin.Config.GetBool("Qurre_logging", true);
-		internal static bool AllLogging => Plugin.Config.GetBool("Qurre_all_logging", false);
+		internal static bool Debugging => Plugin.Config.GetBool("Qurre_Debug", false, "Are Debug logs enabled?");
+		internal static bool Logging => Plugin.Config.GetBool("Qurre_Logging", true, "Are errors saved to the log file?");
+		internal static bool AllLogging => Plugin.Config.GetBool("Qurre_All_Logging", false, "Are all console output being saved to a log file?");
 		public static void Info(object message)
 		{
 			Assembly assembly = Assembly.GetCallingAssembly();
@@ -15,7 +15,7 @@ namespace Qurre
 		}
 		public static void Debug(object message)
 		{
-			if (!debug) return;
+			if (!Debugging) return;
 			Assembly assembly = Assembly.GetCallingAssembly();
 			ServerConsole.AddLog($"[DEBUG] [{assembly.GetName().Name}] {message}", ConsoleColor.DarkGreen);
 		}

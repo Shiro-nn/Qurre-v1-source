@@ -15,6 +15,7 @@ using InventorySystem.Disarming;
 using InventorySystem.Items.Firearms.Modules;
 using InventorySystem.Items.Firearms.Attachments;
 using Qurre.API.Controllers.Items;
+using Assets._Scripts.Dissonance;
 namespace Qurre.API
 {
 	public class Player
@@ -75,6 +76,7 @@ namespace Qurre.API
 		public Transform Transform => rh.transform;
 		public Inventory Inventory => rh.inventory;
 		public NetworkIdentity NetworkIdentity => rh.networkIdentity;
+		public DissonanceUserSetup Dissonance => rh.dissonanceUserSetup;
 		public ServerRoles ServerRoles => rh.serverRoles;
 		public CharacterClassManager ClassManager => rh.characterClassManager;
 		public AnimationController AnimationController => rh.animationController;

@@ -11,6 +11,22 @@ namespace Qurre.API.DataBase
         {
             Thread thread = new Thread(() => _());
             thread.Start();
+            void _()
+            {
+                Plugin.Config.GetString("Qurre_DataBase", "undefined", "Link-access to your database(MongoDB)");
+                string _link = Plugin.Config.ConfigManager.GetDataBase("qurre_database");
+                if (_link != "" && _link != "undefined")
+                {
+                    Enabled = true;
+                    try
+                    {
+                        Client = new MongoClient(_link);
+                        Connected = true;
+                        MongoDataBase = new MongoDataBase(Client);
+                    }
+                    catch (Exception e) { Log.Error($"umm, error while connecting to MongoDB:\n{e}\n{e.StackTrace}"); }
+                }
+            }
         }
         public bool Enabled { get; internal set; }
         public bool Connected { get; internal set; }
@@ -21,21 +37,5 @@ namespace Qurre.API.DataBase
         public object GetValue(BsonDocument document, string key) => document[key];
         internal MongoClient Client { get; private set; }
         internal MongoDataBase MongoDataBase { get; private set; }
-        private void _()
-        {
-            Plugin.Config.GetString("qurre_database", "undefined", "Link-access to your database(MongoDB)");
-            string _link = Plugin.Config.ConfigManager.GetString("qurre_database", "");
-            if (_link != "" && _link != "undefined")
-            {
-                Enabled = true;
-                try
-                {
-                    Client = new MongoClient(_link);
-                    Connected = true;
-                    MongoDataBase = new MongoDataBase(Client);
-                }
-                catch (Exception e) { Log.Error($"umm, error while connecting to MongoDB:\n{e}\n{e.StackTrace}"); }
-            }
-        }
     }
 }

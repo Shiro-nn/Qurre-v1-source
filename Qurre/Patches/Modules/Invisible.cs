@@ -41,7 +41,7 @@ namespace Qurre.Patches.Modules
                         var vector = __instance._transmitBuffer[k].position - player.Position;
                         if (player.Role == RoleType.Scp173)
                         {
-                            if ((playerToShow.Team == Team.SCP && !Plugin.Config.GetBool("Qurre_ScpTrigger173", false)) || player.Scp173Controller.IgnoredPlayers.Contains(playerToShow) || playerToShow.Invisible)
+                            if ((playerToShow.Team == Team.SCP && !Loader.ScpTrigger173) || player.Scp173Controller.IgnoredPlayers.Contains(playerToShow) || playerToShow.Invisible)
                             {
                                 var posinfo = __instance._transmitBuffer[k];
                                 var rot = Quaternion.LookRotation(playerToShow.Position - player.Position).eulerAngles.y;
@@ -99,7 +99,7 @@ namespace Qurre.Patches.Modules
 
                                     if (player.Role == RoleType.Scp079 || flag)
                                     {
-                                        if (Plugin.Config.GetBool("Qurre_Better268", false)) showinvoid = true;
+                                        if (Loader.Better268) showinvoid = true;
                                     }
                                     else showinvoid = true;
                                 }
