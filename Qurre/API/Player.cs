@@ -82,6 +82,7 @@ namespace Qurre.API
 		public AnimationController AnimationController => rh.animationController;
 		public PlayerStats PlayerStats => rh.playerStats;
 		public Scp079PlayerScript Scp079PlayerScript => rh.scp079PlayerScript;
+		public Scp106PlayerScript Scp106PlayerScript => rh.scp106PlayerScript;
 		public QueryProcessor QueryProcessor => rh.queryProcessor;
 		public PlayerEffectsController PlayerEffectsController => rh.playerEffectsController;
 		public NicknameSync NicknameSync => rh.nicknameSync;
@@ -798,12 +799,12 @@ namespace Qurre.API
 		{
 			if (TryGetEffect(effect, out var pEffect)) pEffect.IsEnabled = false;
 		}
-		public void EnableEffect<T>(float duration = 0f, bool addDurationIfActive = false) where T : PlayerEffect => PlayerEffectsController.EnableEffect<T>(duration, addDurationIfActive);
-		public bool EnableEffect(string effect, float duration = 0f, bool addDurationIfActive = false) => PlayerEffectsController.EnableByString(effect, duration, addDurationIfActive);
 		public void EnableEffect(EffectType effect, float duration = 0f, bool addDurationIfActive = false)
 		{
 			if (TryGetEffect(effect, out var pEffect)) PlayerEffectsController.EnableEffect(pEffect, duration, addDurationIfActive);
 		}
+		public void EnableEffect<T>(float duration = 0f, bool addDurationIfActive = false) where T : PlayerEffect => PlayerEffectsController.EnableEffect<T>(duration, addDurationIfActive);
+		public bool EnableEffect(string effect, float duration = 0f, bool addDurationIfActive = false) => PlayerEffectsController.EnableByString(effect, duration, addDurationIfActive);
 		public void EnableEffect(PlayerEffect effect, float duration = 0, bool addDurationIfActive = false)
 		{
 			PlayerEffectsController.EnableEffect(effect, duration, addDurationIfActive);

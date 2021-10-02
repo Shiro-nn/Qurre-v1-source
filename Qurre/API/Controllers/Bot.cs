@@ -68,7 +68,7 @@ namespace Qurre.API.Controllers
         public PlayerMovementState Movement
         {
             get => Player.AnimationController.MoveState;
-            set => Player.AnimationController.MoveState = value;
+            set => Player.AnimationController.UserCode_CmdChangeSpeedState((byte)value);
         }
         public MovementDirection Direction { get; set; }
         public float SneakSpeed { get; set; } = 1.8f;
@@ -80,11 +80,7 @@ namespace Qurre.API.Controllers
             {
                 yield return MEC.Timing.WaitForSeconds(0.1f);
                 if (GameObject == null) yield break;
-                if (Direction == MovementDirection.Stop)
-                {
-                    Player.AnimationController.CalculateAnimation(new Vector2(0f, 0f));
-                    continue;
-                }
+                if (Direction == MovementDirection.Stop) continue;
                 var wall = false;
                 var speed = 0f;
                 switch (Movement)
@@ -92,60 +88,41 @@ namespace Qurre.API.Controllers
                     case PlayerMovementState.Sneaking:
                         speed = SneakSpeed;
                         break;
-
                     case PlayerMovementState.Sprinting:
                         speed = RunSpeed;
                         break;
-
                     case PlayerMovementState.Walking:
                         speed = WalkSpeed;
                         break;
                 }
-
                 switch (Direction)
                 {
                     case MovementDirection.Forward:
-                        Player.AnimationController.CalculateAnimation(new Vector2(speed, 0f));
                         var pos = Position + Player.CameraTransform.forward / 10 * speed;
-
                         if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
                             Player.PlayerMovementSync.OverridePosition(pos, 0f, true);
                         else wall = true;
                         break;
-
                     case MovementDirection.BackWards:
-                        Player.AnimationController.CalculateAnimation(new Vector2(-speed, 0f));
                         pos = Position - Player.CameraTransform.forward / 10 * speed;
-
                         if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
                             Player.PlayerMovementSync.OverridePosition(pos, 0f, true);
                         else wall = true;
                         break;
-
                     case MovementDirection.Right:
-                        Player.AnimationController.CalculateAnimation(new Vector2(0f, speed));
                         pos = Position + Quaternion.AngleAxis(90, Vector3.up) * Player.CameraTransform.forward / 10 * speed;
-
                         if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
                             Player.PlayerMovementSync.OverridePosition(pos, 0f, true);
                         else wall = true;
                         break;
-
                     case MovementDirection.Left:
-                        Player.AnimationController.CalculateAnimation(new Vector2(0f, -speed));
                         pos = Position - Quaternion.AngleAxis(90, Vector3.up) * Player.CameraTransform.forward / 10 * speed;
-
                         if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
                             Player.PlayerMovementSync.OverridePosition(pos, 0f, true);
                         else wall = true;
                         break;
                 }
-
-                if (wall)
-                {
-                    Direction = MovementDirection.Stop;
-                    Player.AnimationController.CalculateAnimation(new Vector2(0f, 0f));
-                }
+                if (wall) Direction = MovementDirection.Stop;
             }
         }
         public Bot(Vector3 pos, Quaternion rot, RoleType role = RoleType.ClassD, string name = "(null)", string role_text = "", string role_color = "") :
