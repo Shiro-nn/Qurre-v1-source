@@ -307,7 +307,6 @@ namespace Qurre.API
 			Generators.Clear();
 			WorkStations.Clear();
 			Ragdolls.Clear();
-			Patches.Events.player.DropItem.Data.Clear();
 		}
 	}
 }

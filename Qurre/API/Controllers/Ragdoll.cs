@@ -40,7 +40,11 @@ namespace Qurre.API.Controllers
         public string Name => ragdoll.name;
         public Vector3 Position
         {
-            get => ragdoll.transform.position;
+            get
+            {
+                try { return ragdoll.transform.position; }
+                catch { return Vector3.zero; }
+            }
             set
             {
                 NetworkServer.UnSpawn(GameObject);

@@ -14,7 +14,7 @@ namespace Qurre.API.Controllers
             if (DoorVariant.TryGetComponent<DoorNametagExtension>(out var nametag)) Name = nametag.GetName;
         }
         public DoorVariant DoorVariant { get; internal set; }
-        public GameObject GameObject => DoorVariant.gameObject;
+        public GameObject GameObject => DoorVariant?.gameObject;
         private string name;
         public string Name
         {

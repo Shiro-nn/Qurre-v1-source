@@ -72,30 +72,10 @@ namespace Qurre.API.Controllers
         }
         public static Item Get(ItemBase itemBase)
         {
-            if (itemBase == null)
-                return null;
-
+            if (itemBase == null) return null;
             if (BaseToItem.ContainsKey(itemBase))
                 return BaseToItem[itemBase];
-
-            return itemBase switch
-            {
-                firearm firearm => new Items.Firearm(firearm),
-                KeycardItem keycard => new Keycard(keycard),
-                UsableItem usable => new Usable(usable),
-                RadioItem radio => new Items.Radio(radio),
-                MicroHIDItem micro => new MicroHid(micro),
-                BodyArmor armor => new Armor(armor),
-                AmmoItem ammo => new Ammo(ammo),
-                FlashlightItem flashlight => new Flashlight(flashlight),
-                ThrowableItem throwable => throwable.Projectile switch
-                {
-                    FlashbangGrenade _ => new FlashGrenade(throwable),
-                    ExplosionGrenade _ => new ExplosiveGrenade(throwable),
-                    _ => new Throwable(throwable),
-                },
-                _ => new Item(itemBase),
-            };
+            return new Item(itemBase);
         }
         public static Item Get(ushort serial)
         {
