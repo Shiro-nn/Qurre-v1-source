@@ -375,7 +375,14 @@ namespace Qurre.API
 			get => ClassManager.DeathTime;
 			set => ClassManager.DeathTime = value;
 		}
-		public string GlobalBadge => ServerRoles.NetworkGlobalBadge.Split(new string[] { "Badge text: [" }, StringSplitOptions.None)[1].Split(']')[0];
+		public string GlobalBadge
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(ServerRoles.NetworkGlobalBadge)) return string.Empty;
+				return ServerRoles.NetworkGlobalBadge.Split(new string[] { "Badge text: [" }, StringSplitOptions.None)[1].Split(']')[0];
+			}
+		}
 		public int Ping => Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer.Peers[Connection.connectionId].Ping;
 		public ushort Ammo12Gauge
 		{
@@ -566,10 +573,10 @@ namespace Qurre.API
 			internal ItemType Item { get; set; }
 			internal float Dur { get; set; }
 			internal Changer(ItemType item, float dur)
-            {
+			{
 				Item = item;
 				Dur = dur;
-            }
+			}
 		}
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
@@ -664,7 +671,7 @@ namespace Qurre.API
 			Inventory.UserInventory.Items[itemBase.PickupDropModel.NetworkInfo.Serial] = itemBase;
 
 			itemBase.OnAdded(itemBase.PickupDropModel);
-            if (itemBase is InventorySystem.Items.Firearms.Firearm)
+			if (itemBase is InventorySystem.Items.Firearms.Firearm)
 				AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, itemBase);
 			ItemsValue.Add(item);
 
@@ -957,7 +964,7 @@ namespace Qurre.API
 
 			var isClassD = Role == RoleType.ClassD;
 
-            if (!Server.RealEscape)
+			if (!Server.RealEscape)
 			{
 				Position = Map.GetRandomSpawnPoint(newRole);
 				BlockSpawnTeleport = true;
