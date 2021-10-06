@@ -74,6 +74,7 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                         }
                     }
                 }
+                pl.Scp106PlayerScript.GrabbedPosition = pl.Position;
                 pl.EnableEffect(EffectType.Corroding, 0f, false);
                 return false;
             }
