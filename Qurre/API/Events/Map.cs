@@ -1,21 +1,19 @@
 ﻿using Interactables.Interobjects.DoorUtils;
 using InventorySystem;
 using InventorySystem.Items.Pickups;
-using Qurre.API.Controllers;
-using Qurre.API.Controllers.Items;
 using System;
 using UnityEngine;
 namespace Qurre.API.Events
 {
-    public class LCZDeconEvent : EventArgs
+    public class LczDeconEvent : EventArgs
     {
-        public LCZDeconEvent(bool allowed = true) => Allowed = allowed;
+        public LczDeconEvent(bool allowed = true) => Allowed = allowed;
         public bool Allowed { get; set; }
     }
-    public class AnnouncementDecontaminationEvent : EventArgs
+    public class LczAnnounceEvent : EventArgs
     {
         private int id;
-        public AnnouncementDecontaminationEvent(int announcementId, bool isGlobal, bool allowed = true)
+        public LczAnnounceEvent(int announcementId, bool isGlobal, bool allowed = true)
         {
             Id = announcementId;
             IsGlobal = isGlobal;

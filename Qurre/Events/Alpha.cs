@@ -1,6 +1,6 @@
 ﻿using Qurre.API.Events;
-using Qurre.Events.modules;
-using static Qurre.Events.modules.Main;
+using Qurre.Events.Modules;
+using static Qurre.Events.Modules.Main;
 namespace Qurre.Events
 {
     public static class Alpha

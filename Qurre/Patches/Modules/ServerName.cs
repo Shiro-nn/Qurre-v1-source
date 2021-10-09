@@ -18,7 +18,6 @@ namespace Qurre.Patches.Modules
 				}
 			}
 			ServerConsole._serverName += $" <color=#00000000><size=1>Qurre v{PluginManager.Version}</size></color>";
-			Log.Info($"Qurre v{PluginManager.Version}");
 		}
 	}
 }

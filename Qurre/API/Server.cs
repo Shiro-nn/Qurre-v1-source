@@ -57,18 +57,10 @@ namespace Qurre.API
                 return hinv;
             }
         }
-        public static int MaxPlayers
+        public static int MaxConnections
         {
-            get
-            {
-                CustomNetworkManager nm = new CustomNetworkManager();
-                return nm.maxConnections;
-            }
-            set
-            {
-                CustomNetworkManager nm = new CustomNetworkManager();
-                nm.maxConnections = value;
-            }
+            get => new CustomNetworkManager().maxConnections;
+            set => new CustomNetworkManager().maxConnections = value;
         }
         public static List<TObject> GetObjectsOf<TObject>() where TObject : UnityEngine.Object => UnityEngine.Object.FindObjectsOfType<TObject>().ToList();
         public static TObject GetObjectOf<TObject>() where TObject : UnityEngine.Object => UnityEngine.Object.FindObjectOfType<TObject>();

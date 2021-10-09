@@ -10,7 +10,7 @@ namespace Qurre.Patches.Events.Map
         {
             try
             {
-                var ev = new NewBloodEvent(API.Player.Get(__instance.gameObject), pos, type, f);
+                var ev = new NewBloodEvent(API.Player.Get(__instance.gameObject), pos, type, f, Loader.SpawnBlood);
                 Qurre.Events.Invoke.Map.NewBlood(ev);
                 pos = ev.Position;
                 type = ev.Type;

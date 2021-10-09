@@ -16,7 +16,8 @@ namespace Qurre.Patches.Controllers
                 Item item = Item.Get(__result);
                 if (item == null) return;
                 Player pl = Player.Get(__result.Owner);
-                pl?.ItemsValue.Add(item);
+                if (pl == null) return;
+                pl.ItemsValue.Add(item);
             }
             catch (Exception e)
             {
@@ -32,8 +33,8 @@ namespace Qurre.Patches.Controllers
             try
             {
                 Item item = Item.Get(itemSerial);
-                if (item == null) return;
-                item.Owner?.ItemsValue.Remove(item);
+                if (item == null || item.Owner == null) return;
+                item.Owner.ItemsValue.Remove(item);
             }
             catch (Exception e)
             {

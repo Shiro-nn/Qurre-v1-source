@@ -5,7 +5,6 @@ using Qurre.API;
 using Mirror;
 using System.Linq;
 using System.Collections.Generic;
-
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(CustomNetworkManager), nameof(CustomNetworkManager.OnServerDisconnect), new[] { typeof(NetworkConnection) })]
@@ -19,7 +18,7 @@ namespace Qurre.Patches.Events.player
                 Player player = Player.Get(conn.identity.gameObject);
                 if (player == null || player.IsHost) return;
                 var ev = new LeaveEvent(player);
-                ServerConsole.AddLog($"Player {player.Nickname} ({player.UserId}) ({player?.Id}) disconnected", ConsoleColor.DarkMagenta);
+                ServerConsole.AddLog($"Player {player.Nickname} ({player.UserId}) ({player.Id}) disconnected", ConsoleColor.DarkMagenta);
                 Qurre.Events.Invoke.Player.Leave(ev);
             }
             catch (Exception e)

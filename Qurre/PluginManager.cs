@@ -13,7 +13,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new List<Plugin>();
-		public static Version Version { get; } = new Version(1, 8, 16);
+		public static Version Version { get; } = new Version(1, 9, 0);
 		//private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -46,7 +46,6 @@ namespace Qurre
 
 			foreach (string mod in Directory.GetFiles(PluginsDirectory))
 			{
-				if (mod.EndsWith("Qurre.dll")) continue;
                 try
 				{
 					Log.Debug($"Loading {mod}");
@@ -72,29 +71,14 @@ namespace Qurre
 			foreach (string dll in depends)
 			{
 				if (!dll.EndsWith(".dll")) continue;
-				if (IsLoaded(dll)) continue;
-				if (dll.EndsWith("0Harmony.dll") || dll.EndsWith("YamlDotNet.dll") || dll.EndsWith("MongoDB.Bson.dll") || dll.EndsWith("DnsClient.dll")
-					 || dll.EndsWith("MongoDB.Driver.Core.dll") || dll.EndsWith("MongoDB.Driver.dll") || dll.EndsWith("MongoDB.Libmongocrypt.dll"))
-					continue;
-
+				if (ModLoader.Loaded(dll)) continue;
 				Assembly assembly = Assembly.LoadFrom(dll);
-				localLoaded.Add(assembly);
+				ModLoader.LocalLoaded.Add(assembly);
 				Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
 			}
 			DownloadDependencies();
 			Log.Custom("Dependencies loaded!", "Loader", ConsoleColor.Green);
 		}
-		private static bool IsLoaded(string a)
-		{
-			foreach (Assembly asm in localLoaded)
-			{
-				if (asm.Location == a)
-					return true;
-			}
-
-			return false;
-		}
-		private static List<Assembly> localLoaded = new List<Assembly>();
 		public static void LoadPlugin(Assembly assembly)
 		{
 			try

@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.Server.Report
                 Player target = Player.Get(playerId);
                 if (target == null) return false;
                 var ev = new ReportLocalEvent(issuer, target, reason, notifyGm);
-                Qurre.Events.Invoke.Server.Report.Local(ev);
+                Qurre.Events.Invoke.Report.Local(ev);
                 notifyGm = ev.GlobalReport;
                 return ev.Allowed;
             }

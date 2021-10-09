@@ -7,7 +7,7 @@ using RemoteAdmin;
 namespace Qurre.Patches.Events.Server
 {
     [HarmonyPatch(typeof(QueryProcessor), nameof(QueryProcessor.ProcessGameConsoleQuery))]
-    internal static class Console_
+    internal static class Console
     {
         private static bool Prefix(QueryProcessor __instance, string query)
         {
@@ -18,7 +18,7 @@ namespace Qurre.Patches.Events.Server
                 string[] args = allarguments.Skip(1).ToArray();
                 var ev = new SendingConsoleEvent(Player.Get(__instance.gameObject), query, name, args);
                 Qurre.Events.Invoke.Server.SendingConsole(ev);
-                if (ev.ReturnMessage != "") __instance.GCT.SendToClient(__instance.connectionToClient, ev.ReturnMessage, ev.Color);
+                if (!string.IsNullOrEmpty(ev.ReturnMessage)) __instance.GCT.SendToClient(__instance.connectionToClient, ev.ReturnMessage, ev.Color);
                 return ev.Allowed;
             }
             catch (Exception e)

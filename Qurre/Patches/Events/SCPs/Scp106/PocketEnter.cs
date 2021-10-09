@@ -8,7 +8,7 @@ using Qurre.API.Objects;
 namespace Qurre.Patches.Events.SCPs.Scp106
 {
     [HarmonyPatch(typeof(Scp106PlayerScript), nameof(Scp106PlayerScript.UserCode_CmdMovePlayer))]
-    internal static class PocketDimensionEnter
+    internal static class PocketEnter
     {
         private static bool Prefix(Scp106PlayerScript __instance, GameObject ply, int t)
         {
@@ -32,8 +32,8 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                     __instance._hub.characterClassManager.TargetConsolePrint(__instance.connectionToClient, string.Format("106 MovePlayer command rejected - collider found between you and the target (code: T.2). Distance: {0}, Y Diff: {1}.", num, num2), "gray");
                     return false;
                 }
-                var ev = new PocketDimensionEnterEvent(pl, Vector3.down * 1998.5f);
-                Qurre.Events.Invoke.Scp106.PocketDimensionEnter(ev);
+                var ev = new PocketEnterEvent(pl, Vector3.down * 1998.5f);
+                Qurre.Events.Invoke.Scp106.PocketEnter(ev);
                 if (!ev.Allowed) return false;
                 __instance._hub.characterClassManager.RpcPlaceBlood(ply.transform.position, 1, 2f);
                 __instance.TargetHitMarker(__instance.connectionToClient, __instance.captureCooldown);
@@ -74,13 +74,12 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                         }
                     }
                 }
-                pl.Scp106PlayerScript.GrabbedPosition = pl.Position;
                 pl.EnableEffect(EffectType.Corroding, 0f, false);
                 return false;
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching SCPs -> SCP106 [PocketDimensionEnter]:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> SCP106 [PocketEnter]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

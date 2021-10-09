@@ -4,14 +4,9 @@ using MapGeneration;
 using Interactables.Interobjects.DoorUtils;
 using System.Linq;
 using System.Collections.Generic;
-using Dissonance.Config;
-using Dissonance;
-using Dissonance.Networking.Client;
 using UnityEngine;
-using Qurre.API;
 using System;
-
-namespace Qurre.Events.modules
+namespace Qurre.Events.Modules
 {
     internal static class Etc
     {
@@ -20,7 +15,7 @@ namespace Qurre.Events.modules
         {
             SceneManager.sceneUnloaded += SceneUnloaded;
             SeedSynchronizer.OnMapGenerated += Invoke.Map.Generated;
-            Round.WaitingForPlayers += WaitingForPlayers;
+            Round.Waiting += Waiting;
             Player.RoleChange += ChangeRole;
             Round.Restart += RoundRestart;
             Player.SyncData += SyncData;
@@ -38,7 +33,7 @@ namespace Qurre.Events.modules
             API.Player.Dictionary.Clear();
             API.Map.ClearObjects();
         }
-        private static void WaitingForPlayers()
+        private static void Waiting()
         {
             API.Round.ForceEnd = false;
             RoundSummary.RoundLock = false;

@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.Server.Report
             {
                 try { if (reportedUserId == reporterUserId) reporter.SendToClient(__instance.connectionToClient, "smart, smart", "yellow"); } catch { }
                 var ev = new ReportCheaterEvent(Player.Get(reporterUserId), Player.Get(reportedUserId), ServerConsole.Port, reason);
-                Qurre.Events.Invoke.Server.Report.Cheater(ev);
+                Qurre.Events.Invoke.Report.Cheater(ev);
                 return ev.Allowed;
             }
             catch (Exception e)

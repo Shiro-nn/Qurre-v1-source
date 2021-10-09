@@ -45,7 +45,7 @@ namespace Qurre
             Server.DataBase = new API.DataBase.DataBase();
             CustomNetworkManager.Modded = true;
             Timing.RunCoroutine(PluginManager.LoadPlugins());
-            Events.modules.Etc.Load();
+            Events.Modules.Etc.Load();
         }
     }
 }

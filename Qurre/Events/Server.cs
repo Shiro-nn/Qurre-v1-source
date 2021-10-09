@@ -1,6 +1,6 @@
 ﻿using Qurre.API.Events;
-using Qurre.Events.modules;
-using static Qurre.Events.modules.Main;
+using Qurre.Events.Modules;
+using static Qurre.Events.Modules.Main;
 namespace Qurre.Events
 {
     public static class Server
@@ -11,12 +11,5 @@ namespace Qurre.Events
         internal static void Invokes(SendingRAEvent ev) => SendingRA.invoke(ev);
         internal static void Invokes(RaRequestPlayerListEvent ev) => RaRequestPlayerList.invoke(ev);
         internal static void Invokes(SendingConsoleEvent ev) => SendingConsole?.invoke(ev);
-        public static class Report
-        {
-            public static event AllEvents<ReportCheaterEvent> Cheater;
-            public static event AllEvents<ReportLocalEvent> Local;
-            internal static void Invokes(ReportCheaterEvent ev) => Cheater?.invoke(ev);
-            internal static void Invokes(ReportLocalEvent ev) => Local?.invoke(ev);
-        }
     }
 }

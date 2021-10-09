@@ -35,7 +35,7 @@ namespace Qurre.Patches.Controllers
 						else if (__instance._observingPlayers.Contains(pl.ReferenceHub)) __instance._observingPlayers.Remove(pl.ReferenceHub);
 					}
 				}
-				__instance._isObserved = (__instance._observingPlayers.Count > 0);
+				__instance._isObserved = __instance._observingPlayers.Count > 0;
 				return false;
 			}
 			catch (System.Exception e)

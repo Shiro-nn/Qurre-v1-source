@@ -38,7 +38,6 @@ namespace Qurre.Events.Invoke
         public static void ThrowItem(ThrowItemEvent ev) => Invokes(ev);
         public static void TeslaTrigger(TeslaTriggerEvent ev) => Invokes(ev);
         public static void InteractGenerator(InteractGeneratorEvent ev) => Invokes(ev);
-        public static void Speak(SpeakEvent ev) => Invokes(ev);
         public static void Spawn(SpawnEvent ev) => Invokes(ev);
         public static void RadioUpdate(RadioUpdateEvent ev) => Invokes(ev);
         public static void TransmitPlayerData(TransmitPlayerDataEvent ev) => Invokes(ev);

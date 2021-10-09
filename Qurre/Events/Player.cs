@@ -1,6 +1,6 @@
 ﻿using Qurre.API.Events;
-using Qurre.Events.modules;
-using static Qurre.Events.modules.Main;
+using Qurre.Events.Modules;
+using static Qurre.Events.Modules.Main;
 namespace Qurre.Events
 {
     public static class Player
@@ -39,7 +39,6 @@ namespace Qurre.Events
         public static event AllEvents<ThrowItemEvent> ThrowItem;
         public static event AllEvents<TeslaTriggerEvent> TeslaTrigger;
         public static event AllEvents<InteractGeneratorEvent> InteractGenerator;
-        public static event AllEvents<SpeakEvent> Speak;
         public static event AllEvents<SpawnEvent> Spawn;
         public static event AllEvents<RadioUpdateEvent> RadioUpdate;
         public static event AllEvents<TransmitPlayerDataEvent> TransmitPlayerData;
@@ -86,7 +85,6 @@ namespace Qurre.Events
         internal static void Invokes(ThrowItemEvent ev) => ThrowItem.invoke(ev);
         internal static void Invokes(TeslaTriggerEvent ev) => TeslaTrigger.invoke(ev);
         internal static void Invokes(InteractGeneratorEvent ev) => InteractGenerator.invoke(ev);
-        internal static void Invokes(SpeakEvent ev) => Speak.invoke(ev);
         internal static void Invokes(SpawnEvent ev) => Spawn.invoke(ev);
         internal static void Invokes(RadioUpdateEvent ev) => RadioUpdate.invoke(ev);
         internal static void Invokes(TransmitPlayerDataEvent ev) => TransmitPlayerData.invoke(ev);

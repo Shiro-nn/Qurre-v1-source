@@ -16,8 +16,7 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                 var ev = new PortalUsingEvent(API.Player.Get(__instance.gameObject), __instance.portalPosition);
                 Qurre.Events.Invoke.Scp106.PortalUsing(ev);
                 __instance.portalPosition = ev.PortalPosition;
-                if (!ev.Allowed)
-                    return false;
+                if (!ev.Allowed) return false;
                 if (__instance.iAm106 && __instance.portalPosition != Vector3.zero && !__instance.goingViaThePortal)
                     Timing.RunCoroutine(__instance._DoTeleportAnimation(), Segment.Update);
                 return true;

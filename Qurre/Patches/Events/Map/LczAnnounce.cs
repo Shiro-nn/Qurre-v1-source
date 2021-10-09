@@ -4,14 +4,14 @@ using Qurre.API.Events;
 namespace Qurre.Patches.Events.Map
 {
     [HarmonyPatch(typeof(DecontaminationController), nameof(DecontaminationController.UpdateSpeaker))]
-    internal static class AnnouncementDecontamination
+    internal static class LczAnnounce
     {
         private static bool Prefix(DecontaminationController __instance, ref bool hard)
         {
             try
             {
-                var ev = new AnnouncementDecontaminationEvent(__instance._nextPhase, hard);
-                Qurre.Events.Invoke.Map.AnnouncementDecontaminationZDecon(ev);
+                var ev = new LczAnnounceEvent(__instance._nextPhase, hard);
+                Qurre.Events.Invoke.Map.LczAnnounce(ev);
                 hard = ev.IsGlobal;
                 __instance._nextPhase = ev.Id;
                 return ev.Allowed;

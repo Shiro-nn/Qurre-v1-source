@@ -430,30 +430,6 @@ namespace Qurre.API.Events
         public ShotMessage Message { get; }
         public bool Allowed { get; set; }
     }
-    public class SpeakEvent : EventArgs
-    {
-        public SpeakEvent(DissonanceUserSetup userSetup, bool icom, bool radio, bool mimicAs939, bool scpChat, bool ripChat, TriggerType triggerType, Assets._Scripts.Dissonance.RoleType roleType, bool allowed = true)
-        {
-            UserSetup = userSetup;
-            Intercom = icom;
-            Radio = radio;
-            MimicAs939 = mimicAs939;
-            ScpChat = scpChat;
-            RipChat = ripChat;
-            Trigger = triggerType;
-            Role = roleType;
-            Allowed = allowed;
-        }
-        public DissonanceUserSetup UserSetup { get; }
-        public bool Intercom { get; set; }
-        public bool Radio { get; set; }
-        public bool MimicAs939 { get; set; }
-        public bool ScpChat { get; set; }
-        public bool RipChat { get; set; }
-        public TriggerType Trigger { get; private set; }
-        public Assets._Scripts.Dissonance.RoleType Role { get; private set; }
-        public bool Allowed { get; set; }
-    }
     public class RagdollSpawnEvent : EventArgs
     {
         public RagdollSpawnEvent(

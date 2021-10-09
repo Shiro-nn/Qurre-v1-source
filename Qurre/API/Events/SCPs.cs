@@ -155,9 +155,9 @@ namespace Qurre.API.Events
         public Player Player { get; }
         public bool Allowed { get; set; }
     }
-    public class PocketDimensionEnterEvent : EventArgs
+    public class PocketEnterEvent : EventArgs
     {
-        public PocketDimensionEnterEvent(Player player, Vector3 position, bool allowed = true)
+        public PocketEnterEvent(Player player, Vector3 position, bool allowed = true)
         {
             Player = player;
             Position = position;
@@ -167,9 +167,9 @@ namespace Qurre.API.Events
         public Vector3 Position { get; set; }
         public bool Allowed { get; set; }
     }
-    public class PocketDimensionEscapeEvent : EventArgs
+    public class PocketEscapeEvent : EventArgs
     {
-        public PocketDimensionEscapeEvent(Player player, Vector3 teleportPosition, bool allowed = true)
+        public PocketEscapeEvent(Player player, Vector3 teleportPosition, bool allowed = true)
         {
             Player = player;
             TeleportPosition = teleportPosition;
@@ -179,9 +179,9 @@ namespace Qurre.API.Events
         public Vector3 TeleportPosition { get; set; }
         public bool Allowed { get; set; }
     }
-    public class PocketDimensionFailEscapeEvent : EventArgs
+    public class PocketFailEscapeEvent : EventArgs
     {
-        public PocketDimensionFailEscapeEvent(Player player, PocketDimensionTeleport teleporter, bool allowed = true)
+        public PocketFailEscapeEvent(Player player, PocketDimensionTeleport teleporter, bool allowed = true)
         {
             Player = player;
             Teleporter = teleporter;

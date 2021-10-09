@@ -38,9 +38,9 @@ namespace Qurre.Events.Invoke
         public static void PortalCreate(PortalCreateEvent ev) => Invokes(ev);
         public static void Contain(ContainEvent ev) => Invokes(ev);
         public static void FemurBreakerEnter(FemurBreakerEnterEvent ev) => Invokes(ev);
-        public static void PocketDimensionEnter(PocketDimensionEnterEvent ev) => Invokes(ev);
-        public static void PocketDimensionEscape(PocketDimensionEscapeEvent ev) => Invokes(ev);
-        public static void PocketDimensionFailEscape(PocketDimensionFailEscapeEvent ev) => Invokes(ev);
+        public static void PocketEnter(PocketEnterEvent ev) => Invokes(ev);
+        public static void PocketEscape(PocketEscapeEvent ev) => Invokes(ev);
+        public static void PocketFailEscape(PocketFailEscapeEvent ev) => Invokes(ev);
     }
     #endregion
     #region Scp173

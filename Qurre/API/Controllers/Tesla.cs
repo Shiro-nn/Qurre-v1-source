@@ -4,7 +4,7 @@ namespace Qurre.API.Controllers
 {
     public class Tesla
     {
-        private TeslaGate Gate;
+        private readonly TeslaGate Gate;
         internal Tesla(TeslaGate gate) => Gate = gate;
         public GameObject GameObject => Gate.gameObject;
         public Transform Transform => GameObject.transform;

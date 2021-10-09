@@ -17,8 +17,7 @@ namespace Qurre.Patches.Events.Round
         {
             try
             {
-                SpawnableTeamHandlerBase spawnableTeamHandlerBase;
-                if (!RespawnWaveGenerator.SpawnableTeams.TryGetValue(__instance.NextKnownTeam, out spawnableTeamHandlerBase) || __instance.NextKnownTeam == SpawnableTeamType.None)
+                if (!RespawnWaveGenerator.SpawnableTeams.TryGetValue(__instance.NextKnownTeam, out SpawnableTeamHandlerBase spawnableTeamHandlerBase) || __instance.NextKnownTeam == SpawnableTeamType.None)
                 {
                     ServerConsole.AddLog("Fatal error. Team '" + __instance.NextKnownTeam + "' is undefined.", ConsoleColor.Red);
                     return false;

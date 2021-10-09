@@ -1,5 +1,5 @@
 ﻿using System;
-namespace Qurre.Events.modules
+namespace Qurre.Events.Modules
 {
     public static class Event
     {

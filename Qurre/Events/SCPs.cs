@@ -1,6 +1,6 @@
-﻿using Qurre.Events.modules;
+﻿using Qurre.Events.Modules;
 using Qurre.API.Events;
-using static Qurre.Events.modules.Main;
+using static Qurre.Events.Modules.Main;
 namespace Qurre.Events
 {
     #region Scp049
@@ -43,16 +43,16 @@ namespace Qurre.Events
         public static event AllEvents<PortalCreateEvent> PortalCreate;
         public static event AllEvents<ContainEvent> Contain;
         public static event AllEvents<FemurBreakerEnterEvent> FemurBreakerEnter;
-        public static event AllEvents<PocketDimensionEnterEvent> PocketDimensionEnter;
-        public static event AllEvents<PocketDimensionEscapeEvent> PocketDimensionEscape;
-        public static event AllEvents<PocketDimensionFailEscapeEvent> PocketDimensionFailEscape;
+        public static event AllEvents<PocketEnterEvent> PocketEnter;
+        public static event AllEvents<PocketEscapeEvent> PocketEscape;
+        public static event AllEvents<PocketFailEscapeEvent> PocketFailEscape;
         internal static void Invokes(PortalUsingEvent ev) => PortalUsing.invoke(ev);
         internal static void Invokes(PortalCreateEvent ev) => PortalCreate.invoke(ev);
         internal static void Invokes(ContainEvent ev) => Contain.invoke(ev);
         internal static void Invokes(FemurBreakerEnterEvent ev) => FemurBreakerEnter.invoke(ev);
-        internal static void Invokes(PocketDimensionEnterEvent ev) => PocketDimensionEnter.invoke(ev);
-        internal static void Invokes(PocketDimensionEscapeEvent ev) => PocketDimensionEscape.invoke(ev);
-        internal static void Invokes(PocketDimensionFailEscapeEvent ev) => PocketDimensionFailEscape.invoke(ev);
+        internal static void Invokes(PocketEnterEvent ev) => PocketEnter.invoke(ev);
+        internal static void Invokes(PocketEscapeEvent ev) => PocketEscape.invoke(ev);
+        internal static void Invokes(PocketFailEscapeEvent ev) => PocketFailEscape.invoke(ev);
     }
     #endregion
     #region Scp173

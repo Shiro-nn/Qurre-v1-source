@@ -4,8 +4,8 @@ namespace Qurre.Events.Invoke
 {
     public static class Map
     {
-        public static void LCZDecon(LCZDeconEvent ev) => Invokes(ev);
-        public static void AnnouncementDecontaminationZDecon(AnnouncementDecontaminationEvent ev) => Invokes(ev);
+        public static void LczDecon(LczDeconEvent ev) => Invokes(ev);
+        public static void LczAnnounce(LczAnnounceEvent ev) => Invokes(ev);
         public static void MTFAnnouncement(MTFAnnouncementEvent ev) => Invokes(ev);
         public static void NewBlood(NewBloodEvent ev) => Invokes(ev);
         public static void PlaceBulletHole(PlaceBulletHoleEvent ev) => Invokes(ev);

@@ -1,12 +1,12 @@
 ﻿using Qurre.API.Events;
-using Qurre.Events.modules;
-using static Qurre.Events.modules.Main;
+using Qurre.Events.Modules;
+using static Qurre.Events.Modules.Main;
 namespace Qurre.Events
 {
     public static class Map
     {
-        public static event AllEvents<LCZDeconEvent> LCZDecon;
-        public static event AllEvents<AnnouncementDecontaminationEvent> AnnouncementDecontaminationZDecon;
+        public static event AllEvents<LczDeconEvent> LczDecon;
+        public static event AllEvents<LczAnnounceEvent> LczAnnounce;
         public static event AllEvents<MTFAnnouncementEvent> MTFAnnouncement;
         public static event AllEvents<NewBloodEvent> NewBlood;
         public static event AllEvents<PlaceBulletHoleEvent> PlaceBulletHole;
@@ -18,8 +18,8 @@ namespace Qurre.Events
         public static event AllEvents<UseLiftEvent> UseLift;
         public static event AllEvents<ScpDeadAnnouncementEvent> ScpDeadAnnouncement;
         public static event AllEvents<CreatePickupEvent> CreatePickup;
-        internal static void Invokes(LCZDeconEvent ev) => LCZDecon?.invoke(ev);
-        internal static void Invokes(AnnouncementDecontaminationEvent ev) => AnnouncementDecontaminationZDecon?.invoke(ev);
+        internal static void Invokes(LczDeconEvent ev) => LczDecon?.invoke(ev);
+        internal static void Invokes(LczAnnounceEvent ev) => LczAnnounce?.invoke(ev);
         internal static void Invokes(MTFAnnouncementEvent ev) => MTFAnnouncement?.invoke(ev);
         internal static void Invokes(NewBloodEvent ev) => NewBlood?.invoke(ev);
         internal static void Invokes(PlaceBulletHoleEvent ev) => PlaceBulletHole?.invoke(ev);

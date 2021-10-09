@@ -10,7 +10,7 @@ namespace Qurre.Patches.Events.Round
             {
                 API.Map.AddObjects();
                 API.Round.CurrentRound++;
-                Qurre.Events.Invoke.Round.WaitingForPlayers();
+                Qurre.Events.Invoke.Round.Waiting();
             }
         }
     }

@@ -11,7 +11,7 @@ using LightContainmentZoneDecontamination;
 namespace Qurre.Patches.Events.SCPs.Scp106
 {
     [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnTriggerEnter))]
-    internal static class PocketDimensionEscape
+    internal static class PocketEscape
     {
         private static bool Prefix(PocketDimensionTeleport __instance, Collider other)
         {
@@ -28,8 +28,8 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                 {
                     if (type == PocketDimensionTeleport.PDTeleportType.Killer)
                     {
-                        var ev = new PocketDimensionFailEscapeEvent(pl, __instance);
-                        Qurre.Events.Invoke.Scp106.PocketDimensionFailEscape(ev);
+                        var ev = new PocketFailEscapeEvent(pl, __instance);
+                        Qurre.Events.Invoke.Scp106.PocketFailEscape(ev);
                         if (!ev.Allowed) return false;
                     }
                     pl.Damage(9999, DamageTypes.Pocket);
@@ -69,8 +69,8 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                                 float num = Vector3.Distance(value.Position, __instance._gateBPDPosition);
                                 float num2 = Vector3.Distance(value.Position, __instance._gateAPDPosition);
                                 var pos = (num2 < num) ? __instance._gateBPDPosition : __instance._gateAPDPosition;
-                                var ev = new PocketDimensionEscapeEvent(pl, pos);
-                                Qurre.Events.Invoke.Scp106.PocketDimensionEscape(ev);
+                                var ev = new PocketEscapeEvent(pl, pos);
+                                Qurre.Events.Invoke.Scp106.PocketEscape(ev);
                                 if (!ev.Allowed) return false;
                                 pos = ev.TeleportPosition;
                                 pl.PlayerMovementSync.OverridePosition(pos, Random.value * 360f);
@@ -89,8 +89,8 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                             RoomIdentifier roomIdentifier2 = hashSet.ElementAt(Random.Range(0, hashSet.Count));
                             if (PlayerMovementSync.FindSafePosition(roomIdentifier2.transform.position, out Vector3 safePos))
                             {
-                                var ev = new PocketDimensionEscapeEvent(pl, safePos);
-                                Qurre.Events.Invoke.Scp106.PocketDimensionEscape(ev);
+                                var ev = new PocketEscapeEvent(pl, safePos);
+                                Qurre.Events.Invoke.Scp106.PocketEscape(ev);
                                 if (!ev.Allowed) return false;
                                 safePos = ev.TeleportPosition;
                                 pl.PlayerMovementSync.OverridePosition(safePos, Random.value * 360f);
@@ -111,7 +111,7 @@ namespace Qurre.Patches.Events.SCPs.Scp106
             }
             catch (System.Exception e)
             {
-                Log.Error($"umm, error in patching SCPs -> SCP106 [PocketDimensionEscape]:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching SCPs -> SCP106 [PocketEscape]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

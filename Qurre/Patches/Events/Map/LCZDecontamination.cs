@@ -4,12 +4,12 @@ using Qurre.API.Events;
 namespace Qurre.Patches.Events.Map
 {
     [HarmonyPatch(typeof(DecontaminationController), nameof(DecontaminationController.FinishDecontamination))]
-    internal static class LCZDecontamination
+    internal static class LczDecontamination
     {
         private static bool Prefix()
         {
-            var ev = new LCZDeconEvent();
-            Qurre.Events.Invoke.Map.LCZDecon(ev);
+            var ev = new LczDeconEvent();
+            Qurre.Events.Invoke.Map.LczDecon(ev);
             return ev.Allowed;
         }
     }

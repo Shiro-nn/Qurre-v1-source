@@ -34,6 +34,7 @@ namespace Qurre.API
 		public static List<Tesla> Teslas { get; } = new List<Tesla>();
 		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
 		public static List<Bot> Bots { get; } = new List<Bot>();
+		public static List<Window> Windows { get; } = new List<Window>();
 		public static List<Pickup> Pickups
 		{
 			get
@@ -261,10 +262,6 @@ namespace Qurre.API
 					break;
 			}
 		}
-		[Obsolete("Use Bot.Create")]
-		public static GameObject SpawnBot(RoleType role, string name, float health, Vector3 position, Vector3 rotation, Vector3 scale) => null;
-		[Obsolete("Use Bot.Create")]
-		public static GameObject SpawnPlayer(RoleType role, string name, string userSteamID, Vector3 position, Vector3 rotation, Vector3 scale) => null;
 		internal static void AddObjects()
 		{
 			Cassies = new CassieList();
@@ -277,6 +274,7 @@ namespace Qurre.API
 			foreach (var tesla in Server.GetObjectsOf<TeslaGate>()) Teslas.Add(new Tesla(tesla));
 			foreach (var station in WorkstationController.AllWorkstations) WorkStations.Add(new _workStation(station));
 			foreach (var door in Server.GetObjectsOf<DoorVariant>()) Doors.Add(new Door(door));
+			foreach (var window in Server.GetObjectsOf<BreakableWindow>()) Windows.Add(new Window(window));
 			foreach (var pair in Scp079Interactable.InteractablesByRoomId)
 			{
 				foreach (var interactable in pair.Value)
@@ -307,6 +305,7 @@ namespace Qurre.API
 			Generators.Clear();
 			WorkStations.Clear();
 			Ragdolls.Clear();
+			Windows.Clear();
 		}
 	}
 }
