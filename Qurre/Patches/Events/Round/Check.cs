@@ -81,10 +81,10 @@ namespace Qurre.Patches.Events.Round
                     if (scp_team > 0) ++count;
                     if (count <= 1) instance.RoundEnded = true;
                 }
-                var ev = new CheckEvent((RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Draw, list, instance.RoundEnded);
+                var ev = new CheckEvent(RoundSummary.LeadingTeam.Draw, list, instance.RoundEnded);
                 if (mtf_team > 0)
-                    if (RoundSummary.escaped_ds == 0 && RoundSummary.escaped_scientists != 0) ev.LeadingTeam = (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.FacilityForces;
-                    else ev.LeadingTeam = RoundSummary.escaped_ds != 0 ? (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.ChaosInsurgency : (RoundSummary.LeadingTeam)RoundSummary.LeadingTeam.Anomalies;
+                    if (RoundSummary.escaped_ds == 0 && RoundSummary.escaped_scientists != 0) ev.LeadingTeam = RoundSummary.LeadingTeam.FacilityForces;
+                    else ev.LeadingTeam = RoundSummary.escaped_ds != 0 ? RoundSummary.LeadingTeam.ChaosInsurgency : RoundSummary.LeadingTeam.Anomalies;
                 Qurre.Events.Invoke.Round.Check(ev);
                 list = ev.ClassList;
                 instance.RoundEnded = ev.RoundEnd;
@@ -101,13 +101,13 @@ namespace Qurre.Patches.Events.Round
                         var end = new RoundEndEvent(ev.LeadingTeam, list, timeToRoundRestart);
                         Qurre.Events.Invoke.Round.End(end);
                         list = end.ClassList;
-                        instance.RpcShowRoundSummary(instance.classlistStart, end.ClassList, (LeadingTeam)end.LeadingTeam, RoundSummary.escaped_ds, RoundSummary.escaped_scientists, RoundSummary.kills_by_scp, end.ToRestart);
+                        instance.RpcShowRoundSummary(instance.classlistStart, end.ClassList, end.LeadingTeam, RoundSummary.escaped_ds, RoundSummary.escaped_scientists, RoundSummary.kills_by_scp, end.ToRestart);
 
-                        var dpercentage = (float)instance.classlistStart.class_ds == 0 ? 0 : RoundSummary.escaped_ds + list.class_ds / instance.classlistStart.class_ds;
-                        var spercentage = (float)instance.classlistStart.scientists == 0 ? 0 : RoundSummary.escaped_scientists + list.scientists / instance.classlistStart.scientists;
+                        var dpercentage = instance.classlistStart.class_ds == 0 ? 0 : RoundSummary.escaped_ds + list.class_ds / instance.classlistStart.class_ds;
+                        var spercentage = instance.classlistStart.scientists == 0 ? 0 : RoundSummary.escaped_scientists + list.scientists / instance.classlistStart.scientists;
                         var text = $"Round finished! Anomalies: {scp_team} | Chaos: {d_team}" +
                             $" | Facility Forces: {mtf_team} | D escaped percentage: {dpercentage} | S escaped percentage : {spercentage}";
-                        GameCore.Console.AddLog(text, Color.yellow, false);
+                        Console.AddLog(text, Color.yellow, false);
                     }
                     for (int i2 = 0; i2 < 50 * (timeToRoundRestart - 1); ++i2)
                         yield return 0.0f;

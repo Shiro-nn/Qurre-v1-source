@@ -599,6 +599,11 @@ namespace Qurre.API
 				else if (item is Firearm firearm) ammo = firearm.Ammo;
 				items.Add(new Changer(item.Type, ammo));
 			}
+			ushort a12 = Ammo12Gauge;
+			ushort a44 = Ammo44Cal;
+			ushort a5 = Ammo556;
+			ushort a7 = Ammo762;
+			ushort a9 = Ammo9;
 			BlockSpawnTeleport = true;
 			SetRole(newRole, false, CharacterClassManager.SpawnReason.Respawn);
 			MEC.Timing.CallDelayed(0.3f, () =>
@@ -616,6 +621,11 @@ namespace Qurre.API
 					foreach (var item in items)
 						AddItem(item.Item, item.Dur);
 				}
+				Ammo12Gauge = a12;
+				Ammo44Cal = a44;
+				Ammo556 = a5;
+				Ammo762 = a7;
+				Ammo9 = a9;
 				Item AddItem(ItemType itemType, float ammo)
 				{
 					Item item = Item.Get(Inventory.ServerAddItem(itemType));

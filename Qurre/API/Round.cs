@@ -53,7 +53,7 @@ namespace Qurre.API
         public static void DimScreen() => rs.RpcDimScreen();
         public static void ShowRoundSummary(RoundSummary.SumInfo_ClassList remainingPlayers, LeadingTeam team)
         {
-            var timeToRoundRestart = Mathf.Clamp(GameCore.ConfigFile.ServerConfig.GetInt("auto_round_restart_time", 10), 5, 1000);
+            var timeToRoundRestart = Mathf.Clamp(ConfigFile.ServerConfig.GetInt("auto_round_restart_time", 10), 5, 1000);
             rs.RpcShowRoundSummary(rs.classlistStart, remainingPlayers, team, EscapedDPersonnel, EscapedScientists, ScpKills, timeToRoundRestart);
         }
         public static void AddUnit(TeamUnitType team, string unit)
