@@ -13,10 +13,8 @@ namespace Qurre.API.Events
             Name = name;
             Args = args;
             Allowed = allowed;
-            if (prefix == "")
-                pref = Assembly.GetCallingAssembly().GetName().Name;
-            else
-                pref = prefix;
+            if (prefix == "") pref = Assembly.GetCallingAssembly().GetName().Name;
+            else pref = prefix;
         }
         public CommandSender CommandSender { get; }
         public Player Player { get; }

@@ -1,11 +1,8 @@
-﻿using Assets._Scripts.Dissonance;
-using InventorySystem.Items;
+﻿using InventorySystem.Items;
 using InventorySystem.Items.Firearms.BasicMessages;
 using InventorySystem.Items.MicroHID;
-using InventorySystem.Items.Pickups;
 using InventorySystem.Items.Radio;
 using InventorySystem.Items.ThrowableProjectiles;
-using MapGeneration.Distributors;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Items;
 using Qurre.API.Objects;
@@ -13,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static CharacterClassManager;
-
 namespace Qurre.API.Events
 {
     public class BannedEvent : EventArgs

@@ -1029,7 +1029,7 @@ namespace Qurre.API
 		}
 		public void TeleportToRandomDoor()
 		{
-			DoorType door = (DoorType)UnityEngine.Random.Range(1, 41);
+			DoorType door = (DoorType)UnityEngine.Random.Range(1, 42);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
 		}
 		public class AmmoBoxManager

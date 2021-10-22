@@ -197,6 +197,8 @@
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
     <Compile Include="Patches\Modules\Bot_Mirror.cs" />
     <Compile Include="Patches\Modules\Bot_Position.cs" />
+    <Compile Include="Patches\Modules\Bot_ShowHit.cs" />
+    <Compile Include="Patches\Modules\FixShootDisconnect.cs" />
     <Compile Include="Patches\Modules\FixDoubleSpawn.cs" />
     <Compile Include="Patches\Modules\UseStamina.cs" />
     <Compile Include="Patches\Modules\FixLiteSpawn.cs" />

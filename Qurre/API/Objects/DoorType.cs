@@ -27,6 +27,7 @@
         Gate_A,
         Gate_B,
         GR18,
+        GR18_Inner,
         HCZ_Armory,
         HID,
         HID_Left,
