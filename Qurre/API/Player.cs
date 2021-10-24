@@ -568,73 +568,15 @@ namespace Qurre.API
 			NetworkWriterPool.Recycle(writer);
 		}
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
-		private class Changer
-		{
-			internal ItemType Item { get; set; }
-			internal float Dur { get; set; }
-			internal Changer(ItemType item, float dur)
-			{
-				Item = item;
-				Dur = dur;
-			}
-		}
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
-			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, this);
-			var _ahp = Ahp;
 			if (damageType == null) damageType = DamageTypes.Com15;
+			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, this);
 			if (newPosition == default) newPosition = Position;
 			if (newRotation == default) newRotation = Rotation;
-			if (newRole == Role)
-			{
-				Position = newPosition;
-				Rotation = newRotation;
-				return;
-			}
-			var items = new List<Changer>(8);
-			foreach (var item in AllItems.Where(x => x != null && x.Base != null))
-			{
-				float ammo = 0;
-				if (item is MicroHid microHid) ammo = microHid.Energy;
-				else if (item is Firearm firearm) ammo = firearm.Ammo;
-				items.Add(new Changer(item.Type, ammo));
-			}
-			ushort a12 = Ammo12Gauge;
-			ushort a44 = Ammo44Cal;
-			ushort a5 = Ammo556;
-			ushort a7 = Ammo762;
-			ushort a9 = Ammo9;
-			BlockSpawnTeleport = true;
-			SetRole(newRole, false, CharacterClassManager.SpawnReason.Respawn);
-			MEC.Timing.CallDelayed(0.3f, () =>
-			{
-				Ahp = _ahp;
-				Rotation = newRotation;
-				MEC.Timing.CallDelayed(0.3f, () => ResetInventory());
-				MEC.Timing.CallDelayed(0.2f, () => Position = newPosition);
-			});
-			void ResetInventory()
-			{
-				ClearInventory();
-				if (items.Count > 0)
-				{
-					foreach (var item in items)
-						AddItem(item.Item, item.Dur);
-				}
-				Ammo12Gauge = a12;
-				Ammo44Cal = a44;
-				Ammo556 = a5;
-				Ammo762 = a7;
-				Ammo9 = a9;
-				Item AddItem(ItemType itemType, float ammo)
-				{
-					Item item = Item.Get(Inventory.ServerAddItem(itemType));
-					AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, item.Base);
-					if (item is MicroHid microHid) microHid.Energy = ammo;
-					else if (item is Firearm firearm) firearm.Ammo = (byte)ammo;
-					return item;
-				}
-			}
+			ChangeModel(newRole);
+			Position = newPosition;
+			Rotation = newRotation;
 		}
 		public Controllers.Broadcast Broadcast(string message, ushort time, bool instant = false) => Broadcast(time, message, instant);
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)

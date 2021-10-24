@@ -3,8 +3,8 @@
     public enum DoorType
     {
         Unknown,
-        LCZ_012,
-        LCZ_012_Bottom,
+        LCZ_330,
+        LCZ_330_Chamber,
         LCZ_012_Locker,
         HCZ_049_Armory,
         HCZ_049_Gate,
