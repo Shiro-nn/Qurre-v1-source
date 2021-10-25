@@ -1,16 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using InventorySystem.Items;
-using InventorySystem.Items.Armor;
 using firearm = InventorySystem.Items.Firearms.Firearm;
-using InventorySystem.Items.Firearms.Ammo;
-using InventorySystem.Items.Flashlight;
-using InventorySystem.Items.Keycards;
-using InventorySystem.Items.MicroHID;
 using InventorySystem.Items.Pickups;
-using InventorySystem.Items.Radio;
-using InventorySystem.Items.ThrowableProjectiles;
-using InventorySystem.Items.Usables;
 using Mirror;
 using Qurre.API.Controllers.Items;
 using UnityEngine;
@@ -19,15 +11,6 @@ namespace Qurre.API.Controllers
 {
     public class Item
     {
-        public static Item None { get; } = new Item(-1);
-        private Item(int id)
-        {
-            if (id == -1 && None == null)
-            {
-                Type = ItemType.None;
-                Category = ItemCategory.None;
-            }
-        }
         internal static readonly Dictionary<ItemBase, Item> BaseToItem = new Dictionary<ItemBase, Item>();
         private ushort id;
         public Item(ItemBase itemBase)
@@ -66,7 +49,7 @@ namespace Qurre.API.Controllers
         {
             get
             {
-                if(Base != null) return Player.Get(Base.Owner);
+                if (Base != null) return Player.Get(Base.Owner);
                 return Server.Host;
             }
         }

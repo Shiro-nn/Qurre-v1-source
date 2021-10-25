@@ -101,28 +101,6 @@ namespace Qurre.API
 			GameObject randomPosition = Object.FindObjectOfType<SpawnpointManager>().GetRandomPosition(roleType);
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
 		}
-		private static readonly RaycastHit[] CachedRaycast = new RaycastHit[1];
-		public static Room FindRoom(GameObject objectInRoom)
-		{
-			var rooms = Rooms;
-			Room room = null;
-			const string playerTag = "Player";
-			if (!objectInRoom.CompareTag(playerTag)) room = objectInRoom.GetComponentInParent<Room>();
-			else
-			{
-				var ply = Player.Get(objectInRoom);
-				if (ply.Role == RoleType.Scp079) room = FindRoom(ply.Scp079Controller.Camera079.gameObject);
-			}
-			if (room == null)
-			{
-				Ray ray = new Ray(objectInRoom.transform.position, Vector3.down);
-				if (Physics.RaycastNonAlloc(ray, CachedRaycast, 10, 1 << 0, QueryTriggerInteraction.Ignore) == 1)
-					room = CachedRaycast[0].collider.gameObject.GetComponentInParent<Room>();
-			}
-			if (room == null && rooms.Count != 0)
-				room = rooms[rooms.Count - 1];
-			return room;
-		}
 		public static void SpawnGrenade(string grenadeType, Vector3 position)
 		{
 			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));

@@ -31,14 +31,13 @@ namespace Qurre.API.Controllers
             get => Player.Position;
             set => Player.Position = value;
         }
-        public Vector3 Rotation
+        public Vector2 Rotation
         {
             get => Player.Rotation;
             set
             {
                 Player.Rotation = value;
-                Player.FullRotation = Quaternion.Euler(value);
-                Player.Rotations = value;
+                Player.CameraTransform.rotation = Quaternion.Euler(new Vector3(value.x, value.y, 90f));
             }
         }
         public Vector3 Scale
@@ -126,9 +125,9 @@ namespace Qurre.API.Controllers
             }
         }
         public Bot(Vector3 pos, Quaternion rot, RoleType role = RoleType.ClassD, string name = "(null)", string role_text = "", string role_color = "") :
-            this(pos, rot.eulerAngles, role, name, role_text, role_color)
+            this(pos, new Vector2(rot.eulerAngles.x, rot.eulerAngles.y), role, name, role_text, role_color)
         { }
-        public Bot(Vector3 pos, Vector3 rot, RoleType role = RoleType.ClassD, string name = "(null)", string role_text = "", string role_color = "")
+        public Bot(Vector3 pos, Vector2 rot, RoleType role = RoleType.ClassD, string name = "(null)", string role_text = "", string role_color = "")
         {
             GameObject obj = Object.Instantiate(NetworkManager.singleton.playerPrefab);
             GameObject = obj;
@@ -149,6 +148,7 @@ namespace Qurre.API.Controllers
             Player.RoleName = role_text;
             Player.RoleColor = role_color;
             Player.GodMode = true;
+            Player.PlayerMovementSync.NetworkGrounded = true;
             RunSpeed = CharacterClassManager._staticClasses[(int)role].runSpeed;
             WalkSpeed = CharacterClassManager._staticClasses[(int)role].walkSpeed;
             Player.ClassManager.Scp106 = Player.ClassManager.GetComponent<Scp106PlayerScript>();
@@ -156,6 +156,11 @@ namespace Qurre.API.Controllers
             MEC.Timing.RunCoroutine(Update());
             NetworkServer.Spawn(GameObject);
             Map.Bots.Add(this);
+        }
+        public void RotateToPosition(Vector3 pos)
+        {
+            var rot = Quaternion.LookRotation((pos - GameObject.transform.position).normalized);
+            Rotation = new Vector2(rot.eulerAngles.x, rot.eulerAngles.y);
         }
         public void Despawn()
         {
@@ -173,8 +178,8 @@ namespace Qurre.API.Controllers
             Map.Bots.Remove(this);
         }
         public static Bot Create(Vector3 pos, Quaternion rot, RoleType role = RoleType.ClassD, string name = "(null)", string role_text = "", string role_color = "")
-            => new Bot(pos, rot, role, name, role_text, role_color);
-        public static Bot Create(Vector3 pos, Vector3 rot, RoleType role = RoleType.ClassD, string name = "(null)", string role_text = "", string role_color = "")
-            => new Bot(pos, rot, role, name, role_text, role_color);
+            => new(pos, rot, role, name, role_text, role_color);
+        public static Bot Create(Vector3 pos, Vector2 rot, RoleType role = RoleType.ClassD, string name = "(null)", string role_text = "", string role_color = "")
+            => new(pos, rot, role, name, role_text, role_color);
     }
 }

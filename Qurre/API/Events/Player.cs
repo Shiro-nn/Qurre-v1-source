@@ -149,8 +149,6 @@ namespace Qurre.API.Events
     {
         public ItemChangeEvent(Player player, Item oldItem, Item newItem, bool allowed = true)
         {
-            if (oldItem == null) oldItem = Item.None;
-            if (newItem == null) newItem = Item.None;
             Player = player;
             OldItem = oldItem;
             NewItem = newItem;

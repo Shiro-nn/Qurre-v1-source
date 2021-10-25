@@ -19,16 +19,17 @@ namespace Qurre.API
 		public static DoorVariant DoorPrefabLCZ { get; internal set; }
 		public static DoorVariant DoorPrefabHCZ { get; internal set; }
 		public static DoorVariant DoorPrefabEZ { get; internal set; }
-		public static DoorVariant GetDoorPrefab(DoorPrefabs prefab)
+		public static DoorVariant GetDoorPrefab(this DoorPrefabs prefab)
 		{
 			if (prefab == DoorPrefabs.DoorLCZ) return DoorPrefabLCZ;
 			else if (prefab == DoorPrefabs.DoorHCZ) return DoorPrefabHCZ;
 			else return DoorPrefabEZ;
 		}
-		public static Room GetRoom(RoomName type) => Map.Rooms.FirstOrDefault(x => x.RoomName == type);
-		public static Room GetRoom(RoomType type) => Map.Rooms.FirstOrDefault(x => x.Type == type);
-		public static Door GetDoor(DoorType type) => Map.Doors.FirstOrDefault(x => x.Type == type);
-		public static _lift GetLift(LiftType type) => Map.Lifts.FirstOrDefault(x => x.Type == type);
+		public static Room GetRoom(this RoomName type) => Map.Rooms.FirstOrDefault(x => x.RoomName == type);
+		public static Room GetRoom(this RoomType type) => Map.Rooms.FirstOrDefault(x => x.Type == type);
+		public static Room GetRoom(this RoomIdentifier identifier) => Map.Rooms.FirstOrDefault(x => x.Identifier == identifier);
+		public static Door GetDoor(this DoorType type) => Map.Doors.FirstOrDefault(x => x.Type == type);
+		public static _lift GetLift(this LiftType type) => Map.Lifts.FirstOrDefault(x => x.Type == type);
 		public static Door GetDoor(this DoorVariant door) => Map.Doors.FirstOrDefault(x => x.GameObject == door.gameObject);
 		public static Generator GetGenerator(this Scp079Generator generator079) => Map.Generators.FirstOrDefault(x => x.GameObject == generator079.gameObject);
 		public static Tesla GetTesla(this TeslaGate teslaGate) => Map.Teslas.FirstOrDefault(x => x.GameObject == teslaGate.gameObject);
@@ -62,7 +63,7 @@ namespace Qurre.API
 		public static System.Random Random { get; } = new System.Random();
 		public static void Shuffle<T>(this IList<T> list)
 		{
-			RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
+			RNGCryptoServiceProvider provider = new();
 			int n = list.Count;
 			while (n > 1)
 			{

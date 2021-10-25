@@ -16,6 +16,7 @@ using InventorySystem.Items.Firearms.Modules;
 using InventorySystem.Items.Firearms.Attachments;
 using Qurre.API.Controllers.Items;
 using Assets._Scripts.Dissonance;
+using MapGeneration;
 namespace Qurre.API
 {
 	public class Player
@@ -168,20 +169,10 @@ namespace Qurre.API
 			get => rh.playerMovementSync.GetRealPosition();
 			set => rh.playerMovementSync.OverridePosition(value, 0f);
 		}
-		public Vector2 Rotations
+		public Vector2 Rotation
 		{
-			get => rh.playerMovementSync.NetworkRotationSync;
-			set => rh.playerMovementSync.NetworkRotationSync = value;
-		}
-		public Vector3 Rotation
-		{
-			get => CameraTransform.rotation.eulerAngles;
-			set => CameraTransform.rotation = Quaternion.Euler(value);
-		}
-		public Quaternion FullRotation
-		{
-			get => rh.PlayerCameraReference.localRotation;
-			set => rh.PlayerCameraReference.localRotation = value;
+			get => PlayerMovementSync.RotationSync;
+			set => PlayerMovementSync.NetworkRotationSync = value;
 		}
 		public Vector3 Scale
 		{
@@ -332,7 +323,7 @@ namespace Qurre.API
 		}
 		public Room Room
 		{
-			get => Map.FindRoom(GameObject);
+			get => RoomIdUtils.RoomAtPosition(Position).GetRoom() ?? Map.Rooms.OrderBy(x => Vector3.Distance(x.Position, Position)).FirstOrDefault();
 			set => Position = value.Position + Vector3.up * 2;
 		}
 		public CommandSender Sender
@@ -568,7 +559,7 @@ namespace Qurre.API
 			NetworkWriterPool.Recycle(writer);
 		}
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
-		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector3 newRotation = default, DamageTypes.DamageType damageType = null)
+		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector2 newRotation = default, DamageTypes.DamageType damageType = null)
 		{
 			if (damageType == null) damageType = DamageTypes.Com15;
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, this);
@@ -980,8 +971,17 @@ namespace Qurre.API
 			internal AmmoBoxManager(Player pl) => player = pl;
 			public ushort this[AmmoType ammo]
 			{
-				get => player.Inventory.UserInventory.ReserveAmmo[ammo.GetItemType()];
-				set => player.Inventory.UserInventory.ReserveAmmo[ammo.GetItemType()] = value;
+				get
+				{
+					if (player.Inventory.UserInventory.ReserveAmmo.TryGetValue(ammo.GetItemType(), out var amount))
+						return amount;
+					return 0;
+				}
+				set
+				{
+					player.Inventory.UserInventory.ReserveAmmo[ammo.GetItemType()] = value;
+					player.Inventory.SendAmmoNextFrame = true;
+				}
 			}
 		}
 	}
