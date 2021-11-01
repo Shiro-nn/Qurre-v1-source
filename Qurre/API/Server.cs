@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using InventorySystem;
-using QurreModLoader;
 namespace Qurre.API
 {
     public static class Server
@@ -12,7 +11,7 @@ namespace Qurre.API
         private static Inventory hinv;
         public static ServerConsole ServerConsole => ServerConsole.singleton;
         public static DataBase.DataBase DataBase { get; internal set; }
-        public static ushort Port => ModLoader.Port;
+        public static ushort Port => global::Loader.Port;
         public static string Ip => ServerConsole.Ip;
         ///<summary>
         ///<para>if true, then no items will be issued during the escape &amp; the escaped person will not change his location.</para>

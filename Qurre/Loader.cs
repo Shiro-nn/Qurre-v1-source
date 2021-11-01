@@ -5,6 +5,7 @@ namespace Qurre
 {
     internal static class Loader
     {
+        internal static ushort Port => global::Loader.Port;
         internal static bool AllUnits => Plugin.Config.GetBool("Qurre_AllUnit", false, "Should I show the Qurre version on Units for all roles?");
         internal static bool OnlyTutorialUnit => Plugin.Config.GetBool("Qurre_OnlyTutorialUnit", false, "Should I show the Qurre version on Units only for the Tutorial role?");
         internal static bool SpawnBlood => Plugin.Config.GetBool("Qurre_Spawn_Blood", true, "Allow the appearance of blood?");
@@ -19,7 +20,7 @@ namespace Qurre
                 Log.Custom($"Cfg directory not found - creating: {PluginManager.ConfigsDirectory}", "Warn", System.ConsoleColor.DarkYellow);
                 Directory.CreateDirectory(PluginManager.ConfigsDirectory);
             }
-            PluginManager.ConfigsPath = Path.Combine(PluginManager.ConfigsDirectory, $"{QurreModLoader.ModLoader.Port}-cfg.yml");
+            PluginManager.ConfigsPath = Path.Combine(PluginManager.ConfigsDirectory, $"{Port}-cfg.yml");
             bool first_cfg = false;
             if (!File.Exists(PluginManager.ConfigsPath))
             {

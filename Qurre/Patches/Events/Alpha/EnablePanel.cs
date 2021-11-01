@@ -13,6 +13,7 @@ namespace Qurre.Patches.Events.Alpha
             {
                 if (!__instance.CanInteract) return false;
                 GameObject gameObject = GameObject.Find("OutsitePanelScript");
+                if(gameObject == null) return false;
                 if (!__instance.ChckDis(gameObject.transform.position)) return false;
                 InventorySystem.Items.Keycards.KeycardItem keycardItem = __instance._inv.CurInstance as InventorySystem.Items.Keycards.KeycardItem;
                 if (__instance._sr.BypassMode || (keycardItem != null && keycardItem.Permissions.HasFlag(Interactables.Interobjects.DoorUtils.KeycardPermissions.AlphaWarhead)))

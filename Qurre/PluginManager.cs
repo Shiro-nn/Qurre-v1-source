@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using MEC;
-using QurreModLoader;
 using System;
 using System.Collections.Generic;
 //using System.Diagnostics;
@@ -13,7 +12,7 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new();
-		public static Version Version { get; } = new Version(1, 9, 5);
+		public static Version Version { get; } = new Version(1, 9, 6);
 		//private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -49,7 +48,7 @@ namespace Qurre
                 try
 				{
 					Log.Debug($"Loading {mod}");
-					byte[] file = ModLoader.ReadFile(mod);
+					byte[] file = global::Loader.ReadFile(mod);
 					Assembly assembly = Assembly.Load(file);
 					LoadPlugin(assembly);
 				}
@@ -66,14 +65,13 @@ namespace Qurre
 		{
 			if (!Directory.Exists(LoadedDependenciesDirectory))
 				Directory.CreateDirectory(LoadedDependenciesDirectory);
-
 			string[] depends = Directory.GetFiles(LoadedDependenciesDirectory);
 			foreach (string dll in depends)
 			{
 				if (!dll.EndsWith(".dll")) continue;
-				if (ModLoader.Loaded(dll)) continue;
+				if (global::Loader.Loaded(dll)) continue;
 				Assembly assembly = Assembly.LoadFrom(dll);
-				ModLoader.LocalLoaded.Add(assembly);
+				global::Loader.LocalLoaded.Add(assembly);
 				Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
 			}
 			DownloadDependencies();
@@ -101,7 +99,7 @@ namespace Qurre
 					object plugin = Activator.CreateInstance(type);
 					Log.Debug($"Instantiated type {type.FullName}");
 
-					if (!(plugin is Plugin p))
+					if (plugin is not Plugin p)
 					{
 						Log.Error($"{type.FullName} not a plugin");
 						continue;
