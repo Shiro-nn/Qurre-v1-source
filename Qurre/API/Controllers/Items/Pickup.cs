@@ -135,8 +135,9 @@ namespace Qurre.API.Controllers.Items
             get => Base.NetworkInfo.Locked;
             set
             {
-                Base.Info.Locked = value;
-                Base.NetworkInfo = Base.Info;
+                PickupSyncInfo info = Base.Info;
+                info.Locked = value;
+                Base.NetworkInfo = info;
             }
         }
         public bool InUse
@@ -144,8 +145,9 @@ namespace Qurre.API.Controllers.Items
             get => Base.NetworkInfo.InUse;
             set
             {
-                Base.Info.InUse = value;
-                Base.NetworkInfo = Base.Info;
+                PickupSyncInfo info = Base.Info;
+                info.InUse = value;
+                Base.NetworkInfo = info;
             }
         }
         public Vector3 Position

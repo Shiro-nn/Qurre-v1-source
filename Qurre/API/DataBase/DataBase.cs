@@ -32,6 +32,7 @@ namespace Qurre.API.DataBase
         public bool Connected { get; internal set; }
         public static DataBase Static => Server.DataBase;
         public IMongoDatabase GetDatabase(string name) => Client.GetDatabase(name);
+        public IMongoCollection<TDocument> GetCollection<TDocument>(IMongoDatabase database, string name) => database.GetCollection<TDocument>(name);
         public IMongoCollection<BsonDocument> GetCollection(IMongoDatabase database, string name) => database.GetCollection<BsonDocument>(name);
         public List<BsonDocument> GetDocuments(IMongoCollection<BsonDocument> collection, BsonDocument parameters) => collection.Find(parameters).ToList();
         public object GetValue(BsonDocument document, string key) => document[key];

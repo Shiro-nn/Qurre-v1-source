@@ -11,7 +11,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                var ev = new HealEvent(API.Player.Get(__instance.gameObject), hp);
+                var ev = new HealEvent(API.Player.Get(__instance.Hub), hp);
                 Qurre.Events.Invoke.Player.Heal(ev);
                 if (ev.Allowed)
                 {
@@ -22,7 +22,7 @@ namespace Qurre.Patches.Events.player
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching Player [UsingMedical]:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [Heal]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

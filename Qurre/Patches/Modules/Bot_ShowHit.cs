@@ -11,6 +11,7 @@ namespace Qurre.Patches.Modules
     {
         private static bool Prefix(uint netId, float damage, Vector3 origin)
         {
+            if (!Round.BotSpawned) return true;
             try
             {
                 if (!ReferenceHub.TryGetHubNetID(netId, out ReferenceHub hub)) return false;

@@ -20,6 +20,16 @@ namespace Qurre.API.Controllers
             ragdoll.NetworkPlayerVelo = velocity;
             ragdoll.NetworkSCP096Death = false;
             _id = owner.Id;
+            try
+            {
+                if (Owner != null)
+                {
+                    var s1 = Scale;
+                    var s2 = Owner.Scale;
+                    Scale = new Vector3(s1.x * s2.x, s1.y * s2.y, s1.z * s2.z);
+                }
+            }
+            catch { }
             Map.Ragdolls.Add(this);
         }
         public Ragdoll(RoleType roletype, Vector3 pos, Quaternion rot, Vector3 velocity, PlayerStats.HitInfo info, bool allowRecall, string nickname, int id)
@@ -32,6 +42,16 @@ namespace Qurre.API.Controllers
             ragdoll.NetworkallowRecall = allowRecall;
             ragdoll.NetworkPlayerVelo = velocity;
             _id = id;
+            try
+            {
+                if (Owner != null)
+                {
+                    var s1 = Scale;
+                    var s2 = Owner.Scale;
+                    Scale = new Vector3(s1.x * s2.x, s1.y * s2.y, s1.z * s2.z);
+                }
+            }
+            catch { }
             Map.Ragdolls.Add(this);
         }
         private int _id = 0;

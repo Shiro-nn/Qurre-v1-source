@@ -58,6 +58,8 @@ namespace Qurre.Events.Invoke
         public static void Upgrade(UpgradeEvent ev) => Invokes(ev);
         public static void UpgradePlayer(UpgradePlayerEvent ev) => Invokes(ev);
         public static void UpgradePickup(UpgradePickupEvent ev) => Invokes(ev);
+        public static void UpgradedItemInventory(UpgradedItemInventoryEvent ev) => Invokes(ev);
+        public static void UpgradedItemPickup(UpgradedItemPickupEvent ev) => Invokes(ev);
     }
     #endregion
 }

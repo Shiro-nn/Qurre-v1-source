@@ -195,9 +195,12 @@
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
     <Compile Include="Patches\Events\player\SinkholeWalking.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemPickup.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemInventory.cs" />
     <Compile Include="Patches\Modules\Bot_Mirror.cs" />
     <Compile Include="Patches\Modules\Bot_Position.cs" />
     <Compile Include="Patches\Modules\Bot_ShowHit.cs" />
+    <Compile Include="Patches\Modules\FixLockerDisconnect.cs" />
     <Compile Include="Patches\Modules\FixShootDisconnect.cs" />
     <Compile Include="Patches\Modules\FixDoubleSpawn.cs" />
     <Compile Include="Patches\Modules\UseStamina.cs" />

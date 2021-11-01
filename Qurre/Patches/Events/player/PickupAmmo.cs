@@ -18,9 +18,10 @@ namespace Qurre.Patches.Events.player
                 Qurre.Events.Invoke.Player.PickupItem(ev);
                 if (!ev.Allowed)
                 {
-                    __instance.TargetPickup.Info.InUse = false;
-                    __instance.TargetPickup.Info.Locked = false;
-                    __instance.TargetPickup.NetworkInfo = __instance.TargetPickup.Info;
+                    var info = __instance.TargetPickup.Info;
+                    info.InUse = false;
+                    info.Locked = false;
+                    __instance.TargetPickup.NetworkInfo = info;
                 }
                 return ev.Allowed;
             }

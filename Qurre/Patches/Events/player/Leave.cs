@@ -34,7 +34,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                Player player = Player.Get(__instance);
+                if (Player.Get(__instance) is not Player player) return;
                 if (player == null || player.IsHost) return;
                 if (Player.Dictionary.ContainsKey(player.GameObject)) Player.Dictionary.Remove(player.GameObject);
                 if (Player.IdPlayers.ContainsKey(player.Id)) Player.IdPlayers.Remove(player.Id);

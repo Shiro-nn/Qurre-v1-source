@@ -708,7 +708,7 @@ namespace Qurre.API
 			NetworkIdentity identity = gameObject.GetComponent<NetworkIdentity>();
 			RoleType FirstRole = Role;
 			ccm.CurClass = newModel;
-			ObjectDestroyMessage destroyMessage = new ObjectDestroyMessage { netId = identity.netId };
+			ObjectDestroyMessage destroyMessage = new() { netId = identity.netId };
 			foreach (Player pl in List)
 			{
 				if (pl.Id == Id) continue;

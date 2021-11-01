@@ -8,6 +8,7 @@ namespace Qurre.Patches.Modules
     {
         private static bool Prefix(PlayerMovementSync __instance, Vector3 pos, float rot, bool forceGround = false)
         {
+            if (!API.Round.BotSpawned) return true;
             bool error_send = true;
             try
             {

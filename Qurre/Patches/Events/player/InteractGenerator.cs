@@ -59,7 +59,8 @@ namespace Qurre.Patches.Events.player
 					case 1:
 						if ((ply.characterClassManager.IsHuman() || __instance.Activating) && !__instance.Engaged)
 						{
-							var ev1 = new InteractGeneratorEvent(player, __instance.GetGenerator(), GeneratorStatus.Activated);
+							var gen = __instance.GetGenerator();
+							var ev1 = new InteractGeneratorEvent(player, gen, gen.Active ? GeneratorStatus.Disabled : GeneratorStatus.Activated);
 							Qurre.Events.Invoke.Player.InteractGenerator(ev1);
 							if (ev1.Allowed)
 							{

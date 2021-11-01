@@ -11,7 +11,7 @@ namespace Qurre.API.Controllers
 {
     public class Item
     {
-        internal static readonly Dictionary<ItemBase, Item> BaseToItem = new Dictionary<ItemBase, Item>();
+        internal static readonly Dictionary<ItemBase, Item> BaseToItem = new();
         private ushort id;
         public Item(ItemBase itemBase)
         {

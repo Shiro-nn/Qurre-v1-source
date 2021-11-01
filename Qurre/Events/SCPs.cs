@@ -72,11 +72,15 @@ namespace Qurre.Events
         public static event AllEvents<UpgradeEvent> Upgrade;
         public static event AllEvents<UpgradePlayerEvent> UpgradePlayer;
         public static event AllEvents<UpgradePickupEvent> UpgradePickup;
+        public static event AllEvents<UpgradedItemInventoryEvent> UpgradedItemInventory;
+        public static event AllEvents<UpgradedItemPickupEvent> UpgradedItemPickup;
         internal static void Invokes(ActivatingEvent ev) => Activating.invoke(ev);
         internal static void Invokes(KnobChangeEvent ev) => KnobChange.invoke(ev);
         internal static void Invokes(UpgradeEvent ev) => Upgrade?.invoke(ev);
         internal static void Invokes(UpgradePlayerEvent ev) => UpgradePlayer?.invoke(ev);
         internal static void Invokes(UpgradePickupEvent ev) => UpgradePickup?.invoke(ev);
+        internal static void Invokes(UpgradedItemInventoryEvent ev) => UpgradedItemInventory?.invoke(ev);
+        internal static void Invokes(UpgradedItemPickupEvent ev) => UpgradedItemPickup?.invoke(ev);
     }
     #endregion
 }

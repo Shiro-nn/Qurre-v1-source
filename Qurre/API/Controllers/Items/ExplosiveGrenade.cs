@@ -6,7 +6,13 @@ namespace Qurre.API.Controllers.Items
         public ExplosiveGrenade(ThrowableItem itemBase)
             : base(itemBase)
         {
-            Base = itemBase;
+            ExplosionGrenade grenade = (ExplosionGrenade)Base.Projectile;
+            MaxRadius = grenade._maxRadius;
+            ScpMultiplier = grenade._scpDamageMultiplier;
+            BurnDuration = grenade._burnedDuration;
+            DeafenDuration = grenade._deafenedDuration;
+            ConcussDuration = grenade._concussedDuration;
+            FuseTime = grenade._fuseTime;
         }
         public ExplosiveGrenade(ItemType type, Player player = null)
             : this(player == null ? (ThrowableItem)Server.Host.Inventory.CreateItemInstance(type, false) : (ThrowableItem)player.Inventory.CreateItemInstance(type, true))

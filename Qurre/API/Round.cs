@@ -8,6 +8,7 @@ namespace Qurre.API
 {
     public static class Round
     {
+        internal static bool BotSpawned { get; set; } = false;
         private static RespawnManager rm => RespawnManager.Singleton;
         private static RoundSummary rs => RoundSummary.singleton;
         internal static bool ForceEnd { get; set; } = false;

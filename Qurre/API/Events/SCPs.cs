@@ -1,9 +1,12 @@
 ﻿using InventorySystem.Items.Pickups;
 using PlayableScps;
+using Qurre.API.Controllers;
+using Qurre.API.Controllers.Items;
 using Scp914;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Scp096 = PlayableScps.Scp096;
 namespace Qurre.API.Events
 {
     #region scp914
@@ -80,6 +83,34 @@ namespace Qurre.API.Events
         public ItemPickupBase Pickup { get; }
         public bool UpgradeDropped { get; set; }
         public Vector3 Move { get; set; }
+        public Scp914KnobSetting Setting { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class UpgradedItemInventoryEvent : EventArgs
+    {
+        public UpgradedItemInventoryEvent(Item item, Player player, Scp914KnobSetting setting, bool allowed = true)
+        {
+            Item = item;
+            Player = player;
+            Setting = setting;
+            Allowed = allowed;
+        }
+        public Item Item { get; }
+        public Player Player { get; set; }
+        public Scp914KnobSetting Setting { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class UpgradedItemPickupEvent : EventArgs
+    {
+        public UpgradedItemPickupEvent(Pickup pickup, Vector3 pos, Scp914KnobSetting setting, bool allowed = true)
+        {
+            Pickup = pickup;
+            Position = pos;
+            Setting = setting;
+            Allowed = allowed;
+        }
+        public Pickup Pickup { get; }
+        public Vector3 Position { get; set; }
         public Scp914KnobSetting Setting { get; set; }
         public bool Allowed { get; set; }
     }

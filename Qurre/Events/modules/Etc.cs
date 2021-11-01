@@ -35,6 +35,7 @@ namespace Qurre.Events.Modules
         }
         private static void Waiting()
         {
+            API.Round.BotSpawned = false;
             API.Round.ForceEnd = false;
             RoundSummary.RoundLock = false;
             API.Round.ActiveGenerators = 0;

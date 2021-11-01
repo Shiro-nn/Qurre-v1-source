@@ -129,6 +129,7 @@ namespace Qurre.API.Controllers
         { }
         public Bot(Vector3 pos, Vector2 rot, RoleType role = RoleType.ClassD, string name = "(null)", string role_text = "", string role_color = "")
         {
+            Round.BotSpawned = true;
             GameObject obj = Object.Instantiate(NetworkManager.singleton.playerPrefab);
             GameObject = obj;
             var rh = ReferenceHub.GetHub(GameObject);

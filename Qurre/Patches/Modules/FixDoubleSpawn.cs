@@ -9,8 +9,8 @@ namespace Qurre.Patches.Modules
 	[HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.SetClassIDAdv))]
 	internal static class FixDoubleSpawn
 	{
-		internal static Dictionary<CharacterClassManager, Module> Data = new Dictionary<CharacterClassManager, Module>();
-		internal static bool Prefix(CharacterClassManager __instance, RoleType id, bool lite, SpawnReason spawnReason, bool isHook = false)
+		internal static Dictionary<CharacterClassManager, Module> Data = new();
+		internal static bool Prefix(CharacterClassManager __instance, RoleType id, SpawnReason spawnReason)
 		{
 			Timing.CallDelayed(5f, () =>
 			{
