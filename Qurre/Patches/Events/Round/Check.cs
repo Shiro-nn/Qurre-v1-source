@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using GameCore;
@@ -12,38 +12,20 @@ namespace Qurre.Patches.Events.Round
     [HarmonyPatch(typeof(RoundSummary), nameof(RoundSummary.Start))]
     internal static class Check
     {
-        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
+        private static readonly MethodInfo CustomProcess = SymbolExtensions.GetMethodInfo(() => ProcessServerSide(null));
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instr)
         {
-            foreach (CodeInstruction instruction in instructions)
+            var codes = new List<CodeInstruction>(instr);
+            foreach (var code in codes.Select((x, i) => new { Value = x, Index = i }))
             {
-                if (instruction.opcode == OpCodes.Call)
-                {
-                    if (instruction.operand != null
-                        && instruction.operand is MethodBase methodBase
-                        && methodBase.Name != nameof(RoundSummary._ProcessServerSideCode))
-                    {
-                        yield return instruction;
-                    }
-                    else
-                    {
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Check), nameof(Process)));
-                        yield return new CodeInstruction(OpCodes.Ldarg_0);
-                        yield return new CodeInstruction(OpCodes.Call, AccessTools.FirstMethod(typeof(MECExtensionMethods2), (m) =>
-                        {
-                            Type[] generics = m.GetGenericArguments();
-                            ParameterInfo[] paramseters = m.GetParameters();
-                            return m.Name == "CancelWith"
-                            && generics.Length == 1
-                            && paramseters.Length == 2
-                            && paramseters[0].ParameterType == typeof(IEnumerator<float>)
-                            && paramseters[1].ParameterType == generics[0];
-                        }).MakeGenericMethod(typeof(RoundSummary)));
-                    }
-                }
-                else yield return instruction;
+                if (code.Value.opcode != OpCodes.Call) continue;
+                if (code.Value.operand != null && code.Value.operand is MethodBase methodBase &&
+                    methodBase.Name == nameof(RoundSummary._ProcessServerSideCode))
+                    codes[code.Index].operand = CustomProcess;
             }
+            return codes.AsEnumerable();
         }
-        private static IEnumerator<float> Process(RoundSummary instance)
+        private static IEnumerator<float> ProcessServerSide(RoundSummary instance)
         {
             float time = Time.unscaledTime;
             while (instance != null)

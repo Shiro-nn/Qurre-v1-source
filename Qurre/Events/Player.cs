@@ -51,6 +51,7 @@ namespace Qurre.Events
         public static event AllEvents<ScpAttackEvent> ScpAttack;
         public static event AllEvents<SinkholeWalkingEvent> SinkholeWalking;
         public static event AllEvents<TantrumWalkingEvent> TantrumWalking;
+        public static event AllEvents<ChangeSpectateEvent> ChangeSpectate;
         internal static void Invokes(BannedEvent ev) => Banned.invoke(ev);
         internal static void Invokes(BanEvent ev) => Ban.invoke(ev);
         internal static void Invokes(KickEvent ev) => Kick.invoke(ev);
@@ -97,5 +98,6 @@ namespace Qurre.Events
         internal static void Invokes(ScpAttackEvent ev) => ScpAttack.invoke(ev);
         internal static void Invokes(SinkholeWalkingEvent ev) => SinkholeWalking.invoke(ev);
         internal static void Invokes(TantrumWalkingEvent ev) => TantrumWalking.invoke(ev);
+        internal static void Invokes(ChangeSpectateEvent ev) => ChangeSpectate.invoke(ev);
     }
 }

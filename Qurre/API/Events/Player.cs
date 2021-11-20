@@ -686,4 +686,18 @@ namespace Qurre.API.Events
         public TantrumEnvironmentalHazard Tantrum { get; }
         public bool Allowed { get; set; }
     }
+    public class ChangeSpectateEvent : EventArgs
+    {
+        public ChangeSpectateEvent(Player pl, Player old, Player _new, bool allowed = true)
+        {
+            Player = pl;
+            OldTarget = old;
+            NewTarget = _new;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public Player OldTarget { get; }
+        public Player NewTarget { get; set; }
+        public bool Allowed { get; set; }
+    }
 }

@@ -68,7 +68,7 @@ namespace Qurre.Patches.Modules
                 {
                     damage = BodyArmorUtils.ProcessDamage(armoredScp.GetArmorEfficacy(), damage, bulletPenetrationPercent);
                 }
-                __instance.TargetHub.playerStats.HurtPlayer(new PlayerStats.HitInfo(damage, attackerFootprint.LoggedHubName, item.DamageType,
+                attackerFootprint.Hub.playerStats.HurtPlayer(new PlayerStats.HitInfo(damage, attackerFootprint.LoggedHubName, item.DamageType,
                     attackerFootprint.PlayerId, customAttackerName: false), __instance.TargetHub.gameObject);
                 __result = true;
                 return false;

@@ -50,5 +50,6 @@ namespace Qurre.Events.Invoke
         public static void ScpAttack(ScpAttackEvent ev) => Invokes(ev);
         public static void SinkholeWalking(SinkholeWalkingEvent ev) => Invokes(ev);
         public static void TantrumWalking(TantrumWalkingEvent ev) => Invokes(ev);
+        public static void ChangeSpectate(ChangeSpectateEvent ev) => Invokes(ev);
     }
 }

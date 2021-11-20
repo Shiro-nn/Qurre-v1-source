@@ -17,6 +17,7 @@ using InventorySystem.Items.Firearms.Attachments;
 using Qurre.API.Controllers.Items;
 using Assets._Scripts.Dissonance;
 using MapGeneration;
+using NorthwoodLib;
 namespace Qurre.API
 {
 	public class Player
@@ -27,7 +28,7 @@ namespace Qurre.API
 		private string _tag = "";
 		private Radio radio;
 		private Escape escape;
-		internal readonly List<Item> ItemsValue = new List<Item>(8);
+		internal readonly List<Item> ItemsValue = new(8);
 		public Player(ReferenceHub RH)
 		{
 			rh = RH;
@@ -321,6 +322,7 @@ namespace Qurre.API
 			get => ServerStatic.GetPermissionsHandler()._members.TryGetValue(UserId, out string groupName) ? groupName : null;
 			set => ServerStatic.GetPermissionsHandler()._members[UserId] = value;
 		}
+		public ZoneType Zone => Room.Zone;
 		public Room Room
 		{
 			get => RoomIdUtils.RoomAtPosition(Position).GetRoom() ?? Map.Rooms.OrderBy(x => Vector3.Distance(x.Position, Position)).FirstOrDefault();
@@ -425,55 +427,48 @@ namespace Qurre.API
 		{
 			try
 			{
-				if (ArgsPlayers.ContainsKey(args)) return ArgsPlayers[args];
-				Player playerFound = null;
-				if (short.TryParse(args, out short playerId)) return Get(playerId);
+				if (string.IsNullOrWhiteSpace(args))
+					return null;
+				if (ArgsPlayers.TryGetValue(args, out Player playerFound) && playerFound?.ReferenceHub != null)
+					return playerFound;
+				if (int.TryParse(args, out int id))
+					return Get(id);
 				if (args.EndsWith("@steam") || args.EndsWith("@discord") || args.EndsWith("@northwood") || args.EndsWith("@patreon"))
-					foreach (Player pl in List.Where(x => x.UserId == args)) playerFound = pl;
-				if (playerFound == null)
 				{
-					if (args == "WORLD" || args == "SCP-018" || args == "SCP-575" || args == "SCP-207") return null;
-					int maxNameLength = 31, lastnameDifference = 31;
-					string str1 = args.ToLower();
-					foreach (Player pl in List)
+					foreach (Player player in Dictionary.Values)
 					{
-						if (!pl.Nickname.ToLower().Contains(args.ToLower())) continue;
-						if (str1.Length < maxNameLength)
+						if (player.UserId == args)
 						{
-							int nameDifference;
-							int x = maxNameLength - str1.Length;
-							int y = maxNameLength - pl.Nickname.Length;
-							string str2 = pl.Nickname;
-							for (int i = 0; i < x; i++) str1 += "z";
-							for (int i = 0; i < y; i++) str2 += "z";
-							int n = str1.Length;
-							int m = str2.Length;
-							int[,] d = new int[n + 1, m + 1];
-							if (n == 0) nameDifference = m;
-							if (m == 0) nameDifference = n;
-							for (int i = 1; i <= n; i++)
-								for (int j = 1; j <= m; j++)
-								{
-									int cost = (str2[j - 1] == str1[i - 1]) ? 0 : 1;
-									d[i, j] = Math.Min(
-										Math.Min(d[i - 1, j] + 1, d[i, j - 1] + 1),
-										d[i - 1, j - 1] + cost);
-								}
-							nameDifference = d[n, m];
-							if (nameDifference < lastnameDifference)
-							{
-								lastnameDifference = nameDifference;
-								playerFound = pl;
-							}
+							playerFound = player;
+							break;
 						}
 					}
 				}
-				if (playerFound != null) ArgsPlayers.Add(args, playerFound);
+				else
+				{
+					int lastnameDifference = 31;
+					string firstString = args.ToLower();
+					foreach (Player player in Dictionary.Values)
+					{
+						if (player.Nickname == null) continue;
+						if (!player.Nickname.Contains(args, StringComparison.OrdinalIgnoreCase))
+							continue;
+						string secondString = player.Nickname;
+						int nameDifference = secondString.Length - firstString.Length;
+						if (nameDifference < lastnameDifference)
+						{
+							lastnameDifference = nameDifference;
+							playerFound = player;
+						}
+					}
+				}
+				if (playerFound != null)
+					ArgsPlayers[args] = playerFound;
 				return playerFound;
 			}
-			catch (Exception exception)
+			catch (Exception ex)
 			{
-				Log.Error($"GetPlayer error: {exception}");
+				Log.Error($"[API.Player.Get(string)] umm, error: {ex}");
 				return null;
 			}
 		}
@@ -592,19 +587,15 @@ namespace Qurre.API
 		}
 		public void AddItem(ItemType itemType, int amount)
 		{
-			if (amount > 0)
-			{
-				for (int i = 0; i < amount; i++)
-					AddItem(itemType);
-			}
+			if (0 >= amount) return;
+			for (int i = 0; i < amount; i++)
+				AddItem(itemType);
 		}
 		public void AddItem(List<ItemType> items)
 		{
-			if (items.Count > 0)
-			{
-				for (int i = 0; i < items.Count; i++)
-					AddItem(items[i]);
-			}
+			if (0 >= items.Count) return;
+			for (int i = 0; i < items.Count; i++)
+				AddItem(items[i]);
 		}
 		public void AddItem(Item item) => AddItem(item.Base);
 		public Item AddItem(Pickup pickup) => Item.Get(Inventory.ServerAddItem(pickup.Type, pickup.Serial, pickup.Base));
@@ -623,39 +614,39 @@ namespace Qurre.API
 		}
 		public void AddItem(Item item, int amount)
 		{
-			if (amount > 0)
-			{
-				for (int i = 0; i < amount; i++)
-					AddItem(item);
-			}
+			if (0 >= amount) return;
+			for (int i = 0; i < amount; i++)
+				AddItem(item);
 		}
 		public void AddItem(List<Item> items)
 		{
-			if (items.Count > 0)
-			{
-				for (int i = 0; i < items.Count; i++)
-					AddItem(items[i]);
-			}
+			if (0 >= items.Count) return;
+			for (int i = 0; i < items.Count; i++)
+				AddItem(items[i]);
 		}
 		public void DropItem(Item item) => Inventory.ServerDropItem(item.Serial);
 		public bool HasItem(ItemType item) => Inventory.UserInventory.Items.Any(tempItem => tempItem.Value.ItemTypeId == item);
 		public int CountItems(ItemType item) => Inventory.UserInventory.Items.Count(tempItem => tempItem.Value.ItemTypeId == item);
-		public bool RemoveItem(ushort id)
+		public bool RemoveItem(Item item, bool destroy = true)
 		{
-			if (!Inventory.UserInventory.Items.TryGetValue(id, out ItemBase @base))
+			if (!ItemsValue.Contains(item)) return false;
+			if (!Inventory.UserInventory.Items.ContainsKey(item.Serial))
+			{
+				ItemsValue.Remove(item);
 				return false;
-			Inventory.ServerRemoveItem(id, @base.PickupDropModel);
+			}
+			if (destroy) Inventory.ServerRemoveItem(item.Serial, null);
+			else
+			{
+				if (ItemInHand != null && ItemInHand.Serial == item.Serial)
+					Inventory.NetworkCurItem = ItemIdentifier.None;
+				Inventory.UserInventory.Items.Remove(item.Serial);
+				ItemsValue.Remove(item);
+				Inventory.SendItemsNextFrame = true;
+			}
+
 			return true;
 		}
-		public bool RemoveItem(ItemBase item)
-		{
-			if (ItemsValue.All(i => i.Base != item))
-				return false;
-			ItemsValue.Remove(Item.Get(item));
-			Inventory.ServerRemoveItem(item.PickupDropModel.NetworkInfo.Serial, item.PickupDropModel);
-			return true;
-		}
-		public bool RemoveItem(Item item) => RemoveItem(item.Base);
 		public bool RemoveHandItem() => RemoveItem(ItemInHand);
 		public void ResetInventory(List<ItemType> newItems)
 		{

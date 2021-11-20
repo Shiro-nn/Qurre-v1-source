@@ -8,7 +8,6 @@ namespace Qurre.Patches.Events.Round
         {
             if (q == "Waiting for players...")
             {
-                API.Map.AddObjects();
                 API.Round.CurrentRound++;
                 Qurre.Events.Invoke.Round.Waiting();
             }

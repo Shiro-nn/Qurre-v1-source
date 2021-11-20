@@ -24,6 +24,11 @@ namespace Qurre.Events.Modules
             Player.ScpAttack += CD;
             Player.Leave += Leave;
             Player.Spawn += FixItems;
+            Map.Generated += MapGenerated;
+        }
+        private static void MapGenerated()
+        {
+            API.Map.AddObjects();
         }
         private static void SceneUnloaded(Scene _)
         {

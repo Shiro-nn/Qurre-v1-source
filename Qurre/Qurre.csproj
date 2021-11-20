@@ -117,6 +117,7 @@
     <Compile Include="API\Controllers\Broadcast.cs" />
     <Compile Include="API\Controllers\Lights.cs" />
     <Compile Include="API\DataBase\MongoDataBases.cs" />
+    <Compile Include="API\Events\Voice.cs" />
     <Compile Include="API\Extensions.cs" />
     <Compile Include="API\Controllers\Alpha.cs" />
     <Compile Include="API\Controllers\Cassie.cs" />
@@ -168,6 +169,8 @@
     <Compile Include="API\Controllers\Scp914.cs" />
     <Compile Include="API\ConfigManager.cs" />
     <Compile Include="Events\Alpha.cs" />
+    <Compile Include="Events\Voice.cs" />
+    <Compile Include="Events\Invoke\Voice.cs" />
     <Compile Include="Events\Invoke\Report.cs" />
     <Compile Include="Events\Report.cs" />
     <Compile Include="Events\Invoke\Alpha.cs" />
@@ -190,6 +193,7 @@
     <Compile Include="Patches\Controllers\LockerInitial.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
+    <Compile Include="Patches\Events\player\ChangeSpectate.cs" />
     <Compile Include="Patches\Events\player\TantrumWalking.cs" />
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
@@ -197,6 +201,8 @@
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemPickup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemInventory.cs" />
+    <Compile Include="Patches\Events\Voice\PressPrimaryChat.cs" />
+    <Compile Include="Patches\Events\Voice\PressAltChat.cs" />
     <Compile Include="Patches\Modules\Bot_Mirror.cs" />
     <Compile Include="Patches\Modules\Bot_Position.cs" />
     <Compile Include="Patches\Modules\Bot_ShowHit.cs" />

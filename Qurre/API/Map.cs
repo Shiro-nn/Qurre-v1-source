@@ -157,7 +157,14 @@ namespace Qurre.API
 		public static void PlayCIEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
 		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);
-		public static void PlayAmbientSound(int id) => PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>().RpcPlaySound(id);
+		public static AmbientSoundPlayer AmbientSoundPlayer { get; private set; }
+		public static void PlayAmbientSound() => AmbientSoundPlayer.GenerateRandom();
+		public static void PlayAmbientSound(int id)
+		{
+			if (id >= AmbientSoundPlayer.clips.Length)
+				throw new IndexOutOfRangeException($"[Qurre.API.Map.PlayAmbientSound] no, no, no, no more than {AmbientSoundPlayer.clips.Length} sounds.");
+			AmbientSoundPlayer.RpcPlaySound(AmbientSoundPlayer.clips[id].index);
+		}
 		public static void ShowHint(string message, float duration)
 		{
 			foreach (Player player in Player.List) player.ShowHint(message, duration);
@@ -242,6 +249,7 @@ namespace Qurre.API
 		}
 		internal static void AddObjects()
 		{
+			AmbientSoundPlayer = PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>();
 			Cassies = new CassieList();
 			foreach (var room in RoomIdentifier.AllRoomIdentifiers)
 			{

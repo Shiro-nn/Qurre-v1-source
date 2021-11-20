@@ -13,7 +13,7 @@ namespace Qurre.Patches.Events.player
             try
             {
                 if (!value || string.IsNullOrEmpty(__instance?.UserId)) return;
-                Player player = new Player(ReferenceHub.GetHub(__instance.gameObject));
+                Player player = new(ReferenceHub.GetHub(__instance.gameObject));
                 try
                 {
                     if (!Player.Dictionary.ContainsKey(__instance.gameObject)) Player.Dictionary.Add(__instance.gameObject, player);
