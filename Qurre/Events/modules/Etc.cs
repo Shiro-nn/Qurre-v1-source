@@ -10,7 +10,7 @@ namespace Qurre.Events.Modules
 {
     internal static class Etc
     {
-        internal static Dictionary<API.Player, DateTime> CDScp939 = new Dictionary<API.Player, DateTime>();
+        internal static Dictionary<API.Player, DateTime> CDScp939 = new();
         internal static void Load()
         {
             SceneManager.sceneUnloaded += SceneUnloaded;
@@ -24,11 +24,6 @@ namespace Qurre.Events.Modules
             Player.ScpAttack += CD;
             Player.Leave += Leave;
             Player.Spawn += FixItems;
-            Map.Generated += MapGenerated;
-        }
-        private static void MapGenerated()
-        {
-            API.Map.AddObjects();
         }
         private static void SceneUnloaded(Scene _)
         {
@@ -40,6 +35,7 @@ namespace Qurre.Events.Modules
         }
         private static void Waiting()
         {
+            API.Map.AddObjects();
             API.Round.BotSpawned = false;
             API.Round.ForceEnd = false;
             RoundSummary.RoundLock = false;
@@ -75,7 +71,7 @@ namespace Qurre.Events.Modules
                 CDScp939.Add(ev.Scp, DateTime.Now);
                 return;
             }
-            if ((DateTime.Now - CDScp939[ev.Scp]).TotalSeconds < 2) ev.Allowed = false;
+            if ((DateTime.Now - CDScp939[ev.Scp]).TotalSeconds < 1.5) ev.Allowed = false;
             else CDScp939[ev.Scp] = DateTime.Now;
         }
         private static void Leave(LeaveEvent ev)
