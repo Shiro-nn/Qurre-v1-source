@@ -98,6 +98,10 @@
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
     <Compile Include="API\Controllers\Bot.cs" />
+    <Compile Include="API\Controllers\Light.cs" />
+    <Compile Include="API\Controllers\Primitive.cs" />
+    <Compile Include="API\Objects\DamageTypes.cs" />
+    <Compile Include="API\Objects\DamageTypesPrimitive.cs" />
     <Compile Include="API\Controllers\Window.cs" />
     <Compile Include="API\Controllers\Items\Ammo.cs" />
     <Compile Include="API\Controllers\Items\Armor.cs" />
@@ -231,7 +235,6 @@
     <Compile Include="Patches\Events\player\Heal.cs" />
     <Compile Include="Patches\Events\player\RadioUpdate.cs" />
     <Compile Include="Patches\Events\player\Dead.cs" />
-    <Compile Include="Patches\Events\SCPs\Scp049\Attack.cs" />
     <Compile Include="Patches\Events\SCPs\Scp049\AttackZombie.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\Attack.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\Windup.cs" />
@@ -281,7 +284,7 @@
     <Compile Include="Patches\Events\Round\Restart.cs" />
     <Compile Include="Patches\Events\Round\Check.cs" />
     <Compile Include="Patches\Events\Round\Start.cs" />
-    <Compile Include="Patches\Events\SCPs\Scp049\StartAndFinishRecall.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp049\Doctor.cs" />
     <Compile Include="Patches\Events\SCPs\Scp079\GeneratorActivate.cs" />
     <Compile Include="Patches\Events\SCPs\Scp079\GetLVL.cs" />
     <Compile Include="Patches\Events\SCPs\Scp079\GetEXP.cs" />

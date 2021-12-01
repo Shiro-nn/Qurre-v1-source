@@ -1,4 +1,5 @@
-﻿using HarmonyLib;
+﻿using Footprinting;
+using HarmonyLib;
 using InventorySystem.Items.ThrowableProjectiles;
 using Qurre.API;
 using Qurre.API.Events;
@@ -9,13 +10,12 @@ namespace Qurre.Patches.Events.player
 	[HarmonyPatch(typeof(ExplosionGrenade), nameof(ExplosionGrenade.Explode))]
 	internal static class FragExplosionPatch
 	{
-		private static bool Prefix(ExplosionGrenade __instance)
+		private static bool Prefix(Footprint attacker, Vector3 position, ExplosionGrenade settingsReference)
 		{
 			try
 			{
-				Player thrower = Player.Get(__instance.PreviousOwner.Hub);
-				Vector3 position = __instance.transform.position;
-				var ev = new FragExplosionEvent(thrower, __instance, position);
+				Player thrower = Player.Get(attacker.Hub);
+				var ev = new FragExplosionEvent(thrower, settingsReference, position);
 				Qurre.Events.Invoke.Player.FragExplosion(ev);
 				return ev.Allowed;
 			}

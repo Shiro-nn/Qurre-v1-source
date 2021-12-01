@@ -1,6 +1,8 @@
 ﻿using HarmonyLib;
 using UnityEngine;
 using Qurre.API.Events;
+using PlayerStatsSystem;
+
 namespace Qurre.Patches.Events.SCPs.Scp096
 {
     [HarmonyPatch(typeof(PlayableScps.Scp096), nameof(PlayableScps.Scp096.AddTarget))]
@@ -28,18 +30,21 @@ namespace Qurre.Patches.Events.SCPs.Scp096
     [HarmonyPatch(typeof(PlayableScps.Scp096), nameof(PlayableScps.Scp096.OnDamage))]
     internal static class AddTargetShoot
     {
-        public static bool Prefix(PlayableScps.Scp096 __instance, PlayerStats.HitInfo info)
+        public static bool Prefix(PlayableScps.Scp096 __instance, DamageHandlerBase handler)
         {
             try
             {
-                if (__instance == null || __instance.Hub == null || info == null || info.RHub == null) return true;
+                if (handler is not AttackerDamageHandler dodo) return true;
+                if (dodo.Attacker.Hub is null) return true;
+                if (__instance.CanEnrage) return true;
                 API.Player player = API.Player.Get(__instance.Hub.gameObject);
-                API.Player target = API.Player.Get(info.RHub);
-                if (target == null) return true;
-                if ((player != null && player.Invisible) || (target != null && target.Invisible)) return false;
+                API.Player target = API.Player.Get(dodo.Attacker.Hub);
                 var ev = new AddTargetEvent(__instance, player, target);
                 Qurre.Events.Invoke.Scp096.AddTarget(ev);
-                return ev.Allowed;
+                __instance.AddTarget(dodo.Attacker.Hub.gameObject);
+                __instance.Windup();
+                __instance.Shield.SustainTime = 25f;
+                return false;
             }
             catch (System.Exception e)
             {

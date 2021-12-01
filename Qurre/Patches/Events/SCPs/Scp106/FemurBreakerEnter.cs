@@ -2,6 +2,7 @@
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
+using PlayerStatsSystem;
 namespace Qurre.Patches.Events.SCPs.Scp106
 {
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.AllowContain))]
@@ -13,22 +14,20 @@ namespace Qurre.Patches.Events.SCPs.Scp106
             {
                 if (!NetworkServer.active || !NonFacilityCompatibility.currentSceneSettings.enableStandardGamplayItems)
                     return false;
-                foreach (GameObject player in PlayerManager.players)
+                foreach (ReferenceHub value in ReferenceHub.GetAllHubs().Values)
                 {
-                    if (Vector3.Distance(player.transform.position, __instance._lureSpj.transform.position) <
-                        1.97000002861023)
+                    if (!value.isDedicatedServer && value.Ready && Vector3.Distance(value.transform.position, __instance._lureSpj.transform.position) < 1.97f)
                     {
-                        CharacterClassManager CCM = player.GetComponent<CharacterClassManager>();
-                        PlayerStats Stats = player.GetComponent<PlayerStats>();
-                        if (CCM.Classes.SafeGet(CCM.CurClass).team != Team.SCP &&
-                            CCM.CurClass != RoleType.Spectator && !CCM.GodMode)
+                        CharacterClassManager characterClassManager = value.characterClassManager;
+                        PlayerStats playerStats = value.playerStats;
+                        if (characterClassManager.CurRole.team != 0 && characterClassManager.CurClass != RoleType.Spectator && !characterClassManager.GodMode)
                         {
-                            var ev = new FemurBreakerEnterEvent(API.Player.Get(Stats.gameObject));
+                            var ev = new FemurBreakerEnterEvent(API.Player.Get(value));
                             Qurre.Events.Invoke.Scp106.FemurBreakerEnter(ev);
                             if (ev.Allowed)
                             {
-                                Stats.HurtPlayer(new PlayerStats.HitInfo(10000f, "WORLD", DamageTypes.Lure, 0, true), player);
-                                __instance._lureSpj.SetState(false, true);
+                                playerStats.DealDamage(new UniversalDamageHandler(-1f, DeathTranslations.UsedAs106Bait));
+                                __instance._lureSpj.SetState(p: false, b: true);
                             }
                         }
                     }

@@ -9,7 +9,7 @@ using System.Linq;
 using UnityEngine;
 namespace Qurre.Patches.Modules
 {
-    [HarmonyPatch(typeof(PlayerPositionManager), "TransmitData")]
+    [HarmonyPatch(typeof(PlayerPositionManager), nameof(PlayerPositionManager.TransmitData))]
     internal static class InvisiblePatch
     {
         internal static bool Prefix(PlayerPositionManager __instance)

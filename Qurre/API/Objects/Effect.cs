@@ -7,32 +7,38 @@ namespace Qurre.API
     {
         public static Type Type(this EffectType effect)
         {
-            switch (effect)
+            return effect switch
             {
-                case EffectType.Amnesia: return typeof(Amnesia);
-                case EffectType.Asphyxiated: return typeof(Asphyxiated);
-                case EffectType.Bleeding: return typeof(Bleeding);
-                case EffectType.Blinded: return typeof(Blinded);
-                case EffectType.Burned: return typeof(Burned);
-                case EffectType.Concussed: return typeof(Concussed);
-                case EffectType.Corroding: return typeof(Corroding);
-                case EffectType.Deafened: return typeof(Deafened);
-                case EffectType.Decontaminating: return typeof(Decontaminating);
-                case EffectType.Disabled: return typeof(Disabled);
-                case EffectType.Ensnared: return typeof(Ensnared);
-                case EffectType.Exhausted: return typeof(Exhausted);
-                case EffectType.Flashed: return typeof(Flashed);
-                case EffectType.Hemorrhage: return typeof(Hemorrhage);
-                case EffectType.Invigorated: return typeof(Invigorated);
-                case EffectType.Panic: return typeof(Panic);
-                case EffectType.Poisoned: return typeof(Poisoned);
-                case EffectType.Scp207: return typeof(Scp207);
-                case EffectType.Scp268: return typeof(Invisible);
-                case EffectType.SinkHole: return typeof(SinkHole);
-                case EffectType.Visuals939: return typeof(Visuals939);
-                case EffectType.Stained: return typeof(Stained);
-            }
-            throw new InvalidOperationException("Invalid effect enum provided");
+                EffectType.Amnesia => typeof(Amnesia),
+                EffectType.Asphyxiated => typeof(Asphyxiated),
+                EffectType.Bleeding => typeof(Bleeding),
+                EffectType.Blinded => typeof(Blinded),
+                EffectType.Burned => typeof(Burned),
+                EffectType.Concussed => typeof(Concussed),
+                EffectType.Corroding => typeof(Corroding),
+                EffectType.Deafened => typeof(Deafened),
+                EffectType.Decontaminating => typeof(Decontaminating),
+                EffectType.Disabled => typeof(Disabled),
+                EffectType.Ensnared => typeof(Ensnared),
+                EffectType.Exhausted => typeof(Exhausted),
+                EffectType.Flashed => typeof(Flashed),
+                EffectType.Hemorrhage => typeof(Hemorrhage),
+                EffectType.Invigorated => typeof(Invigorated),
+                EffectType.BodyshotReduction => typeof(BodyshotReduction),
+                EffectType.Poisoned => typeof(Poisoned),
+                EffectType.Scp207 => typeof(Scp207),
+                EffectType.Invisible => typeof(Invisible),
+                EffectType.SinkHole => typeof(SinkHole),
+                EffectType.Visuals939 => typeof(Visuals939),
+                EffectType.DamageReduction => typeof(DamageReduction),
+                EffectType.MovementBoost => typeof(MovementBoost),
+                EffectType.RainbowTaste => typeof(RainbowTaste),
+                EffectType.SeveredHands => typeof(SeveredHands),
+                EffectType.Stained => typeof(Stained),
+                EffectType.Visual173Blink => typeof(Visuals173Blink),
+                EffectType.Vitality => typeof(Vitality),
+                _ => throw new InvalidOperationException("Invalid effect enum provided"),
+            };
         }
     }
 }

@@ -1,31 +1,30 @@
 ﻿using HarmonyLib;
 using Mirror;
+using PlayerStatsSystem;
 using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 namespace Qurre.Patches.Controllers
 {
-	[HarmonyPatch(typeof(RagdollManager), nameof(RagdollManager.SpawnRagdoll))]
+	[HarmonyPatch(typeof(Ragdoll), nameof(Ragdoll.ServerSpawnRagdoll))]
 	internal static class RagdollController
 	{
-		private static bool Prefix(RagdollManager __instance, Vector3 pos, Quaternion rot, Vector3 velocity, int classId, PlayerStats.HitInfo ragdollInfo, bool allowRecall, string ownerID, string ownerNick, int playerId, bool _096Death = false)
+		private static bool Prefix(ReferenceHub hub, DamageHandlerBase handler)
 		{
 			try
 			{
-				Role role = __instance.hub.characterClassManager.Classes.SafeGet(classId);
-				if (role.model_ragdoll == null) return false;
-				GameObject gameObject = Object.Instantiate(role.model_ragdoll, pos + role.ragdoll_offset.position, Quaternion.Euler(rot.eulerAngles + role.ragdoll_offset.rotation));
-				NetworkServer.Spawn(gameObject);
-				Ragdoll component = gameObject.GetComponent<Ragdoll>();
-				component.Networkowner = new Ragdoll.Info(ownerID, ownerNick, ragdollInfo, role, playerId);
-				component.NetworkallowRecall = allowRecall;
-				component.NetworkPlayerVelo = velocity;
-				component.NetworkSCP096Death = _096Death;
-				var ragdoll = new API.Controllers.Ragdoll(component);
+				if (!NetworkServer.active) return false;
+				if (hub is null) return false;
+				GameObject model_ragdoll = hub.characterClassManager.CurRole.model_ragdoll;
+				if (model_ragdoll is null) return false;
+				if (!Object.Instantiate(model_ragdoll).TryGetComponent(out Ragdoll component)) return false;
+				var ragdoll = new API.Controllers.Ragdoll(component, hub.playerId);
 				Map.Ragdolls.Add(ragdoll);
-				var ev = new RagdollSpawnEvent(ragdollInfo.PlayerId == 0 ? null : Player.Get(ragdollInfo.PlayerId), Player.Get(__instance.gameObject), ragdoll);
+				var ev = new RagdollSpawnEvent(Player.Get(hub), ragdoll);
 				Qurre.Events.Invoke.Player.RagdollSpawn(ev);
-				if (!ev.Allowed) ragdoll.Destroy();
+				if (ev.Allowed is false) return false;
+				component.NetworkInfo = new RagdollInfo(hub, handler, model_ragdoll.transform.localPosition, model_ragdoll.transform.localRotation);
+				NetworkServer.Spawn(component.gameObject);
 				return false;
 			}
 			catch (System.Exception e)

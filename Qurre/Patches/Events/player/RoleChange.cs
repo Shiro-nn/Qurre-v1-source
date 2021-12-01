@@ -1,7 +1,9 @@
 ﻿using System;
 using HarmonyLib;
 using Mirror;
+using PlayerStatsSystem;
 using Qurre.API.Events;
+using Qurre.API.Objects;
 using Qurre.Events.Invoke;
 using UnityEngine;
 using static CharacterClassManager;
@@ -10,13 +12,14 @@ namespace Qurre.Patches.Events.player
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.SetPlayersClass))]
     internal static class RoleChange
     {
-        private static bool Prefix(CharacterClassManager __instance, RoleType classid, GameObject ply, SpawnReason spawnReason, bool lite = false)
+        private static bool Prefix(RoleType classid, GameObject ply, SpawnReason spawnReason, bool lite = false)
         {
             try
             {
                 if (!NetworkServer.active) return false;
-                API.Player pl = API.Player.Get(ply);
-                if (pl == null || pl.ReferenceHub == null || pl.ReferenceHub.isDedicatedServer || !pl.ReferenceHub.Ready) return false;
+                ReferenceHub hub = ReferenceHub.GetHub(ply);
+                if(hub.isDedicatedServer || !hub.Ready) return false;
+                API.Player pl = API.Player.Get(hub);
                 var ev = new RoleChangeEvent(pl, classid, lite, spawnReason);
                 Player.RoleChange(ev);
                 if (!ev.Allowed) return false;
@@ -24,11 +27,10 @@ namespace Qurre.Patches.Events.player
                 lite = ev.SavePos;
                 spawnReason = ev.Reason;
                 if (classid != RoleType.Spectator && ev.NewRole == RoleType.Spectator)
-                    Player.Dead(new DeadEvent(API.Server.Host, ev.Player, new PlayerStats.HitInfo(-1, "Dedicated Server", DamageTypes.None, 0, true)));
+                    Player.Dead(new DeadEvent(API.Server.Host, ev.Player, new UniversalDamageHandler(), DamageTypes.None));
                 classid = ev.NewRole;
-                pl.ClassManager.SetClassIDAdv(classid, lite, spawnReason, false);
+                hub.characterClassManager.SetClassIDAdv(classid, lite, spawnReason);
                 ply.GetComponent<FirstPersonController>().ResetStamina();
-                pl.PlayerStats.SetHPAmount(__instance.Classes.SafeGet(classid).maxHP);
                 return false;
             }
             catch (Exception e)

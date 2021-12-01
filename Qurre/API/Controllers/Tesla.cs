@@ -8,6 +8,16 @@ namespace Qurre.API.Controllers
         internal Tesla(TeslaGate gate) => Gate = gate;
         public GameObject GameObject => Gate.gameObject;
         public Transform Transform => GameObject.transform;
+        private string name;
+        public string Name
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(name)) return GameObject.name;
+                return name;
+            }
+            set => name = value;
+        }
         public Vector3 Position
         {
             get => Transform.position;
@@ -20,6 +30,10 @@ namespace Qurre.API.Controllers
                 Transform.localPosition = value;
                 Transform.position = value;
                 Gate.localPosition = value;
+                Gate.transform.localPosition = value;
+                Gate.transform.position = value;
+                Gate.gameObject.transform.localPosition = value;
+                Gate.gameObject.transform.position = value;
                 NetworkServer.Spawn(GameObject);/*
                 NetworkServer.UnSpawn(Gate.transform.gameObject);
                 Gate.localPosition = value;

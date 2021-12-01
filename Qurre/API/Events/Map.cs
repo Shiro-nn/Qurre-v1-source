@@ -1,6 +1,7 @@
 ﻿using Interactables.Interobjects.DoorUtils;
 using InventorySystem;
 using InventorySystem.Items.Pickups;
+using PlayerStatsSystem;
 using System;
 using UnityEngine;
 namespace Qurre.API.Events
@@ -128,18 +129,14 @@ namespace Qurre.API.Events
     }
     public class ScpDeadAnnouncementEvent : EventArgs
     {
-        public ScpDeadAnnouncementEvent(Player killer, Role role, PlayerStats.HitInfo hitInfo, string groupId, bool allowed = true)
+        public ScpDeadAnnouncementEvent(Player scp, string cassieDeath, bool allowed = true)
         {
-            Killer = killer;
-            Role = role;
-            HitInfo = hitInfo;
-            GroupId = groupId;
+            Scp = scp;
+            CassieDeath = cassieDeath;
             Allowed = allowed;
         }
-        public Player Killer { get; }
-        public Role Role { get; }
-        public PlayerStats.HitInfo HitInfo { get; set; }
-        public string GroupId { get; set; }
+        public Player Scp { get; }
+        public string CassieDeath { get; set; }
         public bool Allowed { get; set; }
     }
     public class CreatePickupEvent : EventArgs

@@ -3,6 +3,7 @@ using InventorySystem.Items.Firearms.BasicMessages;
 using InventorySystem.Items.MicroHID;
 using InventorySystem.Items.Radio;
 using InventorySystem.Items.ThrowableProjectiles;
+using PlayerStatsSystem;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Items;
 using Qurre.API.Objects;
@@ -178,15 +179,19 @@ namespace Qurre.API.Events
     }
     public class DeadEvent : EventArgs
     {
-        public DeadEvent(Player killer, Player target, PlayerStats.HitInfo hitInfo)
+        public DeadEvent(Player killer, Player target, DamageHandlerBase damageInfo, DamageTypes type)
         {
             Killer = killer;
             Target = target;
-            HitInfo = hitInfo;
+            DamageType = type;
+            DamageInfo = damageInfo;
+            PrimitiveType = damageInfo.GetDamageTypesPrimitive();
         }
         public Player Killer { get; }
         public Player Target { get; }
-        public PlayerStats.HitInfo HitInfo { get; set; }
+        public DamageTypes DamageType { get; }
+        public DamageTypesPrimitive PrimitiveType { get; }
+        public DamageHandlerBase DamageInfo { get; set; }
     }
     public class EscapeEvent : EventArgs
     {
@@ -247,42 +252,45 @@ namespace Qurre.API.Events
     }
     public class DamageEvent : EventArgs
     {
-        private PlayerStats.HitInfo hitInformations;
-        public DamageEvent(Player attacker, Player target, PlayerStats.HitInfo hitInformations, bool allowed = true)
+        private DamageHandlerBase damageInfo;
+        public DamageEvent(Player attacker, Player target, DamageHandlerBase dInfo, DamageTypes type, float amount, bool allowed = true)
         {
             Attacker = attacker;
             Target = target;
-            HitInformations = hitInformations;
+            DamageInfo = dInfo;
+            DamageType = type;
+            Amount = amount;
             Allowed = allowed;
+            PrimitiveType = damageInfo.GetDamageTypesPrimitive();
         }
         public Player Attacker { get; }
         public Player Target { get; }
-        public PlayerStats.HitInfo HitInformations
+        public DamageHandlerBase DamageInfo
         {
-            get => hitInformations;
-            private set => hitInformations = value;
+            get => damageInfo;
+            private set => damageInfo = value;
         }
-        public int Time => hitInformations.Time;
-        public DamageTypes.DamageType DamageType => hitInformations.Tool;
-        public float Amount
-        {
-            get => hitInformations.Amount;
-            set => hitInformations.Amount = value;
-        }
+        public DamageTypes DamageType { get; }
+        public DamageTypesPrimitive PrimitiveType { get; }
+        public float Amount { get; set; }
         public bool Allowed { get; set; }
     }
     public class DiesEvent : EventArgs
     {
-        public DiesEvent(Player killer, Player target, PlayerStats.HitInfo hitInfo, bool allowed = true)
+        public DiesEvent(Player killer, Player target, DamageHandlerBase damageInfo, DamageTypes type, bool allowed = true)
         {
             Killer = killer;
             Target = target;
-            HitInfo = hitInfo;
+            DamageType = type;
+            DamageInfo = damageInfo;
             Allowed = allowed;
+            PrimitiveType = damageInfo.GetDamageTypesPrimitive();
         }
         public Player Killer { get; }
         public Player Target { get; }
-        public PlayerStats.HitInfo HitInfo { get; }
+        public DamageTypes DamageType { get; }
+        public DamageTypesPrimitive PrimitiveType { get; }
+        public DamageHandlerBase DamageInfo { get; }
         public bool Allowed { get; set; }
     }
     public class InteractEvent : EventArgs
@@ -427,17 +435,14 @@ namespace Qurre.API.Events
     public class RagdollSpawnEvent : EventArgs
     {
         public RagdollSpawnEvent(
-            Player killer,
             Player owner,
             Controllers.Ragdoll ragdoll,
             bool allowed = true)
         {
-            Killer = killer;
             Owner = owner;
             Ragdoll = ragdoll;
             Allowed = allowed;
         }
-        public Player Killer { get; }
         public Player Owner { get; }
         public Controllers.Ragdoll Ragdoll { get; }
         public bool Allowed { get; set; }
@@ -560,16 +565,18 @@ namespace Qurre.API.Events
     }
     public class RadioUsingEvent : EventArgs
     {
-        public RadioUsingEvent(Player player, RadioItem radio, float battery, bool allowed = true)
+        public RadioUsingEvent(Player player, RadioItem radio, float battery, float сonsumption, bool allowed = true)
         {
             Player = player;
             Radio = radio;
             Battery = battery;
+            Consumption = сonsumption;
             Allowed = allowed;
         }
         public Player Player { get; private set; }
         public RadioItem Radio { get; private set; }
         public float Battery { get; set; }
+        public float Consumption { get; set; }
         public bool Allowed { get; set; }
     }
     public class TransmitPlayerDataEvent : EventArgs

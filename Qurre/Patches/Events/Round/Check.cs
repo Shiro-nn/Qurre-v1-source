@@ -6,6 +6,7 @@ using GameCore;
 using HarmonyLib;
 using MEC;
 using Qurre.API.Events;
+using RoundRestarting;
 using UnityEngine;
 namespace Qurre.Patches.Events.Round
 {
@@ -72,8 +73,8 @@ namespace Qurre.Patches.Events.Round
                 int mtf_team = newList.mtf_and_guards + newList.scientists;
                 int d_team = newList.chaos_insurgents + newList.class_ds;
                 int scp_team = newList.scps_except_zombies + newList.zombies;
-                int num4 = newList.class_ds + RoundSummary.escaped_ds;
-                int num5 = newList.scientists + RoundSummary.escaped_scientists;
+                int num4 = newList.class_ds + RoundSummary.EscapedClassD;
+                int num5 = newList.scientists + RoundSummary.EscapedScientists;
                 float num6 = (instance.classlistStart.class_ds != 0) ? (num4 / instance.classlistStart.class_ds) : 0;
                 float num7 = (instance.classlistStart.scientists == 0) ? 1 : (num5 / instance.classlistStart.scientists);
                 if (newList.class_ds == 0 && mtf_team == 0) instance.RoundEnded = true;
@@ -117,13 +118,13 @@ namespace Qurre.Patches.Events.Round
                         newList = end.ClassList;
                         leadingTeam = end.LeadingTeam;
                         num10 = end.ToRestart;
-                        instance.RpcShowRoundSummary(instance.classlistStart, newList, leadingTeam, RoundSummary.escaped_ds,
-                            RoundSummary.escaped_scientists, RoundSummary.kills_by_scp, num10);
+                        instance.RpcShowRoundSummary(instance.classlistStart, newList, leadingTeam, RoundSummary.EscapedClassD,
+                            RoundSummary.EscapedScientists, RoundSummary.KilledBySCPs, num10);
                     }
                     yield return Timing.WaitForSeconds(num10 - 1);
                     instance.RpcDimScreen();
                     yield return Timing.WaitForSeconds(1f);
-                    ReferenceHub.LocalHub.playerStats.Roundrestart();
+                    RoundRestart.InitiateRoundRestart();
                 }
             }
         }

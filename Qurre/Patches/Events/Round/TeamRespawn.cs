@@ -45,7 +45,7 @@ namespace Qurre.Patches.Events.Round
                 while (list.Count > num2) list.RemoveAt(list.Count - 1);
                 list.ShuffleList();
                 List<Player> list2 = ListPool<Player>.Shared.Rent();
-                Queue<RoleType> queue = new Queue<RoleType>();
+                Queue<RoleType> queue = new();
                 spawnableTeamHandlerBase.GenerateQueue(queue, list.Count);
                 foreach (Player pl in list)
                 {
@@ -71,8 +71,7 @@ namespace Qurre.Patches.Events.Round
                     RespawnTickets.Singleton.GrantTickets(__instance.NextKnownTeam, -list2.Count * spawnableTeamHandlerBase.TicketRespawnCost, false);
                     if (UnitNamingRules.TryGetNamingRule(__instance.NextKnownTeam, out UnitNamingRule unitNamingRule))
                     {
-                        string text;
-                        unitNamingRule.GenerateNew(__instance.NextKnownTeam, out text);
+                        unitNamingRule.GenerateNew(__instance.NextKnownTeam, out string text);
                         foreach (Player pl in list2)
                         {
                             pl.ClassManager.NetworkCurSpawnableTeamType = (byte)__instance.NextKnownTeam;

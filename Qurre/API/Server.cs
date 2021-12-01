@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using InventorySystem;
+using RoundRestarting;
 namespace Qurre.API
 {
     public static class Server
@@ -66,7 +67,7 @@ namespace Qurre.API
         public static void Restart()
         {
             ServerStatic.StopNextRound = ServerStatic.NextRoundAction.Restart;
-            PlayerStats.StaticChangeLevel(true);
+            RoundRestart.ChangeLevel(true);
         }
         public static void InvokeStaticMethod(this Type type, string methodName, object[] param)
         {

@@ -1,8 +1,6 @@
 ﻿using Qurre.API.Events;
 using UnityEngine.SceneManagement;
 using MapGeneration;
-using Interactables.Interobjects.DoorUtils;
-using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
@@ -20,7 +18,6 @@ namespace Qurre.Events.Modules
             Round.Restart += RoundRestart;
             Player.SyncData += SyncData;
             Server.SendingRA += FixRaBc;
-            Map.DoorLock += Fix079;
             Player.ScpAttack += CD;
             Player.Leave += Leave;
             Player.Spawn += FixItems;
@@ -137,15 +134,6 @@ namespace Qurre.Events.Modules
                     }
                 }
                 ev.ReplyMessage = "Broadcast sent.";
-            }
-        }
-        private static void Fix079(DoorLockEvent ev)
-        {
-            if (ev.Door == null) return;
-            if (ev.Reason == DoorLockReason.NoPower && ev.NewState)
-            {
-                MEC.Timing.CallDelayed(3f, () => ev.Door.DoorVariant.ServerChangeLock(DoorLockReason.NoPower, false));
-                if (API.Round.ActiveGenerators > 4) foreach (API.Player pl in API.Player.List.Where(x => x.Role == RoleType.Scp079)) pl.Kill(DamageTypes.Recontainment);
             }
         }
     }

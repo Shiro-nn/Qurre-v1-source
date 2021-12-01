@@ -4,7 +4,7 @@ namespace Qurre.Patches.Events.Round
     [HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.AddLog))]
     internal static class Waiting
     {
-        private static void Prefix(string q)
+        private static void Postfix(string q)
         {
             if (q == "Waiting for players...")
             {

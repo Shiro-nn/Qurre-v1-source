@@ -1,5 +1,6 @@
 ﻿using Footprinting;
 using HarmonyLib;
+using PlayerStatsSystem;
 using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
@@ -23,14 +24,14 @@ namespace Qurre.Patches.Events.SCPs.Scp939
 					var ev = new ScpAttackEvent(scp, pl, ScpAttackType.Scp939);
 					Qurre.Events.Invoke.Player.ScpAttack(ev);
 					if (!ev.Allowed) return false;
-					pl.Damage(50, DamageTypes.Scp939, scp);
+					pl.Damage(50, DeathTranslations.Scp939, scp);
 					scp.ClassManager.RpcPlaceBlood(target.transform.position, 0, 2f);
 					pl.EnableEffect(EffectType.Amnesia, 3f, true);
 					__result = true;
 					return false;
 				}
 				if (!target.TryGetComponent(out BreakableWindow component)) return false;
-				component.Damage(50f, null, new Footprint(__instance.Hub), Vector3.zero);
+				component.Damage(50f, new ScpDamageHandler(__instance.Hub, 50f, DeathTranslations.Scp939), Vector3.zero);
 				__result = true;
 				return false;
 			}

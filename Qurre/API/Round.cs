@@ -2,6 +2,7 @@ using GameCore;
 using Qurre.API.Objects;
 using Respawning;
 using Respawning.NamingRules;
+using RoundRestarting;
 using System;
 using UnityEngine;
 namespace Qurre.API
@@ -35,20 +36,20 @@ namespace Qurre.API
         }
         public static int EscapedDPersonnel
         {
-            get => RoundSummary.escaped_ds;
-            set => RoundSummary.escaped_ds = value;
+            get => RoundSummary.EscapedClassD;
+            set => RoundSummary.EscapedClassD = value;
         }
         public static int EscapedScientists
         {
-            get => RoundSummary.escaped_scientists;
-            set => RoundSummary.escaped_scientists = value;
+            get => RoundSummary.EscapedScientists;
+            set => RoundSummary.EscapedScientists = value;
         }
         public static int ScpKills
         {
-            get => RoundSummary.kills_by_scp;
-            set => RoundSummary.kills_by_scp = value;
+            get => RoundSummary.KilledBySCPs;
+            set => RoundSummary.KilledBySCPs = value;
         }
-        public static void Restart() => Server.Host.PlayerStats.Roundrestart();
+        public static void Restart() => RoundRestart.InitiateRoundRestart();
         public static void Start() => CharacterClassManager.ForceRoundStart();
         public static void End() => ForceEnd = true;
         public static void DimScreen() => rs.RpcDimScreen();

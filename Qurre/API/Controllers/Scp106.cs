@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Footprinting;
+using System.Collections.Generic;
 using UnityEngine;
 namespace Qurre.API.Controllers
 {
@@ -14,9 +15,9 @@ namespace Qurre.API.Controllers
         public void CreatePortal() => script.CreatePortalInCurrentPosition();
         public void UsePortal() => script.UserCode_CmdUsePortal();
         public void DeletePortal() => script.DeletePortal();
-        public void Contain() => script.Contain(player.ReferenceHub);
+        public void Contain() => script.Contain(new Footprint(player.ReferenceHub));
         public void CapturePlayer(Player player) => script.UserCode_CmdMovePlayer(player.GameObject, ServerTime.time);
         public void PlayTeleportAnimation() => script.UserCode_RpcTeleportAnimation();
-        public void PlayContainAnimation() => script._ContainAnimation(player.ReferenceHub);
+        public void PlayContainAnimation() => script._ContainAnimation(new Footprint(player.ReferenceHub));
     }
 }

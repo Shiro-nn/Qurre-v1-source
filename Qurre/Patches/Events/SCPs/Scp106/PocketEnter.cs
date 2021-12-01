@@ -5,6 +5,7 @@ using Qurre.API.Events;
 using Qurre.API;
 using System.Collections.Generic;
 using Qurre.API.Objects;
+using PlayerStatsSystem;
 namespace Qurre.Patches.Events.SCPs.Scp106
 {
     [HarmonyPatch(typeof(Scp106PlayerScript), nameof(Scp106PlayerScript.UserCode_CmdMovePlayer))]
@@ -41,11 +42,11 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                 if (Scp106PlayerScript._blastDoor.isClosed)
                 {
                     __instance._hub.characterClassManager.RpcPlaceBlood(ply.transform.position, 1, 2f);
-                    __instance._hub.playerStats.HurtPlayer(new PlayerStats.HitInfo(500f, null, DamageTypes.Scp106, __instance._hub.playerId, false), ply, false, true);
+                    __instance._hub.playerStats.DealDamage(new ScpDamageHandler(__instance._hub, DeathTranslations.PocketDecay));
                 }
                 else
                 {
-                    __instance._hub.playerStats.HurtPlayer(new PlayerStats.HitInfo(40f, null, DamageTypes.Scp106, __instance._hub.playerId, false), ply, false, true);
+                    __instance._hub.playerStats.DealDamage(new ScpDamageHandler(__instance._hub, 40f, DeathTranslations.PocketDecay));
                     pl.Position = ev.Position;
                     foreach (Scp079PlayerScript scp079PlayerScript in Scp079PlayerScript.instances)
                     {

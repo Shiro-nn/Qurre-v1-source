@@ -13,11 +13,11 @@ namespace Qurre.API.Controllers
         internal Locker(__locker locker)
         {
             _locker = locker;
-            List<Chamber> list = new List<Chamber>();
-            foreach (var _ in _locker.Chambers) list.Add(new Chamber(_, this));
+            List<Chamber> list = new();
+            foreach (var _ in _locker.Chambers) list.Add(new(_, this));
             Chambers = list.ToArray();
         }
-        private __locker _locker;
+        private readonly __locker _locker;
         public GameObject GameObject => _locker.gameObject;
         public Transform Transform => _locker.transform;
         public __locker GlobalLocker => _locker;

@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PlayerStatsSystem;
 using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
@@ -21,7 +22,7 @@ namespace Qurre.Patches.Events.SCPs.Scp049
                 var ev = new ScpAttackEvent(scp, target, ScpAttackType.Scp0492);
                 Qurre.Events.Invoke.Player.ScpAttack(ev);
                 if (!ev.Allowed) return false;
-                target.Damage((int)__instance.damage, DamageTypes.Scp0492, scp);
+                target.Damage((int)__instance.damage, DeathTranslations.Zombie, scp);
                 Hitmarker.SendHitmarker(scp.Connection, 1f);
                 scp.ClassManager.RpcPlaceBlood(target.Position, 0, (target.Role == RoleType.Spectator) ? 1.3f : 0.5f);
 				return false;

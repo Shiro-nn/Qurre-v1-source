@@ -18,6 +18,8 @@ using Qurre.API.Controllers.Items;
 using Assets._Scripts.Dissonance;
 using MapGeneration;
 using NorthwoodLib;
+using PlayerStatsSystem;
+
 namespace Qurre.API
 {
 	public class Player
@@ -256,36 +258,38 @@ namespace Qurre.API
 		}
 		public float Hp
 		{
-			get => PlayerStats.Health;
+			get => PlayerStats.StatModules[0].CurValue;
 			set
 			{
-				PlayerStats.Health = value;
-				if (value > MaxHp) MaxHp = (int)value;
+				PlayerStats.StatModules[0].CurValue = value;
+
+				if (value > MaxHp)
+					MaxHp = (int)value;
 			}
 		}
 		public int MaxHp
 		{
-			get => PlayerStats.maxHP;
-			set => PlayerStats.maxHP = value;
-		}
-		public float AhpDecay
-		{
-			get => PlayerStats.NetworkArtificialHpDecay;
-			set => PlayerStats.NetworkArtificialHpDecay = value;
+			get => ClassManager.CurRole.maxHP;
+			set => ClassManager.CurRole.maxHP = value;
 		}
 		public float Ahp
 		{
-			get => PlayerStats.GetAhpValue();
+			get => PlayerStats.StatModules[1].CurValue;
 			set
 			{
-				PlayerStats.SafeSetAhpValue(value);
-				if (value > MaxAhp) MaxAhp = (int)value;
+				if (value > MaxAhp)
+					MaxAhp = Mathf.CeilToInt(value);
+				PlayerStats.StatModules[1].CurValue = value;
 			}
 		}
-		public int MaxAhp
+		public float MaxAhp
 		{
-			get => PlayerStats.NetworkMaxArtificialHealth;
-			set => PlayerStats.NetworkMaxArtificialHealth = value;
+			get => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar;
+			set => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar = value;
+		}
+		public List<AhpStat.AhpProcess> AhpActiveProcesses
+		{
+			get => ((AhpStat)PlayerStats.StatModules[1])._activeProcesses;
 		}
 		public ItemIdentifier CurrentItem
 		{
@@ -554,10 +558,9 @@ namespace Qurre.API
 			NetworkWriterPool.Recycle(writer);
 		}
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
-		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector2 newRotation = default, DamageTypes.DamageType damageType = null)
+		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector2 newRotation = default, string deathReason = "")
 		{
-			if (damageType == null) damageType = DamageTypes.Com15;
-			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, default, new PlayerStats.HitInfo(999, Nickname, damageType, Id, false), false, this);
+			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, new CustomReasonDamageHandler(deathReason), this);
 			if (newPosition == default) newPosition = Position;
 			if (newRotation == default) newRotation = Rotation;
 			ChangeModel(newRole);
@@ -572,12 +575,16 @@ namespace Qurre.API
 			return bc;
 		}
 		public void ClearBroadcasts() => Broadcasts.Clear();
-		public bool Damage(int amount, DamageTypes.DamageType damageType, Player attacker = null)
+		public bool Damage(float damage, string deathReason)
+		{
+			return PlayerStats.DealDamage(new CustomReasonDamageHandler(deathReason, damage));
+		}
+		public bool Damage(float damage, DeathTranslation deathReason, Player attacker = null)
 		{
 			if (attacker == null) attacker = this;
-			return attacker.PlayerStats.HurtPlayer(new PlayerStats.HitInfo(amount, attacker.Nickname, damageType, attacker.Id, false), GameObject);
+			return PlayerStats.DealDamage(new ScpDamageHandler(attacker.ReferenceHub, damage, deathReason));
 		}
-		public void Damage(PlayerStats.HitInfo info) => PlayerStats.HurtPlayer(info, GameObject);
+		public bool DealDamage(DamageHandlerBase handler) => PlayerStats.DealDamage(handler);
 		public Item AddItem(ItemType itemType)
 		{
 			Item item = Item.Get(Inventory.ServerAddItem(itemType));
@@ -691,7 +698,8 @@ namespace Qurre.API
 		public void Ban(int duration, string reason, string issuer = "API") => PlayerManager.localPlayer.GetComponent<BanPlayer>().BanUser(GameObject, duration, reason, issuer, false);
 		public void Kick(string reason, string issuer = "API") => Ban(0, reason, issuer);
 		public void Disconnect(string reason = null) => ServerConsole.Disconnect(GameObject, string.IsNullOrEmpty(reason) ? "" : reason);
-		public void Kill(DamageTypes.DamageType damageType = default) => PlayerStats.HurtPlayer(new PlayerStats.HitInfo(-1f, "WORLD", damageType, 0, true), GameObject);
+		public void Kill(DeathTranslation deathReason) => PlayerStats.DealDamage(new UniversalDamageHandler(-1, deathReason));
+		public void Kill(string deathReason = "") => PlayerStats.DealDamage(new CustomReasonDamageHandler(deathReason));
 		public void ChangeModel(RoleType newModel)
 		{
 			GameObject gameObject = GameObject;
@@ -776,7 +784,7 @@ namespace Qurre.API
 			HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
 		public void BodyDelete()
 		{
-			foreach (Ragdoll doll in UnityEngine.Object.FindObjectsOfType<Ragdoll>().Where(x => x.owner.PlayerId == QueryProcessor.PlayerId)) NetworkServer.Destroy(doll.gameObject);
+			foreach (var doll in Map.Ragdolls.Where(x => x.Owner == this)) doll.Destroy();
 		}
 		public List<string> GetGameObjectsInRange(float range)
 		{
@@ -800,7 +808,6 @@ namespace Qurre.API
 		}
 		public void ShowHitmark() => GameObject.GetComponent<SingleBulletHitreg>().ShowHitIndicator(PlayerStats.netId, 0.01f, Position);
 		public void PlayFallSound() => rh.falldamage.UserCode_RpcDoSound();
-		public void Redirect(float timeOffset, ushort port) => PlayerStats.UserCode_RpcRoundrestartRedirect(timeOffset, port);
 
 		private Team GetTeam(RoleType rt)
 		{
@@ -912,25 +919,25 @@ namespace Qurre.API
 			switch (Team)
 			{
 				case Team.MTF when changeTeam:
-					RoundSummary.escaped_scientists++;
+					RoundSummary.EscapedScientists++;
 					tickets.GrantTickets(Respawning.SpawnableTeamType.NineTailedFox,
 						GameCore.ConfigFile.ServerConfig.GetInt("respawn_tickets_mtf_classd_cuffed_count", 1), false);
 					break;
 
 				case Team.MTF:
-					RoundSummary.escaped_scientists++;
+					RoundSummary.EscapedScientists++;
 					tickets.GrantTickets(Respawning.SpawnableTeamType.NineTailedFox,
 						GameCore.ConfigFile.ServerConfig.GetInt("respawn_tickets_mtf_scientist_count", 1), false);
 					break;
 
 				case Team.CHI when changeTeam:
-					RoundSummary.escaped_ds++;
+					RoundSummary.EscapedClassD++;
 					tickets.GrantTickets(Respawning.SpawnableTeamType.NineTailedFox,
 						GameCore.ConfigFile.ServerConfig.GetInt("respawn_tickets_ci_scientist_cuffed_count", 1), false);
 					break;
 
 				case Team.CHI:
-					RoundSummary.escaped_ds++;
+					RoundSummary.EscapedClassD++;
 					tickets.GrantTickets(Respawning.SpawnableTeamType.NineTailedFox,
 						GameCore.ConfigFile.ServerConfig.GetInt("respawn_tickets_ci_classd_count", 1), false);
 					break;

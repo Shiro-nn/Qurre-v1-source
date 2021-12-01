@@ -1,6 +1,5 @@
 ﻿using Interactables.Interobjects.DoorUtils;
 using System;
-using System.Collections.Generic;
 namespace Qurre.API.Events
 {
     public class AlphaStartEvent : EventArgs

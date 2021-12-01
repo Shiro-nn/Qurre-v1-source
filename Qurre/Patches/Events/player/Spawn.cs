@@ -35,6 +35,7 @@ namespace Qurre.Patches.Events.player
                         __instance.NetworkCurUnitName = string.Empty;
                     }
                 }
+                var __pl = API.Player.Get(__instance.gameObject);
                 if (curRole.team != Team.RIP)
                 {
                     if (NetworkServer.active && !lite)
@@ -44,16 +45,15 @@ namespace Qurre.Patches.Events.player
                         if (pos != Vector3.zero) __instance._pms.IsAFK = true;
                         else
                         {
-                            GameObject randomPosition = CharacterClassManager._spawnpointManager.GetRandomPosition(__instance.CurClass);
+                            var randomPosition = API.Map.GetRandomSpawnTransform(__instance.CurClass);
                             if (randomPosition != null)
                             {
-                                pos = randomPosition.transform.position;
-                                rotY = randomPosition.transform.rotation.eulerAngles.y;
+                                pos = randomPosition.position;
+                                rotY = randomPosition.rotation.eulerAngles.y;
                                 __instance._pms.IsAFK = true;
                             }
                             else pos = __instance.DeathPosition;
                         }
-                        var __pl = API.Player.Get(__instance.gameObject);
                         if (__pl == null) __pl = API.Server.Host;
                         else __pl.Zoomed = false;
                         var ev = new SpawnEvent(__pl, __instance.CurClass, pos, rotY);
@@ -72,6 +72,11 @@ namespace Qurre.Patches.Events.player
                         }
                     }
                     try { if (!__instance.isLocalPlayer) API.Player.Get(__instance.gameObject).MaxHp = curRole.maxHP; } catch { }
+                }
+                else if(__pl != null)
+                {
+                    __pl.Zoomed = false;
+                    __pl.BlockSpawnTeleport = false;
                 }
                 __instance.Scp0492.iAm049_2 = __instance.CurClass == RoleType.Scp0492;
                 __instance.Scp106.iAm106 = __instance.CurClass == RoleType.Scp106;

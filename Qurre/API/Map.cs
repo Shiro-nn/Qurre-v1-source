@@ -18,28 +18,31 @@ using Scp914;
 using Qurre.API.Controllers.Items;
 using InventorySystem.Items.Pickups;
 using System;
-
+using PlayerStatsSystem;
+using Light = Qurre.API.Controllers.Light;
 namespace Qurre.API
 {
 	public static class Map
 	{
 		public static CassieList Cassies { get; private set; } = new CassieList();
-		public static List<Door> Doors { get; } = new List<Door>();
-		public static List<_lift> Lifts { get; } = new List<_lift>();
-		public static List<_locker> Lockers { get; } = new List<_locker>();
-		public static List<Generator> Generators { get; } = new List<Generator>();
-		public static List<_ragdoll> Ragdolls { get; } = new List<_ragdoll>();
-		public static List<Room> Rooms { get; } = new List<Room>();
-		public static List<Controllers.Camera> Cameras { get; } = new List<Controllers.Camera>();
-		public static List<Tesla> Teslas { get; } = new List<Tesla>();
-		public static List<_workStation> WorkStations { get; } = new List<_workStation>();
-		public static List<Bot> Bots { get; } = new List<Bot>();
-		public static List<Window> Windows { get; } = new List<Window>();
+		public static List<Door> Doors { get; } = new();
+		public static List<_lift> Lifts { get; } = new();
+		public static List<_locker> Lockers { get; } = new();
+		public static List<Generator> Generators { get; } = new();
+		public static List<_ragdoll> Ragdolls { get; } = new();
+		public static List<Room> Rooms { get; } = new();
+		public static List<Controllers.Camera> Cameras { get; } = new();
+		public static List<Tesla> Teslas { get; } = new();
+		public static List<_workStation> WorkStations { get; } = new();
+		public static List<Bot> Bots { get; } = new();
+		public static List<Window> Windows { get; } = new();
+		public static List<Light> Lights { get; } = new();
+		public static List<Primitive> Primitives { get; } = new();
 		public static List<Pickup> Pickups
 		{
 			get
 			{
-				List<Pickup> pickups = new List<Pickup>();
+				List<Pickup> pickups = new();
 				foreach (ItemPickupBase itemPickupBase in Object.FindObjectsOfType<ItemPickupBase>())
 				{
 					if (Pickup.Get(itemPickupBase) is Pickup pickup)
@@ -98,46 +101,20 @@ namespace Qurre.API
 		public static void ClearBroadcasts() => Server.Host.Broadcasts.Clear();
 		public static Vector3 GetRandomSpawnPoint(RoleType roleType)
 		{
-			GameObject randomPosition = Object.FindObjectOfType<SpawnpointManager>().GetRandomPosition(roleType);
+			GameObject randomPosition = SpawnpointManager.GetRandomPosition(roleType);
 			return randomPosition == null ? Vector3.zero : randomPosition.transform.position;
+		}
+		public static Transform GetRandomSpawnTransform(RoleType roleType)
+		{
+			GameObject randomPosition = SpawnpointManager.GetRandomPosition(roleType);
+			return randomPosition?.transform;
 		}
 		public static void SpawnGrenade(string grenadeType, Vector3 position)
 		{
 			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));
 			grenade.transform.position = position;
 			NetworkServer.Spawn(grenade);
-		}/*
-		public static void SpawnGrenade(bool frag, Vector3 position)
-		{
-			GrenadeManager gm = Server.Host.GrenadeManager;
-			if (frag)
-			{
-				GrenadeSettings settings = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.GrenadeFrag);
-				FragGrenade grenade = GameObject.Instantiate(settings.grenadeInstance).GetComponent<FragGrenade>();
-				grenade.fuseDuration = 2f;
-				grenade.InitData(gm, Vector3.zero, Vector3.zero, 0f);
-				grenade.transform.position = position;
-				NetworkServer.Spawn(grenade.gameObject);
-			}
-			else
-			{
-				GrenadeSettings settings = gm.availableGrenades.FirstOrDefault(g => g.inventoryID == ItemType.GrenadeFlash);
-				FlashGrenade grenade = GameObject.Instantiate(settings.grenadeInstance).GetComponent<FlashGrenade>();
-				grenade.fuseDuration = 2f;
-				grenade.InitData(gm, Vector3.zero, Vector3.zero, 0f);
-				grenade.transform.position = position;
-				NetworkServer.Spawn(grenade.gameObject);
-			}
 		}
-		public static void Explode(Vector3 position, GrenadeType grenadeType = GrenadeType.Grenade, Player player = null)
-		{
-			if (player == null) player = Server.Host;
-			var component = player.GrenadeManager;
-			var component2 = Object.Instantiate(component.availableGrenades[(int)grenadeType].grenadeInstance).GetComponent<Grenades.Grenade>();
-			component2.Grenade_FullInitData(component, position, Quaternion.identity, Vector3.zero, Vector3.zero, Team.RIP);
-			component2.NetworkfuseTime = 0.10000000149011612;
-			NetworkServer.Spawn(component2.gameObject);
-		}*/
 		public static void ContainSCP106(Player executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().UserCode_RpcContain106(executor.GameObject);
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
 		public static void SetIntercomSpeaker(Player player)
@@ -177,43 +154,26 @@ namespace Qurre.API
 		public static void AnnounceScpKill(string scpNumber, Player killer = null)
 		{
 			GameObject gameObject = GameObject.Find("Host");
-			RoleType rt;
-			switch ("SCP-" + scpNumber)
+			var rt = ("SCP-" + scpNumber) switch
 			{
-				case "49":
-				case "049":
-					rt = RoleType.Scp049;
-					break;
-				case "79":
-				case "079":
-					rt = RoleType.Scp079;
-					break;
-				case "96":
-				case "096":
-					rt = RoleType.Scp096;
-					break;
-				case "106":
-					rt = RoleType.Scp106;
-					break;
-				case "173":
-					rt = RoleType.Scp173;
-					break;
-				case "939-53":
-				case "939_53":
-				case "93953":
-					rt = RoleType.Scp93953;
-					break;
-				case "939-89":
-				case "939_89":
-				case "93989":
-					rt = RoleType.Scp93989;
-					break;
-				default:
-					rt = RoleType.None;
-					break;
-			}
+				"49" or "049" => RoleType.Scp049,
+				"79" or "079" => RoleType.Scp079,
+				"96" or "096" => RoleType.Scp096,
+				"106" => RoleType.Scp106,
+				"173" => RoleType.Scp173,
+				"939-53" or "939_53" or "93953" => RoleType.Scp93953,
+				"939-89" or "939_89" or "93989" => RoleType.Scp93989,
+				_ => RoleType.None,
+			};
 			CharacterClassManager component2 = gameObject.GetComponent<CharacterClassManager>();
-			NineTailedFoxAnnouncer.AnnounceScpTermination(component2.Classes.SafeGet(rt), new PlayerStats.HitInfo(-1f, killer?.Nickname ?? "", DamageTypes.None, killer?.Id ?? (-1), false), "");
+			NineTailedFoxAnnouncer.scpDeaths.Add(new NineTailedFoxAnnouncer.ScpDeath
+			{
+				scpSubjects = new List<Role>(new Role[1]
+				{
+				component2.Classes.SafeGet(rt)
+				}),
+				announcement = new ScpDamageHandler(killer.ReferenceHub, DeathTranslations.Unknown).CassieDeathAnnouncement
+			});
 		}
 		public static void DecontaminateLCZ()
 		{
@@ -292,6 +252,8 @@ namespace Qurre.API
 			WorkStations.Clear();
 			Ragdolls.Clear();
 			Windows.Clear();
+			Lights.Clear();
+			Primitives.Clear();
 		}
 	}
 }

@@ -32,7 +32,6 @@ namespace Qurre.API.Controllers.Items
         }
         public byte MaxAmmo => Base.AmmoManagerModule.MaxAmmo;
         public AmmoType AmmoType => Base.AmmoType.GetAmmoType();
-        public DamageTypes.DamageType DamageType => Base.DamageType;
         public FirearmAttachment[] Attachments
         {
             get => Base.Attachments;

@@ -8,6 +8,8 @@ using MapGeneration;
 using Qurre.API;
 using Qurre.API.Objects;
 using LightContainmentZoneDecontamination;
+using Achievements;
+using PlayerStatsSystem;
 namespace Qurre.Patches.Events.SCPs.Scp106
 {
     [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnTriggerEnter))]
@@ -32,14 +34,14 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                         Qurre.Events.Invoke.Scp106.PocketFailEscape(ev);
                         if (!ev.Allowed) return false;
                     }
-                    pl.Damage(9999, DamageTypes.Pocket);
+                    pl.Damage(9999, DeathTranslations.PocketDecay);
                 }
                 else if (__instance._type == PocketDimensionTeleport.PDTeleportType.Exit)
                 {
                     if (pl.Scp106PlayerScript.GrabbedPosition != Vector3.zero) _ = pl.Scp106PlayerScript.GrabbedPosition;
                     else
                     {
-                        List<Vector3> tp = new List<Vector3>();
+                        List<Vector3> tp = new();
                         bool flag = false;
                         DecontaminationController.DecontaminationPhase[] dP = DecontaminationController.Singleton.DecontaminationPhases;
                         if (DecontaminationController.GetServerTime > dP[dP.Length - 2].TimeTrigger) flag = true;
@@ -102,7 +104,7 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                     }
                     pl.EnableEffect(EffectType.Disabled, 10f, addDurationIfActive: true);
                     pl.GetEffect(EffectType.Corroding).Intensity = 0;
-                    pl.PlayerStats.TargetAchieve(component.connectionToClient, "larryisyourfriend");
+                    AchievementHandlerBase.ServerAchieve(component.connectionToClient, AchievementName.LarryFriend);
                 }
                 ImageGenerator.pocketDimensionGenerator.GenerateRandom();
                 foreach (var larry in Player.List.Where(x => x.Scp106Controller.PocketPlayers.Contains(pl)))

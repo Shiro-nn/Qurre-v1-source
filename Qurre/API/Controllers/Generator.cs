@@ -10,23 +10,41 @@ namespace Qurre.API.Controllers
             generator = g;
             positionsync = generator.GetComponent<StructurePositionSync>();
         }
-        private Scp079Generator generator;
+        private readonly Scp079Generator generator;
         private readonly StructurePositionSync positionsync;
         public GameObject GameObject => generator.gameObject;
-        public string Name => GameObject.name;
+        private string name;
+        public string Name
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(name)) return GameObject.name;
+                return name;
+            }
+            set => name = value;
+        }
         public Transform Transform => GameObject.transform;
         public Vector3 Position
         {
             get => Transform.position;
-            set => positionsync.Network_position = value;
+            set
+            {
+                positionsync.Network_position = value;
+                NetworkServer.UnSpawn(GameObject);
+                Transform.localPosition = value;
+                Transform.position = value;
+                NetworkServer.Spawn(GameObject);
+            }
         }
         public Quaternion Rotation
         {
             get => Transform.localRotation;
             set
             {
+                positionsync.Network_rotationY = (sbyte)(value.eulerAngles.y / 5.625f);
                 NetworkServer.UnSpawn(GameObject);
                 Transform.localRotation = value;
+                Transform.rotation = value;
                 NetworkServer.Spawn(GameObject);
             }
         }
