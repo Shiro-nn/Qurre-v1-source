@@ -8,7 +8,6 @@ namespace Qurre.API.Controllers
 {
     public class Primitive
     {
-        public Primitive(PrimitiveObjectToy primitiveBase) => Base = primitiveBase;
         public Primitive(PrimitiveType type) : this(type, Vector3.zero) { }
         public Primitive(PrimitiveType type, Vector3 position, Color color = default, Quaternion rotation = default, Vector3 size = default)
         {

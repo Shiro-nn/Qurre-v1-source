@@ -38,6 +38,7 @@ namespace Qurre.API
 		public static List<Window> Windows { get; } = new();
 		public static List<Light> Lights { get; } = new();
 		public static List<Primitive> Primitives { get; } = new();
+		public static List<ShootingTarget> ShootingTargets { get; } = new();
 		public static List<Pickup> Pickups
 		{
 			get
@@ -254,6 +255,7 @@ namespace Qurre.API
 			Windows.Clear();
 			Lights.Clear();
 			Primitives.Clear();
+			ShootingTargets.Clear();
 		}
 	}
 }

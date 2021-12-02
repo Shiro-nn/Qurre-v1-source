@@ -12,13 +12,15 @@ namespace Qurre.API.Controllers
         }
         public Ragdoll(RoleType roletype, Vector3 pos, Quaternion rot, DamageHandlerBase handler, Player owner)
         {
-            var role = Server.Host.ClassManager.Classes.SafeGet((int)roletype);
-            var gameObject = Object.Instantiate(role.model_ragdoll, pos + role.model_offset.position, Quaternion.Euler(rot.eulerAngles + role.model_offset.rotation));
-            if (!gameObject.TryGetComponent(out global::Ragdoll component)) return;
+            var role = CharacterClassManager._staticClasses.SafeGet(roletype);
+            GameObject model_ragdoll = role.model_ragdoll;
+            var obj = Object.Instantiate(model_ragdoll);
+            if (!obj.TryGetComponent(out global::Ragdoll component)) return;
             ragdoll = component;
-            ragdoll.NetworkInfo = new RagdollInfo(owner.ReferenceHub, handler, gameObject.transform.localPosition, gameObject.transform.localRotation);
-            NetworkServer.Spawn(component.gameObject);
+            ragdoll.NetworkInfo = new RagdollInfo(Server.Host.ReferenceHub, handler, roletype, pos + role.model_offset.position, rot, owner.Nickname, NetworkTime.time);
             _id = owner.Id;
+            NetworkServer.Spawn(component.gameObject);
+            Map.Ragdolls.Add(this);
             try
             {
                 if (Owner != null)
@@ -29,7 +31,50 @@ namespace Qurre.API.Controllers
                 }
             }
             catch { }
+        }
+        public Ragdoll(Vector3 pos, Quaternion rot, DamageHandlerBase handler, Player owner)
+        {
+            var role = owner.ClassManager.CurRole;
+            GameObject model_ragdoll = role.model_ragdoll;
+            var obj = Object.Instantiate(model_ragdoll);
+            if (!obj.TryGetComponent(out global::Ragdoll component)) return;
+            ragdoll = component;
+            ragdoll.NetworkInfo = new RagdollInfo(owner.ReferenceHub, handler, pos + role.model_offset.position, rot);
+            _id = owner.Id;
+            NetworkServer.Spawn(component.gameObject);
             Map.Ragdolls.Add(this);
+            try
+            {
+                if (Owner != null)
+                {
+                    var s1 = Scale;
+                    var s2 = Owner.Scale;
+                    Scale = new Vector3(s1.x * s2.x, s1.y * s2.y, s1.z * s2.z);
+                }
+            }
+            catch { }
+        }
+        public Ragdoll(RoleType roletype, Vector3 pos, Quaternion rot, DamageHandlerBase handler, string nickname, int id)
+        {
+            var role = CharacterClassManager._staticClasses.SafeGet(roletype);
+            GameObject model_ragdoll = role.model_ragdoll;
+            var obj = Object.Instantiate(model_ragdoll);
+            if (!obj.TryGetComponent(out global::Ragdoll component)) return;
+            ragdoll = component;
+            ragdoll.NetworkInfo = new RagdollInfo(Server.Host.ReferenceHub, handler, roletype, pos + role.model_offset.position, rot, nickname, NetworkTime.time);
+            _id = id;
+            NetworkServer.Spawn(component.gameObject);
+            Map.Ragdolls.Add(this);
+            try
+            {
+                if (Owner != null)
+                {
+                    var s1 = Scale;
+                    var s2 = Owner.Scale;
+                    Scale = new Vector3(s1.x * s2.x, s1.y * s2.y, s1.z * s2.z);
+                }
+            }
+            catch { }
         }
         private int _id = 0;
         private readonly global::Ragdoll ragdoll;
@@ -90,5 +135,9 @@ namespace Qurre.API.Controllers
         }
         public static Ragdoll Create(RoleType roletype, Vector3 pos, Quaternion rot, DamageHandlerBase handler, Player owner)
             => new(roletype, pos, rot, handler, owner);
+        public static Ragdoll Create(Vector3 pos, Quaternion rot, DamageHandlerBase handler, Player owner)
+            => new(pos, rot, handler, owner);
+        public static Ragdoll Create(RoleType roletype, Vector3 pos, Quaternion rot, DamageHandlerBase handler, string nickname, int id)
+            => new(roletype, pos, rot, handler, nickname, id);
     }
 }

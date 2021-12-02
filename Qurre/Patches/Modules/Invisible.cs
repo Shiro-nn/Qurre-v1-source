@@ -32,109 +32,113 @@ namespace Qurre.Patches.Modules
                     __instance._transmitBuffer = new PlayerPositionData[__instance._usedData * 2];
                 foreach (var player in players)
                 {
-                    if (player.Connection == null) continue;
-                    Array.Copy(__instance.ReceivedData, __instance._transmitBuffer, __instance._usedData);
-                    for (int k = 0; k < __instance._usedData; k++)
+                    try
                     {
-                        var showinvoid = false;
-                        var playerToShow = players[k];
-                        var vector = __instance._transmitBuffer[k].position - player.Position;
-                        if (player.Role == RoleType.Scp173)
+                        if (player.Connection == null) continue;
+                        Array.Copy(__instance.ReceivedData, __instance._transmitBuffer, __instance._usedData);
+                        for (int k = 0; k < __instance._usedData; k++)
                         {
-                            if ((playerToShow.Team == Team.SCP && !Loader.ScpTrigger173) || player.Scp173Controller.IgnoredPlayers.Contains(playerToShow) || playerToShow.Invisible)
+                            var showinvoid = false;
+                            var playerToShow = players[k];
+                            var vector = __instance._transmitBuffer[k].position - player.Position;
+                            if (player.Role == RoleType.Scp173)
                             {
-                                var posinfo = __instance._transmitBuffer[k];
-                                var rot = Quaternion.LookRotation(playerToShow.Position - player.Position).eulerAngles.y;
-                                __instance._transmitBuffer[k] = new PlayerPositionData(posinfo.position, rot, posinfo.playerID);
+                                if ((playerToShow.Team == Team.SCP && !Loader.ScpTrigger173) || player.Scp173Controller.IgnoredPlayers.Contains(playerToShow) || playerToShow.Invisible)
+                                {
+                                    var posinfo = __instance._transmitBuffer[k];
+                                    var rot = Quaternion.LookRotation(playerToShow.Position - player.Position).eulerAngles.y;
+                                    __instance._transmitBuffer[k] = new PlayerPositionData(posinfo.position, rot, posinfo.playerID);
+                                }
                             }
-                        }
-                        else if (player.Role == RoleType.Scp93953 || player.Role == RoleType.Scp93989)
-                        {
-                            if (__instance._transmitBuffer[k].position.y < 800f && playerToShow.Team != Team.RIP && !playerToShow.ReferenceHub.GetComponent<Scp939_VisionController>().CanSee(player.PlayerEffectsController.GetEffect<Visuals939>()))
+                            else if (player.Role == RoleType.Scp93953 || player.Role == RoleType.Scp93989)
+                            {
+                                if (__instance._transmitBuffer[k].position.y < 800f && playerToShow.Team != Team.RIP && !playerToShow.ReferenceHub.GetComponent<Scp939_VisionController>().CanSee(player.PlayerEffectsController.GetEffect<Visuals939>()))
+                                {
+                                    showinvoid = true;
+                                    goto AA_001;
+                                }
+                            }
+                            if (playerToShow.Invisible)
                             {
                                 showinvoid = true;
                                 goto AA_001;
                             }
+                            if (player.Role == RoleType.Spectator) continue;
+                            if (Math.Abs(vector.y) > 35f)
+                            {
+                                showinvoid = true;
+                                goto AA_001;
+                            }
+                            else
+                            {
+                                var sqrMagnitude = vector.sqrMagnitude;
+                                if (player.Position.y < 800f)
+                                {
+                                    if (sqrMagnitude >= 1764f)
+                                    {
+                                        showinvoid = true;
+                                        goto AA_001;
+                                    }
+                                }
+                                else if (sqrMagnitude >= 7225f)
+                                {
+                                    showinvoid = true;
+                                    goto AA_001;
+                                }
+
+                                if (playerToShow != null)
+                                {
+                                    var scp = player.ReferenceHub.scpsController.CurrentScp as Scp096;
+                                    if (scp != null && scp.Enraged && !scp.HasTarget(playerToShow.ReferenceHub))
+                                    {
+                                        showinvoid = true;
+                                        goto AA_001;
+                                    }
+                                    if (playerToShow.ReferenceHub.playerEffectsController.GetEffect<Invisible>().IsEnabled)
+                                    {
+                                        var flag = false;
+                                        if (scp != null) flag = scp.HasTarget(playerToShow.ReferenceHub);
+
+                                        if (player.Role == RoleType.Scp079 || flag)
+                                        {
+                                            if (Loader.Better268) showinvoid = true;
+                                        }
+                                        else showinvoid = true;
+                                    }
+                                }
+                            }
+
+
+                        AA_001:
+                            var posData = __instance._transmitBuffer[k];
+                            var rotation = posData.rotation;
+                            var pos = posData.position;
+
+                            var ev = new TransmitPlayerDataEvent(player, playerToShow, pos, rotation, showinvoid);
+                            Qurre.Events.Invoke.Player.TransmitPlayerData(ev);
+                            pos = ev.Position;
+                            rotation = ev.Rotation;
+                            showinvoid = ev.Invisible;
+                            if (player == playerToShow) showinvoid = false;
+
+                            if (showinvoid) __instance._transmitBuffer[k] = new PlayerPositionData(Vector3.up * 6000f, 0.0f, playerToShow.Id);
+                            else __instance._transmitBuffer[k] = new PlayerPositionData(pos, rotation, playerToShow.Id);
                         }
-                        if (playerToShow.Invisible)
-                        {
-                            showinvoid = true;
-                            goto AA_001;
-                        }
-                        if (player.Role == RoleType.Spectator) continue;
-                        if (Math.Abs(vector.y) > 35f)
-                        {
-                            showinvoid = true;
-                            goto AA_001;
-                        }
+                        var conn = player.Connection;
+                        if (__instance._usedData <= 20) conn.Send(new PositionPPMMessage(__instance._transmitBuffer, (byte)__instance._usedData, 0), 1);
                         else
                         {
-                            var sqrMagnitude = vector.sqrMagnitude;
-                            if (player.Position.y < 800f)
+                            byte b = 0;
+                            while ((int)b < __instance._usedData / 20)
                             {
-                                if (sqrMagnitude >= 1764f)
-                                {
-                                    showinvoid = true;
-                                    goto AA_001;
-                                }
+                                conn.Send(new PositionPPMMessage(__instance._transmitBuffer, 20, b), 1);
+                                b += 1;
                             }
-                            else if (sqrMagnitude >= 7225f)
-                            {
-                                showinvoid = true;
-                                goto AA_001;
-                            }
-
-                            if (playerToShow != null)
-                            {
-                                var scp = player.ReferenceHub.scpsController.CurrentScp as Scp096;
-                                if (scp != null && scp.Enraged && !scp.HasTarget(playerToShow.ReferenceHub))
-                                {
-                                    showinvoid = true;
-                                    goto AA_001;
-                                }
-                                if (playerToShow.ReferenceHub.playerEffectsController.GetEffect<Invisible>().IsEnabled)
-                                {
-                                    var flag = false;
-                                    if (scp != null) flag = scp.HasTarget(playerToShow.ReferenceHub);
-
-                                    if (player.Role == RoleType.Scp079 || flag)
-                                    {
-                                        if (Loader.Better268) showinvoid = true;
-                                    }
-                                    else showinvoid = true;
-                                }
-                            }
+                            byte b2 = (byte)(__instance._usedData % (b * 20));
+                            if (b2 > 0) conn.Send(new PositionPPMMessage(__instance._transmitBuffer, b2, b), 1);
                         }
-
-
-                    AA_001:
-                        var posData = __instance._transmitBuffer[k];
-                        var rotation = posData.rotation;
-                        var pos = posData.position;
-
-                        var ev = new TransmitPlayerDataEvent(player, playerToShow, pos, rotation, showinvoid);
-                        Qurre.Events.Invoke.Player.TransmitPlayerData(ev);
-                        pos = ev.Position;
-                        rotation = ev.Rotation;
-                        showinvoid = ev.Invisible;
-                        if (player == playerToShow) showinvoid = false;
-
-                        if (showinvoid) __instance._transmitBuffer[k] = new PlayerPositionData(Vector3.up * 6000f, 0.0f, playerToShow.Id);
-                        else __instance._transmitBuffer[k] = new PlayerPositionData(pos, rotation, playerToShow.Id);
                     }
-                    var conn = player.Connection;
-                    if (__instance._usedData <= 20) conn.Send(new PositionPPMMessage(__instance._transmitBuffer, (byte)__instance._usedData, 0), 1);
-                    else
-                    {
-                        byte b = 0;
-                        while ((int)b < __instance._usedData / 20)
-                        {
-                            conn.Send(new PositionPPMMessage(__instance._transmitBuffer, 20, b), 1);
-                            b += 1;
-                        }
-                        byte b2 = (byte)(__instance._usedData % (b * 20));
-                        if (b2 > 0) conn.Send(new PositionPPMMessage(__instance._transmitBuffer, b2, b), 1);
-                    }
+                    catch { }
                 }
                 return false;
             }

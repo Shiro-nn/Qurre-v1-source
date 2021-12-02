@@ -9,11 +9,6 @@ namespace Qurre.API.Controllers
 {
     public class Light
     {
-        public Light(LightSourceToy lightBase)
-        {
-            Base = lightBase;
-            Map.Lights.Add(this);
-        }
         public Light(Vector3 position, Color lightColor = default, float lightIntensivity = 1, float lightRange = 10)
         {
             try
