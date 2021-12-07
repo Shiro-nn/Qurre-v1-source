@@ -17,6 +17,7 @@ namespace Qurre.Events
         public static event AllEvents<CuffEvent> Cuff;
         public static event AllEvents<UnCuffEvent> UnCuff;
         public static event AllEvents<DamageEvent> Damage;
+        public static event AllEvents<DamageProcessEvent> DamageProcess;
         public static event AllEvents<DiesEvent> Dies;
         public static event AllEvents<InteractEvent> Interact;
         public static event AllEvents<InteractDoorEvent> InteractDoor;
@@ -64,6 +65,7 @@ namespace Qurre.Events
         internal static void Invokes(CuffEvent ev) => Cuff.invoke(ev);
         internal static void Invokes(UnCuffEvent ev) => UnCuff.invoke(ev);
         internal static void Invokes(DamageEvent ev) => Damage.invoke(ev);
+        internal static void Invokes(DamageProcessEvent ev) => DamageProcess.invoke(ev);
         internal static void Invokes(DiesEvent ev) => Dies.invoke(ev);
         internal static void Invokes(InteractEvent ev) => Interact.invoke(ev);
         internal static void Invokes(InteractDoorEvent ev) => InteractDoor.invoke(ev);

@@ -136,7 +136,7 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Player Scp { get; }
-        public string CassieDeath { get; set; }
+        public string CassieDeath { get; }
         public bool Allowed { get; set; }
     }
     public class CreatePickupEvent : EventArgs
@@ -150,5 +150,13 @@ namespace Qurre.API.Events
         public PickupSyncInfo Info { get; }
         public Inventory Inventory { get; }
         public bool Allowed { get; set; }
+    }
+    public class ConvertUnitNameEvent : EventArgs
+    {
+        public ConvertUnitNameEvent(string unitName)
+        {
+            UnitName = unitName;
+        }
+        public string UnitName { get; set; }
     }
 }

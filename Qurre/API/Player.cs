@@ -581,7 +581,7 @@ namespace Qurre.API
 		}
 		public bool Damage(float damage, DeathTranslation deathReason, Player attacker = null)
 		{
-			if (attacker == null) attacker = this;
+			if (attacker == null) attacker = Server.Host;
 			return PlayerStats.DealDamage(new ScpDamageHandler(attacker.ReferenceHub, damage, deathReason));
 		}
 		public bool DealDamage(DamageHandlerBase handler) => PlayerStats.DealDamage(handler);

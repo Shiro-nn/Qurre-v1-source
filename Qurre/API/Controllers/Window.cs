@@ -20,6 +20,7 @@ namespace Qurre.API.Controllers
         }
         public GameObject GameObject => bw.gameObject;
         public Transform Transform => bw.transform;
+        public bool AllowBreak { get; set; } = true;
         public Vector3 Position
         {
             get => Status.position;
@@ -68,15 +69,11 @@ namespace Qurre.API.Controllers
         }
         public Vector3 Size => bw.size;
         public Footprint LastAttacker => bw.LastAttacker;
-        public bool Destroyed
-        {
-            get => bw.isBroken;
-            set => bw.BreakWindow();
-        }
+        public bool Destroyed => bw.isBroken;
         public float Hp
         {
             get => bw.health;
-            set => bw.ServerDamageWindow(value);
+            set => bw.health = value;
         }
         public BreakableWindow.BreakableWindowStatus Status
         {

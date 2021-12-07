@@ -50,6 +50,9 @@
     <Reference Include="Assembly-CSharp_publicized">
       <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
+    <Reference Include="CommandSystem.Core">
+      <HintPath>..\lib\CommandSystem.Core.dll</HintPath>
+    </Reference>
     <Reference Include="DissonanceVoip">
       <HintPath>..\lib\DissonanceVoip.dll</HintPath>
     </Reference>
@@ -175,6 +178,9 @@
     <Compile Include="API\Controllers\Scp914.cs" />
     <Compile Include="API\ConfigManager.cs" />
     <Compile Include="Events\Alpha.cs" />
+    <Compile Include="Events\Modules\Commands\Configs.cs" />
+    <Compile Include="Events\Modules\Commands\Plugins.cs" />
+    <Compile Include="Events\Modules\Commands\Reload.cs" />
     <Compile Include="Events\Voice.cs" />
     <Compile Include="Events\Invoke\Voice.cs" />
     <Compile Include="Events\Invoke\Report.cs" />
@@ -195,11 +201,14 @@
     <Compile Include="Events\Modules\Main.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Patches\Controllers\CassieController.cs" />
+    <Compile Include="Patches\Controllers\Window.cs" />
     <Compile Include="Patches\Controllers\ItemController.cs" />
     <Compile Include="Patches\Controllers\LockerInitial.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
+    <Compile Include="Patches\Events\Map\ConvertUnitName.cs" />
     <Compile Include="Patches\Events\player\ChangeSpectate.cs" />
+    <Compile Include="Patches\Events\player\DamageProcess.cs" />
     <Compile Include="Patches\Events\player\TantrumWalking.cs" />
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
@@ -212,6 +221,9 @@
     <Compile Include="Patches\Modules\Bot_Mirror.cs" />
     <Compile Include="Patches\Modules\Bot_Position.cs" />
     <Compile Include="Patches\Modules\Bot_ShowHit.cs" />
+    <Compile Include="Patches\Modules\GrenadeFuseTimeFix.cs" />
+    <Compile Include="Patches\Modules\FlashbangGrenadeFieldsFix.cs" />
+    <Compile Include="Patches\Modules\ExplosiveGrenadeFieldsFix.cs" />
     <Compile Include="Patches\Modules\FixShootDisconnect.cs" />
     <Compile Include="Patches\Modules\FixDoubleSpawn.cs" />
     <Compile Include="Patches\Modules\UseStamina.cs" />
@@ -316,5 +328,6 @@
   <ItemGroup>
     <Content Include="qurre_ol.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

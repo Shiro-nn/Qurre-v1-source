@@ -1,5 +1,6 @@
 ﻿using MEC;
 using Qurre.API;
+using RemoteAdmin;
 using System.IO;
 namespace Qurre
 {
@@ -12,6 +13,7 @@ namespace Qurre
         internal static bool ScpTrigger173 => Plugin.Config.GetBool("Qurre_ScpTrigger173", false, "Can other SCPs look at SCP-173?");
         internal static bool Better268 => Plugin.Config.GetBool("Qurre_Better268", false, "SCP 079 & SCP 096 will not see the wearer of SCP 268");
         internal static bool LateJoinSpawn => Plugin.Config.GetBool("Qurre_LateJoinSpawn", true, "If enabled, will spawn those who entered after the start of the round");
+        internal static string ReloadAccess => Plugin.Config.GetString("Qurre_ReloadAccess", "owner, 746538986@steam,309800126721@discord", "Those who can use the \"reload\" command");
         public static void QurreLoad()
         {
             Log.Info($"Initializing Qurre...");
@@ -39,6 +41,7 @@ namespace Qurre
                 _ = ScpTrigger173;
                 _ = Better268;
                 _ = LateJoinSpawn;
+                _ = ReloadAccess;
                 using StreamWriter sw = new StreamWriter(PluginManager.ConfigsPath, true, System.Text.Encoding.Default);
                 sw.Write("Qurre_Banned: banned\nQurre_Kicked: kicked\nQurre_BanOrKick_msg: You have been %bok%.\nQurre_Reason: Reason\n");
                 sw.Close();
@@ -47,6 +50,8 @@ namespace Qurre
             CustomNetworkManager.Modded = true;
             Timing.RunCoroutine(PluginManager.LoadPlugins());
             Events.Modules.Etc.Load();
+            CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(Events.Modules.Commands.Reload.Instance);
+            GameCore.Console.singleton.ConsoleCommandHandler.RegisterCommand(Events.Modules.Commands.Reload.Instance);
         }
     }
 }

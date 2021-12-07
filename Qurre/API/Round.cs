@@ -24,6 +24,7 @@ namespace Qurre.API
         }
         public static bool Started => RoundSummary.RoundInProgress();
         public static bool Ended => rs.RoundEnded;
+        public static bool Waiting => !Started && !Ended;
         public static bool Lock
         {
             get => RoundSummary.RoundLock;

@@ -1,8 +1,10 @@
 ﻿using InventorySystem.Items.ThrowableProjectiles;
+using System.Collections.Generic;
 namespace Qurre.API.Controllers.Items
 {
     public class ExplosiveGrenade : Throwable
     {
+        internal static Dictionary<ExplosionGrenade, ExplosiveGrenade> GrenadeToItem { get; set; } = new();
         public ExplosiveGrenade(ThrowableItem itemBase)
             : base(itemBase)
         {

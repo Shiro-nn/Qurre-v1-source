@@ -16,6 +16,7 @@ namespace Qurre.Events.Invoke
         public static void Cuff(CuffEvent ev) => Invokes(ev);
         public static void UnCuff(UnCuffEvent ev) => Invokes(ev);
         public static void Damage(DamageEvent ev) => Invokes(ev);
+        public static void DamageProcess(DamageProcessEvent ev) => Invokes(ev);
         public static void Dies(DiesEvent ev) => Invokes(ev);
         public static void Interact(InteractEvent ev) => Invokes(ev);
         public static void InteractDoor(InteractDoorEvent ev) => Invokes(ev);

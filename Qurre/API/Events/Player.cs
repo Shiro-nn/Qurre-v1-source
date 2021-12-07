@@ -275,6 +275,31 @@ namespace Qurre.API.Events
         public float Amount { get; set; }
         public bool Allowed { get; set; }
     }
+    public class DamageProcessEvent : EventArgs
+    {
+        private DamageHandlerBase damageInfo;
+        public DamageProcessEvent(Player attacker, Player target, DamageHandlerBase dInfo, DamageTypes type, float amount, bool allowed = true)
+        {
+            Attacker = attacker;
+            Target = target;
+            DamageInfo = dInfo;
+            DamageType = type;
+            Amount = amount;
+            Allowed = allowed;
+            PrimitiveType = damageInfo.GetDamageTypesPrimitive();
+        }
+        public Player Attacker { get; }
+        public Player Target { get; }
+        public DamageHandlerBase DamageInfo
+        {
+            get => damageInfo;
+            private set => damageInfo = value;
+        }
+        public DamageTypes DamageType { get; }
+        public DamageTypesPrimitive PrimitiveType { get; }
+        public float Amount { get; set; }
+        public bool Allowed { get; set; }
+    }
     public class DiesEvent : EventArgs
     {
         public DiesEvent(Player killer, Player target, DamageHandlerBase damageInfo, DamageTypes type, bool allowed = true)

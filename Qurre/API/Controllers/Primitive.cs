@@ -1,11 +1,29 @@
-﻿using System.Collections.Generic;
-using AdminToys;
+﻿using AdminToys;
 using UnityEngine;
 using Mirror;
 using System;
 using System.Linq;
 namespace Qurre.API.Controllers
 {
+    internal class PrimitiveUpdater : MonoBehaviour
+    {
+        private Primitive _primitive;
+        private float _nextCycle = 0f;
+        public const float interval = 0.5f;
+        private void Start()
+        {
+            _primitive = gameObject.GetPrimitive();
+            _nextCycle = Time.time;
+        }
+        private void Update()
+        {
+            if (Time.time < _nextCycle) return;
+            _nextCycle += interval;
+            _primitive.Base.NetworkScale = transform.localScale;
+            _primitive.Base.NetworkPosition = transform.position;
+            _primitive.Base.NetworkRotation = new LowPrecisionQuaternion(transform.rotation);
+        }
+    }
     public class Primitive
     {
         public Primitive(PrimitiveType type) : this(type, Vector3.zero) { }
@@ -17,15 +35,20 @@ namespace Qurre.API.Controllers
                 if (data.Count() == 0) return;
                 var mod = data.First();
                 if (!mod.TryGetComponent<AdminToyBase>(out var primitiveToyBase)) return;
-                var prim = UnityEngine.Object.Instantiate(primitiveToyBase, position, rotation);
+                AdminToyBase prim = UnityEngine.Object.Instantiate(primitiveToyBase, position, rotation);
                 Base = (PrimitiveObjectToy)prim;
-                Base.PrimitiveType = type;
-                Map.Primitives.Add(this);
+                Base.SpawnerFootprint = new Footprinting.Footprint(Server.Host.ReferenceHub);
                 NetworkServer.Spawn(Base.gameObject);
-                Color = color == default ? Color.white : color;
+                Base.NetworkPrimitiveType = type;
+                Base.NetworkMaterialColor = color == default ? Color.white : color;
                 Base.transform.position = position;
                 Base.transform.rotation = rotation;
                 Base.transform.localScale = size == default ? Vector3.one : size;
+                Base.NetworkScale = Base.transform.localScale;
+                Base.NetworkPosition = Base.transform.position;
+                Base.NetworkRotation = new LowPrecisionQuaternion(Base.transform.rotation);
+                Base.gameObject.AddComponent<PrimitiveUpdater>();
+                Map.Primitives.Add(this);
             }
             catch (Exception e)
             {
@@ -40,6 +63,7 @@ namespace Qurre.API.Controllers
                 NetworkServer.UnSpawn(Base.gameObject);
                 Base.transform.position = value;
                 NetworkServer.Spawn(Base.gameObject);
+                Base.NetworkPosition = Base.transform.position;
             }
         }
         public Vector3 Scale
@@ -50,6 +74,7 @@ namespace Qurre.API.Controllers
                 NetworkServer.UnSpawn(Base.gameObject);
                 Base.transform.localScale = value;
                 NetworkServer.Spawn(Base.gameObject);
+                Base.NetworkScale = Base.transform.localScale;
             }
         }
         public Quaternion Rotation
@@ -60,6 +85,7 @@ namespace Qurre.API.Controllers
                 NetworkServer.UnSpawn(Base.gameObject);
                 Base.transform.localRotation = value;
                 NetworkServer.Spawn(Base.gameObject);
+                Base.NetworkRotation = new LowPrecisionQuaternion(Base.transform.rotation);
             }
         }
         public Color Color
