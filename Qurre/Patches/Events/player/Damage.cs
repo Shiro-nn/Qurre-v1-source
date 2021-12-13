@@ -16,8 +16,8 @@ namespace Qurre.Patches.Events.player
 			{
 				var attacker = handler.GetAttacker();
 				Player target = Player.Get(__instance.gameObject);
-				if (attacker is null) attacker = target;
-				if (target is null || target.IsHost) return true;
+				if (attacker == null) attacker = target;
+				if (target == null || target.IsHost) return true;
 				var type = handler.GetDamageType();
 				if (type == DamageTypes.Recontainment && target.Role == RoleType.Scp079)
 				{

@@ -256,8 +256,6 @@ namespace Qurre.API
 			Lights.Clear();
 			Primitives.Clear();
 			ShootingTargets.Clear();
-			ExplosiveGrenade.GrenadeToItem.Clear();
-			FlashGrenade.GrenadeToItem.Clear();
 		}
 	}
 }

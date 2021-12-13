@@ -579,9 +579,13 @@ namespace Qurre.API
 		{
 			return PlayerStats.DealDamage(new CustomReasonDamageHandler(deathReason, damage));
 		}
-		public bool Damage(float damage, DeathTranslation deathReason, Player attacker = null)
+		public bool Damage(float damage, DeathTranslation deathReason)
 		{
-			if (attacker == null) attacker = Server.Host;
+			return PlayerStats.DealDamage(new UniversalDamageHandler(damage, deathReason));
+		}
+		public bool Damage(float damage, DeathTranslation deathReason, Player attacker)
+		{
+			if (attacker == null) return PlayerStats.DealDamage(new UniversalDamageHandler(damage, deathReason));
 			return PlayerStats.DealDamage(new ScpDamageHandler(attacker.ReferenceHub, damage, deathReason));
 		}
 		public bool DealDamage(DamageHandlerBase handler) => PlayerStats.DealDamage(handler);

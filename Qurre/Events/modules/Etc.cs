@@ -1,14 +1,11 @@
 ﻿using Qurre.API.Events;
 using UnityEngine.SceneManagement;
 using MapGeneration;
-using System.Collections.Generic;
 using UnityEngine;
-using System;
 namespace Qurre.Events.Modules
 {
     internal static class Etc
     {
-        internal static Dictionary<API.Player, DateTime> CDScp939 = new();
         internal static void Load()
         {
             SceneManager.sceneUnloaded += SceneUnloaded;
@@ -18,9 +15,8 @@ namespace Qurre.Events.Modules
             Round.Restart += RoundRestart;
             Player.SyncData += SyncData;
             Server.SendingRA += FixRaBc;
-            Player.ScpAttack += CD;
-            Player.Leave += Leave;
             Player.Spawn += FixItems;
+            Player.DamageProcess += FixFF;
         }
         private static void SceneUnloaded(Scene _)
         {
@@ -51,30 +47,26 @@ namespace Qurre.Events.Modules
             {
                 API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#31d400>Qurre v{PluginManager.Version}</color>");
             }
-            CDScp939.Clear();
+        }
+        private static void FixFF(DamageProcessEvent ev)
+        {
+            if (API.Server.FriendlyFire) return;
+            if (ev.Target == null || ev.Attacker == null) return;
+            if (ev.Attacker.FriendlyFire) return;
+            if (!Ally(ev.Target.Team, ev.Attacker.Team)) return;
+            ev.FriendlyFire = true;
+            static bool Ally(Team killer, Team target)
+            {
+                if (killer == target) return true;
+                if ((killer == Team.MTF || killer == Team.RSC) && (target == Team.MTF || target == Team.RSC)) return true;
+                if ((killer == Team.CHI || killer == Team.CDP) && (target == Team.CHI || target == Team.CDP)) return true;
+                return false;
+            }
         }
         private static void ChangeRole(RoleChangeEvent ev)
         {
             if (ev.Player?.IsHost != false || string.IsNullOrEmpty(ev.Player.UserId)) return;
             if (ev.NewRole == RoleType.Spectator) ev.Player.DropItems();
-        }
-        private static void CD(ScpAttackEvent ev)
-        {
-            if (!ev.Allowed) return;
-            if (ev.Scp == null) return;
-            if (ev.Type != API.Objects.ScpAttackType.Scp939) return;
-            if (!CDScp939.ContainsKey(ev.Scp))
-            {
-                CDScp939.Add(ev.Scp, DateTime.Now);
-                return;
-            }
-            if ((DateTime.Now - CDScp939[ev.Scp]).TotalSeconds < 1.5) ev.Allowed = false;
-            else CDScp939[ev.Scp] = DateTime.Now;
-        }
-        private static void Leave(LeaveEvent ev)
-        {
-            if (!CDScp939.ContainsKey(ev.Player)) return;
-            CDScp939.Remove(ev.Player);
         }
         private static void FixItems(SpawnEvent ev)
         {

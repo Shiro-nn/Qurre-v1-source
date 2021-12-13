@@ -42,11 +42,11 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                 if (Scp106PlayerScript._blastDoor.isClosed)
                 {
                     __instance._hub.characterClassManager.RpcPlaceBlood(ply.transform.position, 1, 2f);
-                    __instance._hub.playerStats.DealDamage(new ScpDamageHandler(__instance._hub, DeathTranslations.PocketDecay));
+                    pl.DealDamage(new ScpDamageHandler(__instance._hub, DeathTranslations.PocketDecay));
                 }
                 else
                 {
-                    __instance._hub.playerStats.DealDamage(new ScpDamageHandler(__instance._hub, 40f, DeathTranslations.PocketDecay));
+                    pl.DealDamage(new ScpDamageHandler(__instance._hub, 40f, DeathTranslations.PocketDecay));
                     pl.Position = ev.Position;
                     foreach (Scp079PlayerScript scp079PlayerScript in Scp079PlayerScript.instances)
                     {
