@@ -201,6 +201,7 @@
     <Compile Include="Events\Modules\Main.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="Patches\Controllers\CassieController.cs" />
+    <Compile Include="Patches\Controllers\Bot.cs" />
     <Compile Include="Patches\Controllers\Window.cs" />
     <Compile Include="Patches\Controllers\ItemController.cs" />
     <Compile Include="Patches\Controllers\LockerInitial.cs" />
@@ -218,9 +219,7 @@
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemInventory.cs" />
     <Compile Include="Patches\Events\Voice\PressPrimaryChat.cs" />
     <Compile Include="Patches\Events\Voice\PressAltChat.cs" />
-    <Compile Include="Patches\Modules\Bot_Mirror.cs" />
-    <Compile Include="Patches\Modules\Bot_Position.cs" />
-    <Compile Include="Patches\Modules\Bot_ShowHit.cs" />
+    <Compile Include="Patches\Modules\FixMaxHp.cs" />
     <Compile Include="Patches\Modules\FixShootDisconnect.cs" />
     <Compile Include="Patches\Modules\FixDoubleSpawn.cs" />
     <Compile Include="Patches\Modules\UseStamina.cs" />

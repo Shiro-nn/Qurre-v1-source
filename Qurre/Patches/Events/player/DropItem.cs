@@ -1,8 +1,10 @@
 ﻿using System;
 using HarmonyLib;
 using InventorySystem;
+using InventorySystem.Items;
 using Qurre.API;
 using Qurre.API.Controllers;
+using Qurre.API.Controllers.Items;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
@@ -13,8 +15,9 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
+                if (!__instance.UserInventory.Items.TryGetValue(itemSerial, out ItemBase value) || !value.CanHolster()) return false;
                 Player pl = Player.Get(__instance._hub);
-                Item item = Item.Get(itemSerial);
+                Item item = Item.Get(value);
                 if (item == null || pl == null) return false;
                 var ev = new DroppingItemEvent(pl, item);
                 Qurre.Events.Invoke.Player.DroppingItem(ev);
@@ -22,8 +25,23 @@ namespace Qurre.Patches.Events.player
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching Player [DropItem]:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [DroppingItem]:\n{e}\n{e.StackTrace}");
                 return true;
+            }
+        }
+        private static void Postfix(Inventory __instance, ushort itemSerial)
+        {
+            try
+            {
+                if (!__instance.UserInventory.Items.TryGetValue(itemSerial, out ItemBase value) || !value.CanHolster()) return;
+                Player pl = Player.Get(__instance._hub);
+                Pickup pick = API.Map.Pickups.Find(x => x.Serial == itemSerial);
+                if (pl == null || pick == null) return;
+                Qurre.Events.Invoke.Player.DropItem(new DropItemEvent(pl, pick));
+            }
+            catch (Exception e)
+            {
+                Log.Error($"umm, error in patching Player [DroppingItem]:\n{e}\n{e.StackTrace}");
             }
         }
     }

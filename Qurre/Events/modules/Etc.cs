@@ -29,6 +29,7 @@ namespace Qurre.Events.Modules
         private static void Waiting()
         {
             API.Map.AddObjects();
+            if (API.Round.BotSpawned) Patches.Controllers.Bot.UnInitialize();
             API.Round.BotSpawned = false;
             API.Round.ForceEnd = false;
             RoundSummary.RoundLock = false;

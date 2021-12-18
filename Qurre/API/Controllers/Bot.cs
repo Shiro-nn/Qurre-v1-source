@@ -98,26 +98,26 @@ namespace Qurre.API.Controllers
                 {
                     case MovementDirection.Forward:
                         var pos = Position + Player.CameraTransform.forward / 10 * speed;
-                        if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
-                            Player.PlayerMovementSync.OverridePosition(pos, 0f, true);
+                        if (!Physics.Linecast(Position, pos, Player.Movement.CollidableSurfaces))
+                            Player.Movement.OverridePosition(pos, 0f, true);
                         else wall = true;
                         break;
                     case MovementDirection.BackWards:
                         pos = Position - Player.CameraTransform.forward / 10 * speed;
-                        if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
-                            Player.PlayerMovementSync.OverridePosition(pos, 0f, true);
+                        if (!Physics.Linecast(Position, pos, Player.Movement.CollidableSurfaces))
+                            Player.Movement.OverridePosition(pos, 0f, true);
                         else wall = true;
                         break;
                     case MovementDirection.Right:
                         pos = Position + Quaternion.AngleAxis(90, Vector3.up) * Player.CameraTransform.forward / 10 * speed;
-                        if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
-                            Player.PlayerMovementSync.OverridePosition(pos, 0f, true);
+                        if (!Physics.Linecast(Position, pos, Player.Movement.CollidableSurfaces))
+                            Player.Movement.OverridePosition(pos, 0f, true);
                         else wall = true;
                         break;
                     case MovementDirection.Left:
                         pos = Position - Quaternion.AngleAxis(90, Vector3.up) * Player.CameraTransform.forward / 10 * speed;
-                        if (!Physics.Linecast(Position, pos, Player.PlayerMovementSync.CollidableSurfaces))
-                            Player.PlayerMovementSync.OverridePosition(pos, 0f, true);
+                        if (!Physics.Linecast(Position, pos, Player.Movement.CollidableSurfaces))
+                            Player.Movement.OverridePosition(pos, 0f, true);
                         else wall = true;
                         break;
                 }
@@ -129,6 +129,7 @@ namespace Qurre.API.Controllers
         { }
         public Bot(Vector3 pos, Vector2 rot, RoleType role = RoleType.ClassD, string name = "(null)", string role_text = "", string role_color = "")
         {
+            if (!Round.BotSpawned) Patches.Controllers.Bot.Initialize();
             Round.BotSpawned = true;
             GameObject obj = Object.Instantiate(NetworkManager.singleton.playerPrefab);
             GameObject = obj;
@@ -137,7 +138,7 @@ namespace Qurre.API.Controllers
             Player.Dictionary.Add(obj, Player);
             rh.transform.localScale = Vector3.one;
             rh.transform.position = pos;
-            Player.PlayerMovementSync.RealModelPosition = pos;
+            Player.Movement.RealModelPosition = pos;
             Rotation = rot;
             Player.QueryProcessor.NetworkPlayerId = QueryProcessor._idIterator;
             Player.QueryProcessor._ipAddress = Server.Ip;
@@ -149,7 +150,7 @@ namespace Qurre.API.Controllers
             Player.RoleName = role_text;
             Player.RoleColor = role_color;
             Player.GodMode = true;
-            Player.PlayerMovementSync.NetworkGrounded = true;
+            Player.Movement.NetworkGrounded = true;
             RunSpeed = CharacterClassManager._staticClasses[(int)role].runSpeed;
             WalkSpeed = CharacterClassManager._staticClasses[(int)role].walkSpeed;
             Player.ClassManager.Scp106 = Player.ClassManager.GetComponent<Scp106PlayerScript>();

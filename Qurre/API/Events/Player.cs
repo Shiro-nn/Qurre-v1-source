@@ -367,7 +367,7 @@ namespace Qurre.API.Events
     }
     public class InteractLockerEvent : EventArgs
     {
-        public InteractLockerEvent(Player player, Controllers.Locker locker, Controllers.Locker.Chamber chamber, bool allowed)
+        public InteractLockerEvent(Player player, Locker locker, Locker.Chamber chamber, bool allowed)
         {
             Player = player;
             Locker = locker;
@@ -375,8 +375,8 @@ namespace Qurre.API.Events
             Allowed = allowed;
         }
         public Player Player { get; }
-        public Controllers.Locker Locker { get; }
-        public Controllers.Locker.Chamber Chamber { get; }
+        public Locker Locker { get; }
+        public Locker.Chamber Chamber { get; }
         public bool Allowed { get; set; }
     }
     public class IcomSpeakEvent : EventArgs
@@ -403,13 +403,13 @@ namespace Qurre.API.Events
     }
     public class DropItemEvent : EventArgs
     {
-        public DropItemEvent(Player player, Item item)
+        public DropItemEvent(Player player, Pickup item)
         {
             Player = player;
             Item = item;
         }
         public Player Player { get; }
-        public Item Item { get; }
+        public Pickup Item { get; }
     }
     public class PickupItemEvent : EventArgs
     {

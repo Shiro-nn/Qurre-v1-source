@@ -75,7 +75,7 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                                 Qurre.Events.Invoke.Scp106.PocketEscape(ev);
                                 if (!ev.Allowed) return false;
                                 pos = ev.TeleportPosition;
-                                pl.PlayerMovementSync.OverridePosition(pos, Random.value * 360f);
+                                pl.Movement.OverridePosition(pos, Random.value * 360f);
                                 break;
                             }
                         }
@@ -95,7 +95,7 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                                 Qurre.Events.Invoke.Scp106.PocketEscape(ev);
                                 if (!ev.Allowed) return false;
                                 safePos = ev.TeleportPosition;
-                                pl.PlayerMovementSync.OverridePosition(safePos, Random.value * 360f);
+                                pl.Movement.OverridePosition(safePos, Random.value * 360f);
                                 break;
                             }
 

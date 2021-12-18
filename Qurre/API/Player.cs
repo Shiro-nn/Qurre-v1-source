@@ -19,7 +19,6 @@ using Assets._Scripts.Dissonance;
 using MapGeneration;
 using NorthwoodLib;
 using PlayerStatsSystem;
-
 namespace Qurre.API
 {
 	public class Player
@@ -34,6 +33,8 @@ namespace Qurre.API
 		public Player(ReferenceHub RH)
 		{
 			rh = RH;
+			go = RH.gameObject;
+			ui = RH.characterClassManager.UserId;
 			Scp079Controller = new Scp079(this);
 			Scp096Controller = new Scp096(this);
 			Scp106Controller = new Scp106(this);
@@ -43,21 +44,12 @@ namespace Qurre.API
 			BlockSpawnTeleport = false;
 		}
 		public Player(GameObject gameObject) => new Player(ReferenceHub.GetHub(gameObject));
-		public static Dictionary<GameObject, Player> Dictionary { get; } = new Dictionary<GameObject, Player>();
-		public static Dictionary<int, Player> IdPlayers = new Dictionary<int, Player>();
-		public static Dictionary<string, Player> UserIDPlayers { get; set; } = new Dictionary<string, Player>();
-		public static Dictionary<string, Player> ArgsPlayers { get; set; } = new Dictionary<string, Player>();
+		public static Dictionary<GameObject, Player> Dictionary { get; } = new();
+		public static Dictionary<int, Player> IdPlayers = new();
+		public static Dictionary<string, Player> UserIDPlayers { get; set; } = new();
+		public static Dictionary<string, Player> ArgsPlayers { get; set; } = new();
 		public static IEnumerable<Player> List => Dictionary.Values.Where(x => !x.Bot);
-		public ReferenceHub ReferenceHub
-		{
-			get => rh;
-			private set
-			{
-				rh = value ?? throw new NullReferenceException("Player's ReferenceHub cannot be null.");
-				go = value.gameObject;
-				ui = value.characterClassManager.UserId;
-			}
-		}
+		public ReferenceHub ReferenceHub => rh;
 		public readonly Scp079 Scp079Controller;
 		public readonly Scp096 Scp096Controller;
 		public readonly Scp106 Scp106Controller;
@@ -90,7 +82,7 @@ namespace Qurre.API
 		public QueryProcessor QueryProcessor => rh.queryProcessor;
 		public PlayerEffectsController PlayerEffectsController => rh.playerEffectsController;
 		public NicknameSync NicknameSync => rh.nicknameSync;
-		public PlayerMovementSync PlayerMovementSync => rh.playerMovementSync;
+		public PlayerMovementSync Movement => rh.playerMovementSync;
 		public string Tag
 		{
 			get => _tag;
@@ -174,8 +166,8 @@ namespace Qurre.API
 		}
 		public Vector2 Rotation
 		{
-			get => PlayerMovementSync.RotationSync;
-			set => PlayerMovementSync.NetworkRotationSync = value;
+			get => Movement.RotationSync;
+			set => Movement.NetworkRotationSync = value;
 		}
 		public Vector3 Scale
 		{
@@ -267,10 +259,11 @@ namespace Qurre.API
 					MaxHp = (int)value;
 			}
 		}
+		private int mhp = 100;
 		public int MaxHp
 		{
-			get => ClassManager.CurRole.maxHP;
-			set => ClassManager.CurRole.maxHP = value;
+			get => mhp;
+			set => mhp = value;
 		}
 		public float Ahp
 		{
@@ -851,22 +844,15 @@ namespace Qurre.API
 		}
 		private Side GetSide(Team team)
 		{
-			switch (team)
-			{
-				case Team.SCP:
-					return Side.SCP;
-				case Team.MTF:
-				case Team.RSC:
-					return Side.MTF;
-				case Team.CHI:
-				case Team.CDP:
-					return Side.CHAOS;
-				case Team.TUT:
-					return Side.TUTORIAL;
-				case Team.RIP:
-				default: return Side.NONE;
-			}
-		}
+            return team switch
+            {
+                Team.SCP => Side.SCP,
+                Team.MTF or Team.RSC => Side.MTF,
+                Team.CHI or Team.CDP => Side.CHAOS,
+                Team.TUT => Side.TUTORIAL,
+                _ => Side.NONE,
+            };
+        }
 		internal void CheckEscape()
 		{
 			RoleType newRole = RoleType.None;
@@ -986,5 +972,7 @@ namespace Qurre.API
 				}
 			}
 		}
+		[Obsolete("Use 'Movement'")]
+		public PlayerMovementSync PlayerMovementSync => rh.playerMovementSync;
 	}
 }
