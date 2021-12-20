@@ -46,22 +46,22 @@ namespace Qurre
 						if (customAttributeData.AttributeType != typeof(CommandHandlerAttribute))
 							continue;
 
-						var cmdType = (Type)customAttributeData.ConstructorArguments?[0].Value;
+						var commandType = (Type)customAttributeData.ConstructorArguments?[0].Value;
 
-						if (!Commands.TryGetValue(cmdType, out var typeCmds))
+						if (!Commands.TryGetValue(commandType, out var typeCmds))
 							continue;
 
-						if (!typeCmds.TryGetValue(type, out var cmd))
+						if (!typeCmds.TryGetValue(type, out ICommand cmd))
 							cmd = (ICommand)Activator.CreateInstance(type);
 
-						if (cmdType == typeof(RemoteAdminCommandHandler))
+						if (commandType == typeof(RemoteAdminCommandHandler))
 							CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(cmd);
-						else if (cmdType == typeof(GameConsoleCommandHandler))
-							CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(cmd);
-						else if (cmdType == typeof(ClientCommandHandler))
-							CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(cmd);
+						else if (commandType == typeof(GameConsoleCommandHandler))
+							QueryProcessor.DotCommandHandler.RegisterCommand(cmd);
+						else if (commandType == typeof(ClientCommandHandler))
+							GameCore.Console.singleton.ConsoleCommandHandler.RegisterCommand(cmd);
 
-						Commands[cmdType][type] = cmd;
+						Commands[commandType][type] = cmd;
 					}
                     catch (Exception ex)
                     {
