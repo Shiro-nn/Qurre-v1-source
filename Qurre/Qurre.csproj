@@ -105,6 +105,7 @@
     <Compile Include="API\Controllers\Light.cs" />
     <Compile Include="API\Controllers\Primitive.cs" />
     <Compile Include="API\Objects\AuthType.cs" />
+    <Compile Include="API\Objects\KillElement.cs" />
     <Compile Include="API\Objects\ShootingTargetType.cs" />
     <Compile Include="API\Objects\DamageTypes.cs" />
     <Compile Include="API\Objects\DamageTypesPrimitive.cs" />

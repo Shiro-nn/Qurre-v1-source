@@ -42,6 +42,7 @@ namespace Qurre.API
 			Broadcasts = new ListBroadcasts();
 			Ammo = new AmmoBoxManager(this);
 			BlockSpawnTeleport = false;
+			_kills = new List<KillElement>();
 		}
 		public Player(GameObject gameObject) => new Player(ReferenceHub.GetHub(gameObject));
 		public static Dictionary<GameObject, Player> Dictionary { get; } = new();
@@ -93,6 +94,9 @@ namespace Qurre.API
 			get => rh.queryProcessor.NetworkPlayerId;
 			set => rh.queryProcessor.NetworkPlayerId = value;
 		}
+		private List<KillElement> _kills;
+		public IEnumerator<KillElement> Kills => (IEnumerator<KillElement>)_kills;
+		public int KillsCount => _kills.Count();
 		public AuthType AuthType
         {
             get

@@ -1,4 +1,9 @@
 ﻿using Qurre.API;
+using CommandSystem;
+using RemoteAdmin;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 using Version = System.Version;
 namespace Qurre
 {
@@ -17,5 +22,69 @@ namespace Qurre
 		public abstract void Enable();
 		public abstract void Disable();
 		public virtual void Reload() => Log.Debug($"Reloaded.\nPlugin - {Name}\nDeveloper - {Developer}\nVersion - {Version}\nNeeded Qurre Version - {NeededQurreVersion}");
+
+		internal Assembly Assembly;
+
+		internal Dictionary<Type, Dictionary<Type, ICommand>> Commands = new Dictionary<Type, Dictionary<Type, ICommand>>()
+		{
+			{ typeof(GameConsoleCommandHandler), new Dictionary<Type, ICommand>() },
+			{ typeof(ClientCommandHandler), new Dictionary<Type, ICommand>() },
+			{ typeof(RemoteAdminCommandHandler), new Dictionary<Type, ICommand>() }
+		};
+
+		public void RegisterCommands()
+        {
+			foreach (var type in Assembly.GetTypes())
+            {
+				if (type.GetInterface("ICommand") != typeof(ICommand) || !Attribute.IsDefined(type, typeof(CommandHandlerAttribute)))
+					continue;
+
+				foreach (CustomAttributeData customAttributeData in type.CustomAttributes)
+                {
+                    try
+                    {
+						if (customAttributeData.AttributeType != typeof(CommandHandlerAttribute))
+							continue;
+
+						var cmdType = (Type)customAttributeData.ConstructorArguments?[0].Value;
+
+						if (!Commands.TryGetValue(cmdType, out var typeCmds))
+							continue;
+
+						if (!typeCmds.TryGetValue(type, out var cmd))
+							cmd = (ICommand)Activator.CreateInstance(type);
+
+						if (cmdType == typeof(RemoteAdminCommandHandler))
+							CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(cmd);
+						else if (cmdType == typeof(GameConsoleCommandHandler))
+							CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(cmd);
+						else if (cmdType == typeof(ClientCommandHandler))
+							CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(cmd);
+
+						Commands[cmdType][type] = cmd;
+					}
+                    catch (Exception ex)
+                    {
+						Log.Error($"An error occurred while processing {type.FullName}\n{ex}");
+                    }
+                }
+            }
+		}
+
+		public void UnregisterCommands()
+		{
+			foreach (var types in Commands)
+			{
+				foreach (ICommand cmd in types.Value.Values)
+				{
+					if (types.Key == typeof(RemoteAdminCommandHandler))
+						CommandProcessor.RemoteAdminCommandHandler.UnregisterCommand(cmd);
+					else if (types.Key == typeof(GameConsoleCommandHandler))
+						GameCore.Console.singleton.ConsoleCommandHandler.UnregisterCommand(cmd);
+					else if (types.Key == typeof(ClientCommandHandler))
+						QueryProcessor.DotCommandHandler.UnregisterCommand(cmd);
+				}
+			}
+		}
 	}
 }
