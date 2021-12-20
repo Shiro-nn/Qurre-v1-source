@@ -93,6 +93,31 @@ namespace Qurre.API
 			get => rh.queryProcessor.NetworkPlayerId;
 			set => rh.queryProcessor.NetworkPlayerId = value;
 		}
+		public AuthType AuthType
+        {
+            get
+            {
+				if (string.IsNullOrEmpty(UserId))
+					return AuthType.Unknown;
+
+				int index = UserId.LastIndexOf('@');
+
+				if (index == -1)
+					return AuthType.Unknown;
+
+				switch(UserId.Substring(index + 1))
+                {
+					case "steam":
+						return AuthType.Steam;
+					case "discord":
+						return AuthType.Discord;
+					case "northwood":
+						return AuthType.Northwood;
+					default:
+						return AuthType.Unknown;
+                }
+            }
+        }
 		public string UserId
 		{
 			get
