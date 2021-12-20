@@ -27,7 +27,8 @@ namespace Qurre.Events.Modules.Commands
         }
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (!CheckPerms(API.Player.Get((sender as CommandSender).SenderId)))
+            string senderId = (sender as CommandSender).SenderId;
+            if (!CheckPerms(API.Player.Get(senderId)) && senderId != "SERVER CONSOLE")
             {
                 response = "Access denied";
                 return false;

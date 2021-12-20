@@ -25,14 +25,14 @@ namespace Qurre
 
 		internal Assembly Assembly;
 
-		internal Dictionary<Type, Dictionary<Type, ICommand>> Commands = new Dictionary<Type, Dictionary<Type, ICommand>>()
+		internal Dictionary<Type, Dictionary<Type, ICommand>> Commands = new()
 		{
 			{ typeof(GameConsoleCommandHandler), new Dictionary<Type, ICommand>() },
 			{ typeof(ClientCommandHandler), new Dictionary<Type, ICommand>() },
 			{ typeof(RemoteAdminCommandHandler), new Dictionary<Type, ICommand>() }
 		};
 
-		public void RegisterCommands()
+		public virtual void RegisterCommands()
         {
 			foreach (var type in Assembly.GetTypes())
             {
@@ -71,7 +71,7 @@ namespace Qurre
             }
 		}
 
-		public void UnregisterCommands()
+		public virtual void UnregisterCommands()
 		{
 			foreach (var types in Commands)
 			{
