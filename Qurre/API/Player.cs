@@ -94,9 +94,10 @@ namespace Qurre.API
 			get => rh.queryProcessor.NetworkPlayerId;
 			set => rh.queryProcessor.NetworkPlayerId = value;
 		}
-		private List<KillElement> _kills;
+		internal List<KillElement> _kills;
 		public IEnumerator<KillElement> Kills => (IEnumerator<KillElement>)_kills;
 		public int KillsCount => _kills.Count();
+		public int DeathsCount { get; internal set; }
 		public AuthType AuthType
         {
             get
