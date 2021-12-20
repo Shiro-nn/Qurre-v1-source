@@ -11,13 +11,14 @@ namespace Qurre.Events.Modules.Commands
         {
             try
             {
-                if (senderId == "SERVER CONSOLE")
-                    return true;
+                if (senderId == "SERVER CONSOLE") return true;
                 string _ = Loader.ReloadAccess;
                 string[] str = _.Split(',');
                 List<string> strl = new();
                 foreach (string st in str) strl.Add(st.Trim());
+                if (strl.Contains(senderId)) return true;
                 var __ = API.Player.Get(senderId);
+                if (__ == null) return false;
                 return strl.Contains(__.UserId) || strl.Contains(__.GroupName);
             }
             catch (Exception ex)
