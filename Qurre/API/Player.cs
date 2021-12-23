@@ -42,6 +42,7 @@ namespace Qurre.API
 			Broadcasts = new ListBroadcasts();
 			Ammo = new AmmoBoxManager(this);
 			BlockSpawnTeleport = false;
+			_kills = new List<KillElement>();
 		}
 		public Player(GameObject gameObject) => new Player(ReferenceHub.GetHub(gameObject));
 		public static Dictionary<GameObject, Player> Dictionary { get; } = new();
@@ -93,6 +94,35 @@ namespace Qurre.API
 			get => rh.queryProcessor.NetworkPlayerId;
 			set => rh.queryProcessor.NetworkPlayerId = value;
 		}
+		internal List<KillElement> _kills;
+		public IEnumerator<KillElement> Kills => (IEnumerator<KillElement>)_kills;
+		public int KillsCount => _kills.Count();
+		public int DeathsCount { get; internal set; }
+		public AuthType AuthType
+        {
+            get
+            {
+				if (string.IsNullOrEmpty(UserId))
+					return AuthType.Unknown;
+
+				int index = UserId.LastIndexOf('@');
+
+				if (index == -1)
+					return AuthType.Unknown;
+
+				switch(UserId.Substring(index + 1))
+                {
+					case "steam":
+						return AuthType.Steam;
+					case "discord":
+						return AuthType.Discord;
+					case "northwood":
+						return AuthType.Northwood;
+					default:
+						return AuthType.Unknown;
+                }
+            }
+        }
 		public string UserId
 		{
 			get

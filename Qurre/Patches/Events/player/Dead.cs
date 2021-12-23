@@ -19,6 +19,11 @@ namespace Qurre.Patches.Events.player
                 target.Zoomed = false;
                 var ev = new DeadEvent(attacker, target, handler, handler.GetDamageType());
                 Qurre.Events.Invoke.Player.Dead(ev);
+                if (attacker != target)
+                {
+                    attacker._kills.Add(new API.Objects.KillElement(attacker, target, handler.GetDamageType(), System.DateTime.Now));
+                    target.DeathsCount++;
+                }
                 if (target.Bot) API.Map.Bots.FirstOrDefault(x => x.Player == target).Destroy();
             }
             catch (System.Exception e)

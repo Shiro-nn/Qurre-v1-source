@@ -48,7 +48,7 @@
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>..\lib\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="CommandSystem.Core">
       <HintPath>..\lib\CommandSystem.Core.dll</HintPath>
@@ -97,6 +97,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Addons\IYamlConfig.cs" />
     <Compile Include="API\Audio.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
@@ -104,6 +105,8 @@
     <Compile Include="API\Controllers\ShootingTarget.cs" />
     <Compile Include="API\Controllers\Light.cs" />
     <Compile Include="API\Controllers\Primitive.cs" />
+    <Compile Include="API\Objects\AuthType.cs" />
+    <Compile Include="API\Objects\KillElement.cs" />
     <Compile Include="API\Objects\ShootingTargetType.cs" />
     <Compile Include="API\Objects\DamageTypes.cs" />
     <Compile Include="API\Objects\DamageTypesPrimitive.cs" />
@@ -326,4 +329,7 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>Copy $(TargetPath) $(AppData)\Qurre\$(TargetFileName)</PostBuildEvent>
+  </PropertyGroup>
 </Project>

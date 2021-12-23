@@ -111,6 +111,8 @@ namespace Qurre
 						continue;
 					}
 
+					p.Assembly = assembly;
+
 					plugins.Add(p);
 					Log.Debug($"{type.FullName} loaded");
 				}
@@ -127,6 +129,7 @@ namespace Qurre
 				try
 				{
 					plugin.Enable();
+					plugin.RegisterCommands();
 					Log.Info($"Plugin {plugin.Name} written by {plugin.Developer} enabled. v{plugin.Version}");
 				}
 				catch (Exception ex)
@@ -157,6 +160,7 @@ namespace Qurre
 				try
 				{
 					plugin.Disable();
+					plugin.UnregisterCommands();
 					Log.Info($"Plugin {plugin.Name} disabled.");
 				}
 				catch (Exception ex)
