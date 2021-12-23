@@ -4,6 +4,7 @@ namespace Qurre.API.Addons
 {
     public class ListConfigs
     {
+        internal ListConfigs() { }
         public IConfig this[int index] => Cache[index];
         private readonly List<IConfig> Cache = new();
         public bool Add(IConfig cfg)

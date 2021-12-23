@@ -9,7 +9,7 @@ using System.Net;
 using System.Reflection;
 namespace Qurre
 {
-	public class PluginManager
+	public static class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new();
 		public static Version Version { get; } = new Version(1, 11, 0);
