@@ -10,8 +10,7 @@ namespace Qurre.Events.Modules.Commands
         public string Description { get; } = "Reload plugins";
         public bool Execute(ArraySegment<string> args, ICommandSender sender, out string response)
         {
-            string senderId = (sender as CommandSender).SenderId;
-            if (!Reload.CheckPerms(senderId))
+            if (!Reload.CheckPerms(API.Player.Get((sender as CommandSender).SenderId)))
             {
                 response = "Access denied";
                 return false;

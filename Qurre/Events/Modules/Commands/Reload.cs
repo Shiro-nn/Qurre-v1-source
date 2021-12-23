@@ -7,25 +7,13 @@ namespace Qurre.Events.Modules.Commands
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     internal class Reload : ParentCommand
     {
-        internal static bool CheckPerms(string senderId)
+        internal static bool CheckPerms(API.Player __)
         {
-            try
-            {
-                if (senderId == "SERVER CONSOLE") return true;
-                string _ = Loader.ReloadAccess;
-                string[] str = _.Split(',');
-                List<string> strl = new();
-                foreach (string st in str) strl.Add(st.Trim());
-                if (strl.Contains(senderId)) return true;
-                var __ = API.Player.Get(senderId);
-                if (__ == null) return false;
-                return strl.Contains(__.UserId) || strl.Contains(__.GroupName);
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"An error occurred while processing {senderId}\n{ex}");
-                return false;
-            }
+            string _ = Loader.ReloadAccess;
+            string[] str = _.Split(',');
+            List<string> strl = new();
+            foreach (string st in str) strl.Add(st.Trim());
+            return strl.Contains(__.UserId) || strl.Contains(__.GroupName);
         }
         public static Reload Instance { get; } = new();
         public Reload() => LoadGeneratedCommands();
@@ -39,8 +27,7 @@ namespace Qurre.Events.Modules.Commands
         }
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            string senderId = (sender as CommandSender).SenderId;
-            if (!CheckPerms(senderId))
+            if (!CheckPerms(API.Player.Get((sender as CommandSender).SenderId)))
             {
                 response = "Access denied";
                 return false;
