@@ -19,6 +19,7 @@ using Assets._Scripts.Dissonance;
 using MapGeneration;
 using NorthwoodLib;
 using PlayerStatsSystem;
+using Qurre.API.Addons;
 namespace Qurre.API
 {
 	public class Player
@@ -30,6 +31,7 @@ namespace Qurre.API
 		private Radio radio;
 		private Escape escape;
 		internal readonly List<Item> ItemsValue = new(8);
+		internal List<KillElement> _kills = new();
 		public Player(ReferenceHub RH)
 		{
 			rh = RH;
@@ -49,6 +51,9 @@ namespace Qurre.API
 		public static Dictionary<string, Player> UserIDPlayers { get; set; } = new();
 		public static Dictionary<string, Player> ArgsPlayers { get; set; } = new();
 		public static IEnumerable<Player> List => Dictionary.Values.Where(x => !x.Bot);
+		public IEnumerator<KillElement> Kills => (IEnumerator<KillElement>)_kills;
+		public int KillsCount => _kills.Count();
+		public int DeathsCount { get; internal set; }
 		public ReferenceHub ReferenceHub => rh;
 		public readonly Scp079 Scp079Controller;
 		public readonly Scp096 Scp096Controller;
@@ -92,6 +97,23 @@ namespace Qurre.API
 		{
 			get => rh.queryProcessor.NetworkPlayerId;
 			set => rh.queryProcessor.NetworkPlayerId = value;
+		}
+		public AuthType AuthType
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(UserId))
+					return AuthType.Unknown;
+				int index = UserId.LastIndexOf('@');
+				if (index == -1) return AuthType.Unknown;
+				return UserId.Substring(index + 1) switch
+				{
+					"steam" => AuthType.Steam,
+					"discord" => AuthType.Discord,
+					"northwood" => AuthType.Northwood,
+					_ => AuthType.Unknown,
+				};
+			}
 		}
 		public string UserId
 		{
@@ -844,15 +866,15 @@ namespace Qurre.API
 		}
 		private Side GetSide(Team team)
 		{
-            return team switch
-            {
-                Team.SCP => Side.SCP,
-                Team.MTF or Team.RSC => Side.MTF,
-                Team.CHI or Team.CDP => Side.CHAOS,
-                Team.TUT => Side.TUTORIAL,
-                _ => Side.NONE,
-            };
-        }
+			return team switch
+			{
+				Team.SCP => Side.SCP,
+				Team.MTF or Team.RSC => Side.MTF,
+				Team.CHI or Team.CDP => Side.CHAOS,
+				Team.TUT => Side.TUTORIAL,
+				_ => Side.NONE,
+			};
+		}
 		internal void CheckEscape()
 		{
 			RoleType newRole = RoleType.None;

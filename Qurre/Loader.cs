@@ -42,7 +42,7 @@ namespace Qurre
                 _ = Better268;
                 _ = LateJoinSpawn;
                 _ = ReloadAccess;
-                using StreamWriter sw = new StreamWriter(PluginManager.ConfigsPath, true, System.Text.Encoding.Default);
+                using StreamWriter sw = new(PluginManager.ConfigsPath, true, System.Text.Encoding.Default);
                 sw.Write("Qurre_Banned: banned\nQurre_Kicked: kicked\nQurre_BanOrKick_msg: You have been %bok%.\nQurre_Reason: Reason\n");
                 sw.Close();
             }

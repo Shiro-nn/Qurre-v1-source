@@ -12,13 +12,14 @@ namespace Qurre
 	public class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new();
-		public static Version Version { get; } = new Version(1, 10, 4);
+		public static Version Version { get; } = new Version(1, 11, 0);
 		//private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
 		public static string PluginsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Plugins");
 		public static string LoadedDependenciesDirectory { get; private set; } = Path.Combine(PluginsDirectory, "dependencies");
 		public static string ConfigsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Configs");
+		public static string CustomConfigsDirectory { get; private set; } = Path.Combine(ConfigsDirectory, "Custom");
 		public static string LogsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Logs");
 		public static string ManagedAssembliesDirectory { get; private set; } = Path.Combine(Path.Combine(Environment.CurrentDirectory, "SCPSL_Data"), "Managed");
 		public static string ConfigsPath { get; internal set; }
@@ -110,6 +111,7 @@ namespace Qurre
 						Log.Warn($"Plugin {p.Name} not loaded. Requires Qurre version at least {p.NeededQurreVersion}, your version: {Version}");
 						continue;
 					}
+					p.Assembly = assembly;
 
 					plugins.Add(p);
 					Log.Debug($"{type.FullName} loaded");
@@ -127,6 +129,7 @@ namespace Qurre
 				try
 				{
 					plugin.Enable();
+					plugin.RegisterCommands();
 					Log.Info($"Plugin {plugin.Name} written by {plugin.Developer} enabled. v{plugin.Version}");
 				}
 				catch (Exception ex)
@@ -157,6 +160,7 @@ namespace Qurre
 				try
 				{
 					plugin.Disable();
+					plugin.UnregisterCommands();
 					Log.Info($"Plugin {plugin.Name} disabled.");
 				}
 				catch (Exception ex)

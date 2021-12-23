@@ -1,14 +1,16 @@
 ﻿using Interactables.Interobjects.DoorUtils;
-using InventorySystem.Items;
 using InventorySystem.Items.Firearms.Attachments;
-using InventorySystem.Items.Pickups;
 using MapGeneration;
 using MapGeneration.Distributors;
 using PlayerStatsSystem;
+using Qurre.API.Addons;
 using Qurre.API.Controllers;
+using Qurre.API.Modules;
 using Qurre.API.Objects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Security.Cryptography;
 using UnityEngine;
 using _lift = Qurre.API.Controllers.Lift;
@@ -46,9 +48,9 @@ namespace Qurre.API
 		public static Window GetWindow(this BreakableWindow station) => Map.Windows.FirstOrDefault(x => x.Breakable == station);
 		public static Window GetWindow(this GameObject go) => Map.Windows.FirstOrDefault(x => x.GameObject == go);
 		public static Player GetAttacker(this DamageHandlerBase handler)
-        {
+		{
 			var plz = GetAttackerPLZ(handler);
-			if(plz == null) return null;
+			if (plz == null) return null;
 			return Player.Get(plz.Attacker.Hub);
 		}
 		public static AttackerDamageHandler GetAttackerPLZ(DamageHandlerBase handler)
@@ -108,7 +110,7 @@ namespace Qurre.API
 					}
 					break;
 				case FirearmDamageHandler fr:
-                    {
+					{
 						if (fr.WeaponType == ItemType.GunAK) return DamageTypes.AK;
 						if (fr.WeaponType == ItemType.GunCOM15) return DamageTypes.Com15;
 						if (fr.WeaponType == ItemType.GunCOM18) return DamageTypes.Com18;
@@ -157,15 +159,15 @@ namespace Qurre.API
 		}
 		public static ItemType GetItemType(this AmmoType type)
 		{
-            return type switch
-            {
-                AmmoType.Ammo556 => ItemType.Ammo556x45,
-                AmmoType.Ammo762 => ItemType.Ammo762x39,
-                AmmoType.Ammo9 => ItemType.Ammo9x19,
-                AmmoType.Ammo12Gauge => ItemType.Ammo12gauge,
-                AmmoType.Ammo44Cal => ItemType.Ammo44cal,
-                _ => ItemType.None,
-            };
+			return type switch
+			{
+				AmmoType.Ammo556 => ItemType.Ammo556x45,
+				AmmoType.Ammo762 => ItemType.Ammo762x39,
+				AmmoType.Ammo9 => ItemType.Ammo9x19,
+				AmmoType.Ammo12Gauge => ItemType.Ammo12gauge,
+				AmmoType.Ammo44Cal => ItemType.Ammo44cal,
+				_ => ItemType.None,
+			};
 		}
 		public static AmmoType GetAmmoType(this ItemType type)
 		{
@@ -191,10 +193,16 @@ namespace Qurre.API
 				while (!(box[0] < n * (byte.MaxValue / n)));
 				int k = (box[0] % n);
 				n--;
-				T value = list[k];
-				list[k] = list[n];
-				list[n] = value;
+				(list[n], list[k]) = (list[k], list[n]);
 			}
 		}
+		public static void CopyProperties(this object target, object source)
+		{
+			Type type = target.GetType();
+			if (type != source.GetType()) return;
+			foreach (PropertyInfo sourceProperty in type.GetProperties())
+				type.GetProperty(sourceProperty.Name)?.SetValue(target, sourceProperty.GetValue(source, null), null);
+		}
+		public static void Reload(this IConfig cfg) => CustomConfigsManager.Load(cfg);
 	}
 }

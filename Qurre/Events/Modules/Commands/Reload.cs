@@ -7,12 +7,16 @@ namespace Qurre.Events.Modules.Commands
     [CommandHandler(typeof(RemoteAdminCommandHandler))]
     internal class Reload : ParentCommand
     {
-        internal static bool CheckPerms(API.Player __)
+        internal static bool CheckPerms(string UserId)
         {
+            if (UserId == "SERVER CONSOLE") return true;
             string _ = Loader.ReloadAccess;
             string[] str = _.Split(',');
             List<string> strl = new();
             foreach (string st in str) strl.Add(st.Trim());
+            if (strl.Contains(UserId)) return true;
+            var __ = API.Player.Get(UserId);
+            if (__ == null) return false;
             return strl.Contains(__.UserId) || strl.Contains(__.GroupName);
         }
         public static Reload Instance { get; } = new();
@@ -27,7 +31,7 @@ namespace Qurre.Events.Modules.Commands
         }
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
-            if (!CheckPerms(API.Player.Get((sender as CommandSender).SenderId)))
+            if (!CheckPerms((sender as CommandSender).SenderId))
             {
                 response = "Access denied";
                 return false;

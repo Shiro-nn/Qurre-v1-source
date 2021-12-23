@@ -52,5 +52,7 @@ namespace Qurre.Events.Invoke
         public static void SinkholeWalking(SinkholeWalkingEvent ev) => Invokes(ev);
         public static void TantrumWalking(TantrumWalkingEvent ev) => Invokes(ev);
         public static void ChangeSpectate(ChangeSpectateEvent ev) => Invokes(ev);
+        public static void Zooming(ZoomingEvent ev) => Invokes(ev);
+        public static void CoinFlip(CoinFlipEvent ev) => Invokes(ev);
     }
 }

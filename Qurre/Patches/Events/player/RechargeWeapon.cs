@@ -15,8 +15,22 @@ namespace Qurre.Patches.Events.player
             {
                 Item item = Item.Get(msg.Serial);
                 if (item == null) return true;
-                if (msg.Request == RequestType.AdsIn) item.Owner.Zoomed = true;
-                else if (msg.Request == RequestType.AdsOut) item.Owner.Zoomed = false;
+                if (msg.Request == RequestType.AdsIn)
+                {
+                    Player pl = item.Owner;
+                    var ev = new ZoomingEvent(pl, item, msg.Request, true);
+                    Qurre.Events.Invoke.Player.Zooming(ev);
+                    if (ev.Allowed) item.Owner.Zoomed = true;
+                    return ev.Allowed;
+                }
+                else if (msg.Request == RequestType.AdsOut)
+                {
+                    Player pl = item.Owner;
+                    var ev = new ZoomingEvent(pl, item, msg.Request, false);
+                    Qurre.Events.Invoke.Player.Zooming(ev);
+                    if (ev.Allowed) item.Owner.Zoomed = false;
+                    return ev.Allowed;
+                }
                 else if (msg.Request == RequestType.Reload)
                 {
                     Player pl = item.Owner;

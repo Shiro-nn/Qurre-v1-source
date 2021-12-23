@@ -76,6 +76,7 @@
       <HintPath>..\lib\NorthwoodLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="UnityEngine">
       <HintPath>..\lib\UnityEngine.dll</HintPath>
     </Reference>
@@ -95,8 +96,15 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
+    <Reference Include="YamlDotNet, Version=11.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Addons\ListConfigs.cs" />
+    <Compile Include="API\Addons\Config.cs" />
+    <Compile Include="API\Addons\KillElement.cs" />
     <Compile Include="API\Audio.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
@@ -104,6 +112,15 @@
     <Compile Include="API\Controllers\ShootingTarget.cs" />
     <Compile Include="API\Controllers\Light.cs" />
     <Compile Include="API\Controllers\Primitive.cs" />
+    <Compile Include="API\Modules\CommentsObjectGraphVisitor.cs" />
+    <Compile Include="API\Modules\CommentsObjectDescriptor.cs" />
+    <Compile Include="API\Modules\CommentsPropertyDescriptor.cs" />
+    <Compile Include="API\Modules\CommentGatheringTypeInspector.cs" />
+    <Compile Include="API\Modules\ValidatingNodeDeserializer.cs" />
+    <Compile Include="API\Modules\VectorsConverter.cs" />
+    <Compile Include="API\Modules\CustomConfigsManager.cs" />
+    <Compile Include="API\Modules\ConfigManager.cs" />
+    <Compile Include="API\Objects\AuthType.cs" />
     <Compile Include="API\Objects\ShootingTargetType.cs" />
     <Compile Include="API\Objects\DamageTypes.cs" />
     <Compile Include="API\Objects\DamageTypesPrimitive.cs" />
@@ -176,7 +193,6 @@
     <Compile Include="API\Player.cs" />
     <Compile Include="API\Round.cs" />
     <Compile Include="API\Controllers\Scp914.cs" />
-    <Compile Include="API\ConfigManager.cs" />
     <Compile Include="Events\Alpha.cs" />
     <Compile Include="Events\Modules\Commands\Configs.cs" />
     <Compile Include="Events\Modules\Commands\Plugins.cs" />
@@ -209,6 +225,7 @@
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
     <Compile Include="Patches\Events\Map\ConvertUnitName.cs" />
     <Compile Include="Patches\Events\player\ChangeSpectate.cs" />
+    <Compile Include="Patches\Events\player\CoinFlip.cs" />
     <Compile Include="Patches\Events\player\DamageProcess.cs" />
     <Compile Include="Patches\Events\player\TantrumWalking.cs" />
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
@@ -324,6 +341,5 @@
   <ItemGroup>
     <Content Include="qurre_ol.ico" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

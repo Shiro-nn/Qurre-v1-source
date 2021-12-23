@@ -1,4 +1,5 @@
-﻿using Qurre.API.Objects;
+﻿using Qurre.API.Modules;
+using Qurre.API.Objects;
 namespace Qurre.API
 {
     public class Config

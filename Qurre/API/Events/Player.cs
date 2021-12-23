@@ -734,4 +734,32 @@ namespace Qurre.API.Events
         public Player NewTarget { get; set; }
         public bool Allowed { get; set; }
     }
+    public class ZoomingEvent : EventArgs
+    {
+        public ZoomingEvent(Player player, Item item, RequestType request, bool value, bool allowed = true)
+        {
+            Player = player;
+            Item = item;
+            Request = request;
+            Value = value;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public Item Item { get; }
+        public RequestType Request { get; }
+        public bool Value { get; }
+        public bool Allowed { get; set; }
+    }
+    public class CoinFlipEvent : EventArgs
+    {
+        public CoinFlipEvent(Player player, bool tails, bool allowed = true)
+        {
+            Player = player;
+            Tails = tails;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public bool Tails { get; set; }
+        public bool Allowed { get; set; }
+    }
 }

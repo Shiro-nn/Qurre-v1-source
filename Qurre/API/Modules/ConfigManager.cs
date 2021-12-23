@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.IO;
 using System.Text;
-namespace Qurre.API
+namespace Qurre.API.Modules
 {
 	internal class ConfigManager
 	{
