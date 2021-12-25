@@ -1,4 +1,5 @@
 ﻿using Qurre.API.Modules;
+using System.Collections;
 using System.Collections.Generic;
 namespace Qurre.API.Addons
 {
@@ -7,6 +8,7 @@ namespace Qurre.API.Addons
         internal ListConfigs() { }
         public IConfig this[int index] => Cache[index];
         private readonly List<IConfig> Cache = new();
+        public IEnumerator GetEnumerator() => Cache.GetEnumerator();
         public bool Add(IConfig cfg)
         {
             if (Cache.Contains(cfg)) return false;
@@ -27,5 +29,6 @@ namespace Qurre.API.Addons
             CustomConfigsManager.Destroy(cfg);
             return true;
         }
+        public void Clear() => Cache.Clear();
     }
 }

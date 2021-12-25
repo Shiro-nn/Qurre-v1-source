@@ -20,16 +20,14 @@ namespace Qurre.Patches.Events.player
                     Player pl = item.Owner;
                     var ev = new ZoomingEvent(pl, item, msg.Request, true);
                     Qurre.Events.Invoke.Player.Zooming(ev);
-                    if (ev.Allowed) item.Owner.Zoomed = true;
-                    return ev.Allowed;
+                    item.Owner.Zoomed = true;
                 }
                 else if (msg.Request == RequestType.AdsOut)
                 {
                     Player pl = item.Owner;
                     var ev = new ZoomingEvent(pl, item, msg.Request, false);
                     Qurre.Events.Invoke.Player.Zooming(ev);
-                    if (ev.Allowed) item.Owner.Zoomed = false;
-                    return ev.Allowed;
+                    item.Owner.Zoomed = false;
                 }
                 else if (msg.Request == RequestType.Reload)
                 {

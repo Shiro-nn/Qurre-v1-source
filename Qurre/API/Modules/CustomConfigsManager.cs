@@ -9,7 +9,7 @@ namespace Qurre.API.Modules
     {
         internal static IDeserializer Deserializer { get; } = new DeserializerBuilder()
             .WithTypeConverter(new VectorsConverter())
-            .WithNamingConvention(UnderscoredNamingConvention.Instance)
+            .WithNamingConvention(NullNamingConvention.Instance)
             .WithNodeDeserializer(inner => new ValidatingNodeDeserializer(inner), deserializer => deserializer.InsteadOf<ObjectNodeDeserializer>())
             .IgnoreFields()
             .IgnoreUnmatchedProperties()
@@ -18,7 +18,7 @@ namespace Qurre.API.Modules
             .WithTypeConverter(new VectorsConverter())
             .WithTypeInspector(inner => new CommentGatheringTypeInspector(inner))
             .WithEmissionPhaseObjectGraphVisitor(args => new CommentsObjectGraphVisitor(args.InnerVisitor))
-            .WithNamingConvention(UnderscoredNamingConvention.Instance)
+            .WithNamingConvention(NullNamingConvention.Instance)
             .IgnoreFields()
             .Build();
         internal static void Destroy(IConfig cfg)

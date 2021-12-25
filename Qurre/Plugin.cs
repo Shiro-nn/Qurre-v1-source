@@ -11,11 +11,11 @@ namespace Qurre
 	public abstract class Plugin
 	{
 		public static Config Config { get; set; }
-		public ListConfigs CustomConfigs { get; } = new ListConfigs();
+		public ListConfigs CustomConfigs { get; } = new();
 		public virtual string Developer { get; } = "";
 		public virtual string Name { get; } = "";
-		public virtual Version Version { get; } = new Version(1, 0, 0);
-		public virtual Version NeededQurreVersion { get; } = new Version(1, 0, 0);
+		public virtual Version Version { get; } = new(1, 0, 0);
+		public virtual Version NeededQurreVersion { get; } = new(1, 0, 0);
 		///<summary>
 		///<para>Plugin load priority.</para>
 		///<para>The higher the number, the earlier the plugin will load.</para>

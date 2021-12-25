@@ -14,7 +14,7 @@ namespace Qurre.API.Modules
         {
             if (value is CommentsObjectDescriptor commentsDescriptor && commentsDescriptor.Comment != null)
             {
-                context.Emit(new Comment(commentsDescriptor.Comment, false));
+                context.Emit(new Comment(commentsDescriptor.Comment.Replace("\n", "\n#"), false));
             }
 
             return base.EnterMapping(key, value, context);
