@@ -333,9 +333,10 @@ namespace Qurre.API
 		public Stamina Stamina => rh.fpc.staminaController;
 		public float StaminaUsage
 		{
-			get => rh.fpc.staminaController.StaminaUse * 100;
-			set => rh.fpc.staminaController.StaminaUse = (value / 100f);
+			get => Stamina.StaminaUse * 100;
+			set => Stamina.StaminaUse = (value / 100f);
 		}
+		public void ResetStamina() => PersonController.ResetStamina();
 		public string GroupName
 		{
 			get => ServerStatic.GetPermissionsHandler()._members.TryGetValue(UserId, out string groupName) ? groupName : null;
@@ -994,7 +995,36 @@ namespace Qurre.API
 				}
 			}
 		}
-		[Obsolete("Use 'Movement'")]
-		public PlayerMovementSync PlayerMovementSync => rh.playerMovementSync;
+		public PlayableScpsController ScpsController { get => rh.scpsController; }
+		public PlayableScps.PlayableScp CurrentScp
+		{
+		    get => ScpsController.CurrentScp;
+		    set => ScpsController.CurrentScp = value;
+		}
+		public void HideTag() => ClassManager.CmdRequestHideTag();
+		public void ShowTag() => ClassManager.CallCmdRequestShowTag(false);
+		public string HiddenTag => ServerRoles.HiddenBadge;
+		public bool TagIsHidden
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(HiddenTag) || string.IsNullOrWhiteSpace(HiddenTag)) return false;
+				else return true;
+			}
+			set
+			{
+				if (value)
+				{
+					HideTag();
+				}
+				else
+				{
+					ShowTag();
+				}
+			}
+		}
+		public float DistanceTo(Player player) => Vector3.Distance(Position, player.Position);
+		public float DistanceTo(Vector3 position) => Vector3.Distance(Position, position);
+		public float DistanceTo(GameObject Object) => Vector3.Distance(Position, Object.transform.localPosition);
 	}
 }
