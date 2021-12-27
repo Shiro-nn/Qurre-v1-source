@@ -1002,7 +1002,7 @@ namespace Qurre.API
 		    set => ScpsController.CurrentScp = value;
 		}
 		public void HideTag() => ClassManager.CmdRequestHideTag();
-		public void ShowTag() => ClassManager.CallCmdRequestShowTag(false);
+		public void ShowTag() => ClassManager.CmdRequestShowTag(false);
 		public string HiddenTag => ServerRoles.HiddenBadge;
 		public bool TagIsHidden
 		{
