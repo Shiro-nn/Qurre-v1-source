@@ -336,7 +336,7 @@ namespace Qurre.API
 			get => Stamina.StaminaUse * 100;
 			set => Stamina.StaminaUse = (value / 100f);
 		}
-		public void ResetStamina() => PersonController.ResetStamina();
+		public void ResetStamina() => rh.fpc.ResetStamina();
 		public string GroupName
 		{
 			get => ServerStatic.GetPermissionsHandler()._members.TryGetValue(UserId, out string groupName) ? groupName : null;
