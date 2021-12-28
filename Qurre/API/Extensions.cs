@@ -61,7 +61,8 @@ namespace Qurre.API
 				_ => null,
 			};
 		}
-		public static DamageTypesPrimitive GetDamageTypesPrimitive(this DamageHandlerBase handler)
+		public static DamageTypesPrimitive GetDamageTypesPrimitive(this DamageHandlerBase handler) => _getDamageTypesPrimitive(handler);
+		private static DamageTypesPrimitive _getDamageTypesPrimitive(DamageHandlerBase handler)
 		{
 			return handler switch
 			{
@@ -78,7 +79,8 @@ namespace Qurre.API
 				_ => DamageTypesPrimitive.Unknow,
 			};
 		}
-		public static DamageTypes GetDamageType(this DamageHandlerBase handler)
+		public static DamageTypes GetDamageType(this DamageHandlerBase handler) => _getDamageType(handler);
+		private static DamageTypes _getDamageType(DamageHandlerBase handler)
 		{
 			switch (handler)
 			{

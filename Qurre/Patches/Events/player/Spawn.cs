@@ -58,7 +58,7 @@ namespace Qurre.Patches.Events.player
                         else __pl.Zoomed = false;
                         var ev = new SpawnEvent(__pl, __instance.CurClass, pos, rotY);
                         Qurre.Events.Invoke.Player.Spawn(ev);
-                        if (!ev.Player.BlockSpawnTeleport) __instance._pms.OnPlayerClassChange(ev.Position, ev.RotationY);
+                        if(!ev.Player.BlockSpawnTeleport) __instance._pms.OnPlayerClassChange(ev.Position, ev.RotationY);
                         else
                         {
                             ev.Player.BlockSpawnTeleport = false;
@@ -70,11 +70,10 @@ namespace Qurre.Patches.Events.player
                             __instance.SpawnProtected = true;
                             __instance.ProtectedTime = Time.time;
                         }
-                        try { if (!__instance.isLocalPlayer) __pl.MaxHp = curRole.maxHP; } catch { }
-                        try { __pl.Hp = __pl.MaxHp; } catch { }
                     }
+                    try { if (!__instance.isLocalPlayer) API.Player.Get(__instance.gameObject).MaxHp = curRole.maxHP; } catch { }
                 }
-                else if (__pl != null)
+                else if(__pl != null)
                 {
                     __pl.Zoomed = false;
                     __pl.BlockSpawnTeleport = false;
