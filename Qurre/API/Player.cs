@@ -337,10 +337,27 @@ namespace Qurre.API
 			set => Stamina.StaminaUse = (value / 100f);
 		}
 		public void ResetStamina() => rh.fpc.ResetStamina();
-		public string GroupName
+		public PlayableScpsController ScpsController => rh.scpsController;
+		public PlayableScps.PlayableScp CurrentScp
 		{
-			get => ServerStatic.GetPermissionsHandler()._members.TryGetValue(UserId, out string groupName) ? groupName : null;
-			set => ServerStatic.GetPermissionsHandler()._members[UserId] = value;
+			get => ScpsController.CurrentScp;
+			set => ScpsController.CurrentScp = value;
+		}
+		public void HideTag() => ClassManager.CmdRequestHideTag();
+		public void ShowTag() => ClassManager.CmdRequestShowTag(false);
+		public string HiddenTag => ServerRoles.HiddenBadge;
+		public bool TagHidden
+		{
+			get
+			{
+				if (string.IsNullOrEmpty(HiddenTag) || string.IsNullOrWhiteSpace(HiddenTag)) return false;
+				else return true;
+			}
+			set
+			{
+				if (value) HideTag();
+				else ShowTag();
+			}
 		}
 		public ZoneType Zone => Room.Zone;
 		public Room Room
@@ -357,6 +374,11 @@ namespace Qurre.API
 			}
 		}
 		public bool GlobalRemoteAdmin => ServerRoles.RemoteAdminMode == ServerRoles.AccessMode.GlobalAccess;
+		public string GroupName
+		{
+			get => ServerStatic.GetPermissionsHandler()._members.TryGetValue(UserId, out string groupName) ? groupName : null;
+			set => ServerStatic.GetPermissionsHandler()._members[UserId] = value;
+		}
 		public UserGroup Group
 		{
 			get => ServerRoles.Group;
@@ -976,6 +998,9 @@ namespace Qurre.API
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 42);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
 		}
+		public float DistanceTo(Player player) => Vector3.Distance(Position, player.Position);
+		public float DistanceTo(Vector3 position) => Vector3.Distance(Position, position);
+		public float DistanceTo(GameObject Object) => Vector3.Distance(Position, Object.transform.localPosition);
 		public class AmmoBoxManager
 		{
 			private readonly Player player;
@@ -995,36 +1020,7 @@ namespace Qurre.API
 				}
 			}
 		}
-		public PlayableScpsController ScpsController { get => rh.scpsController; }
-		public PlayableScps.PlayableScp CurrentScp
-		{
-		    get => ScpsController.CurrentScp;
-		    set => ScpsController.CurrentScp = value;
-		}
-		public void HideTag() => ClassManager.CmdRequestHideTag();
-		public void ShowTag() => ClassManager.CmdRequestShowTag(false);
-		public string HiddenTag => ServerRoles.HiddenBadge;
-		public bool TagIsHidden
-		{
-			get
-			{
-				if (string.IsNullOrEmpty(HiddenTag) || string.IsNullOrWhiteSpace(HiddenTag)) return false;
-				else return true;
-			}
-			set
-			{
-				if (value)
-				{
-					HideTag();
-				}
-				else
-				{
-					ShowTag();
-				}
-			}
-		}
-		public float DistanceTo(Player player) => Vector3.Distance(Position, player.Position);
-		public float DistanceTo(Vector3 position) => Vector3.Distance(Position, position);
-		public float DistanceTo(GameObject Object) => Vector3.Distance(Position, Object.transform.localPosition);
+		[Obsolete("Use 'Movement'")]
+		public PlayerMovementSync PlayerMovementSync => rh.playerMovementSync;
 	}
 }
