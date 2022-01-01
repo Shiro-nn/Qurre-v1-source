@@ -19,6 +19,6 @@ namespace Qurre.API.Controllers.Items
             get => Base._pinPullTime;
             set => Base._pinPullTime = value;
         }
-        public void Throw(bool fullForce = true) => Base.ServerThrow(fullForce, ThrowableNetworkHandler.GetLimitedVelocity(Base.Owner.playerMovementSync.PlayerVelocity));
+        public void Throw(bool fullForce = true) => Base.ServerThrow(fullForce/*, ThrowableNetworkHandler.GetLimitedVelocity(Base.Owner.playerMovementSync.PlayerVelocity)*/);
     }
 }

@@ -34,7 +34,7 @@ namespace Qurre.Patches.Events.player
 				}
 				else if (!HitboxIdentity.CheckFriendlyFire(__instance.Attacker.Role, curClass, true) && !attacker.FriendlyFire)
 				{
-					if(AttackerDamageHandler._ffMultiplier > 0.1f) __instance.Damage *= AttackerDamageHandler._ffMultiplier;
+					if (AttackerDamageHandler._ffMultiplier > 0.1f) __instance.Damage *= AttackerDamageHandler._ffMultiplier;
 					__instance.IsFriendlyFire = true;
 				}
 				var type = __instance.GetDamageType();
@@ -44,6 +44,7 @@ namespace Qurre.Patches.Events.player
 				__instance.Damage = ev.Amount;
 				__instance.IsFriendlyFire = ev.FriendlyFire;
 				if (!ev.Allowed) __instance.Damage = 0;
+				if (!API.Server.FriendlyFire && ev.FriendlyFire) __instance.Damage = 0;
 				return false;
 			}
 			catch (Exception e)
