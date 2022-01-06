@@ -47,6 +47,7 @@ namespace Qurre.API
 		public static _workStation GetWorkStation(this WorkstationController station) => Map.WorkStations.FirstOrDefault(x => x.GameObject == station.gameObject);
 		public static Window GetWindow(this BreakableWindow station) => Map.Windows.FirstOrDefault(x => x.Breakable == station);
 		public static Window GetWindow(this GameObject go) => Map.Windows.FirstOrDefault(x => x.GameObject == go);
+		public static Sinkhole GetSinkhole(SinkholeEnvironmentalHazard hole) => Map.Sinkholes.FirstOrDefault(x => x.EnvironmentalHazard == hole);
 		public static Player GetAttacker(this DamageHandlerBase handler)
 		{
 			var plz = GetAttackerPLZ(handler);

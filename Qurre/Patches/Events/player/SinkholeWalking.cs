@@ -4,6 +4,8 @@ using Mirror;
 using Qurre.API;
 using Qurre.API.Events;
 using System;
+using Extensions = Qurre.API.Extensions;
+
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.DistanceChanged))]
@@ -18,11 +20,15 @@ namespace Qurre.Patches.Events.player
                 var pl = Player.Get(player);
                 if ((pl.Position - __instance.transform.position).sqrMagnitude <= __instance.DistanceToBeAffected * __instance.DistanceToBeAffected)
                 {
-                    var ev = new SinkholeWalkingEvent(pl, __instance);
+                    var ev = new SinkholeWalkingEvent(pl, Extensions.GetSinkhole(__instance), Extensions.GetSinkhole(__instance).Effects, Extensions.GetSinkhole(__instance).EffectsDuration);
                     Qurre.Events.Invoke.Player.SinkholeWalking(ev);
-                    if (!ev.Allowed) return false;
-                    if (__instance.SCPImmune && (pl.ClassManager == null || pl.ClassManager.IsAnyScp())) return false;
-                    pl.EnableEffect<SinkHole>();
+                    if (ev.GiveEffects)
+                    {
+                        foreach (var Effect in ev.Effects)
+                        {
+                            ev.Player.EnableEffect(Effect, ev.Durations?[Effect] ?? 1);
+                        }
+                    }
                     return false;
                 }
                 pl.DisableEffect<SinkHole>();

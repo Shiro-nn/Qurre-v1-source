@@ -30,6 +30,7 @@ namespace Qurre.API
 		public static List<_locker> Lockers { get; } = new();
 		public static List<Generator> Generators { get; } = new();
 		public static List<_ragdoll> Ragdolls { get; } = new();
+		public static List<Sinkhole> Sinkholes { get; } = new();
 		public static List<Room> Rooms { get; } = new();
 		public static List<Controllers.Camera> Cameras { get; } = new();
 		public static List<Tesla> Teslas { get; } = new();
@@ -222,6 +223,7 @@ namespace Qurre.API
 			foreach (var station in WorkstationController.AllWorkstations) WorkStations.Add(new _workStation(station));
 			foreach (var door in Server.GetObjectsOf<DoorVariant>()) Doors.Add(new Door(door));
 			foreach (var window in Server.GetObjectsOf<BreakableWindow>()) Windows.Add(new Window(window));
+			foreach (SinkholeEnvironmentalHazard hole in Server.GetObjectsOf<SinkholeEnvironmentalHazard>()) Sinkholes.Add(new Sinkhole(hole));
 			foreach (var pair in Scp079Interactable.InteractablesByRoomId)
 			{
 				foreach (var interactable in pair.Value)
@@ -256,6 +258,7 @@ namespace Qurre.API
 			Lights.Clear();
 			Primitives.Clear();
 			ShootingTargets.Clear();
+			Sinkholes.Clear();
 		}
 	}
 }

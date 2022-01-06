@@ -43,12 +43,12 @@
     <Reference Include="0Harmony">
       <HintPath>..\lib\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\lib\Assembly-CSharp_publicized.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp-firstpass">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
-    </Reference>
-    <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="CommandSystem.Core">
       <HintPath>..\lib\CommandSystem.Core.dll</HintPath>
@@ -112,6 +112,7 @@
     <Compile Include="API\Controllers\ShootingTarget.cs" />
     <Compile Include="API\Controllers\Light.cs" />
     <Compile Include="API\Controllers\Primitive.cs" />
+    <Compile Include="API\Controllers\Sinkhole.cs" />
     <Compile Include="API\Modules\CommentsObjectGraphVisitor.cs" />
     <Compile Include="API\Modules\CommentsObjectDescriptor.cs" />
     <Compile Include="API\Modules\CommentsPropertyDescriptor.cs" />
