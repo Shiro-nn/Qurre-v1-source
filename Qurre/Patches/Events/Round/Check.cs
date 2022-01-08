@@ -5,9 +5,11 @@ using System.Reflection.Emit;
 using GameCore;
 using HarmonyLib;
 using MEC;
+using Qurre.API.Controllers.Items;
 using Qurre.API.Events;
 using RoundRestarting;
 using UnityEngine;
+using Rd = Qurre.API.Controllers.Ragdoll;
 namespace Qurre.Patches.Events.Round
 {
     [HarmonyPatch(typeof(RoundSummary), nameof(RoundSummary.Start))]
@@ -123,8 +125,35 @@ namespace Qurre.Patches.Events.Round
                     }
                     yield return Timing.WaitForSeconds(num10 - 1);
                     instance.RpcDimScreen();
-                    yield return Timing.WaitForSeconds(1f);
-                    RoundRestart.InitiateRoundRestart();
+                    Timing.CallDelayed(1f, () => RoundRestart.InitiateRoundRestart());
+                    try
+                    {
+                        var __list = API.Player.List.Where(x => x.Role != RoleType.Spectator);
+                        foreach (var pl in __list)
+                        {
+                            try
+                            {
+                                pl.ClearInventory();
+                                pl.Role = RoleType.Spectator;
+                            }
+                            catch { }
+                        }
+                    }
+                    catch { }
+                    try
+                    {
+                        var __pics = new List<Pickup>();
+                        foreach (var item in API.Map.Pickups) try { __pics.Add(item); } catch { }
+                        foreach (var p in __pics) try { p.Destroy(); } catch { }
+                    }
+                    catch { }
+                    try
+                    {
+                        var __dolls = new List<Rd>();
+                        foreach (var d in API.Map.Ragdolls) try { __dolls.Add(d); } catch { }
+                        foreach (var d in __dolls) try { d.Destroy(); } catch { }
+                    }
+                    catch { }
                 }
             }
         }

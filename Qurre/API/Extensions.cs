@@ -47,7 +47,21 @@ namespace Qurre.API
 		public static _workStation GetWorkStation(this WorkstationController station) => Map.WorkStations.FirstOrDefault(x => x.GameObject == station.gameObject);
 		public static Window GetWindow(this BreakableWindow station) => Map.Windows.FirstOrDefault(x => x.Breakable == station);
 		public static Window GetWindow(this GameObject go) => Map.Windows.FirstOrDefault(x => x.GameObject == go);
-		public static Sinkhole GetSinkhole(SinkholeEnvironmentalHazard hole) => Map.Sinkholes.FirstOrDefault(x => x.EnvironmentalHazard == hole);
+		public static Sinkhole GetSinkhole(this SinkholeEnvironmentalHazard hole) => Map.Sinkholes.FirstOrDefault(x => x.EnvironmentalHazard == hole);
+		public static Team GetTeam(this RoleType roleType)
+		{
+			return roleType switch
+			{
+				RoleType.ChaosConscript or RoleType.ChaosMarauder or RoleType.ChaosRepressor or RoleType.ChaosRifleman => Team.CHI,
+				RoleType.Scientist => Team.RSC,
+				RoleType.ClassD => Team.CDP,
+				RoleType.Scp049 or RoleType.Scp93953 or RoleType.Scp93989 or RoleType.Scp0492 or RoleType.Scp079 or RoleType.Scp096 or RoleType.Scp106 or RoleType.Scp173 => Team.SCP,
+				RoleType.Spectator => Team.RIP,
+				RoleType.FacilityGuard or RoleType.NtfCaptain or RoleType.NtfPrivate or RoleType.NtfSergeant or RoleType.NtfSpecialist => Team.MTF,
+				RoleType.Tutorial => Team.TUT,
+				_ => Team.RIP,
+			};
+		}
 		public static Player GetAttacker(this DamageHandlerBase handler)
 		{
 			var plz = GetAttackerPLZ(handler);

@@ -698,23 +698,19 @@ namespace Qurre.API.Events
     }
     public class SinkholeWalkingEvent : EventArgs
     {
-        public SinkholeWalkingEvent(Player player, Sinkhole sinkhole, List<EffectType> effects, Dictionary<EffectType, float> durations, bool giveeffects = true)
+        public SinkholeWalkingEvent(Player pl, Sinkhole sinkhole, List<EffectType> effects, Dictionary<EffectType, float> durations, bool allowed = true)
         {
+            Player = pl;
             Sinkhole = sinkhole;
-            Player = player;
-            GiveEffects = giveeffects;
             Effects = effects;
             Durations = durations;
+            Allowed = allowed;
         }
         public Player Player { get; }
-
         public Sinkhole Sinkhole { get; }
-
-        public List<EffectType> Effects { get; set; }
-
-        public Dictionary<EffectType, float> Durations { get; set; }
-
-        public bool GiveEffects { get; set; }
+        public List<EffectType> Effects { get; }
+        public Dictionary<EffectType, float> Durations { get; }
+        public bool Allowed { get; set; }
     }
     public class TantrumWalkingEvent : EventArgs
     {

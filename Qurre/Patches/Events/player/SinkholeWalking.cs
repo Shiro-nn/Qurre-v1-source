@@ -4,8 +4,6 @@ using Mirror;
 using Qurre.API;
 using Qurre.API.Events;
 using System;
-using Extensions = Qurre.API.Extensions;
-
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.DistanceChanged))]
@@ -16,22 +14,18 @@ namespace Qurre.Patches.Events.player
             try
             {
                 if (!NetworkServer.active) return false;
-                if (player.playerEffectsController == null) return false;
+                if (player.playerEffectsController is null) return false;
                 var pl = Player.Get(player);
+                if (pl is null || pl.ClassManager is null) return false;
+                var controller = __instance.GetSinkhole();
                 if ((pl.Position - __instance.transform.position).sqrMagnitude <= __instance.DistanceToBeAffected * __instance.DistanceToBeAffected)
                 {
-                    var ev = new SinkholeWalkingEvent(pl, Extensions.GetSinkhole(__instance), Extensions.GetSinkhole(__instance).Effects, Extensions.GetSinkhole(__instance).EffectsDuration);
+                    var ev = new SinkholeWalkingEvent(pl, controller, controller.Effects, controller.EffectsDuration,
+                        !((controller.ImmunityScps && pl.ClassManager.IsAnyScp()) || controller.ImmunityRoles.Contains(pl.Role)));
                     Qurre.Events.Invoke.Player.SinkholeWalking(ev);
-                    if (ev.GiveEffects)
-                    {
-                        foreach (var Effect in ev.Effects)
-                        {
-                            ev.Player.EnableEffect(Effect, ev.Durations?[Effect] ?? 1);
-                        }
-                    }
-                    return false;
+                    if (!ev.Allowed) return false;
+                    foreach (var ef in ev.Effects) pl.EnableEffect(ef, ev.Durations?[ef] ?? 1);
                 }
-                pl.DisableEffect<SinkHole>();
                 return false;
             }
             catch (Exception e)

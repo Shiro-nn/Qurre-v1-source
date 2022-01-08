@@ -8,7 +8,7 @@ namespace Qurre.API.Controllers.Items
 {
     public class Pickup
     {
-        internal static readonly Dictionary<ItemPickupBase, Pickup> BaseToItem = new Dictionary<ItemPickupBase, Pickup>();
+        internal static readonly Dictionary<ItemPickupBase, Pickup> BaseToItem = new();
         private ushort id;
         public Pickup(ItemPickupBase pickupBase)
         {
