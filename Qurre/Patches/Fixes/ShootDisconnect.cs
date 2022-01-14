@@ -3,10 +3,10 @@ using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Attachments;
 using Qurre.API;
 using UnityEngine;
-namespace Qurre.Patches.Modules
+namespace Qurre.Patches.Fixes
 {
     [HarmonyPatch(typeof(FirearmExtensions), nameof(FirearmExtensions.ServerSendAudioMessage))]
-    internal static class FixShootDisconnect
+    internal static class ShootDisconnect
     {
         internal static bool Prefix(Firearm firearm, byte clipId)
         {

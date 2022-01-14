@@ -4,10 +4,10 @@ using Qurre.API;
 using System;
 using System.Collections.Generic;
 using static CharacterClassManager;
-namespace Qurre.Patches.Modules
+namespace Qurre.Patches.Fixes
 {
 	[HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.SetClassIDAdv))]
-	internal static class FixDoubleSpawn
+	internal static class DoubleSpawn
 	{
 		internal static Dictionary<CharacterClassManager, Module> Data = new();
 		internal static bool Prefix(CharacterClassManager __instance, RoleType id, SpawnReason spawnReason)

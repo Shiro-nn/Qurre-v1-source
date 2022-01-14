@@ -5,6 +5,7 @@ namespace Qurre.API.Controllers.Items
 {
     public class FlashGrenade : Throwable
     {
+        internal static Dictionary<FlashbangGrenade, FlashGrenade> GTB { get; set; } = new();
         public FlashGrenade(ThrowableItem itemBase)
             : base(itemBase)
         {

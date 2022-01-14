@@ -18,7 +18,6 @@ namespace Qurre.Events.Modules
             Server.SendingRA += FixRaBc;
             Player.Spawn += FixItems;
             Player.DamageProcess += FixFF;
-            Round.Check += CheckRound;
         }
         private static void SceneUnloaded(Scene _)
         {
@@ -49,27 +48,6 @@ namespace Qurre.Events.Modules
             else if (Loader.OnlyTutorialUnit)
             {
                 API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#31d400>Qurre v{PluginManager.Version}</color>");
-            }
-        }
-        private static void CheckRound(CheckEvent ev)
-        {
-            bool MTFAlive = API.Player.List.Where(x => x.Team == Team.MTF).ToList().Count > 0;
-            bool CiAlive = API.Player.List.Where(x => x.Team == Team.CHI).ToList().Count > 0;
-            bool ScpAlive = API.Player.List.Where(x => x.Team == Team.SCP).ToList().Count > 0;
-            bool DClassAlive = API.Player.List.Where(x => x.Team == Team.CDP).ToList().Count > 0;
-            bool ScientistsAlive = API.Player.List.Where(x => x.Team == Team.RSC).ToList().Count > 0;
-            ev.RoundEnd = false;
-            if (ScpAlive && !MTFAlive && !DClassAlive && !ScientistsAlive)
-            {
-                ev.RoundEnd = true;
-            }
-            else if (!ScpAlive && (MTFAlive || ScientistsAlive) && !DClassAlive && !CiAlive)
-            {
-                ev.RoundEnd = true;
-            }
-            else if (!ScpAlive && !MTFAlive && !ScientistsAlive && (DClassAlive || CiAlive))
-            {
-                ev.RoundEnd = true;
             }
         }
         private static void FixFF(DamageProcessEvent ev)

@@ -52,7 +52,7 @@ namespace Qurre.Patches.Modules
                             }
                             else if (player.Role == RoleType.Scp93953 || player.Role == RoleType.Scp93989)
                             {
-                                if (__instance._transmitBuffer[k].position.y < 800f && playerToShow.Team != Team.RIP && !playerToShow.ReferenceHub.GetComponent<Scp939_VisionController>().CanSee(player.PlayerEffectsController.GetEffect<Visuals939>()))
+                                if (__instance._transmitBuffer[k].position.y < 800f && playerToShow.Team != Team.RIP && playerToShow.Team != Team.SCP && !playerToShow.ReferenceHub.GetComponent<Scp939_VisionController>().CanSee(player.PlayerEffectsController.GetEffect<Visuals939>()))
                                 {
                                     showinvoid = true;
                                     goto AA_001;

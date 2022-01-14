@@ -2,9 +2,11 @@
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Threading;
 using GameCore;
 using HarmonyLib;
 using MEC;
+using Mirror;
 using Qurre.API.Controllers.Items;
 using Qurre.API.Events;
 using RoundRestarting;
@@ -33,99 +35,118 @@ namespace Qurre.Patches.Events.Round
             float time = Time.unscaledTime;
             while (instance != null)
             {
-                yield return Timing.WaitForSeconds(2.5f);
+                   yield return Timing.WaitForSeconds(2.5f);
                 while (RoundSummary.RoundLock || !RoundSummary.RoundInProgress() || Time.unscaledTime - time < 15f ||
                     (instance._keepRoundOnOne && PlayerManager.players.Count < 2))
-                    yield return Timing.WaitForOneFrame;
-                RoundSummary.SumInfo_ClassList newList = default;
-                foreach (KeyValuePair<GameObject, ReferenceHub> allHub in ReferenceHub.GetAllHubs())
+                    yield return Timing.WaitForSeconds(1);
+
+                bool end = false;
+                int cw = 0;
+                int mw = 0;
+                int sw = 0;
+                int nd = API.Player.List.Where(x => x.Team == Team.CDP).Count();
+                int ns = API.Player.List.Where(x => x.Team == Team.RSC).Count();
+                int d = RoundSummary.EscapedClassD + nd;
+                int s = RoundSummary.EscapedScientists + ns;
+                int ci = API.Player.List.Where(x => x.Team == Team.CHI).Count();
+                int mtf = API.Player.List.Where(x => x.Team == Team.MTF).Count();
+                int scp = API.Player.List.Where(x => x.Team == Team.SCP).Count();
+                bool MTFAlive = mtf > 0;
+                bool CiAlive = ci > 0;
+                bool ScpAlive = scp > 0;
+                bool DClassAlive = nd > 0;
+                bool ScientistsAlive = ns > 0;
+                var scps = API.Player.List.Where(x => x.Team == Team.SCP);
+                var cList = new RoundSummary.SumInfo_ClassList
                 {
-                    if (allHub.Value == null) continue;
-                    CharacterClassManager characterClassManager = allHub.Value.characterClassManager;
-                    if (characterClassManager.Classes.CheckBounds(characterClassManager.CurClass))
-                    {
-                        switch (characterClassManager.CurRole.team)
-                        {
-                            case Team.CDP:
-                                newList.class_ds++;
-                                break;
-                            case Team.CHI:
-                                newList.chaos_insurgents++;
-                                break;
-                            case Team.MTF:
-                                newList.mtf_and_guards++;
-                                break;
-                            case Team.RSC:
-                                newList.scientists++;
-                                break;
-                            case Team.SCP:
-                                if (characterClassManager.CurClass == RoleType.Scp0492)
-                                    newList.zombies++;
-                                else newList.scps_except_zombies++;
-                                break;
-                        }
-                    }
-                }
-                yield return Timing.WaitForOneFrame;
-                newList.warhead_kills = AlphaWarheadController.Host.detonated ? AlphaWarheadController.Host.warheadKills : -1;
-                yield return Timing.WaitForOneFrame;
-                newList.time = (int)Time.realtimeSinceStartup;
-                yield return Timing.WaitForOneFrame;
-                RoundSummary.roundTime = newList.time - instance.classlistStart.time;
-                int mtf_team = newList.mtf_and_guards + newList.scientists;
-                int d_team = newList.chaos_insurgents + newList.class_ds;
-                int scp_team = newList.scps_except_zombies + newList.zombies;
-                int num4 = newList.class_ds + RoundSummary.EscapedClassD;
-                int num5 = newList.scientists + RoundSummary.EscapedScientists;
-                float num6 = (instance.classlistStart.class_ds != 0) ? (num4 / instance.classlistStart.class_ds) : 0;
-                float num7 = (instance.classlistStart.scientists == 0) ? 1 : (num5 / instance.classlistStart.scientists);
-                if (newList.class_ds == 0 && mtf_team == 0) instance.RoundEnded = true;
-                else
+                    class_ds = d,
+                    scientists = s,
+                    chaos_insurgents = ci,
+                    mtf_and_guards = mtf,
+                    scps_except_zombies = scps.Where(x => x.Role != RoleType.Scp0492).Count(),
+                    zombies = scps.Where(x => x.Role == RoleType.Scp0492).Count(),
+                    warhead_kills = AlphaWarheadController.Host.detonated ? AlphaWarheadController.Host.warheadKills : -1,
+                    time = (int)Time.realtimeSinceStartup
+                };
+                if (ScpAlive && !MTFAlive && !DClassAlive && !ScientistsAlive)
                 {
-                    int num8 = 0;
-                    if (mtf_team > 0) num8++;
-                    if (d_team > 0) num8++;
-                    if (scp_team > 0) num8++;
-                    if (num8 <= 1) instance.RoundEnded = true;
+                    end = true;
+                    sw++;
                 }
-                bool flag = num5 > 0;
-                bool flag2 = num4 > 0;
-                bool num9 = mtf_team > 0;
-                bool flag3 = scp_team > 0;
-                LeadingTeam leadingTeam = LeadingTeam.Draw;
-                if (num9)
+                else if (!ScpAlive && (MTFAlive || ScientistsAlive) && !DClassAlive && !CiAlive)
                 {
-                    if (flag) leadingTeam = LeadingTeam.FacilityForces;
+                    end = true;
+                    mw++;
                 }
-                else if (flag2) leadingTeam = LeadingTeam.ChaosInsurgency;
-                else if (flag3) leadingTeam = LeadingTeam.Anomalies;
-                var ev = new CheckEvent(leadingTeam, newList, instance.RoundEnded);
+                else if (!ScpAlive && !MTFAlive && !ScientistsAlive && (DClassAlive || CiAlive))
+                {
+                    end = true;
+                    cw++;
+                }
+                else if (!ScpAlive && !MTFAlive && !ScientistsAlive && !DClassAlive && !CiAlive)
+                {
+                    end = true;
+                }
+                var leading = LeadingTeam.Draw;
+                if (d > s) cw++;
+                else if (d < s) mw++;
+                else if (scp > d + s) sw++;
+                if (ci > mtf) cw++;
+                else if (ci < mtf) mw++;
+                else if (scp > ci + mtf) sw++;
+                if (cw > mw)
+                {
+                    if (cw > sw) leading = LeadingTeam.ChaosInsurgency;
+                    else if (mw < sw) leading = LeadingTeam.Anomalies;
+                    else leading = LeadingTeam.Draw;
+                }
+                else if (mw > cw)
+                {
+                    if (mw > sw) leading = LeadingTeam.FacilityForces;
+                    else if (cw < sw) leading = LeadingTeam.Anomalies;
+                    else leading = LeadingTeam.Draw;
+                }
+                else leading = LeadingTeam.Draw;
+                var ev = new CheckEvent(leading, cList, end);
                 Qurre.Events.Invoke.Round.Check(ev);
-                newList = ev.ClassList;
+                cList = ev.ClassList;
                 instance.RoundEnded = ev.RoundEnd;
-                leadingTeam = ev.LeadingTeam;
+                leading = ev.LeadingTeam;
                 if (API.Round.ForceEnd) instance.RoundEnded = API.Round.ForceEnd;
                 if (instance.RoundEnded)
                 {
                     FriendlyFireConfig.PauseDetector = true;
-                    string text = $"Round finished! Anomalies: {scp_team} | Chaos: {d_team} | Facility Forces: {mtf_team} | D escaped percentage: {num6} | S escaped percentage: : {num7}";
-                    GameCore.Console.AddLog(text, Color.gray);
+                    string text = $"Round finished! Anomalies: {scp} | Chaos: {ci} | Facility Forces: {mtf} | D escaped: {d} | Scientists escaped: {s}";
+                    Console.AddLog(text, Color.gray);
                     ServerLogs.AddLog(ServerLogs.Modules.Logger, text, ServerLogs.ServerLogType.GameEvent);
-                    yield return Timing.WaitForSeconds(1.5f);
-                    int num10 = Mathf.Clamp(ConfigFile.ServerConfig.GetInt("auto_round_restart_time", 10), 5, 1000);
+                    yield return Timing.WaitForSeconds(0.5f);
+                    int to_restart = Mathf.Clamp(ConfigFile.ServerConfig.GetInt("auto_round_restart_time", 10), 5, 1000);
                     if (instance != null)
                     {
-                        var end = new RoundEndEvent(leadingTeam, newList, num10);
-                        Qurre.Events.Invoke.Round.End(end);
-                        newList = end.ClassList;
-                        leadingTeam = end.LeadingTeam;
-                        num10 = end.ToRestart;
-                        instance.RpcShowRoundSummary(instance.classlistStart, newList, leadingTeam, RoundSummary.EscapedClassD,
-                            RoundSummary.EscapedScientists, RoundSummary.KilledBySCPs, num10);
+                        var end_ev = new RoundEndEvent(leading, cList, to_restart);
+                        Qurre.Events.Invoke.Round.End(end_ev);
+                        cList = end_ev.ClassList;
+                        leading = end_ev.LeadingTeam;
+                        to_restart = Mathf.Clamp(end_ev.ToRestart, 5, 1000);
+                        instance.RpcShowRoundSummary(instance.classlistStart, cList, leading, RoundSummary.EscapedClassD,
+                            RoundSummary.EscapedScientists, RoundSummary.KilledBySCPs, to_restart);
                     }
-                    yield return Timing.WaitForSeconds(num10 - 1);
+                    yield return Timing.WaitForSeconds(to_restart - 1);
                     instance.RpcDimScreen();
                     Timing.CallDelayed(1f, () => RoundRestart.InitiateRoundRestart());
+                    /*new Thread(() =>
+                    {
+                        var round = RoundRestart.UptimeRounds;
+                        var lrt = Mathf.Clamp(RoundRestart.LastRestartTime, 1250, 60000);
+                        Thread.Sleep(1000);
+                        RoundRestart.InitiateRoundRestart();
+                        Thread.Sleep(lrt);
+                        if (round != RoundRestart.UptimeRounds) return;
+                        Log.Error("Замечена заморозка раунда");
+                        ServerShutdown.ShutdownState = ServerShutdown.ServerShutdownState.Complete;
+                        NetworkServer.SendToAll(new RoundRestartMessage(RoundRestartType.FullRestart, 15, 0, reconnect: true));
+                        Shutdown.Quit();
+                    }).Start();*/
                     try
                     {
                         var __list = API.Player.List.Where(x => x.Role != RoleType.Spectator);
@@ -150,10 +171,11 @@ namespace Qurre.Patches.Events.Round
                     try
                     {
                         var __dolls = new List<Rd>();
-                        foreach (var d in API.Map.Ragdolls) try { __dolls.Add(d); } catch { }
-                        foreach (var d in __dolls) try { d.Destroy(); } catch { }
+                        foreach (var doll in API.Map.Ragdolls) try { __dolls.Add(doll); } catch { }
+                        foreach (var doll in __dolls) try { doll.Destroy(); } catch { }
                     }
                     catch { }
+                    yield break;
                 }
             }
         }
