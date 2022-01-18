@@ -174,7 +174,7 @@ namespace Qurre.API
 				{
 				component2.Classes.SafeGet(rt)
 				}),
-				announcement = new ScpDamageHandler(killer.ReferenceHub, DeathTranslations.Unknown).CassieDeathAnnouncement
+				announcement = new ScpDamageHandler(killer.ReferenceHub, DeathTranslations.Unknown).CassieDeathAnnouncement.Announcement
 			});
 		}
 		public static void DecontaminateLCZ()
