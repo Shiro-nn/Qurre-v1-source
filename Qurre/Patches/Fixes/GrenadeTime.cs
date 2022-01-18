@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿/*using System.Collections.Generic;
 using System.Reflection.Emit;
 using HarmonyLib;
 using InventorySystem.Items;
@@ -187,4 +187,4 @@ namespace Qurre.Patches.Fixes
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
     }
-}
+}*/

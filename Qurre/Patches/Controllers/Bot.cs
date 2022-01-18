@@ -27,8 +27,9 @@ namespace Qurre.Patches.Controllers
             }
             {
                 var original = AccessTools.Method(typeof(StandardHitregBase), nameof(StandardHitregBase.ShowHitIndicator));
-                var method = typeof(Bot).GetMethod(nameof(ShowHit));
+                /*var method = typeof(Bot).GetMethod(nameof(ShowHit));
                 _showhit = PluginManager.hInstance.Patch(original, new HarmonyMethod(method));
+                */
             }
         }
         internal static void UnInitialize()
@@ -66,7 +67,7 @@ namespace Qurre.Patches.Controllers
                 return true;
             }
         }
-        public static bool ShowHit(uint netId, float damage, Vector3 origin)
+        /*public static bool ShowHit(uint netId, float damage, Vector3 origin)
         {
             if (!Round.BotSpawned) return true;
             try
@@ -90,6 +91,6 @@ namespace Qurre.Patches.Controllers
                 Log.Error($"umm, error in patching Modules [Bot ShowHit]:\n{e}\n{e.StackTrace}");
                 return true;
             }
-        }
+        }*/
     }
 }
