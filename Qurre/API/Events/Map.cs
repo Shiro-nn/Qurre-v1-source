@@ -1,9 +1,9 @@
 ﻿using Interactables.Interobjects.DoorUtils;
 using InventorySystem;
 using InventorySystem.Items.Pickups;
-using PlayerStatsSystem;
 using System;
 using UnityEngine;
+using static PlayerStatsSystem.DamageHandlerBase;
 namespace Qurre.API.Events
 {
     public class LczDeconEvent : EventArgs
@@ -129,14 +129,14 @@ namespace Qurre.API.Events
     }
     public class ScpDeadAnnouncementEvent : EventArgs
     {
-        public ScpDeadAnnouncementEvent(Player scp, string cassieDeath, bool allowed = true)
+        public ScpDeadAnnouncementEvent(Player scp, CassieAnnouncement cassieDeath, bool allowed = true)
         {
             Scp = scp;
             CassieDeath = cassieDeath;
             Allowed = allowed;
         }
         public Player Scp { get; }
-        public string CassieDeath { get; }
+        public CassieAnnouncement CassieDeath { get; }
         public bool Allowed { get; set; }
     }
     public class CreatePickupEvent : EventArgs

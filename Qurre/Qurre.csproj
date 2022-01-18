@@ -11,7 +11,7 @@
     <AssemblyName>Qurre</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -43,25 +43,21 @@
     <Reference Include="0Harmony">
       <HintPath>..\lib\0Harmony.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp-firstpass" />
     <Reference Include="Assembly-CSharp-firstpass">
-      <HintPath>E:\Host\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
-    <Reference Include="Assembly-CSharp_publicized" />
     <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>..\..\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
-    <Reference Include="CommandSystem.Core" />
     <Reference Include="CommandSystem.Core">
-      <HintPath>E:\Host\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\CommandSystem.Core.dll</HintPath>
+      <HintPath>..\lib\CommandSystem.Core.dll</HintPath>
     </Reference>
-    <Reference Include="DissonanceVoip" />
     <Reference Include="DissonanceVoip">
-      <HintPath>E:\Host\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\DissonanceVoip.dll</HintPath>
+      <HintPath>..\lib\DissonanceVoip.dll</HintPath>
     </Reference>
-    <Reference Include="Mirror" />
     <Reference Include="Mirror">
-      <HintPath>E:\Host\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed\Mirror.dll</HintPath>
+      <HintPath>..\lib\Mirror.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>..\lib\MongoDB.Bson.dll</HintPath>
@@ -241,7 +237,7 @@
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemInventory.cs" />
     <Compile Include="Patches\Events\Voice\PressPrimaryChat.cs" />
     <Compile Include="Patches\Events\Voice\PressAltChat.cs" />
-    <Compile Include="Patches\Fixes\FixVC.cs" />
+    <Compile Include="Patches\Fixes\FixVoice.cs" />
     <Compile Include="Patches\Fixes\GrenadeTime.cs" />
     <Compile Include="Patches\Fixes\NetworkBug.cs" />
     <Compile Include="Patches\Fixes\MaxHp.cs" />

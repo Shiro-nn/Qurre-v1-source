@@ -168,13 +168,15 @@ namespace Qurre.API
 				_ => RoleType.None,
 			};
 			CharacterClassManager component2 = gameObject.GetComponent<CharacterClassManager>();
+			var _cassie = new ScpDamageHandler(killer.ReferenceHub, DeathTranslations.Unknown).CassieDeathAnnouncement;
 			NineTailedFoxAnnouncer.scpDeaths.Add(new NineTailedFoxAnnouncer.ScpDeath
 			{
 				scpSubjects = new List<Role>(new Role[1]
 				{
 				component2.Classes.SafeGet(rt)
 				}),
-				announcement = new ScpDamageHandler(killer.ReferenceHub, DeathTranslations.Unknown).CassieDeathAnnouncement.Announcement
+				announcement = _cassie.Announcement,
+				subtitleParts = _cassie.SubtitleParts
 			});
 		}
 		public static void DecontaminateLCZ()

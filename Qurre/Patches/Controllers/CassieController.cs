@@ -22,7 +22,7 @@ namespace Qurre.Patches.Controllers
                         return true;
                     }
                 }
-                Cassie _cassie = new Cassie(words, makeHold, makeNoise);
+                Cassie _cassie = new(words, makeHold, makeNoise);
                 Map.Cassies.Add(_cassie, true);
                 return false;
             }

@@ -31,13 +31,13 @@ namespace Qurre.API.Controllers
     }
     public class CassieList
     {
-        private List<Cassie> Cassies = new List<Cassie>();
+        private List<Cassie> Cassies = new();
         public void Add(Cassie bc, bool instant = false)
         {
             if (bc == null) return;
             if (instant)
             {
-                var list = new List<Cassie>();
+                List<Cassie> list = new();
                 list.Add(bc);
                 list.AddRange(Cassies);
                 Cassies = list;

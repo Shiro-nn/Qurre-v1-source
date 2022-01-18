@@ -11,7 +11,7 @@ namespace Qurre.Patches.Events.Map
         {
             try
             {
-                var ev = new ScpDeadAnnouncementEvent(Player.Get(scp), hit.CassieDeathAnnouncement.Announcement);
+                var ev = new ScpDeadAnnouncementEvent(Player.Get(scp), hit.CassieDeathAnnouncement);
                 Qurre.Events.Invoke.Map.ScpDeadAnnouncement(ev);
                 return ev.Allowed;
             }

@@ -1,4 +1,4 @@
-﻿/*using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection.Emit;
 using HarmonyLib;
 using InventorySystem.Items;
@@ -10,7 +10,7 @@ using UnityEngine;
 using static HarmonyLib.AccessTools;
 namespace Qurre.Patches.Fixes
 {
-    [HarmonyPatch(typeof(ThrowableItem), nameof(ThrowableItem.ServerThrow), typeof(float), typeof(float), typeof(Vector3))]
+    [HarmonyPatch(typeof(ThrowableItem), nameof(ThrowableItem.ServerThrow), typeof(float), typeof(float), typeof(Vector3), typeof(Vector3))]
     internal static class GrenadeTime
     {
         public static Item GetItem(ItemBase itemBase) => Item.Get(itemBase);
@@ -187,4 +187,4 @@ namespace Qurre.Patches.Fixes
             ListPool<CodeInstruction>.Shared.Return(newInstructions);
         }
     }
-}*/
+}
