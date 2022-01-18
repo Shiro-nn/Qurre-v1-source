@@ -5,7 +5,7 @@ using System;
 using UnityEngine;
 namespace Qurre.Patches.Events.Map
 {
-    [HarmonyPatch(typeof(StandardHitregBase), nameof(StandardHitregBase.PlaceBullethole))]
+    [HarmonyPatch(typeof(StandardHitregBase), nameof(StandardHitregBase.PlaceBulletholeDecal))]
     internal static class PlaceBulletHole
     {
         private static bool Prefix(StandardHitregBase __instance, ref Ray ray, ref RaycastHit hit)

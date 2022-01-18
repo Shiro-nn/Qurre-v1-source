@@ -68,9 +68,10 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                         {
                             if (value.Role == RoleType.Scp106)
                             {
-                                float num = Vector3.Distance(value.Position, __instance._gateBPDPosition);
-                                float num2 = Vector3.Distance(value.Position, __instance._gateAPDPosition);
-                                var pos = (num2 < num) ? __instance._gateBPDPosition : __instance._gateAPDPosition;
+                                SafeTeleportPosition componentInChildren = roomIdentifier.GetComponentInChildren<SafeTeleportPosition>();
+                                float num = Vector3.Distance(value.Position, componentInChildren.SafePositions[0].position);
+                                float num2 = Vector3.Distance(value.Position, componentInChildren.SafePositions[1].position);
+                                var pos = (num2 < num) ? componentInChildren.SafePositions[0].position : componentInChildren.SafePositions[1].position;
                                 var ev = new PocketEscapeEvent(pl, pos);
                                 Qurre.Events.Invoke.Scp106.PocketEscape(ev);
                                 if (!ev.Allowed) return false;
@@ -83,9 +84,6 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                     else
                     {
                         HashSet<RoomIdentifier> hashSet = RoomIdUtils.FindRooms(RoomName.Unnamed, roomIdentifier.Zone, RoomShape.Undefined);
-                        hashSet.RemoveWhere((RoomIdentifier room) => room.Name == RoomName.Hcz106 || room.Name == RoomName.EzGateA ||
-                        room.Name == RoomName.EzGateB || (room.Zone == FacilityZone.LightContainment && room.Shape == RoomShape.Curve) ||
-                        __instance.ProblemChildren.Contains(room.Name));
                         while (hashSet.Count > 0)
                         {
                             RoomIdentifier roomIdentifier2 = hashSet.ElementAt(Random.Range(0, hashSet.Count));
