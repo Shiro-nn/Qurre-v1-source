@@ -19,11 +19,11 @@ namespace Qurre.Patches.Events.player
 				Vector3 vector = __instance.transform.position - hub.PlayerCameraReference.position;
 				float num = vector.magnitude;
 				float num2 = __instance._deafenDurationOverDistance.Evaluate(num);
-				if (num2 > 0f) target.EnableEffect<Deafened>(num2, true);
+				if (num2 > __instance._minimalEffectDuration) target.EnableEffect<Deafened>(num2, true);
 				if (hub.transform.position.y > 900f) num /= __instance._surfaceZoneDistanceIntensifier;
 				float num3 = __instance._blindingOverDistance.Evaluate(num) * __instance._blindingOverDot.Evaluate(Vector3.Dot(hub.PlayerCameraReference.forward, vector.normalized));
 				bool allowed = false;
-				if (num3 > 0f) allowed = true;
+				if (num3 > __instance._minimalEffectDuration) allowed = true;
 				var ev = new FlashedEvent(thrower, target, __instance.transform.position, allowed);
 				Qurre.Events.Invoke.Player.Flashed(ev);
 				if (ev.Allowed)

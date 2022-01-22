@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using MEC;
 using Qurre.API;
 using Qurre.API.Controllers;
 using Respawning;
@@ -18,7 +19,7 @@ namespace Qurre.Patches.Controllers
                     if (_.Message == words && _.Hold == makeHold && _.Noise == makeNoise)
                     {
                         Map.Cassies.Remove(_);
-                        Cassie.End();
+                        Timing.CallDelayed(NineTailedFoxAnnouncer.singleton.CalculateDuration(words), () => Cassie.End());
                         return true;
                     }
                 }

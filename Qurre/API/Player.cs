@@ -24,8 +24,8 @@ namespace Qurre.API
 {
 	public class Player
 	{
-		private ReferenceHub rh;
-		private GameObject go;
+		private readonly ReferenceHub rh;
+		private readonly GameObject go;
 		private string ui;
 		private string _tag = "";
 		private Radio radio;
@@ -91,7 +91,11 @@ namespace Qurre.API
 		public string Tag
 		{
 			get => _tag;
-			set => _tag = value;
+			set
+			{
+				if (value is null) return;
+				_tag = value;
+			}
 		}
 		public int Id
 		{
@@ -345,12 +349,12 @@ namespace Qurre.API
 		}
 		public void HideTag() => ClassManager.CmdRequestHideTag();
 		public void ShowTag() => ClassManager.CmdRequestShowTag(false);
-		public string HiddenTag => ServerRoles.HiddenBadge;
-		public bool TagHidden
+		public string HiddenBadge => ServerRoles.HiddenBadge;
+		public bool BadgeHidden
 		{
 			get
 			{
-				if (string.IsNullOrEmpty(HiddenTag) || string.IsNullOrWhiteSpace(HiddenTag)) return false;
+				if (string.IsNullOrEmpty(HiddenBadge) || string.IsNullOrWhiteSpace(HiddenBadge)) return false;
 				else return true;
 			}
 			set
@@ -1022,5 +1026,14 @@ namespace Qurre.API
 		}
 		[Obsolete("Use 'Movement'")]
 		public PlayerMovementSync PlayerMovementSync => rh.playerMovementSync;
+		[Obsolete("Use 'HiddenBadge'")]
+		public string HiddenTag => HiddenBadge;
+
+		[Obsolete("Use 'BadgeHidden'")]
+		public bool TagHidden
+		{
+			get => BadgeHidden;
+			set => BadgeHidden = value;
+		}
 	}
 }

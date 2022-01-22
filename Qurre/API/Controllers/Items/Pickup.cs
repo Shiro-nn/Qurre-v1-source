@@ -25,6 +25,16 @@ namespace Qurre.API.Controllers.Items
             Serial = itemBase.PickupDropModel.NetworkInfo.Serial;
             BaseToItem.Add(itemBase.PickupDropModel, this);
         }
+        private string _tag = "";
+        public string Tag
+        {
+            get => _tag;
+            set
+            {
+                if (value is null) return;
+                _tag = value;
+            }
+        }
         public ushort Serial
         {
             get

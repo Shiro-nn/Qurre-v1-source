@@ -105,6 +105,10 @@
     <Compile Include="API\Addons\ListConfigs.cs" />
     <Compile Include="API\Addons\Config.cs" />
     <Compile Include="API\Addons\KillElement.cs" />
+    <Compile Include="API\Addons\Textures\ModelEnums.cs" />
+    <Compile Include="API\Addons\Textures\ModelLight.cs" />
+    <Compile Include="API\Addons\Textures\ModelPrimitive.cs" />
+    <Compile Include="API\Addons\Textures\Model.cs" />
     <Compile Include="API\Audio.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
@@ -238,8 +242,6 @@
     <Compile Include="Patches\Events\Voice\PressPrimaryChat.cs" />
     <Compile Include="Patches\Events\Voice\PressAltChat.cs" />
     <Compile Include="Patches\Fixes\FixVoice.cs" />
-    <Compile Include="Patches\Fixes\GrenadeTime.cs" />
-    <Compile Include="Patches\Fixes\NetworkBug.cs" />
     <Compile Include="Patches\Fixes\MaxHp.cs" />
     <Compile Include="Patches\Fixes\ShootDisconnect.cs" />
     <Compile Include="Patches\Fixes\DoubleSpawn.cs" />

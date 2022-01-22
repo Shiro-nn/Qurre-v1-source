@@ -23,6 +23,16 @@ namespace Qurre.API.Controllers
             BaseToItem.Add(itemBase, this);
         }
         public Item(ItemType type) : this(Server.InventoryHost.CreateItemInstance(type, false)) { }
+        private string _tag = "";
+        public string Tag
+        {
+            get => _tag;
+            set
+            {
+                if (value is null) return;
+                _tag = value;
+            }
+        }
         public ushort Serial
         {
             get

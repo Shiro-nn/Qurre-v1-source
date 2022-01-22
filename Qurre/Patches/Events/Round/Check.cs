@@ -2,11 +2,9 @@
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Threading;
 using GameCore;
 using HarmonyLib;
 using MEC;
-using Mirror;
 using Qurre.API.Controllers.Items;
 using Qurre.API.Events;
 using RoundRestarting;
@@ -134,19 +132,6 @@ namespace Qurre.Patches.Events.Round
                     yield return Timing.WaitForSeconds(to_restart - 1);
                     instance.RpcDimScreen();
                     Timing.CallDelayed(1f, () => RoundRestart.InitiateRoundRestart());
-                    /*new Thread(() =>
-                    {
-                        var round = RoundRestart.UptimeRounds;
-                        var lrt = Mathf.Clamp(RoundRestart.LastRestartTime, 1250, 60000);
-                        Thread.Sleep(1000);
-                        RoundRestart.InitiateRoundRestart();
-                        Thread.Sleep(lrt);
-                        if (round != RoundRestart.UptimeRounds) return;
-                        Log.Error("Замечена заморозка раунда");
-                        ServerShutdown.ShutdownState = ServerShutdown.ServerShutdownState.Complete;
-                        NetworkServer.SendToAll(new RoundRestartMessage(RoundRestartType.FullRestart, 15, 0, reconnect: true));
-                        Shutdown.Quit();
-                    }).Start();*/
                     try
                     {
                         var __list = API.Player.List.Where(x => x.Role != RoleType.Spectator);
