@@ -50,6 +50,10 @@
     <Reference Include="Assembly-CSharp_publicized">
       <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp_publicized" />
+    <Reference Include="Assembly-CSharp_publicized">
+      <HintPath>..\lib\Assembly-CSharp_publicized.dll</HintPath>
+    </Reference>
     <Reference Include="CommandSystem.Core">
       <HintPath>..\lib\CommandSystem.Core.dll</HintPath>
     </Reference>
@@ -236,6 +240,10 @@
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
     <Compile Include="Patches\Events\player\SinkholeWalking.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\ChangeCamera.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\Interact.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\PreWindup.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\PryGate.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemPickup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemInventory.cs" />
