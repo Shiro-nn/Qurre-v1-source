@@ -3,6 +3,8 @@ using Qurre.API.Events;
 using RemoteAdmin;
 using System;
 using System.Linq;
+using UnityEngine;
+
 namespace Qurre.Patches.Events.Server
 {
 	[HarmonyPatch(typeof(CommandProcessor), nameof(CommandProcessor.ProcessQuery), new Type[] { typeof(string), typeof(CommandSender) })]
@@ -22,6 +24,18 @@ namespace Qurre.Patches.Events.Server
 				{
 					var _ev = new RaRequestPlayerListEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Server.Host : (API.Player.Get(sender.SenderId) ?? API.Server.Host), q, name, args);
 					Qurre.Events.Invoke.Server.RaRequestPlayerList(_ev);
+					return _ev.Allowed;
+				}
+				else if (name == "disarm")
+{
+					CuffEvent _ev = new CuffEvent(API.Player.Get(sender.SenderId), API.Player.Get(args.ElementAt(0).Replace(".", string.Empty)));
+					Qurre.Events.Invoke.Player.Cuff(_ev);
+					return _ev.Allowed;
+				}
+				else if (name == "release")
+{
+					UnCuffEvent _ev = new UnCuffEvent(API.Player.Get(sender.SenderId), API.Player.Get(args.ElementAt(0).Replace(".", string.Empty)));
+					Qurre.Events.Invoke.Player.UnCuff(_ev);
 					return _ev.Allowed;
 				}
 				else
