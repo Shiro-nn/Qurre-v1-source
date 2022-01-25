@@ -236,6 +236,8 @@
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
     <Compile Include="Patches\Events\player\SinkholeWalking.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\PryGate.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\PreWindup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemPickup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemInventory.cs" />
