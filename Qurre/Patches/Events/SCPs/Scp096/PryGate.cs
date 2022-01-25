@@ -6,7 +6,7 @@ using UnityEngine;
 using scp096 = PlayableScps.Scp096;
 namespace Qurre.Patches.Events.SCPs.Scp096
 {
-    [HarmonyPatch(typeof(scp096), nameof(scp096.PreWindup))]
+    [HarmonyPatch(typeof(scp096), nameof(scp096.PryGate))]
     internal static class PryGate
     {
         private static bool Prefix(scp096 __instance, Interactables.Interobjects.PryableDoor gate)

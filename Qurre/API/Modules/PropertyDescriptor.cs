@@ -4,10 +4,10 @@ using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 namespace Qurre.API.Modules
 {
-    internal sealed class CommentsPropertyDescriptor : IPropertyDescriptor
+    internal sealed class PropertyDescriptor : IPropertyDescriptor
     {
         private readonly IPropertyDescriptor baseDescriptor;
-        public CommentsPropertyDescriptor(IPropertyDescriptor baseDescriptor)
+        public PropertyDescriptor(IPropertyDescriptor baseDescriptor)
         {
             this.baseDescriptor = baseDescriptor;
             Name = baseDescriptor.Name;
@@ -39,7 +39,7 @@ namespace Qurre.API.Modules
         {
             DescriptionAttribute description = baseDescriptor.GetCustomAttribute<DescriptionAttribute>();
             return description != null
-                ? new CommentsObjectDescriptor(baseDescriptor.Read(target), description.Description)
+                ? new ObjectDescriptor(baseDescriptor.Read(target), description.Description)
                 : baseDescriptor.Read(target);
         }
     }

@@ -78,7 +78,7 @@ namespace Qurre.API.Controllers.Items
         {
             get
             {
-                List<ArmorAmmoLimit> limits = new List<ArmorAmmoLimit>();
+                List<ArmorAmmoLimit> limits = new();
                 for (int i = 0; i < Base.AmmoLimits.Length; i++)
                 {
                     var _ = new ArmorAmmoLimit() { AmmoType = Base.AmmoLimits[i].AmmoType, Limit = Base.AmmoLimits[i].Limit };

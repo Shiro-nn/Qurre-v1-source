@@ -8,7 +8,7 @@ namespace Qurre.Patches.Events.SCPs.Scp096
     [HarmonyPatch(typeof(scp096), nameof(scp096.PreWindup))]
     internal static class PreWindup
     {
-        private static bool Prefix(scp096 __instance, float delay = 0.0f)
+        private static bool Prefix(scp096 __instance, float delay = 0)
         {
             try
             {

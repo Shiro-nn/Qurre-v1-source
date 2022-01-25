@@ -60,7 +60,6 @@ namespace Qurre.API.Controllers.Items
                 NetworkServer.UnSpawn(gameObject);
                 gameObject.transform.localScale = value;
                 NetworkServer.Spawn(gameObject);
-                gameObject.transform.localScale = Vector3.one;
             }
         }
         public float Weight
@@ -83,60 +82,19 @@ namespace Qurre.API.Controllers.Items
                 return category;
                 ItemCategory Get()
                 {
-                    switch (Type)
+                    return Type switch
                     {
-                        case ItemType.KeycardChaosInsurgency:
-                        case ItemType.KeycardContainmentEngineer:
-                        case ItemType.KeycardFacilityManager:
-                        case ItemType.KeycardGuard:
-                        case ItemType.KeycardJanitor:
-                        case ItemType.KeycardNTFCommander:
-                        case ItemType.KeycardNTFLieutenant:
-                        case ItemType.KeycardNTFOfficer:
-                        case ItemType.KeycardO5:
-                        case ItemType.KeycardResearchCoordinator:
-                        case ItemType.KeycardScientist:
-                        case ItemType.KeycardZoneManager:
-                            return ItemCategory.Keycard;
-                        case ItemType.Medkit:
-                        case ItemType.Adrenaline:
-                        case ItemType.Painkillers:
-                            return ItemCategory.Medical;
-                        case ItemType.Radio:
-                            return ItemCategory.Radio;
-                        case ItemType.GunAK:
-                        case ItemType.GunCOM15:
-                        case ItemType.GunCOM18:
-                        case ItemType.GunCrossvec:
-                        case ItemType.GunE11SR:
-                        case ItemType.GunFSP9:
-                        case ItemType.GunLogicer:
-                        case ItemType.GunRevolver:
-                        case ItemType.GunShotgun:
-                            return ItemCategory.Firearm;
-                        case ItemType.GrenadeFlash:
-                        case ItemType.GrenadeHE:
-                            return ItemCategory.Grenade;
-                        case ItemType.SCP018:
-                        case ItemType.SCP207:
-                        case ItemType.SCP268:
-                        case ItemType.SCP500:
-                            return ItemCategory.SCPItem;
-                        case ItemType.MicroHID:
-                            return ItemCategory.MicroHID;
-                        case ItemType.Ammo12gauge:
-                        case ItemType.Ammo44cal:
-                        case ItemType.Ammo556x45:
-                        case ItemType.Ammo762x39:
-                        case ItemType.Ammo9x19:
-                            return ItemCategory.Ammo;
-                        case ItemType.ArmorCombat:
-                        case ItemType.ArmorHeavy:
-                        case ItemType.ArmorLight:
-                            return ItemCategory.Armor;
-                        default:
-                            return ItemCategory.None;
-                    }
+                        ItemType.KeycardChaosInsurgency or ItemType.KeycardContainmentEngineer or ItemType.KeycardFacilityManager or ItemType.KeycardGuard or ItemType.KeycardJanitor or ItemType.KeycardNTFCommander or ItemType.KeycardNTFLieutenant or ItemType.KeycardNTFOfficer or ItemType.KeycardO5 or ItemType.KeycardResearchCoordinator or ItemType.KeycardScientist or ItemType.KeycardZoneManager => ItemCategory.Keycard,
+                        ItemType.Medkit or ItemType.Adrenaline or ItemType.Painkillers => ItemCategory.Medical,
+                        ItemType.Radio => ItemCategory.Radio,
+                        ItemType.GunAK or ItemType.GunCOM15 or ItemType.GunCOM18 or ItemType.GunCrossvec or ItemType.GunE11SR or ItemType.GunFSP9 or ItemType.GunLogicer or ItemType.GunRevolver or ItemType.GunShotgun => ItemCategory.Firearm,
+                        ItemType.GrenadeFlash or ItemType.GrenadeHE => ItemCategory.Grenade,
+                        ItemType.SCP018 or ItemType.SCP207 or ItemType.SCP268 or ItemType.SCP500 or ItemType.SCP244a or ItemType.SCP244b or ItemType.SCP330 or ItemType.SCP2176 => ItemCategory.SCPItem,
+                        ItemType.MicroHID => ItemCategory.MicroHID,
+                        ItemType.Ammo12gauge or ItemType.Ammo44cal or ItemType.Ammo556x45 or ItemType.Ammo762x39 or ItemType.Ammo9x19 => ItemCategory.Ammo,
+                        ItemType.ArmorCombat or ItemType.ArmorHeavy or ItemType.ArmorLight => ItemCategory.Armor,
+                        _ => ItemCategory.None,
+                    };
                 }
             }
         }

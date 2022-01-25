@@ -8,16 +8,16 @@ namespace Qurre.API.Modules
     internal static class CustomConfigsManager
     {
         internal static IDeserializer Deserializer { get; } = new DeserializerBuilder()
-            .WithTypeConverter(new VectorsConverter())
+            .WithTypeConverter(new VectorConvert())
             .WithNamingConvention(NullNamingConvention.Instance)
-            .WithNodeDeserializer(inner => new ValidatingNodeDeserializer(inner), deserializer => deserializer.InsteadOf<ObjectNodeDeserializer>())
+            .WithNodeDeserializer(inner => new NodeDeserializer(inner), deserializer => deserializer.InsteadOf<ObjectNodeDeserializer>())
             .IgnoreFields()
             .IgnoreUnmatchedProperties()
             .Build();
         internal static ISerializer Serializer { get; } = new SerializerBuilder()
-            .WithTypeConverter(new VectorsConverter())
-            .WithTypeInspector(inner => new CommentGatheringTypeInspector(inner))
-            .WithEmissionPhaseObjectGraphVisitor(args => new CommentsObjectGraphVisitor(args.InnerVisitor))
+            .WithTypeConverter(new VectorConvert())
+            .WithTypeInspector(inner => new TypeInspector(inner))
+            .WithEmissionPhaseObjectGraphVisitor(args => new CommentsOGV(args.InnerVisitor))
             .WithNamingConvention(NullNamingConvention.Instance)
             .IgnoreFields()
             .Build();
@@ -33,11 +33,19 @@ namespace Qurre.API.Modules
                 Log.Custom($"Custom configs directory not found - creating: {PluginManager.CustomConfigsDirectory}", "Warn", System.ConsoleColor.DarkYellow);
                 Directory.CreateDirectory(PluginManager.CustomConfigsDirectory);
             }
-            var path = Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}.yaml");
-            if (!File.Exists(path)) File.Create(path).Close();
+            var path = Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}-{Server.Port}.yaml");
+            if (!File.Exists(path))
+            {
+                File.Create(path).Close();
+                if (File.Exists(Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}.yaml")))
+                {
+                    string staticText = File.ReadAllText(path);
+                    File.WriteAllText(path, staticText);
+                }
+            }
             string text = File.ReadAllText(path);
             var _ = (IConfig)Deserializer.Deserialize(text, cfg.GetType());
-            if(_ != null) cfg.CopyProperties(_);
+            if (_ != null) cfg.CopyProperties(_);
             Save(cfg);
         }
         internal static void Save(IConfig cfg)

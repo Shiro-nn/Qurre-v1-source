@@ -730,8 +730,8 @@ namespace Qurre.API
 		{
 			Throwable throwable = type switch
 			{
-				GrenadeType.Flashbang => new FlashGrenade(ItemType.GrenadeFlash),
-				_ => new ExplosiveGrenade(type == GrenadeType.Scp018 ? ItemType.SCP018 : ItemType.GrenadeHE),
+				GrenadeType.Flashbang => new GrenadeFlash(ItemType.GrenadeFlash),
+				_ => new GrenadeFrag(type == GrenadeType.Scp018 ? ItemType.SCP018 : ItemType.GrenadeHE),
 			};
 			ThrowItem(throwable, fullForce);
 			return throwable;
