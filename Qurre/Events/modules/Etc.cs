@@ -2,7 +2,7 @@
 using UnityEngine.SceneManagement;
 using MapGeneration;
 using UnityEngine;
-using System.Linq;
+using System.Collections.Generic;
 namespace Qurre.Events.Modules
 {
     internal static class Etc
@@ -18,6 +18,7 @@ namespace Qurre.Events.Modules
             Server.SendingRA += FixRaBc;
             Player.Spawn += FixItems;
             Player.DamageProcess += FixFF;
+            Round.Waiting += FixOneSerial;
         }
         private static void SceneUnloaded(Scene _)
         {
@@ -49,6 +50,18 @@ namespace Qurre.Events.Modules
             {
                 API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#31d400>Qurre v{PluginManager.Version}</color>");
             }
+        }
+        private static void FixOneSerial()
+        {
+            MEC.Timing.CallDelayed(5f, () =>
+            {
+                List<ushort> Serials = new();
+                foreach (var pick in API.Map.Pickups)
+                {
+                    if (Serials.Contains(pick.Serial)) pick.Serial = 0;
+                    Serials.Add(pick.Serial);
+                }
+            });
         }
         private static void FixFF(DamageProcessEvent ev)
         {

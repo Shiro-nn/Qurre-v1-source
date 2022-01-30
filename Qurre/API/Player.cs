@@ -257,17 +257,29 @@ namespace Qurre.API
 		}
 		public bool Muted
 		{
-			get => rh.dissonanceUserSetup.AdministrativelyMuted;
+			get => Dissonance.AdministrativelyMuted;
 			set
 			{
+				Dissonance.AdministrativelyMuted = value;
 				if (value) MuteHandler.IssuePersistentMute(UserId);
 				else MuteHandler.RevokePersistentMute(UserId);
 			}
 		}
+		public void MuteInRound(bool value) => Dissonance.AdministrativelyMuted = value;
 		public bool IntercomMuted
 		{
 			get => ClassManager.NetworkIntercomMuted;
 			set => ClassManager.NetworkIntercomMuted = value;
+		}
+		public VoicechatMuteStatus MuteStatus
+		{
+			get => Dissonance.NetworkmuteStatus;
+			set => Dissonance.NetworkmuteStatus = value;
+		}
+		public SpeakingFlags SpeakingFlags
+		{
+			get => Dissonance.NetworkspeakingFlags;
+			set => Dissonance.NetworkspeakingFlags = value;
 		}
 		public bool GodMode
 		{

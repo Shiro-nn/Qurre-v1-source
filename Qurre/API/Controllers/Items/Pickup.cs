@@ -39,17 +39,22 @@ namespace Qurre.API.Controllers.Items
         {
             get
             {
-                if (id == 0)
+                if (id is 0)
                 {
                     id = ItemSerialGenerator.GenerateNext();
                     Base.Info.Serial = id;
                     Base.NetworkInfo = Base.Info;
                 }
-
                 return id;
             }
-
-            internal set => id = value;
+            internal set
+            {
+                if (value is 0) value = ItemSerialGenerator.GenerateNext();
+                if (Base is null) return;
+                Base.Info.Serial = value;
+                Base.NetworkInfo = Base.Info;
+                id = value;
+            }
         }
         public Vector3 Scale
         {

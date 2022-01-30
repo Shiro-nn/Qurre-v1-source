@@ -37,9 +37,10 @@ namespace Qurre.API.Modules
             if (!File.Exists(path))
             {
                 File.Create(path).Close();
-                if (File.Exists(Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}.yaml")))
+                var staticPacth = Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}.yaml");
+                if (File.Exists(staticPacth))
                 {
-                    string staticText = File.ReadAllText(path);
+                    string staticText = File.ReadAllText(staticPacth);
                     File.WriteAllText(path, staticText);
                 }
             }
@@ -51,7 +52,7 @@ namespace Qurre.API.Modules
         internal static void Save(IConfig cfg)
         {
             string data = Serializer.Serialize(cfg);
-            var path = Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}.yaml");
+            var path = Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}-{Server.Port}.yaml");
             if (!File.Exists(path)) return;
             File.WriteAllText(path, data ?? string.Empty);
         }
