@@ -4,12 +4,15 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.ObjectGraphVisitors;
 namespace Qurre.API.Modules
 {
-    internal sealed class CommentsOGV : ChainedObjectGraphVisitor
+    internal sealed class CommentsObjectGraphVisitor : ChainedObjectGraphVisitor
     {
-        public CommentsOGV(IObjectGraphVisitor<IEmitter> nextVisitor) : base(nextVisitor) { }
+        public CommentsObjectGraphVisitor(IObjectGraphVisitor<IEmitter> nextVisitor)
+            : base(nextVisitor)
+        {
+        }
         public override bool EnterMapping(IPropertyDescriptor key, IObjectDescriptor value, IEmitter context)
         {
-            if (value is ObjectDescriptor commentsDescriptor && commentsDescriptor.Comment != null)
+            if (value is CommentsObjectDescriptor commentsDescriptor && commentsDescriptor.Comment != null)
             {
                 context.Emit(new Comment(commentsDescriptor.Comment.Replace("\n", "\n#"), false));
             }

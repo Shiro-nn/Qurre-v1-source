@@ -111,6 +111,12 @@ namespace Qurre.API
 			GameObject randomPosition = SpawnpointManager.GetRandomPosition(roleType);
 			return randomPosition?.transform;
 		}
+		public static void SpawnGrenade(string grenadeType, Vector3 position)
+		{
+			GameObject grenade = Object.Instantiate(NetworkManager.singleton.spawnPrefabs.Find(p => p.gameObject.name == grenadeType));
+			grenade.transform.position = position;
+			NetworkServer.Spawn(grenade);
+		}
 		public static void ContainSCP106(Player executor) => PlayerManager.localPlayer.GetComponent<PlayerInteract>().UserCode_RpcContain106(executor.GameObject);
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
 		public static void SetIntercomSpeaker(Player player)
@@ -255,7 +261,6 @@ namespace Qurre.API
 			Lights.Clear();
 			Primitives.Clear();
 			ShootingTargets.Clear();
-			Patches.Events.player.Banned.Cached.Clear();
 		}
 	}
 }

@@ -27,11 +27,8 @@ namespace Qurre.Events.Invoke
     {
         public static void Enrage(EnrageEvent ev) => Invokes(ev);
         public static void Windup(WindupEvent ev) => Invokes(ev);
-        public static void PreWindup(PreWindupEvent ev) => Invokes(ev);
         public static void CalmDown(CalmDownEvent ev) => Invokes(ev);
         public static void AddTarget(AddTargetEvent ev) => Invokes(ev);
-        public static void StartPryGate(StartPryGateEvent ev) => Invokes(ev);
-        public static void EndPryGate(EndPryGateEvent ev) => Invokes(ev);
     }
     #endregion
     #region Scp106

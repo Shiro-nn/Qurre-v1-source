@@ -23,8 +23,8 @@ namespace Qurre.API
             set => rm._timeForNextSequence = value + (float)rm._stopwatch.Elapsed.TotalSeconds;
         }
         public static bool Started => RoundSummary.RoundInProgress();
-        public static bool Ended => rs is not null && rs.RoundEnded;
-        public static bool Waiting => RoundStart.singleton is not null && !Started && !Ended;
+        public static bool Ended => rs.RoundEnded;
+        public static bool Waiting => !Started && !Ended;
         public static bool Lock
         {
             get => RoundSummary.RoundLock;

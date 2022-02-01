@@ -9,7 +9,7 @@ using YamlDotNet.Core.Events;
 using YamlDotNet.Serialization;
 namespace Qurre.API.Modules
 {
-    internal sealed class VectorConvert : IYamlTypeConverter
+    internal sealed class VectorsConverter : IYamlTypeConverter
     {
         public bool Accepts(Type type) => type == typeof(Vector2) || type == typeof(Vector3) || type == typeof(Vector4);
         public object ReadYaml(IParser parser, Type type)
