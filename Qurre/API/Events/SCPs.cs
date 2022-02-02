@@ -118,17 +118,17 @@ namespace Qurre.API.Events
     #region scp173
     public class BlinkEvent : EventArgs
     {
-        public BlinkEvent(Player scp, Vector3 pos, List<Player> _targets, bool allowed = true)
+        public BlinkEvent(Player scp, Vector3 pos, List<Player> targets, bool allowed = true)
         {
             Scp = scp;
+            Targets = targets;
             Position = pos;
             Allowed = allowed;
-            Targets = _targets;
         }
         public Player Scp { get; }
+        public List<Player> Targets { get; }
         public Vector3 Position { get; set; }
         public bool Allowed { get; set; }
-        public List<Player> Targets { get; set; }
     }
     public class TantrumPlaceEvent : EventArgs
     {
