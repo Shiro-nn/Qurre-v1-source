@@ -3,10 +3,10 @@ using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 namespace Qurre.API.Modules
 {
-    internal sealed class CommentsObjectDescriptor : IObjectDescriptor
+    internal sealed class ObjectDescriptor : IObjectDescriptor
     {
         private readonly IObjectDescriptor innerDescriptor;
-        public CommentsObjectDescriptor(IObjectDescriptor innerDescriptor, string comment)
+        public ObjectDescriptor(IObjectDescriptor innerDescriptor, string comment)
         {
             this.innerDescriptor = innerDescriptor;
             Comment = comment;

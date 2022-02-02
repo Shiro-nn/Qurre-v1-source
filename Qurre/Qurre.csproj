@@ -48,7 +48,7 @@
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>C:\Users\user_2012190892\Downloads\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="CommandSystem.Core">
       <HintPath>..\lib\CommandSystem.Core.dll</HintPath>
@@ -113,15 +113,17 @@
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
     <Compile Include="API\Controllers\Bot.cs" />
+    <Compile Include="API\Controllers\Items\GrenadeFlash.cs" />
+    <Compile Include="API\Controllers\Items\GrenadeFrag.cs" />
     <Compile Include="API\Controllers\Sinkhole.cs" />
     <Compile Include="API\Controllers\ShootingTarget.cs" />
     <Compile Include="API\Controllers\Light.cs" />
     <Compile Include="API\Controllers\Primitive.cs" />
-    <Compile Include="API\Modules\CommentsObjectGraphVisitor.cs" />
-    <Compile Include="API\Modules\CommentsObjectDescriptor.cs" />
-    <Compile Include="API\Modules\CommentsPropertyDescriptor.cs" />
-    <Compile Include="API\Modules\CommentGatheringTypeInspector.cs" />
-    <Compile Include="API\Modules\ValidatingNodeDeserializer.cs" />
+    <Compile Include="API\Modules\CommentsOGV.cs" />
+    <Compile Include="API\Modules\ObjectDescriptor.cs" />
+    <Compile Include="API\Modules\PropertyDescriptor.cs" />
+    <Compile Include="API\Modules\TypeInspector.cs" />
+    <Compile Include="API\Modules\NodeDeserializer.cs" />
     <Compile Include="API\Modules\VectorsConverter.cs" />
     <Compile Include="API\Modules\CustomConfigsManager.cs" />
     <Compile Include="API\Modules\ConfigManager.cs" />
@@ -236,6 +238,8 @@
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
     <Compile Include="Patches\Events\player\SinkholeWalking.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\PryGate.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp096\PreWindup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemPickup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemInventory.cs" />

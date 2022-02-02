@@ -19,7 +19,7 @@ namespace Qurre.API.Controllers
     public class MapBroadcast
     {
         private string msg;
-        private readonly List<Broadcast> broadcasts = new List<Broadcast>();
+        private readonly List<Broadcast> broadcasts = new();
         public MapBroadcast(string message, ushort time, bool instant)
         {
             msg = message;

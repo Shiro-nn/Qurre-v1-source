@@ -13,5 +13,10 @@ namespace Qurre.API.Controllers.Items
         {
         }
         public new AmmoItem Base { get; }
+        public int UnitPrice
+        {
+            get => Base.UnitPrice;
+            set => Base.UnitPrice = value;
+        }
     }
 }

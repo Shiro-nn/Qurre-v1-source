@@ -5,9 +5,10 @@ using UnityEngine;
 namespace Qurre.API.Addons.Textures
 {
     /// <summary>
-    ///  <para>Example:</para> 
-    ///  <para>var Model = new Model("Test", position, rotation);</para> 
-    ///  <para>Model.AddPart(new ModelPart(Model, PrimitiveType.Cube, new Color32(0, 0, 0, 155), Vector3.zero, Vector3.zero, Vector3.one));</para> 
+    ///  <para>Example:</para>
+    ///  <para>var Model = new Model("Test", position, rotation);</para>
+    ///  <para>Model.AddPart(new ModelPrimitive(Model, PrimitiveType.Cube, new Color32(0, 0, 0, 155), Vector3.zero, Vector3.zero, Vector3.one));</para>
+    ///  <para>Model.AddPart(new ModelLight(Model, new Color(1, 0, 0), Vector3.zero, 1, 10));</para>
     /// </summary>
     public class Model
     {

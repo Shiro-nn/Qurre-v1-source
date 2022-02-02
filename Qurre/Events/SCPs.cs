@@ -30,6 +30,12 @@ namespace Qurre.Events
         public static event AllEvents<WindupEvent> Windup;
         public static event AllEvents<CalmDownEvent> CalmDown;
         public static event AllEvents<AddTargetEvent> AddTarget;
+        public static event AllEvents<PreWindupEvent> PreWindup;
+        public static event AllEvents<EndPryGateEvent> EndPryGate;
+        public static event AllEvents<StartPryGateEvent> StartPryGate;
+        internal static void Invokes(StartPryGateEvent ev) => StartPryGate.invoke(ev);
+        internal static void Invokes(EndPryGateEvent ev) => EndPryGate.invoke(ev);
+        internal static void Invokes(PreWindupEvent ev) => PreWindup.invoke(ev);
         internal static void Invokes(EnrageEvent ev) => Enrage.invoke(ev);
         internal static void Invokes(WindupEvent ev) => Windup.invoke(ev);
         internal static void Invokes(CalmDownEvent ev) => CalmDown.invoke(ev);

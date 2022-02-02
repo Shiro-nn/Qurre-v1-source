@@ -5,10 +5,10 @@ using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.TypeInspectors;
 namespace Qurre.API.Modules
 {
-    internal sealed class CommentGatheringTypeInspector : TypeInspectorSkeleton
+    internal sealed class TypeInspector : TypeInspectorSkeleton
     {
         private readonly ITypeInspector innerTypeDescriptor;
-        public CommentGatheringTypeInspector(ITypeInspector innerTypeDescriptor)
+        public TypeInspector(ITypeInspector innerTypeDescriptor)
         {
             this.innerTypeDescriptor = innerTypeDescriptor ?? throw new ArgumentNullException("innerTypeDescriptor");
         }
@@ -16,7 +16,7 @@ namespace Qurre.API.Modules
         {
             return innerTypeDescriptor
                 .GetProperties(type, container)
-                .Select(descriptor => new CommentsPropertyDescriptor(descriptor));
+                .Select(descriptor => new PropertyDescriptor(descriptor));
         }
     }
 }

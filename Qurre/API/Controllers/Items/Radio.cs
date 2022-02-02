@@ -14,6 +14,11 @@ namespace Qurre.API.Controllers.Items
         {
         }
         public new RadioItem Base { get; }
+        public byte Battery
+        {
+            get => Base.BatteryPercent;
+            set => Base.BatteryPercent = value;
+        }
         public RadioStatus Status
         {
             get => (RadioStatus)Base.CurRange;
@@ -22,14 +27,14 @@ namespace Qurre.API.Controllers.Items
         public RadioStatusSettings StatusSettings
         {
             get =>
-                new RadioStatusSettings
+                new()
                 {
                     IdleUsage = Base.Ranges[(int)Status].MinuteCostWhenIdle,
                     TalkingUsage = Base.Ranges[(int)Status].MinuteCostWhenTalking,
                     MaxRange = Base.Ranges[(int)Status].MaximumRange,
                 };
             set =>
-                Base.Ranges[(int)Status] = new RadioRangeMode
+                Base.Ranges[(int)Status] = new()
                 {
                     MaximumRange = value.MaxRange,
                     MinuteCostWhenIdle = value.IdleUsage,
