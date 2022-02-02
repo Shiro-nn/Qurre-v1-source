@@ -1,8 +1,8 @@
 ﻿using InventorySystem.Items.ThrowableProjectiles;
-using System.Collections.Generic;
 using UnityEngine;
 namespace Qurre.API.Controllers.Items
 {
+    [System.Obsolete("Use 'GrenadeFlash'")]
     public class FlashGrenade : Throwable
     {
         public FlashGrenade(ThrowableItem itemBase)

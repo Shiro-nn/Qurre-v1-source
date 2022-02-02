@@ -1,6 +1,7 @@
 ﻿using InventorySystem.Items.ThrowableProjectiles;
 namespace Qurre.API.Controllers.Items
 {
+    [System.Obsolete("Use 'GrenadeFrag'")]
     public class ExplosiveGrenade : Throwable
     {
         public ExplosiveGrenade(ThrowableItem itemBase)

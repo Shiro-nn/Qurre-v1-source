@@ -118,12 +118,12 @@ namespace Qurre.API.Events
     #region scp173
     public class BlinkEvent : EventArgs
     {
-        public BlinkEvent(Player scp, Vector3 pos, List<Player> targets, bool allowed = true)
+        public BlinkEvent(Player scp, Vector3 pos, List<Player> _targets, bool allowed = true)
         {
             Scp = scp;
             Position = pos;
-            Targets = targets;
             Allowed = allowed;
+            Targets = _targets;
         }
         public Player Scp { get; }
         public Vector3 Position { get; set; }
@@ -251,6 +251,46 @@ namespace Qurre.API.Events
         public Player Player { get; }
         public bool Force { get; }
         public bool Allowed { get; set; }
+    }
+    public class PreWindupEvent : EventArgs
+    {
+        public PreWindupEvent(Scp096 scp096, Player player, float delay, bool allowed = true)
+        {
+            Scp096 = scp096;
+            Player = player;
+            Delay = delay;
+            Allowed = allowed;
+        }
+        public Scp096 Scp096 { get; }
+        public Player Player { get; }
+        public float Delay { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class StartPryGateEvent : EventArgs
+    {
+        public StartPryGateEvent(Scp096 scp096, Player player, Door gate, bool allowed = true)
+        {
+            Scp096 = scp096;
+            Player = player;
+            Allowed = allowed;
+            Gate = gate;
+        }
+        public Scp096 Scp096 { get; }
+        public Player Player { get; }
+        public Door Gate { get; }
+        public bool Allowed { get; set; }
+    }
+    public class EndPryGateEvent : EventArgs
+    {
+        public EndPryGateEvent(Scp096 scp096, Player player, Door gate)
+        {
+            Scp096 = scp096;
+            Player = player;
+            Gate = gate;
+        }
+        public Scp096 Scp096 { get; }
+        public Player Player { get; }
+        public Door Gate { get; }
     }
     public class CalmDownEvent : EventArgs
     {

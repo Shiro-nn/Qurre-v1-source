@@ -9,8 +9,7 @@ namespace Qurre.API.DataBase
     {
         internal DataBase()
         {
-            Thread thread = new Thread(() => _());
-            thread.Start();
+            new Thread(() => _()).Start();
             void _()
             {
                 Plugin.Config.GetString("Qurre_DataBase", "undefined", "Link-access to your database(MongoDB)");

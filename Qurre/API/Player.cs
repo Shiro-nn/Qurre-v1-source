@@ -32,10 +32,6 @@ namespace Qurre.API
 		private Escape escape;
 		internal readonly List<Item> ItemsValue = new(8);
 		internal List<KillElement> _kills = new();
-		/// <summary>
-		/// [инициализация<see cref="Player"/>]
-		/// [初始化 <see cref="Player"/>]
-		/// </summary>
 		public Player(ReferenceHub RH)
 		{
 			rh = RH;
@@ -49,12 +45,7 @@ namespace Qurre.API
 			Ammo = new AmmoBoxManager(this);
 			BlockSpawnTeleport = false;
 		}
-		/// <summary>
-		/// [Для получения указанного игрока используется <see cref="UnityEngine.GameObject"/>]
-		/// [通过<see cref="UnityEngine.GameObject"/>获取指定玩家]
-		/// </summary>
 		public Player(GameObject gameObject) => new Player(ReferenceHub.GetHub(gameObject));
-		
 		public static Dictionary<GameObject, Player> Dictionary { get; } = new();
 		public static Dictionary<int, Player> IdPlayers = new();
 		public static Dictionary<string, Player> UserIDPlayers { get; set; } = new();
@@ -128,9 +119,6 @@ namespace Qurre.API
 				};
 			}
 		}
-		/// <summary>
-		/// [Steam64Id (SomeId@steam)]
-		/// </summary>
 		public string UserId
 		{
 			get
@@ -155,43 +143,23 @@ namespace Qurre.API
 			get => ClassManager.UserId2;
 			set => ClassManager.UserId2 = value;
 		}
-		/// <summary>
-		/// [Временное прозвище в игре]
-		/// [游戏内的临时昵称]
-		/// </summary>
 		public string DisplayNickname
 		{
 			get => rh.nicknameSync.Network_displayName;
 			set => rh.nicknameSync.Network_displayName = value;
 		}
-		/// <summary>
-		/// [прозвище]
-		/// [昵称]
-		/// </summary>
 		public string Nickname
 		{
 			get => rh.nicknameSync.Network_myNickSync;
 			internal set => rh.nicknameSync.Network_myNickSync = value;
 		}
 		public bool DoNotTrack => ServerRoles.DoNotTrack;
-		/// <summary>
-		/// [С доступом администратора или нет]
-		/// [是否拥有管理员权限]
-		/// </summary>
 		public bool RemoteAdminAccess => ServerRoles.RemoteAdmin;
-		/// <summary>
-		/// [Включить режим Overwatch или нет]
-		/// [是否开启Overwatch模式]
-		/// </summary>
 		public bool Overwatch
 		{
 			get => ServerRoles.OverwatchEnabled;
 			set => ServerRoles.UserCode_TargetSetOverwatch(NetworkIdentity.connectionToClient, value);
 		}
-		/// <summary>
-		/// [упаковщиков]
-		/// [捆绑者]
-		/// </summary>
 		public Player Cuffer
 		{
 			get
@@ -216,33 +184,17 @@ namespace Qurre.API
 					Inventory.SetDisarmedStatus(value.Inventory);
 			}
 		}
-		/// <summary>
-		/// [Связан он или нет]
-		/// [是否被捆绑]
-		/// </summary>
 		public bool Cuffed => DisarmedPlayers.IsDisarmed(Inventory);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Vector3 Position
 		{
 			get => rh.playerMovementSync.GetRealPosition();
 			set => rh.playerMovementSync.OverridePosition(value, 0f);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Vector2 Rotation
 		{
 			get => Movement.RotationSync;
 			set => Movement.NetworkRotationSync = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Vector3 Scale
 		{
 			get => rh.transform.localScale;
@@ -259,10 +211,6 @@ namespace Qurre.API
 				}
 			}
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public GameObject LookingAt
 		{
 			get
@@ -272,136 +220,72 @@ namespace Qurre.API
 				return raycastthit.transform.gameObject;
 			}
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool Noclip
 		{
 			get => rh.characterClassManager.NoclipEnabled;
 			set => rh.characterClassManager.SetNoclip(value);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Team Team => GetTeam(Role);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Side Side => GetSide(Team);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Faction Faction => ClassManager.Faction;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public RoleType Role
 		{
 			get => ClassManager.CurClass;
 			set => SetRole(value);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public PlayerMovementState MoveState
 		{
 			get => AnimationController.MoveState;
 			set => AnimationController.MoveState = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public string Ip => NetworkIdentity.connectionToClient.address;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public NetworkConnection Connection => Scp079PlayerScript.connectionToClient;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool IsHost => ClassManager.IsHost;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool FriendlyFire { get; set; }
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool Zoomed { get; internal set; } = false;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool UseStamina { get; set; } = true;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool Invisible { get; set; }
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool Bot { get; internal set; } = false;
 		///<summary>
 		///<para>After spawning, it becomes false again.</para>
 		///</summary>
 		public bool BlockSpawnTeleport { get; set; } = false;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool BypassMode
 		{
 			get => ServerRoles.BypassMode;
 			set => ServerRoles.BypassMode = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool Muted
 		{
-			get => rh.dissonanceUserSetup.AdministrativelyMuted;
+			get => Dissonance.AdministrativelyMuted;
 			set
 			{
+				Dissonance.AdministrativelyMuted = value;
 				if (value) MuteHandler.IssuePersistentMute(UserId);
 				else MuteHandler.RevokePersistentMute(UserId);
 			}
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
+		public void MuteInRound(bool value) => Dissonance.AdministrativelyMuted = value;
 		public bool IntercomMuted
 		{
 			get => ClassManager.NetworkIntercomMuted;
 			set => ClassManager.NetworkIntercomMuted = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
+		public VoicechatMuteStatus MuteStatus
+		{
+			get => Dissonance.NetworkmuteStatus;
+			set => Dissonance.NetworkmuteStatus = value;
+		}
+		public SpeakingFlags SpeakingFlags
+		{
+			get => Dissonance.NetworkspeakingFlags;
+			set => Dissonance.NetworkspeakingFlags = value;
+		}
 		public bool GodMode
 		{
 			get => ClassManager.GodMode;
 			set => ClassManager.GodMode = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public float Hp
 		{
 			get => PlayerStats.StatModules[0].CurValue;
@@ -413,24 +297,12 @@ namespace Qurre.API
 					MaxHp = (int)value;
 			}
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		private int mhp = 100;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public int MaxHp
 		{
 			get => mhp;
 			set => mhp = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public float Ahp
 		{
 			get => PlayerStats.StatModules[1].CurValue;
@@ -446,46 +318,22 @@ namespace Qurre.API
 			get => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar;
 			set => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public List<AhpStat.AhpProcess> AhpActiveProcesses
 		{
 			get => ((AhpStat)PlayerStats.StatModules[1])._activeProcesses;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public ItemIdentifier CurrentItem
 		{
 			get => Inventory.NetworkCurItem;
 			set => Inventory.NetworkCurItem = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public ItemBase CurInstance
 		{
 			get => Inventory.CurInstance;
 			set => Inventory.CurInstance = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public IReadOnlyCollection<Item> AllItems => ItemsValue.AsReadOnly();
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public ItemType ItemTypeInHand => Inventory.CurItem.TypeId;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Item ItemInHand
 		{
 			get => Item.Get(Inventory.CurInstance);
@@ -498,58 +346,22 @@ namespace Qurre.API
 				Inventory.ServerSelectItem(value.Serial);
 			}
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Stamina Stamina => rh.fpc.staminaController;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public float StaminaUsage
 		{
 			get => Stamina.StaminaUse * 100;
 			set => Stamina.StaminaUse = (value / 100f);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void ResetStamina() => rh.fpc.ResetStamina();
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public PlayableScpsController ScpsController => rh.scpsController;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public PlayableScps.PlayableScp CurrentScp
 		{
 			get => ScpsController.CurrentScp;
 			set => ScpsController.CurrentScp = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void HideTag() => ClassManager.CmdRequestHideTag();
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void ShowTag() => ClassManager.CmdRequestShowTag(false);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public string HiddenBadge => ServerRoles.HiddenBadge;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool BadgeHidden
 		{
 			get
@@ -563,24 +375,12 @@ namespace Qurre.API
 				else ShowTag();
 			}
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public ZoneType Zone => Room.Zone;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Room Room
 		{
 			get => RoomIdUtils.RoomAtPosition(Position).GetRoom() ?? Map.Rooms.OrderBy(x => Vector3.Distance(x.Position, Position)).FirstOrDefault();
 			set => Position = value.Position + Vector3.up * 2;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public CommandSender Sender
 		{
 			get
@@ -589,51 +389,27 @@ namespace Qurre.API
 				return QueryProcessor._sender;
 			}
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool GlobalRemoteAdmin => ServerRoles.RemoteAdminMode == ServerRoles.AccessMode.GlobalAccess;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public string GroupName
 		{
 			get => ServerStatic.GetPermissionsHandler()._members.TryGetValue(UserId, out string groupName) ? groupName : null;
 			set => ServerStatic.GetPermissionsHandler()._members[UserId] = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public UserGroup Group
 		{
 			get => ServerRoles.Group;
 			set => ServerRoles.SetGroup(value, false, false, value.Cover);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public string RoleColor
 		{
 			get => ServerRoles.Network_myColor;
 			set => ServerRoles.SetColor(value);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public string RoleName
 		{
 			get => ServerRoles.Network_myText;
 			set => ServerRoles.SetText(value);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public string UnitName
 		{
 			get => ClassManager.NetworkCurUnitName;
@@ -644,24 +420,12 @@ namespace Qurre.API
 				ClassManager.NetworkCurUnitName = value;
 			}
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public float AliveTime => ClassManager.AliveTime;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public long DeathTime
 		{
 			get => ClassManager.DeathTime;
 			set => ClassManager.DeathTime = value;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public string GlobalBadge
 		{
 			get
@@ -696,45 +460,17 @@ namespace Qurre.API
 			get { try { return Ammo[AmmoType.Ammo9]; } catch { return 0; } }
 			set { try { Ammo[AmmoType.Ammo9] = value; } catch { } }
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public static IEnumerable<Player> Get(Team team) => List.Where(player => player.Team == team);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public static IEnumerable<Player> Get(RoleType role) => List.Where(player => player.Role == role);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public static Player Get(CommandSender sender) => sender == null ? null : Get(sender.SenderId);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public static Player Get(ReferenceHub referenceHub) => referenceHub == null ? null : Get(referenceHub.gameObject);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public static Player Get(GameObject gameObject)
 		{
 			if (gameObject == null) return null;
 			Dictionary.TryGetValue(gameObject, out Player player);
 			return player;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public static Player Get(uint netId) => ReferenceHub.TryGetHubNetID(netId, out ReferenceHub hub) ? Get(hub) : null;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public static Player Get(int playerId)
 		{
 			if (IdPlayers.ContainsKey(playerId)) return IdPlayers[playerId];
@@ -745,10 +481,6 @@ namespace Qurre.API
 			}
 			return null;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public static Player Get(string args)
 		{
 			try
@@ -830,21 +562,9 @@ namespace Qurre.API
 			ServerRoles.TargetCloseRemoteAdmin();
 		}
 		public void ExecuteCommand(string command, bool RA = true) => GameCore.Console.singleton.TypeCommand(RA ? "/" : "" + command, Sender);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void OpenReportWindow(string text) => GameConsoleTransmission.SendToClient(Connection, "[REPORTING] " + text, "white");
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void RemoveDisplayInfo(PlayerInfoArea playerInfo) => NicknameSync.Network_playerInfoToShow &= ~playerInfo;
 		public void AddDisplayInfo(PlayerInfoArea playerInfo) => NicknameSync.Network_playerInfoToShow |= playerInfo;
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void DimScreen()
 		{
 			var component = RoundSummary.singleton;
@@ -859,10 +579,6 @@ namespace Qurre.API
 			Connection.Send(msg);
 			NetworkWriterPool.Recycle(writer);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void ShakeScreen(bool achieve = false)
 		{
 			var component = AlphaWarheadController.Host;
@@ -878,10 +594,6 @@ namespace Qurre.API
 			Connection.Send(msg);
 			NetworkWriterPool.Recycle(writer);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void PlaceBlood(Vector3 pos, int type = 1, float size = 2f)
 		{
 			var component = ClassManager;
@@ -899,15 +611,7 @@ namespace Qurre.API
 			Connection.Send(msg);
 			NetworkWriterPool.Recycle(writer);
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector2 newRotation = default, string deathReason = "")
 		{
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, new CustomReasonDamageHandler(deathReason), this);
@@ -917,10 +621,6 @@ namespace Qurre.API
 			Position = newPosition;
 			Rotation = newRotation;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Controllers.Broadcast Broadcast(string message, ushort time, bool instant = false) => Broadcast(time, message, instant);
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)
 		{
@@ -929,35 +629,19 @@ namespace Qurre.API
 			return bc;
 		}
 		public void ClearBroadcasts() => Broadcasts.Clear();
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool Damage(float damage, string deathReason)
 		{
 			return PlayerStats.DealDamage(new CustomReasonDamageHandler(deathReason, damage));
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool Damage(float damage, DeathTranslation deathReason)
 		{
 			return PlayerStats.DealDamage(new UniversalDamageHandler(damage, deathReason));
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool Damage(float damage, DeathTranslation deathReason, Player attacker)
 		{
 			if (attacker == null) return PlayerStats.DealDamage(new UniversalDamageHandler(damage, deathReason));
 			return PlayerStats.DealDamage(new ScpDamageHandler(attacker.ReferenceHub, damage, deathReason));
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public bool DealDamage(DamageHandlerBase handler) => PlayerStats.DealDamage(handler);
 		public Item AddItem(ItemType itemType)
 		{
@@ -1054,24 +738,16 @@ namespace Qurre.API
 			ItemsValue.Clear();
 		}
 		public void DropItems() => Inventory.ServerDropEverything();
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public Throwable ThrowGrenade(GrenadeType type, bool fullForce = true)
 		{
 			Throwable throwable = type switch
 			{
-				GrenadeType.Flashbang => new FlashGrenade(ItemType.GrenadeFlash),
-				_ => new ExplosiveGrenade(type == GrenadeType.Scp018 ? ItemType.SCP018 : ItemType.GrenadeHE),
+				GrenadeType.Flashbang => new GrenadeFlash(ItemType.GrenadeFlash),
+				_ => new GrenadeFrag(type == GrenadeType.Scp018 ? ItemType.SCP018 : ItemType.GrenadeHE),
 			};
 			ThrowItem(throwable, fullForce);
 			return throwable;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void ThrowItem(Throwable throwable, bool fullForce = true)
 		{
 			throwable.Base.Owner = ReferenceHub;
@@ -1082,10 +758,6 @@ namespace Qurre.API
 		public void Disconnect(string reason = null) => ServerConsole.Disconnect(GameObject, string.IsNullOrEmpty(reason) ? "" : reason);
 		public void Kill(DeathTranslation deathReason) => PlayerStats.DealDamage(new UniversalDamageHandler(-1, deathReason));
 		public void Kill(string deathReason = "") => PlayerStats.DealDamage(new CustomReasonDamageHandler(deathReason));
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void ChangeModel(RoleType newModel)
 		{
 			GameObject gameObject = GameObject;
@@ -1168,10 +840,6 @@ namespace Qurre.API
 		public void ChangeEffectIntensity(string effect, byte intensity, float duration = 0) => PlayerEffectsController.ChangeByString(effect, intensity, duration);
 		public void ShowHint(string text, float duration = 1f) =>
 			HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public void BodyDelete()
 		{
 			foreach (var doll in Map.Ragdolls.Where(x => x.Owner == this)) doll.Destroy();
@@ -1346,20 +1014,8 @@ namespace Qurre.API
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 42);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
 		}
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public float DistanceTo(Player player) => Vector3.Distance(Position, player.Position);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public float DistanceTo(Vector3 position) => Vector3.Distance(Position, position);
-		/// <summary>
-		/// []
-		/// []
-		/// </summary>
 		public float DistanceTo(GameObject Object) => Vector3.Distance(Position, Object.transform.localPosition);
 		public class AmmoBoxManager
 		{

@@ -1,6 +1,7 @@
 ﻿using CameraShaking;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Firearms.Attachments;
+using InventorySystem.Items.Firearms.BasicMessages;
 using InventorySystem.Items.Firearms.Modules;
 using Qurre.API.Objects;
 namespace Qurre.API.Controllers.Items
@@ -32,6 +33,7 @@ namespace Qurre.API.Controllers.Items
         }
         public byte MaxAmmo => Base.AmmoManagerModule.MaxAmmo;
         public AmmoType AmmoType => Base.AmmoType.GetAmmoType();
+        public bool FlashlightEnabled => Base.Status.Flags.HasFlagFast(FirearmStatusFlags.FlashlightEnabled);
         public FirearmAttachment[] Attachments
         {
             get => Base.Attachments;
