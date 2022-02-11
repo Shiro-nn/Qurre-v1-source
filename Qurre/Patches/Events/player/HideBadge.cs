@@ -32,7 +32,7 @@ namespace Qurre.Patches.Events.player
 
 				if (!ev.Allowed)
 				{
-					__instance.TargetConsolePrint(__instance.connectionToClient, "The tag hidding was denied.", "red");
+					__instance.TargetConsolePrint(__instance.connectionToClient, "The tag hiding was denied.", "red");
 					return false;
 				}
 
