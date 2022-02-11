@@ -13,7 +13,7 @@ using Console = GameCore.Console;
 namespace Qurre.Patches.Events.SCPs.Scp079
 {
     [HarmonyPatch(typeof(Scp079PlayerScript), "UserCode_CmdInteract")]
-    internal static class Interact
+	internal static class Interact
     {
         private static bool Prefix(Scp079PlayerScript __instance, Command079 command, string args, GameObject target)
         {
@@ -459,7 +459,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 								{
 									if (flickerableLightController != null)
 									{
-										flickerableLightController.ServerFlickerLights(8f);
+										flickerableLightController.ServerFlickerLights(__instance.LockdownDuration);
 									}
 								}
 								__instance.CurrentLDCooldown = __instance.LockdownCooldown + __instance.LockdownDuration;
