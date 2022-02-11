@@ -55,6 +55,8 @@ namespace Qurre.Events
         public static event AllEvents<ChangeSpectateEvent> ChangeSpectate;
         public static event AllEvents<ZoomingEvent> Zooming;
         public static event AllEvents<CoinFlipEvent> CoinFlip;
+        public static event AllEvents<HideBadgeEvent> HideBadge;
+        public static event AllEvents<ShowBadgeEvent> ShowBadge;
         internal static void Invokes(BannedEvent ev) => Banned.invoke(ev);
         internal static void Invokes(BanEvent ev) => Ban.invoke(ev);
         internal static void Invokes(KickEvent ev) => Kick.invoke(ev);
@@ -105,5 +107,7 @@ namespace Qurre.Events
         internal static void Invokes(ChangeSpectateEvent ev) => ChangeSpectate.invoke(ev);
         internal static void Invokes(ZoomingEvent ev) => Zooming.invoke(ev);
         internal static void Invokes(CoinFlipEvent ev) => CoinFlip.invoke(ev);
+        internal static void Invokes(ShowBadgeEvent ev) => ShowBadge.invoke(ev);
+        internal static void Invokes(HideBadgeEvent ev) => HideBadge.invoke(ev);
     }
 }

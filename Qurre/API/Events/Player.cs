@@ -764,4 +764,40 @@ namespace Qurre.API.Events
         public bool Tails { get; set; }
         public bool Allowed { get; set; }
     }
+    public class ShowBadgeEvent : EventArgs
+    {
+        public ShowBadgeEvent(Player player, string badge, bool global, bool allowed = true)
+        {
+            Player = player;
+            Global = global;
+            Badge = badge;
+            Allowed = allowed;
+        }
+
+        public Player Player { get; }
+
+        public bool Global { get; }
+
+        public string Badge { get; set; }
+
+        public bool Allowed { get; set; }
+    }
+    public class HideBadgeEvent : EventArgs
+    {
+        public HideBadgeEvent(Player player, string badge, bool global, bool allowed = true)
+        {
+            Player = player;
+            Global = global;
+            Badge = badge;
+            Allowed = allowed;
+        }
+
+        public Player Player { get; }
+
+        public bool Global { get; }
+
+        public string Badge { get; set; }
+
+        public bool Allowed { get; set; }
+    }
 }
