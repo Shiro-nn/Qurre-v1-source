@@ -13,7 +13,7 @@ using Console = GameCore.Console;
 namespace Qurre.Patches.Events.SCPs.Scp079
 {
     [HarmonyPatch(typeof(Scp079PlayerScript), "UserCode_CmdInteract")]
-    public class Interact
+    internal static class Interact
     {
         private static bool Prefix(Scp079PlayerScript __instance, Command079 command, string args, GameObject target)
         {
