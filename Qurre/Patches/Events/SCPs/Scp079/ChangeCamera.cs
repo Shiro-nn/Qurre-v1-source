@@ -7,7 +7,7 @@ using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.Scp079
 {
     [HarmonyPatch(typeof(Scp079PlayerScript), "UserCode_CmdSwitchCamera")]
-    public class ChangeCamera
+    internal static class ChangeCamera
     {
         private static bool Prefix(Scp079PlayerScript __instance, ushort cameraId, bool lookatRotation)
         {
