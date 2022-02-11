@@ -15,6 +15,7 @@ namespace Qurre.API.Controllers
         public string Speaker { get => script.Speaker; set => script.Speaker = value; }
         public float Exp { get => script.Exp; set => script.Exp = value; }
         public float Energy { get => script.Mana; set => script.Mana = value; }
+        public float LockdownDuration { get => script.LockdownDuration; set => script.LockdownDuration = value; }
         public float MaxEnergy { get => script.maxMana; set => script.NetworkmaxMana = value; }
         public Camera Camera { get => Camera.Cameras.FirstOrDefault(x => x.Key == script.currentCamera).Value; set => script.RpcSwitchCamera(value.Id, false); }
         public Camera079 Camera079 { get => script.currentCamera; set => script.RpcSwitchCamera(value.cameraId, false); }

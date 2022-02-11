@@ -128,6 +128,7 @@
     <Compile Include="API\Modules\CustomConfigsManager.cs" />
     <Compile Include="API\Modules\ConfigManager.cs" />
     <Compile Include="API\Objects\AuthType.cs" />
+    <Compile Include="API\Objects\Scp079SpeakerType.cs" />
     <Compile Include="API\Objects\ShootingTargetType.cs" />
     <Compile Include="API\Objects\DamageTypes.cs" />
     <Compile Include="API\Objects\DamageTypesPrimitive.cs" />
@@ -238,6 +239,8 @@
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
     <Compile Include="Patches\Events\player\SinkholeWalking.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\ChangeCamera.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\Interact.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\PryGate.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\PreWindup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
