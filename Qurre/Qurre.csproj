@@ -235,6 +235,8 @@
     <Compile Include="Patches\Events\player\ChangeSpectate.cs" />
     <Compile Include="Patches\Events\player\CoinFlip.cs" />
     <Compile Include="Patches\Events\player\DamageProcess.cs" />
+    <Compile Include="Patches\Events\player\HideBadge.cs" />
+    <Compile Include="Patches\Events\player\ShowBadge.cs" />
     <Compile Include="Patches\Events\player\TantrumWalking.cs" />
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
