@@ -361,11 +361,11 @@ namespace Qurre.API.Events
     }
     public class ChangeCameraEvent : EventArgs
     {
-        public ChangeCameraEvent(Player player, Controllers.Camera camera, float auxiliaryPowerCost, bool allowed = true)
+        public ChangeCameraEvent(Player player, Controllers.Camera camera, float powerCost, bool allowed = true)
         {
             Scp079 = player;
             Camera = camera;
-            AuxiliaryPowerCost = auxiliaryPowerCost;
+            PowerCost = powerCost;
             Allowed = allowed;
         }
 
@@ -373,7 +373,7 @@ namespace Qurre.API.Events
 
         public Controllers.Camera Camera { get; set; }
 
-        public float AuxiliaryPowerCost { get; set; }
+        public float PowerCost { get; set; }
 
         public bool Allowed { get; set; }
     }
