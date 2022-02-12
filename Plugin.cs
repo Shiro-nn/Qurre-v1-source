@@ -35,7 +35,7 @@ namespace Qurre
 				Version = new Version(Info.Version);
 				NeededQurreVersion = new Version(Info.NeededVersion);
                         }
-        }
+                }
 		public virtual int Priority { get; } = 0;
 		public abstract void Enable();
 		public abstract void Disable();
