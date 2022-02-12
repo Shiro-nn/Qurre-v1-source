@@ -4,6 +4,7 @@ using Respawning;
 using Respawning.NamingRules;
 using RoundRestarting;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 namespace Qurre.API
 {
@@ -77,6 +78,47 @@ namespace Qurre.API
         {
             RespawnManager.Singleton.NamingManager.AllUnitNames.RemoveAt(id);
         }
+        public static Dictionary<SpawnableTeamType, List<string>> UnitsToGenerate { get; private set; } = new()
+        {
+            { SpawnableTeamType.ChaosInsurgency, new() { } },
+            { SpawnableTeamType.ClassD, new() { } },
+            {
+                SpawnableTeamType.NineTailedFox, new()
+                {
+                    "ALPHA",
+                    "BRAVO",
+                    "CHARLIE",
+                    "DELTA",
+                    "ECHO",
+                    "FOXTROT",
+                    "GOLF",
+                    "HOTEL",
+                    "INDIA",
+                    "JULIETT",
+                    "KILO",
+                    "LIMA",
+                    "MIKE",
+                    "NOVEMBER",
+                    "OSCAR",
+                    "PAPA",
+                    "QUEBEC",
+                    "ROMEO",
+                    "SIERRA",
+                    "TANGO",
+                    "UNIFORM",
+                    "VICTOR",
+                    "WHISKEY",
+                    "XRAY",
+                    "YANKEE",
+                    "ZULU"
+                }
+            },
+            { SpawnableTeamType.Scientist, new() },
+            { SpawnableTeamType.SCP, new() },
+            { SpawnableTeamType.Tutorial, new() },
+            { SpawnableTeamType.None, new() }
+        };
+        public static int UnitMaxCode { get; set; } = 20;
         public static void ForceTeamRespawn(bool isCI) => RespawnManager.Singleton.ForceSpawnTeam(isCI ? SpawnableTeamType.ChaosInsurgency : SpawnableTeamType.NineTailedFox);
         public static void CallCICar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
         public static void CallMTFHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);

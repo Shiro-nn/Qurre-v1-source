@@ -257,6 +257,7 @@ namespace Qurre.API
 			Lights.Clear();
 			Primitives.Clear();
 			ShootingTargets.Clear();
+			Round.UnitsToGenerate.Clear();
 			Patches.Events.player.Banned.Cached.Clear();
 		}
 	}
