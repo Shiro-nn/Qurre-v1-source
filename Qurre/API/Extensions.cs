@@ -34,6 +34,9 @@ namespace Qurre.API
 		public static Room GetRoom(this RoomIdentifier identifier) => Map.Rooms.FirstOrDefault(x => x.Identifier == identifier);
 		public static Door GetDoor(this DoorType type) => Map.Doors.FirstOrDefault(x => x.Type == type);
 		public static Door GetDoor(this GameObject gameObject) => Map.Doors.FirstOrDefault(x => x.GameObject == gameObject);
+		public static Controllers.Camera GetCamera(this Camera079 cam) => Map.Cameras.FirstOrDefault(x => x.GameObject == cam.gameObject && x.Id == cam.cameraId);
+		public static Controllers.Camera GetCamera(this GameObject obj) => Map.Cameras.FirstOrDefault(x => x.GameObject == obj);
+		public static Controllers.Camera GetCamera(this ushort id) => Map.Cameras.FirstOrDefault(x => x.Id == id);
 		public static _lift GetLift(this LiftType type) => Map.Lifts.FirstOrDefault(x => x.Type == type);
 		public static Door GetDoor(this DoorVariant door) => Map.Doors.FirstOrDefault(x => x.GameObject == door.gameObject);
 		public static Generator GetGenerator(this GameObject gameObject) => Map.Generators.FirstOrDefault(x => x.GameObject == gameObject);
