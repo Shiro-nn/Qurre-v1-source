@@ -242,8 +242,6 @@ namespace Qurre.API
 		}
 		internal static void ClearObjects()
 		{
-			Teslas.ForEach(x => x.ImmunityRoles.Clear());
-			Teslas.ForEach(x => x.ImmunityPlayers.Clear());
 			Teslas.Clear();
 			Doors.Clear();
 			Lifts.Clear();
@@ -257,7 +255,6 @@ namespace Qurre.API
 			Lights.Clear();
 			Primitives.Clear();
 			ShootingTargets.Clear();
-			Round.UnitsToGenerate.Clear();
 			Patches.Events.player.Banned.Cached.Clear();
 		}
 	}
