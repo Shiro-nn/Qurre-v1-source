@@ -64,10 +64,10 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							if (!ev.Allowed)
 								return false;
 
-							if (manaFromLabel > __instance._curMana)
+							if (ev.PowerCost > __instance._curMana)
 							{
 								Console.AddDebugLog("SCP079", "Not enough mana.", MessageImportance.LeastImportant, false);
-								__instance.RpcNotEnoughMana(manaFromLabel, __instance._curMana);
+								__instance.RpcNotEnoughMana(ev.PowerCost, __instance._curMana);
 								return false;
 							}
 
@@ -76,7 +76,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 
 							if (targetState != doorVariant.TargetState)
 							{
-								__instance.Mana -= manaFromLabel;
+								__instance.Mana -= ev.PowerCost;
 								__instance.AddInteractionToHistory(target, true);
 								Console.AddDebugLog("SCP079", "Door state changed.", global::MessageImportance.LeastImportant, false);
 								return false;
@@ -132,9 +132,9 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 								if (!ev.Allowed)
 									return false;
 
-								if (manaFromLabel > __instance._curMana)
+								if (ev.PowerCost > __instance._curMana)
 								{
-									__instance.RpcNotEnoughMana(manaFromLabel, __instance._curMana);
+									__instance.RpcNotEnoughMana(ev.PowerCost, __instance._curMana);
 									return false;
 								}
 
@@ -145,7 +145,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 
 								doorVariant.ServerChangeLock(DoorLockReason.Regular079, true);
 								__instance.AddInteractionToHistory(doorVariant.gameObject, true);
-								__instance.Mana -= __instance.GetManaFromLabel("Door Lock Start", __instance.abilities);
+								__instance.Mana -= ev.PowerCost;
 
 								return false;
 							}
@@ -162,15 +162,15 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							if (!ev.Allowed)
 								return false;
 
-							if (manaFromLabel * 1.5f > __instance._curMana)
+							if (ev.PowerCost * 1.5f > __instance._curMana)
 							{
-								__instance.RpcNotEnoughMana(manaFromLabel, __instance._curMana);
+								__instance.RpcNotEnoughMana(ev.PowerCost, __instance._curMana);
 								return false;
 							}
 
 							if (gameObject is not null)
 							{
-								__instance.Mana -= manaFromLabel;
+								__instance.Mana -= ev.PowerCost;
 								__instance.Speaker = text2;
 								__instance.AddInteractionToHistory(gameObject, true);
 								return false;
@@ -198,9 +198,9 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							if (!ev.Allowed)
 								return false;
 
-							if (manaFromLabel > __instance._curMana)
+							if (ev.PowerCost > __instance._curMana)
 							{
-								__instance.RpcNotEnoughMana(manaFromLabel, __instance._curMana);
+								__instance.RpcNotEnoughMana(ev.PowerCost, __instance._curMana);
 								return false;
 							}
 
@@ -216,7 +216,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							if (camera is not null)
 							{
 								__instance.RpcSwitchCamera(camera.cameraId, false);
-								__instance.Mana -= manaFromLabel;
+								__instance.Mana -= ev.PowerCost;
 								__instance.AddInteractionToHistory(target, true);
 								return false;
 							}
@@ -305,9 +305,9 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							if (!ev.Allowed)
 								return false;
 
-							if (manaFromLabel > __instance._curMana)
+							if (ev.PowerCost > __instance._curMana)
 							{
-								__instance.RpcNotEnoughMana(manaFromLabel, __instance._curMana);
+								__instance.RpcNotEnoughMana(ev.PowerCost, __instance._curMana);
 								return false;
 							}
 
@@ -315,7 +315,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							{
 								if (lift.elevatorName == args && lift.UseLift())
 								{
-									__instance.Mana -= manaFromLabel;
+									__instance.Mana -= ev.PowerCost;
 									bool flag2 = false;
 									foreach (Lift.Elevator elevator in lift.elevators)
 									{
@@ -337,9 +337,9 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							if (!ev.Allowed)
 								return false;
 
-							if (manaFromLabel > __instance._curMana)
+							if (ev.PowerCost > __instance._curMana)
 							{
-								__instance.RpcNotEnoughMana(manaFromLabel, __instance._curMana);
+								__instance.RpcNotEnoughMana(ev.PowerCost, __instance._curMana);
 								return false;
 							}
 
@@ -356,10 +356,10 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 									if (!tesla.GetTesla().Allow079Interact)
 										return false;
 
-									tesla.RpcInstantBurst();
+									tesla.GetTesla().Trigger(ev.Instant);
 								}
 								__instance.AddInteractionToHistory(tesla.gameObject, true);
-								__instance.Mana -= manaFromLabel;
+								__instance.Mana -= ev.PowerCost;
 								return false;
 							}
 
@@ -469,7 +469,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 								}
 								Console.AddDebugLog("SCP079", "Lockdown initiated.", global::MessageImportance.LessImportant, false);
 								__instance.AddInteractionToHistory(go, true);
-								__instance.Mana -= __instance.GetManaFromLabel("Room Lockdown", __instance.abilities);
+								__instance.Mana -= ev.PowerCost;
 								return false;
 							}
 							else
