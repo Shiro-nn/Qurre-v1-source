@@ -76,7 +76,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 
 							if (targetState != doorVariant.TargetState)
 							{
-								__instance.Mana -= ev.PowerCost;
+								__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
 								__instance.AddInteractionToHistory(target, true);
 								Console.AddDebugLog("SCP079", "Door state changed.", global::MessageImportance.LeastImportant, false);
 								return false;
@@ -145,7 +145,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 
 								doorVariant.ServerChangeLock(DoorLockReason.Regular079, true);
 								__instance.AddInteractionToHistory(doorVariant.gameObject, true);
-								__instance.Mana -= ev.PowerCost;
+								__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
 
 								return false;
 							}
@@ -170,7 +170,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 
 							if (gameObject is not null)
 							{
-								__instance.Mana -= ev.PowerCost;
+								__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
 								__instance.Speaker = text2;
 								__instance.AddInteractionToHistory(gameObject, true);
 								return false;
@@ -216,7 +216,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							if (camera is not null)
 							{
 								__instance.RpcSwitchCamera(camera.cameraId, false);
-								__instance.Mana -= ev.PowerCost;
+								__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
 								__instance.AddInteractionToHistory(target, true);
 								return false;
 							}
@@ -315,7 +315,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							{
 								if (lift.elevatorName == args && lift.UseLift())
 								{
-									__instance.Mana -= ev.PowerCost;
+									__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
 									bool flag2 = false;
 									foreach (Lift.Elevator elevator in lift.elevators)
 									{
@@ -362,7 +362,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 										tesla.RpcPlayAnimation();
 								}
 								__instance.AddInteractionToHistory(tesla.gameObject, true);
-								__instance.Mana -= ev.PowerCost;
+								__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
 								return false;
 							}
 
@@ -472,7 +472,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 								}
 								Console.AddDebugLog("SCP079", "Lockdown initiated.", global::MessageImportance.LessImportant, false);
 								__instance.AddInteractionToHistory(go, true);
-								__instance.Mana -= ev.PowerCost;
+								__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
 								return false;
 							}
 							else
