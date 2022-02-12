@@ -77,8 +77,10 @@ namespace Qurre.API.Controllers
         public bool Allow079Interact { get; set; } = true;
         public void Trigger(bool instant = false)
         {
-            if (instant) Gate.UserCode_RpcInstantBurst();
-            else Gate.RpcPlayAnimation();
+            if (instant) 
+                Gate.RpcInstantBurst();
+            else 
+                Gate.RpcPlayAnimation();
         }
         public void Destroy() => Object.Destroy(Gate.gameObject);
     }

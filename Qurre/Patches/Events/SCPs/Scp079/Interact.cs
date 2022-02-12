@@ -356,10 +356,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 									if (!tesla.GetTesla().Allow079Interact)
 										return false;
 
-									if (ev.Instant)
-										tesla.RpcInstantBurst();
-									else
-										tesla.RpcPlayAnimation();
+									tesla.GetTesla().Trigger(ev.Instant);
 								}
 								__instance.AddInteractionToHistory(tesla.gameObject, true);
 								__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
