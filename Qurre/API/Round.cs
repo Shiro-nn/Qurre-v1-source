@@ -10,6 +10,7 @@ namespace Qurre.API
 {
     public static class Round
     {
+        private static int s_unitMaxCode { get; set; } = 20;
         internal static bool BotSpawned { get; set; } = false;
         private static RespawnManager rm => RespawnManager.Singleton;
         private static RoundSummary rs => RoundSummary.singleton;
@@ -118,7 +119,7 @@ namespace Qurre.API
             { SpawnableTeamType.Tutorial, new() },
             { SpawnableTeamType.None, new() }
         };
-        public static int UnitMaxCode { get; set; } = 20;
+        public static int UnitMaxCode { get => s_unitMaxCode; set => s_unitMaxCode = Math.Min(Math.Max(value, 0), 9999); }
         public static void ForceTeamRespawn(bool isCI) => RespawnManager.Singleton.ForceSpawnTeam(isCI ? SpawnableTeamType.ChaosInsurgency : SpawnableTeamType.NineTailedFox);
         public static void CallCICar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
         public static void CallMTFHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);
