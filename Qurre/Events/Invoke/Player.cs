@@ -9,6 +9,7 @@ namespace Qurre.Events.Invoke
         public static void Kick(KickEvent ev) => Invokes(ev);
         public static void Kicked(KickedEvent ev) => Invokes(ev);
         public static void GroupChange(GroupChangeEvent ev) => Invokes(ev);
+        public static void InteractScp330(InteractScp330Event ev) => Invokes(ev);
         public static void ItemChange(ItemChangeEvent ev) => Invokes(ev);
         public static void RoleChange(RoleChangeEvent ev) => Invokes(ev);
         public static void Dead(DeadEvent ev) => Invokes(ev);
