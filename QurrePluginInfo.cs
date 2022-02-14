@@ -13,5 +13,6 @@ namespace Qurre
         public string Description = "";
         public string Version = "";
         public string NeededVersion = "";
+        public int Priority = 0;
     }
 }

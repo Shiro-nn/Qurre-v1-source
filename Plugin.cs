@@ -19,24 +19,24 @@ namespace Qurre
 		///<para>The higher the number, the earlier the plugin will load.</para>
 		///</summary> 
 		public QurrePluginInfo Info
-                {
+        {
 			get;
 			internal set; 
-                }
+        }
 
 		public string Author => Info?.Author;
 		public string Name => Info?.Name;
-		public string Description => Info?.Name; 
-		 
+		public string Description => Info?.Name;
+		public int Priority => (int)(Info?.Priority);
 		public Plugin()
-                { 
+        {
 			if(Info != null)
-                        {
+            {
 				Version = new Version(Info.Version);
 				NeededQurreVersion = new Version(Info.NeededVersion);
-                        }
-                }
-		public virtual int Priority { get; } = 0;
+            }
+        }
+	    
 		public abstract void Enable();
 		public abstract void Disable();
 		public virtual void Reload() => Log.Debug($"Reloaded.\nPlugin - {Info?.Name}\nDeveloper - {Info?.Author}\nVersion - {Info?.Version}\nNeeded Qurre Version - {Info?.NeededVersion}");
