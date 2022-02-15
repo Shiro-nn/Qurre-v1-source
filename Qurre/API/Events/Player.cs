@@ -134,6 +134,16 @@ namespace Qurre.API.Events
         public string Reason { get; set; }
         public bool Allowed { get; set; }
     }
+    public class InteractScp330Event : EventArgs
+    {
+        public InteractScp330Event(Player player, bool allowed = true)
+        {
+            Player = player;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public bool Allowed { get; }
+    }
     public class GroupChangeEvent : EventArgs
     {
         public GroupChangeEvent(Player player, UserGroup newGroup, bool allowed = true)
@@ -177,6 +187,16 @@ namespace Qurre.API.Events
         public SpawnReason Reason { get; set; }
         public bool Allowed { get; set; }
     }
+    public class JumpEvent : EventArgs
+     {  
+        public JumpEvent(Player player, bool allowed = true)
+        {
+            Player = player;
+            Allowed = allowed; 
+        } 
+        public Player Player { get; }  
+        public bool Allowed { get; set; }
+     }
     public class DeadEvent : EventArgs
     {
         public DeadEvent(Player killer, Player target, DamageHandlerBase damageInfo, DamageTypes type)
