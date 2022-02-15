@@ -16,9 +16,10 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                var ev = new JumpEvent(Player.Get(ply), position.Position);
-                Qurre.Events.Invoke.Player.Jump(ev);
                 var pl = Player.Get(ply);
+                var ev = new JumpEvent(pl, position.Position);
+                Qurre.Events.Invoke.Player.Jump(ev);
+                if(!ev.Allowed) return false;
                 __instance._hub.playerMovementSync.ReceivePosition2D(ev.Position, true);
                 return false;
 
