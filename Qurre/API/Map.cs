@@ -256,6 +256,7 @@ namespace Qurre.API
 			Primitives.Clear();
 			ShootingTargets.Clear();
 			Patches.Events.player.Banned.Cached.Clear();
+			Cameras.Clear();
 		}
 	}
 }
