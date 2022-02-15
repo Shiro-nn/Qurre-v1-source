@@ -27,6 +27,7 @@ namespace Qurre.Events.Invoke
         public static void DroppingItem(DroppingItemEvent ev) => Invokes(ev);
         public static void DropItem(DropItemEvent ev) => Invokes(ev);
         public static void Join(JoinEvent ev) => Invokes(ev);
+        public static void Jump(JumpEvent ev) => Invokes(ev);
         public static void Leave(LeaveEvent ev) => Invokes(ev);
         public static void PickupItem(PickupItemEvent ev) => Invokes(ev);
         public static void RechargeWeapon(RechargeWeaponEvent ev) => Invokes(ev);
