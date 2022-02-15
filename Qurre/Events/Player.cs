@@ -55,11 +55,13 @@ namespace Qurre.Events
         public static event AllEvents<TantrumWalkingEvent> TantrumWalking;
         public static event AllEvents<ChangeSpectateEvent> ChangeSpectate;
         public static event AllEvents<ZoomingEvent> Zooming;
+        public static event AllEvents<JumpEvent> Jump;
         public static event AllEvents<CoinFlipEvent> CoinFlip;
         public static event AllEvents<HideBadgeEvent> HideBadge;
         public static event AllEvents<ShowBadgeEvent> ShowBadge;
         internal static void Invokes(BannedEvent ev) => Banned.invoke(ev);
         internal static void Invokes(BanEvent ev) => Ban.invoke(ev);
+        internal static void Invokes(JumpEvent ev) => Jump.invoke(ev);
         internal static void Invokes(KickEvent ev) => Kick.invoke(ev);
 
         internal static void Invokes(InteractScp330Event ev) => InteractScp330.invoke(ev);
