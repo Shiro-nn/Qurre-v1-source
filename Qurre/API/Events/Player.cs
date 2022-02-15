@@ -189,12 +189,14 @@ namespace Qurre.API.Events
     }
     public class JumpEvent : EventArgs
      {  
-        public JumpEvent(Player player, bool allowed = true)
+        public JumpEvent(Player player, Vector3 pos bool allowed = true)
         {
             Player = player;
+            Position = pos;
             Allowed = allowed; 
         } 
         public Player Player { get; }  
+        public Vector3 Position { get; set; }
         public bool Allowed { get; set; }
      }
     public class DeadEvent : EventArgs
