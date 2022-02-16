@@ -1,7 +1,8 @@
 ﻿using InventorySystem.Items;
 using InventorySystem.Items.Firearms.BasicMessages;
 using InventorySystem.Items.MicroHID;
-using InventorySystem.Items.Radio;
+using InventorySystem.Items.Usables.Scp330;
+using InventorySystem.Items.Radio; 
 using InventorySystem.Items.ThrowableProjectiles;
 using PlayerStatsSystem;
 using Qurre.API.Controllers;
@@ -189,16 +190,26 @@ namespace Qurre.API.Events
     }
     public class JumpEvent : EventArgs
      {  
-        public JumpEvent(Player player, Vector3 pos bool allowed = true)
+        public JumpEvent(Player player, Vector3 position, bool allowed = true)
         {
             Player = player;
-            Position = pos;
+            Position = position;
             Allowed = allowed; 
         } 
-        public Player Player { get; }  
-        public Vector3 Position { get; set; }
+        public Player Player { get; }   
+        public Vector3 Position { get; set; } 
         public bool Allowed { get; set; }
-     }
+     } 
+    public class EatingScp330Event : EventArgs
+    {
+        public EatingScp330Event(Player player, ICandy candy, bool allowed = true)
+        {
+            Player = player;
+            Candy = candy; 
+        } 
+        public Player Player { get; }  
+        public ICandy Candy { get; }
+    }
     public class DeadEvent : EventArgs
     {
         public DeadEvent(Player killer, Player target, DamageHandlerBase damageInfo, DamageTypes type)
@@ -259,6 +270,18 @@ namespace Qurre.API.Events
         public Player Cuffer { get; }
         public Player Target { get; }
         public bool Allowed { get; set; }
+    }
+    public class CandyPickupEvent : EventArgs
+    {
+        public CandyPickupEvent(Player player , ICandy Candy, bool allowed = true)
+        {
+            Player = player;
+            candy = Candy;
+            Allowed = allowed; 
+        } 
+        public Player Player { get; } 
+        public ICandy candy { get; } 
+        public bool Allowed { get; }
     }
     public class UnCuffEvent : EventArgs
     {
