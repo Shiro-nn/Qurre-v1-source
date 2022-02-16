@@ -19,12 +19,14 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 				float num = __instance.CalculateCameraSwitchCost(camera.transform.position);
 
 				Player player = Player.Get(__instance.gameObject);
-				var ev = new ChangeCameraEvent(player, camera.GetCamera(), num, __instance._curMana >= num);
+				var ev = new ChangeCameraEvent(player, camera.GetCamera(), num);
 				Qurre.Events.Invoke.Scp079.ChangeCamera(ev);
 
-				if (!ev.Allowed)
-				{
-					if (ev.PowerCost > __instance._curMana) __instance.RpcNotEnoughMana(ev.PowerCost, __instance._curMana);
+				if (!ev.Allowed) return false;
+
+				if (ev.PowerCost > __instance._curMana)
+                {
+					__instance.RpcNotEnoughMana(ev.PowerCost, __instance._curMana);
 					return false;
 				}
 
