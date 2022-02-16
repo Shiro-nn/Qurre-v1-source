@@ -19,19 +19,19 @@ namespace Qurre.Events
         public static event AllEvents<ScpDeadAnnouncementEvent> ScpDeadAnnouncement;
         public static event AllEvents<CreatePickupEvent> CreatePickup;
         public static event AllEvents<ConvertUnitNameEvent> ConvertUnitName;
-        internal static void Invokes(LczDeconEvent ev) => LczDecon?.invoke(ev);
-        internal static void Invokes(LczAnnounceEvent ev) => LczAnnounce?.invoke(ev);
-        internal static void Invokes(MTFAnnouncementEvent ev) => MTFAnnouncement?.invoke(ev);
-        internal static void Invokes(NewBloodEvent ev) => NewBlood?.invoke(ev);
-        internal static void Invokes(PlaceBulletHoleEvent ev) => PlaceBulletHole?.invoke(ev);
-        internal static void Invokes() => Generated.SafeInvoke();
-        internal static void Invokes(SetSeedEvent ev) => SetSeed?.invoke(ev);
-        internal static void Invokes(DoorDamageEvent ev) => DoorDamage?.invoke(ev);
-        internal static void Invokes(DoorLockEvent ev) => DoorLock?.invoke(ev);
-        internal static void Invokes(DoorOpenEvent ev) => DoorOpen?.invoke(ev);
-        internal static void Invokes(UseLiftEvent ev) => UseLift?.invoke(ev);
-        internal static void Invokes(ScpDeadAnnouncementEvent ev) => ScpDeadAnnouncement?.invoke(ev);
-        internal static void Invokes(CreatePickupEvent ev) => CreatePickup?.invoke(ev);
-        internal static void Invokes(ConvertUnitNameEvent ev) => ConvertUnitName?.invoke(ev);
+        internal static void Invokes(LczDeconEvent ev) => LczDecon?.CustomInvoke(ev);
+        internal static void Invokes(LczAnnounceEvent ev) => LczAnnounce?.CustomInvoke(ev);
+        internal static void Invokes(MTFAnnouncementEvent ev) => MTFAnnouncement?.CustomInvoke(ev);
+        internal static void Invokes(NewBloodEvent ev) => NewBlood?.CustomInvoke(ev);
+        internal static void Invokes(PlaceBulletHoleEvent ev) => PlaceBulletHole?.CustomInvoke(ev);
+        internal static void Invokes() => Generated.CustomInvoke();
+        internal static void Invokes(SetSeedEvent ev) => SetSeed?.CustomInvoke(ev);
+        internal static void Invokes(DoorDamageEvent ev) => DoorDamage?.CustomInvoke(ev);
+        internal static void Invokes(DoorLockEvent ev) => DoorLock?.CustomInvoke(ev);
+        internal static void Invokes(DoorOpenEvent ev) => DoorOpen?.CustomInvoke(ev);
+        internal static void Invokes(UseLiftEvent ev) => UseLift?.CustomInvoke(ev);
+        internal static void Invokes(ScpDeadAnnouncementEvent ev) => ScpDeadAnnouncement?.CustomInvoke(ev);
+        internal static void Invokes(CreatePickupEvent ev) => CreatePickup?.CustomInvoke(ev);
+        internal static void Invokes(ConvertUnitNameEvent ev) => ConvertUnitName?.CustomInvoke(ev);
     }
 }

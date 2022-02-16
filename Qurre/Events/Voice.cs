@@ -7,7 +7,7 @@ namespace Qurre.Events
     {
         public static event AllEvents<PressAltChatEvent> PressAltChat;
         public static event AllEvents<PressPrimaryChatEvent> PressPrimaryChat;
-        internal static void Invokes(PressAltChatEvent ev) => PressAltChat.invoke(ev);
-        internal static void Invokes(PressPrimaryChatEvent ev) => PressPrimaryChat.invoke(ev);
+        internal static void Invokes(PressAltChatEvent ev) => PressAltChat.CustomInvoke(ev);
+        internal static void Invokes(PressPrimaryChatEvent ev) => PressPrimaryChat.CustomInvoke(ev);
     }
 }

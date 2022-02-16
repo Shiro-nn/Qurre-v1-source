@@ -7,7 +7,7 @@ namespace Qurre.Events
     {
         public static event AllEvents<EffectEnabledEvent> Enabled;
         public static event AllEvents<EffectDisabledEvent> Disabled;
-        internal static void Invokes(EffectEnabledEvent ev) => Enabled?.invoke(ev);
-        internal static void Invokes(EffectDisabledEvent ev) => Disabled?.invoke(ev);
+        internal static void Invokes(EffectEnabledEvent ev) => Enabled?.CustomInvoke(ev);
+        internal static void Invokes(EffectDisabledEvent ev) => Disabled?.CustomInvoke(ev);
     }
 }
