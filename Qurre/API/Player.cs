@@ -361,6 +361,7 @@ namespace Qurre.API
 		}
 		public void HideTag() => ClassManager.CmdRequestHideTag();
 		public void ShowTag() => ClassManager.CmdRequestShowTag(false);
+		public void SevereHands() => EnableEffect(EffectType.SeveredHands);
 		public string HiddenBadge => ServerRoles.HiddenBadge;
 		public bool BadgeHidden
 		{
@@ -846,7 +847,7 @@ namespace Qurre.API
 		}
 		public List<string> GetGameObjectsInRange(float range)
 		{
-			List<string> gameObjects = new List<string>();
+			List<string> gameObjects = new();
 			foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>()) { if (Vector3.Distance(obj.transform.position, Position) <= range && !obj.name.Contains("mixamorig") && !obj.name.Contains("Pos")) { gameObjects.Add(obj.name.Trim() + "\n"); } }
 			return gameObjects;
 		}
@@ -1035,17 +1036,6 @@ namespace Qurre.API
 					player.Inventory.SendAmmoNextFrame = true;
 				}
 			}
-		}
-		[Obsolete("Use 'Movement'")]
-		public PlayerMovementSync PlayerMovementSync => rh.playerMovementSync;
-		[Obsolete("Use 'HiddenBadge'")]
-		public string HiddenTag => HiddenBadge;
-
-		[Obsolete("Use 'BadgeHidden'")]
-		public bool TagHidden
-		{
-			get => BadgeHidden;
-			set => BadgeHidden = value;
 		}
 	}
 }

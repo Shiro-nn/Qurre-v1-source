@@ -2,16 +2,15 @@
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
-
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(CharacterClassManager), "UserCode_CmdRequestHideTag")]
-    internal static class HideBadge
-    {
-        private static bool Prefix(CharacterClassManager __instance)
-        {
-            try
-            {
+	[HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.UserCode_CmdRequestHideTag))]
+	internal static class HideBadge
+	{
+		private static bool Prefix(CharacterClassManager __instance)
+		{
+			try
+			{
 				if (__instance is null || !__instance._commandRateLimit.CanExecute(true))
 					return false;
 
@@ -45,12 +44,12 @@ namespace Qurre.Patches.Events.player
 				__instance.TargetConsolePrint(__instance.connectionToClient, "Badge hidden.", "green");
 
 				return false;
-            }
-            catch (Exception e)
-            {
-                Log.Error($"umm, error in patching Player [HideTag]:\n{e}\n{e.StackTrace}");
-                return true;
-            }
-        }
-    }
+			}
+			catch (Exception e)
+			{
+				Log.Error($"umm, error in patching Player [HideTag]:\n{e}\n{e.StackTrace}");
+				return true;
+			}
+		}
+	}
 }

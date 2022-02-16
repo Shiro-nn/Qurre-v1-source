@@ -28,8 +28,8 @@ namespace Qurre.Patches.Events.player
                             if (Player.Get(allHub.Key).Invisible) continue;
                             var ev = new TeslaTriggerEvent(Player.Get(allHub.Key), teslaGate.GetTesla(), teslaGate.PlayerInHurtRange(allHub.Key));
                             Qurre.Events.Invoke.Player.TeslaTrigger(ev);
-                            if (ev.Triggerable && ev.Tesla.Enable 
-                                && !ev.Tesla.ImmunityRoles.Contains(ev.Player.Role) 
+                            if (ev.Triggerable && ev.Tesla.Enable
+                                && !ev.Tesla.ImmunityRoles.Contains(ev.Player.Role)
                                 && !ev.Tesla.ImmunityPlayers.Contains(ev.Player)) teslaGate.ServerSideCode();
                         }
                     }

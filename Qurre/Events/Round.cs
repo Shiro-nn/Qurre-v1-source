@@ -11,9 +11,9 @@ namespace Qurre.Events
         public static event AllEvents<RoundEndEvent> End;
         public static event AllEvents<CheckEvent> Check;
         public static event AllEvents<TeamRespawnEvent> TeamRespawn;
-        internal static void InvokesW() => Waiting.invoke();
-        internal static void InvokesS() => Start.invoke();
-        internal static void InvokesR() => Restart.invoke();
+        internal static void InvokesW() => Waiting.SafeInvoke();
+        internal static void InvokesS() => Start.SafeInvoke();
+        internal static void InvokesR() => Restart.SafeInvoke();
         internal static void Invokes(RoundEndEvent ev) => End.invoke(ev);
         internal static void Invokes(CheckEvent ev) => Check?.invoke(ev);
         internal static void Invokes(TeamRespawnEvent ev) => TeamRespawn.invoke(ev);

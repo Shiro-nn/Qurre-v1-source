@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
@@ -25,7 +25,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 				if (!ev.Allowed) return false;
 
 				if (ev.PowerCost > __instance._curMana)
-                {
+				{
 					__instance.RpcNotEnoughMana(ev.PowerCost, __instance._curMana);
 					return false;
 				}

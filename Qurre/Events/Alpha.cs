@@ -11,7 +11,7 @@ namespace Qurre.Events
         public static event AllEvents<EnableAlphaPanelEvent> EnablePanel;
         internal static void Invokes(AlphaStopEvent ev) => Stopping?.invoke(ev);
         internal static void Invokes(AlphaStartEvent ev) => Starting?.invoke(ev);
-        internal static void Invokes() => Detonated?.invoke();
+        internal static void Invokes() => Detonated?.SafeInvoke();
         internal static void Invokes(EnableAlphaPanelEvent ev) => EnablePanel?.invoke(ev);
     }
 }

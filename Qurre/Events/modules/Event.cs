@@ -22,7 +22,7 @@ namespace Qurre.Events.Modules
                 }
             }
         }
-        public static void invoke(this Main.AllEvents ev)
+        public static void SafeInvoke(this Main.AllEvents ev)
         {
             if (ev == null)
                 return;

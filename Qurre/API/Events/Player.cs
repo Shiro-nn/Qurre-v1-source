@@ -3,6 +3,7 @@ using InventorySystem.Items.Firearms.BasicMessages;
 using InventorySystem.Items.MicroHID;
 using InventorySystem.Items.Radio;
 using InventorySystem.Items.ThrowableProjectiles;
+using InventorySystem.Items.Usables.Scp330;
 using PlayerStatsSystem;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Items;
@@ -773,13 +774,9 @@ namespace Qurre.API.Events
             Badge = badge;
             Allowed = allowed;
         }
-
         public Player Player { get; }
-
         public bool Global { get; }
-
         public string Badge { get; set; }
-
         public bool Allowed { get; set; }
     }
     public class HideBadgeEvent : EventArgs
@@ -791,13 +788,55 @@ namespace Qurre.API.Events
             Badge = badge;
             Allowed = allowed;
         }
-
         public Player Player { get; }
-
         public bool Global { get; }
-
         public string Badge { get; set; }
-
+        public bool Allowed { get; set; }
+    }
+    public class InteractScp330Event : EventArgs
+    {
+        public InteractScp330Event(Player player, bool allowed = true)
+        {
+            Player = player;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public bool Allowed { get; set; }
+    }
+    public class EatingScp330Event : EventArgs
+    {
+        public EatingScp330Event(Player player, CandyKindID candy, bool allowed = true)
+        {
+            Player = player;
+            Candy = candy;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public CandyKindID Candy { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class PickupCandyEvent : EventArgs
+    {
+        public PickupCandyEvent(Player player, List<CandyKindID> candy, bool allowed = true)
+        {
+            Player = player;
+            Candy = candy;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public List<CandyKindID> Candy { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class JumpEvent : EventArgs
+    {
+        public JumpEvent(Player player, Vector3 position, bool allowed = true)
+        {
+            Player = player;
+            Position = position;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public Vector3 Position { get; set; }
         public bool Allowed { get; set; }
     }
 }

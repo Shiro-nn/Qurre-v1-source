@@ -11,7 +11,7 @@ namespace Qurre.API
         private static Player host;
         private static Inventory hinv;
         public static ServerConsole ServerConsole => ServerConsole.singleton;
-        public static DataBase.DataBase DataBase { get; internal set; }
+        public static DataBase.Client DataBase { get; internal set; }
         public static ushort Port => global::Loader.Port;
         public static string Ip => ServerConsole.Ip;
         ///<summary>

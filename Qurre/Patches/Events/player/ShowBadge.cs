@@ -3,16 +3,15 @@ using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
 using GameCore;
-
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(CharacterClassManager), "UserCode_CmdRequestShowTag")]
-    internal static class ShowBadge
-    {
-        private static bool Prefix(CharacterClassManager __instance, bool global)
-        {
-            try
-            {
+	[HarmonyPatch(typeof(CharacterClassManager), "UserCode_CmdRequestShowTag")]
+	internal static class ShowBadge
+	{
+		private static bool Prefix(CharacterClassManager __instance, bool global)
+		{
+			try
+			{
 				if (__instance is null || !__instance._commandRateLimit.CanExecute(true))
 					return false;
 
@@ -42,11 +41,11 @@ namespace Qurre.Patches.Events.player
 					return false;
 				}
 
-				if ((string.IsNullOrEmpty(__instance.SrvRoles.MyText) 
-					|| !__instance.SrvRoles.RemoteAdmin) && (((__instance.SrvRoles.GlobalBadgeType == 3 
-					|| __instance.SrvRoles.GlobalBadgeType == 4) && ConfigFile.ServerConfig.GetBool("block_gtag_banteam_badges", false) && !ServerStatic.PermissionsHandler.IsVerified) 
-					|| (__instance.SrvRoles.GlobalBadgeType == 1 && ConfigFile.ServerConfig.GetBool("block_gtag_staff_badges", false)) 
-					|| (__instance.SrvRoles.GlobalBadgeType == 2 && ConfigFile.ServerConfig.GetBool("block_gtag_management_badges", false) && !ServerStatic.PermissionsHandler.IsVerified) 
+				if ((string.IsNullOrEmpty(__instance.SrvRoles.MyText)
+					|| !__instance.SrvRoles.RemoteAdmin) && (((__instance.SrvRoles.GlobalBadgeType == 3
+					|| __instance.SrvRoles.GlobalBadgeType == 4) && ConfigFile.ServerConfig.GetBool("block_gtag_banteam_badges", false) && !ServerStatic.PermissionsHandler.IsVerified)
+					|| (__instance.SrvRoles.GlobalBadgeType == 1 && ConfigFile.ServerConfig.GetBool("block_gtag_staff_badges", false))
+					|| (__instance.SrvRoles.GlobalBadgeType == 2 && ConfigFile.ServerConfig.GetBool("block_gtag_management_badges", false) && !ServerStatic.PermissionsHandler.IsVerified)
 					|| (__instance.SrvRoles.GlobalBadgeType == 0 && ConfigFile.ServerConfig.GetBool("block_gtag_patreon_badges", false) && !ServerStatic.PermissionsHandler.IsVerified)))
 				{
 					__instance.TargetConsolePrint(__instance.connectionToClient, "You can't show this type of global badge on this server. Try joining server with global badges allowed.", "red");
@@ -60,12 +59,12 @@ namespace Qurre.Patches.Events.player
 				__instance.TargetConsolePrint(__instance.connectionToClient, "Global tag refreshed.", "green");
 
 				return false;
-            }
-            catch (Exception e)
-            {
-                Log.Error($"umm, error in patching Player [HideTag]:\n{e}\n{e.StackTrace}");
-                return true;
-            }
-        }
-    }
+			}
+			catch (Exception e)
+			{
+				Log.Error($"umm, error in patching Player [HideTag]:\n{e}\n{e.StackTrace}");
+				return true;
+			}
+		}
+	}
 }

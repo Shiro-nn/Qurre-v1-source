@@ -24,7 +24,7 @@ namespace Qurre.Events
         internal static void Invokes(MTFAnnouncementEvent ev) => MTFAnnouncement?.invoke(ev);
         internal static void Invokes(NewBloodEvent ev) => NewBlood?.invoke(ev);
         internal static void Invokes(PlaceBulletHoleEvent ev) => PlaceBulletHole?.invoke(ev);
-        internal static void Invokes() => Generated.invoke();
+        internal static void Invokes() => Generated.SafeInvoke();
         internal static void Invokes(SetSeedEvent ev) => SetSeed?.invoke(ev);
         internal static void Invokes(DoorDamageEvent ev) => DoorDamage?.invoke(ev);
         internal static void Invokes(DoorLockEvent ev) => DoorLock?.invoke(ev);

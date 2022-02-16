@@ -1,8 +1,7 @@
-﻿using Dissonance;
-using InventorySystem.Items.Pickups;
-using PlayableScps;
+﻿using InventorySystem.Items.Pickups;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Items;
+using Qurre.API.Objects;
 using Scp914;
 using System;
 using System.Collections.Generic;
@@ -368,13 +367,9 @@ namespace Qurre.API.Events
             PowerCost = powerCost;
             Allowed = allowed;
         }
-
         public Player Scp079 { get; }
-
         public Controllers.Camera Camera { get; set; }
-
         public float PowerCost { get; set; }
-
         public bool Allowed { get; set; }
     }
     public class Scp079InteractDoorEvent : EventArgs
@@ -386,16 +381,11 @@ namespace Qurre.API.Events
             PowerCost = power;
             Allowed = allowed;
         }
-
         public Player Scp079 { get; }
-
         public Door Door { get; }
-
         public float PowerCost { get; set; }
-
         public bool Allowed { get; set; }
     }
-
     public class Scp079LockDoorEvent : EventArgs
     {
         public Scp079LockDoorEvent(Player scp, Door door, float power, bool allowed = true)
@@ -405,13 +395,9 @@ namespace Qurre.API.Events
             PowerCost = power;
             Allowed = allowed;
         }
-
         public Player Scp079 { get; }
-
         public Door Door { get; }
-
         public float PowerCost { get; set; }
-
         public bool Allowed { get; set; }
     }
     public class Scp079ElevatorTeleportEvent : EventArgs
@@ -422,11 +408,8 @@ namespace Qurre.API.Events
             PowerCost = power;
             Allowed = allowed;
         }
-
         public Player Scp079 { get; }
-
         public float PowerCost { get; set; }
-
         public bool Allowed { get; set; }
     }
     public class Scp079InteractLiftEvent : EventArgs
@@ -438,13 +421,9 @@ namespace Qurre.API.Events
             PowerCost = power;
             Allowed = allowed;
         }
-
         public Player Scp079 { get; }
-
         public Controllers.Lift Lift { get; }
-
         public float PowerCost { get; set; }
-
         public bool Allowed { get; set; }
     }
     public class Scp079InteractTeslaEvent : EventArgs
@@ -457,15 +436,10 @@ namespace Qurre.API.Events
             Instant = instant;
             Allowed = allowed;
         }
-
         public Player Scp079 { get; }
-
         public Tesla Tesla { get; }
-
         public float PowerCost { get; set; }
-
         public bool Instant { get; set; }
-
         public bool Allowed { get; set; }
     }
     public class Scp079LockdownEvent : EventArgs
@@ -478,20 +452,15 @@ namespace Qurre.API.Events
             PowerCost = power;
             Allowed = allowed;
         }
-
         public Player Scp079 { get; }
-
         public Room Room { get; }
-
         public List<Door> Doors { get; set; }
-
         public float PowerCost { get; set; }
-
         public bool Allowed { get; set; }
     }
     public class Scp079SpeakerEvent : EventArgs
     {
-        public Scp079SpeakerEvent(Player scp, GameObject speaker, Objects.Scp079SpeakerType type, float power, bool allowed = true)
+        public Scp079SpeakerEvent(Player scp, GameObject speaker, Scp079SpeakerType type, float power, bool allowed = true)
         {
             Scp079 = scp;
             SpeakerObject = speaker;
@@ -499,15 +468,10 @@ namespace Qurre.API.Events
             Allowed = allowed;
             Type = type;
         }
-
         public Player Scp079 { get; }
-
-        public Objects.Scp079SpeakerType Type { get; }
-
+        public Scp079SpeakerType Type { get; }
         public GameObject SpeakerObject { get; }
-
         public float PowerCost { get; set; }
-
         public bool Allowed { get; set; }
     }
     #endregion

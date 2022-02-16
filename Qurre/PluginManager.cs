@@ -12,7 +12,7 @@ namespace Qurre
 	public static class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new();
-		public static Version Version { get; } = new Version(1, 11, 13, 1);
+		public static Version Version { get; } = new Version(1, 12, 0);
 		//private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -71,8 +71,7 @@ namespace Qurre
 			{
 				if (!dll.EndsWith(".dll")) continue;
 				if (global::Loader.Loaded(dll)) continue;
-				byte[] file = global::Loader.ReadFile(dll);
-				Assembly assembly = Assembly.Load(file);
+				Assembly assembly = Assembly.Load(global::Loader.ReadFile(dll));
 				global::Loader.LocalLoaded.Add(assembly);
 				Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
 			}
@@ -216,7 +215,7 @@ namespace Qurre
 		{
 			try
 			{
-				WebClient wc = new WebClient();
+				WebClient wc = new();
 				Assembly assembly = Assembly.Load(wc.DownloadData(link));
 				return assembly;
 			}

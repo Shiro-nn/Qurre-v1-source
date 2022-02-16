@@ -134,6 +134,7 @@ namespace Qurre.API.Controllers
             GameObject obj = Object.Instantiate(NetworkManager.singleton.playerPrefab);
             GameObject = obj;
             var rh = ReferenceHub.GetHub(GameObject);
+            try { rh.Awake(); } catch { }
             Player = new Player(rh) { Bot = true };
             Player.Dictionary.Add(obj, Player);
             rh.transform.localScale = Vector3.one;

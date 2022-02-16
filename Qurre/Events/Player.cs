@@ -23,6 +23,9 @@ namespace Qurre.Events
         public static event AllEvents<InteractDoorEvent> InteractDoor;
         public static event AllEvents<InteractLiftEvent> InteractLift;
         public static event AllEvents<InteractLockerEvent> InteractLocker;
+        public static event AllEvents<InteractScp330Event> InteractScp330;
+        public static event AllEvents<EatingScp330Event> EatingScp330;
+        public static event AllEvents<PickupCandyEvent> PickupCandy;
         public static event AllEvents<IcomSpeakEvent> IcomSpeak;
         public static event AllEvents<DroppingItemEvent> DroppingItem;
         public static event AllEvents<DropItemEvent> DropItem;
@@ -57,6 +60,7 @@ namespace Qurre.Events
         public static event AllEvents<CoinFlipEvent> CoinFlip;
         public static event AllEvents<HideBadgeEvent> HideBadge;
         public static event AllEvents<ShowBadgeEvent> ShowBadge;
+        public static event AllEvents<JumpEvent> Jump;
         internal static void Invokes(BannedEvent ev) => Banned.invoke(ev);
         internal static void Invokes(BanEvent ev) => Ban.invoke(ev);
         internal static void Invokes(KickEvent ev) => Kick.invoke(ev);
@@ -75,6 +79,9 @@ namespace Qurre.Events
         internal static void Invokes(InteractDoorEvent ev) => InteractDoor.invoke(ev);
         internal static void Invokes(InteractLiftEvent ev) => InteractLift.invoke(ev);
         internal static void Invokes(InteractLockerEvent ev) => InteractLocker?.invoke(ev);
+        internal static void Invokes(InteractScp330Event ev) => InteractScp330.invoke(ev);
+        internal static void Invokes(EatingScp330Event ev) => EatingScp330.invoke(ev);
+        internal static void Invokes(PickupCandyEvent ev) => PickupCandy.invoke(ev);
         internal static void Invokes(IcomSpeakEvent ev) => IcomSpeak.invoke(ev);
         internal static void Invokes(DroppingItemEvent ev) => DroppingItem.invoke(ev);
         internal static void Invokes(DropItemEvent ev) => DropItem.invoke(ev);
@@ -109,5 +116,6 @@ namespace Qurre.Events
         internal static void Invokes(CoinFlipEvent ev) => CoinFlip.invoke(ev);
         internal static void Invokes(ShowBadgeEvent ev) => ShowBadge.invoke(ev);
         internal static void Invokes(HideBadgeEvent ev) => HideBadge.invoke(ev);
+        internal static void Invokes(JumpEvent ev) => Jump.invoke(ev);
     }
 }
