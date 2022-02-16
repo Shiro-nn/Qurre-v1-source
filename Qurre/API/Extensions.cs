@@ -51,6 +51,17 @@ namespace Qurre.API
 		public static Window GetWindow(this BreakableWindow station) => Map.Windows.FirstOrDefault(x => x.Breakable == station);
 		public static Window GetWindow(this GameObject go) => Map.Windows.FirstOrDefault(x => x.GameObject == go);
 		public static Sinkhole GetSinkhole(this SinkholeEnvironmentalHazard hole) => Map.Sinkholes.FirstOrDefault(x => x.EnvironmentalHazard == hole);
+		public static bool TryFind<TSource>(this IEnumerable<TSource> source, out TSource found, Func<TSource, bool> predicate)
+		{
+			var list = source.Where(predicate);
+			if (list.Count() == 0)
+			{
+				found = default;
+				return false;
+			}
+			found = list.First();
+			return true;
+		}
 		public static Team GetTeam(this RoleType roleType)
 		{
 			return roleType switch
