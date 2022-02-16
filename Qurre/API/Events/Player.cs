@@ -1,8 +1,7 @@
 ﻿using InventorySystem.Items;
 using InventorySystem.Items.Firearms.BasicMessages;
 using InventorySystem.Items.MicroHID;
-using InventorySystem.Items.Usables.Scp330;
-using InventorySystem.Items.Radio; 
+using InventorySystem.Items.Radio;
 using InventorySystem.Items.ThrowableProjectiles;
 using PlayerStatsSystem;
 using Qurre.API.Controllers;
@@ -135,16 +134,6 @@ namespace Qurre.API.Events
         public string Reason { get; set; }
         public bool Allowed { get; set; }
     }
-    public class InteractScp330Event : EventArgs
-    {
-        public InteractScp330Event(Player player, bool allowed = true)
-        {
-            Player = player;
-            Allowed = allowed;
-        }
-        public Player Player { get; }
-        public bool Allowed { get; }
-    }
     public class GroupChangeEvent : EventArgs
     {
         public GroupChangeEvent(Player player, UserGroup newGroup, bool allowed = true)
@@ -187,28 +176,6 @@ namespace Qurre.API.Events
         public bool SavePos { get; set; }
         public SpawnReason Reason { get; set; }
         public bool Allowed { get; set; }
-    }
-    public class JumpEvent : EventArgs
-     {  
-        public JumpEvent(Player player, Vector3 position, bool allowed = true)
-        {
-            Player = player;
-            Position = position;
-            Allowed = allowed; 
-        } 
-        public Player Player { get; }   
-        public Vector3 Position { get; set; } 
-        public bool Allowed { get; set; }
-     } 
-    public class EatingScp330Event : EventArgs
-    {
-        public EatingScp330Event(Player player, ICandy candy, bool allowed = true)
-        {
-            Player = player;
-            Candy = candy; 
-        } 
-        public Player Player { get; }  
-        public ICandy Candy { get; }
     }
     public class DeadEvent : EventArgs
     {
@@ -270,18 +237,6 @@ namespace Qurre.API.Events
         public Player Cuffer { get; }
         public Player Target { get; }
         public bool Allowed { get; set; }
-    }
-    public class CandyPickupEvent : EventArgs
-    {
-        public CandyPickupEvent(Player player , ICandy Candy, bool allowed = true)
-        {
-            Player = player;
-            candy = Candy;
-            Allowed = allowed; 
-        } 
-        public Player Player { get; } 
-        public ICandy candy { get; } 
-        public bool Allowed { get; }
     }
     public class UnCuffEvent : EventArgs
     {

@@ -361,9 +361,6 @@ namespace Qurre.API
 		}
 		public void HideTag() => ClassManager.CmdRequestHideTag();
 		public void ShowTag() => ClassManager.CmdRequestShowTag(false);
-
-		public void SevereHands() => PlayerEffectsController.EnableEffect<CustomPlayerEffects.SeveredHands>(0, false);
-      
 		public string HiddenBadge => ServerRoles.HiddenBadge;
 		public bool BadgeHidden
 		{
