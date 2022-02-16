@@ -21,6 +21,7 @@ namespace Qurre.Events
         public static event AllEvents<DiesEvent> Dies;
         public static event AllEvents<InteractEvent> Interact;
         public static event AllEvents<InteractDoorEvent> InteractDoor;
+        public static event AllEvents<InteractScp330Event> InteractScp330;
         public static event AllEvents<InteractLiftEvent> InteractLift;
         public static event AllEvents<InteractLockerEvent> InteractLocker;
         public static event AllEvents<IcomSpeakEvent> IcomSpeak;
@@ -54,12 +55,19 @@ namespace Qurre.Events
         public static event AllEvents<TantrumWalkingEvent> TantrumWalking;
         public static event AllEvents<ChangeSpectateEvent> ChangeSpectate;
         public static event AllEvents<ZoomingEvent> Zooming;
+        public static event AllEvents<JumpEvent> Jump;
+        public static event AllEvents<EatingScp330Event> EatingScp330; 
         public static event AllEvents<CoinFlipEvent> CoinFlip;
         public static event AllEvents<HideBadgeEvent> HideBadge;
         public static event AllEvents<ShowBadgeEvent> ShowBadge;
+        public static event AllEvents<CandyPickupEvent> CandyPickup; 
         internal static void Invokes(BannedEvent ev) => Banned.invoke(ev);
+        internal static void Invokes(CandyPickupEvent ev) => CandyPickup.invoke(ev);
         internal static void Invokes(BanEvent ev) => Ban.invoke(ev);
+        internal static void Invokes(JumpEvent ev) => Jump.invoke(ev);
         internal static void Invokes(KickEvent ev) => Kick.invoke(ev);
+        internal static void Invokes(EatingScp330Event ev) => EatingScp330.invoke(ev); 
+        internal static void Invokes(InteractScp330Event ev) => InteractScp330.invoke(ev);
         internal static void Invokes(KickedEvent ev) => Kicked.invoke(ev);
         internal static void Invokes(GroupChangeEvent ev) => GroupChange.invoke(ev);
         internal static void Invokes(ItemChangeEvent ev) => ItemChange.invoke(ev);
