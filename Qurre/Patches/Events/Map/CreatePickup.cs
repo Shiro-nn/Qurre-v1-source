@@ -23,4 +23,4 @@ namespace Qurre.Patches.Events.Map
             }
         }
     }
-}
+} 
