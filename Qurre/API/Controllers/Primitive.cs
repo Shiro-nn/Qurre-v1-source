@@ -5,25 +5,6 @@ using System;
 using System.Linq;
 namespace Qurre.API.Controllers
 {
-    internal class PrimitiveUpdater : MonoBehaviour
-    {
-        private Primitive _primitive;
-        private float _nextCycle = 0f;
-        public const float interval = 0.5f;
-        private void Start()
-        {
-            _primitive = gameObject.GetPrimitive();
-            _nextCycle = Time.time;
-        }
-        private void Update()
-        {
-            if (Time.time < _nextCycle) return;
-            _nextCycle += interval;
-            _primitive.Base.NetworkScale = transform.localScale;
-            _primitive.Base.NetworkPosition = transform.position;
-            _primitive.Base.NetworkRotation = new LowPrecisionQuaternion(transform.rotation);
-        }
-    }
     public class Primitive
     {
         public Primitive(PrimitiveType type) : this(type, Vector3.zero) { }
@@ -48,7 +29,6 @@ namespace Qurre.API.Controllers
                 Base.NetworkPosition = Base.transform.position;
                 Base.NetworkRotation = new LowPrecisionQuaternion(Base.transform.rotation);
                 Collider = collider;
-                //Base.gameObject.AddComponent<PrimitiveUpdater>();
                 Map.Primitives.Add(this);
             }
             catch (Exception e)
