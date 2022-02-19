@@ -102,7 +102,7 @@ namespace Qurre.API.Controllers
         public RoomShape Shape { get; }
         private ZoneType zone = ZoneType.Unspecified;
         public int Id { get; }
-        public bool IsLightsOff => LightController && !LightController.IsEnabled();
+        public bool LightsDisabled => LightController && !LightController.enabled;
 #nullable enable
         public Tesla? Tesla => GameObject.GetComponentInChildren<TeslaGate>()?.GetTesla();
 #nullable restore

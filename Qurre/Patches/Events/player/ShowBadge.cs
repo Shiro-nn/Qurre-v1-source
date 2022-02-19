@@ -5,7 +5,7 @@ using Qurre.API.Events;
 using GameCore;
 namespace Qurre.Patches.Events.player
 {
-	[HarmonyPatch(typeof(CharacterClassManager), "UserCode_CmdRequestShowTag")]
+	[HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.UserCode_CmdRequestShowTag))]
 	internal static class ShowBadge
 	{
 		private static bool Prefix(CharacterClassManager __instance, bool global)
