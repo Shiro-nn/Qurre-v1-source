@@ -15,9 +15,9 @@ namespace Qurre.API.Controllers
         public string Speaker { get => script.Speaker; set => script.Speaker = value; }
         public float Exp { get => script.Exp; set => script.Exp = value; }
         public float Energy { get => script.Mana; set => script.Mana = value; }
-        public float LockdownDuration { get => script.LockdownDuration; set => script.LockdownDuration = value; }
         public float MaxEnergy { get => script.maxMana; set => script.NetworkmaxMana = value; }
-        public Camera Camera { get => Camera.Cameras.FirstOrDefault(x => x.Key == script.currentCamera).Value; set => script.RpcSwitchCamera(value.Id, false); }
+        public float LockdownDuration { get => script.LockdownDuration; set => script.LockdownDuration = value; }
+        public Camera Camera { get => Map.Cameras.FirstOrDefault(x => x.cmr == script.currentCamera); set => script.RpcSwitchCamera(value.Id, false); }
         public Camera079 Camera079 { get => script.currentCamera; set => script.RpcSwitchCamera(value.cameraId, false); }
         public static Camera079[] Cameras => Scp079PlayerScript.allCameras;
         public static IEnumerable<Scp079Interactable> Speakers => UnityEngine.Object.FindObjectsOfType<Scp079Interactable>().Where(x => x.type == Scp079Interactable.InteractableType.Speaker);

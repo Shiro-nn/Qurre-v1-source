@@ -5,18 +5,16 @@ using HarmonyLib;
 using Qurre.API;
 using Qurre.API.Events;
 using Interactables.Interobjects.DoorUtils;
-using NorthwoodLib.Pools;
 using GameCore;
 using UnityEngine;
 using Console = GameCore.Console;
-
 namespace Qurre.Patches.Events.SCPs.Scp079
 {
-    [HarmonyPatch(typeof(Scp079PlayerScript), "UserCode_CmdInteract")]
+	[HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.UserCode_CmdInteract))]
 	internal static class Interact
-    {
-        private static bool Prefix(Scp079PlayerScript __instance, Command079 command, string args, GameObject target)
-        {
+	{
+		private static bool Prefix(Scp079PlayerScript __instance, Command079 command, string args, GameObject target)
+		{
 			try
 			{
 				if (__instance is null || !__instance._interactRateLimit.CanExecute(true) || !__instance.iAm079)
@@ -184,7 +182,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 							Qurre.Events.Invoke.Scp079.Speaker(ev);
 
 							if (ev.Allowed)
-							    __instance.Speaker = string.Empty;
+								__instance.Speaker = string.Empty;
 
 							return false;
 						}
@@ -254,7 +252,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 
 											text3 = string.Concat(new object[]
 											{
-							                    text3,
+												text3,
 												keyValuePair.Value,
 												"x",
 												keyValuePair.Key.ToString().Substring(keyValuePair.Key.ToString().Length - 4),
@@ -278,7 +276,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 									{
 										str = transform.name + str;
 
-										if (transform.parent is  null)
+										if (transform.parent is null)
 										{
 											break;
 										}
@@ -353,10 +351,11 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 										Console.AddDebugLog("SCP079", "Tesla gate burst cannot be used, the gate is inactive.", global::MessageImportance.LessImportant, false);
 										return false;
 									}
-									if (!tesla.GetTesla().Allow079Interact)
+									var _t = tesla.GetTesla();
+									if (!_t.Allow079Interact)
 										return false;
 
-									tesla.GetTesla().Trigger(ev.Instant);
+									_t.Trigger(ev.Instant);
 								}
 								__instance.AddInteractionToHistory(tesla.gameObject, true);
 								__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
@@ -420,9 +419,9 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 								Console.AddDebugLog("SCP079", "Looking for doors to lock...", MessageImportance.LeastImportant, false);
 
 								var ev = new Scp079LockdownEvent(player,
-									__instance.CurrentRoom.GetRoom(), 
-									hashSet.Where(x => x is not null && x.TryGetComponent(out DoorVariant variant) 
-									&& variant is not null 
+									__instance.CurrentRoom.GetRoom(),
+									hashSet.Where(x => x is not null && x.TryGetComponent(out DoorVariant variant)
+									&& variant is not null
 									&& variant.GetDoor() is not null)
 									.Select(x => x.GetComponent<DoorVariant>().GetDoor()).ToList(),
 									manaFromLabel);
@@ -434,26 +433,26 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 
 								foreach (Scp079Interactable scp079Interactable in hashSet)
 								{
-                                    if (scp079Interactable is not null && scp079Interactable.TryGetComponent(out DoorVariant doorVariant3))
-                                    {
-                                        bool flag3 = doorVariant3.ActiveLocks == 0;
-                                        if (!flag3)
-                                        {
-                                            DoorLockMode mode2 = DoorLockUtils.GetMode((DoorLockReason)doorVariant3.ActiveLocks);
-                                            flag3 = (mode2.HasFlagFast(DoorLockMode.CanClose) || mode2.HasFlagFast(DoorLockMode.ScpOverride));
-                                        }
-                                        if (flag3)
-                                        {
+									if (scp079Interactable is not null && scp079Interactable.TryGetComponent(out DoorVariant doorVariant3))
+									{
+										bool flag3 = doorVariant3.ActiveLocks == 0;
+										if (!flag3)
+										{
+											DoorLockMode mode2 = DoorLockUtils.GetMode((DoorLockReason)doorVariant3.ActiveLocks);
+											flag3 = (mode2.HasFlagFast(DoorLockMode.CanClose) || mode2.HasFlagFast(DoorLockMode.ScpOverride));
+										}
+										if (flag3)
+										{
 											if (doorVariant3.TargetState)
-                                            {
-                                                doorVariant3.NetworkTargetState = false;
-                                            }
-                                            doorVariant3.ServerChangeLock(DoorLockReason.Lockdown079, true);
-                                            doorVariant3.UnlockLater(__instance.LockdownDuration, DoorLockReason.Lockdown079);
+											{
+												doorVariant3.NetworkTargetState = false;
+											}
+											doorVariant3.ServerChangeLock(DoorLockReason.Lockdown079, true);
+											doorVariant3.UnlockLater(__instance.LockdownDuration, DoorLockReason.Lockdown079);
 											hashSet2.Add(doorVariant3);
 										}
 									}
-                                }
+								}
 
 								foreach (FlickerableLightController flickerableLightController in __instance.CurrentRoom.GetComponentsInChildren<FlickerableLightController>())
 								{
@@ -489,6 +488,6 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 				Log.Error($"umm, error in patching SCPs -> SCP079 [Interact]:\n{e}\n{e.StackTrace}");
 				return true;
 			}
-        }
-    }
+		}
+	}
 }

@@ -1,4 +1,5 @@
-﻿using Interactables.Interobjects.DoorUtils;
+﻿using CustomPlayerEffects;
+using Interactables.Interobjects.DoorUtils;
 using InventorySystem.Items.Firearms.Attachments;
 using MapGeneration;
 using MapGeneration.Distributors;
@@ -16,6 +17,7 @@ using UnityEngine;
 using _lift = Qurre.API.Controllers.Lift;
 using _locker = Qurre.API.Controllers.Locker;
 using _workStation = Qurre.API.Controllers.WorkStation;
+using Camera = Qurre.API.Controllers.Camera;
 namespace Qurre.API
 {
 	public static class Extensions
@@ -34,9 +36,9 @@ namespace Qurre.API
 		public static Room GetRoom(this RoomIdentifier identifier) => Map.Rooms.FirstOrDefault(x => x.Identifier == identifier);
 		public static Door GetDoor(this DoorType type) => Map.Doors.FirstOrDefault(x => x.Type == type);
 		public static Door GetDoor(this GameObject gameObject) => Map.Doors.FirstOrDefault(x => x.GameObject == gameObject);
-		public static Controllers.Camera GetCamera(this Camera079 cam) => Map.Cameras.FirstOrDefault(x => x.GameObject == cam.gameObject && x.Id == cam.cameraId);
-		public static Controllers.Camera GetCamera(this GameObject obj) => Map.Cameras.FirstOrDefault(x => x.GameObject == obj);
-		public static Controllers.Camera GetCamera(this ushort id) => Map.Cameras.FirstOrDefault(x => x.Id == id);
+		public static Camera GetCamera(this Camera079 cam) => Map.Cameras.FirstOrDefault(x => x.GameObject == cam.gameObject && x.Id == cam.cameraId);
+		public static Camera GetCamera(this GameObject obj) => Map.Cameras.FirstOrDefault(x => x.GameObject == obj);
+		public static Camera GetCamera(this ushort id) => Map.Cameras.FirstOrDefault(x => x.Id == id);
 		public static _lift GetLift(this LiftType type) => Map.Lifts.FirstOrDefault(x => x.Type == type);
 		public static Door GetDoor(this DoorVariant door) => Map.Doors.FirstOrDefault(x => x.GameObject == door.gameObject);
 		public static Generator GetGenerator(this GameObject gameObject) => Map.Generators.FirstOrDefault(x => x.GameObject == gameObject);
@@ -206,6 +208,76 @@ namespace Qurre.API
 				ItemType.Ammo12gauge => AmmoType.Ammo12Gauge,
 				ItemType.Ammo44cal => AmmoType.Ammo44Cal,
 				_ => AmmoType.None,
+			};
+		}
+		public static Type Type(this EffectType effect)
+		{
+			return effect switch
+			{
+				EffectType.Amnesia => typeof(Amnesia),
+				EffectType.Asphyxiated => typeof(Asphyxiated),
+				EffectType.Bleeding => typeof(Bleeding),
+				EffectType.Blinded => typeof(Blinded),
+				EffectType.BodyshotReduction => typeof(BodyshotReduction),
+				EffectType.Burned => typeof(Burned),
+				EffectType.Concussed => typeof(Concussed),
+				EffectType.Corroding => typeof(Corroding),
+				EffectType.DamageReduction => typeof(DamageReduction),
+				EffectType.Deafened => typeof(Deafened),
+				EffectType.Decontaminating => typeof(Decontaminating),
+				EffectType.Disabled => typeof(Disabled),
+				EffectType.Ensnared => typeof(Ensnared),
+				EffectType.Exhausted => typeof(Exhausted),
+				EffectType.Flashed => typeof(Flashed),
+				EffectType.Hemorrhage => typeof(Hemorrhage),
+				EffectType.Hypothermia => typeof(Hypothermia),
+				EffectType.Invigorated => typeof(Invigorated),
+				EffectType.Invisible => typeof(Invisible),
+				EffectType.MovementBoost => typeof(MovementBoost),
+				EffectType.Poisoned => typeof(Poisoned),
+				EffectType.RainbowTaste => typeof(RainbowTaste),
+				EffectType.Scp207 => typeof(Scp207),
+				EffectType.SeveredHands => typeof(SeveredHands),
+				EffectType.SinkHole => typeof(SinkHole),
+				EffectType.Stained => typeof(Stained),
+				EffectType.Visuals939 => typeof(Visuals939),
+				EffectType.Vitality => typeof(Vitality),
+				_ => throw new InvalidOperationException("Invalid effect enum provided"),
+			};
+		}
+		public static EffectType GetEffectType(this PlayerEffect ef)
+		{
+			return ef switch
+			{
+				Amnesia _ => EffectType.Amnesia,
+				Asphyxiated _ => EffectType.Asphyxiated,
+				Bleeding _ => EffectType.Bleeding,
+				Blinded _ => EffectType.Blinded,
+				BodyshotReduction _ => EffectType.BodyshotReduction,
+				Burned _ => EffectType.Burned,
+				Concussed _ => EffectType.Concussed,
+				Corroding _ => EffectType.Corroding,
+				DamageReduction _ => EffectType.DamageReduction,
+				Deafened _ => EffectType.Deafened,
+				Decontaminating _ => EffectType.Decontaminating,
+				Disabled _ => EffectType.Disabled,
+				Ensnared _ => EffectType.Ensnared,
+				Exhausted _ => EffectType.Exhausted,
+				Flashed _ => EffectType.Flashed,
+				Hemorrhage _ => EffectType.Hemorrhage,
+				Hypothermia _ => EffectType.Hypothermia,
+				Invigorated _ => EffectType.Invigorated,
+				Invisible _ => EffectType.Invisible,
+				MovementBoost _ => EffectType.MovementBoost,
+				Poisoned _ => EffectType.Poisoned,
+				RainbowTaste _ => EffectType.RainbowTaste,
+				Scp207 _ => EffectType.Scp207,
+				SeveredHands _ => EffectType.SeveredHands,
+				SinkHole _ => EffectType.SinkHole,
+				Stained _ => EffectType.Stained,
+				Visuals939 _ => EffectType.Visuals939,
+				Vitality _ => EffectType.Vitality,
+				_ => EffectType.None,
 			};
 		}
 		public static System.Random Random { get; } = new System.Random();

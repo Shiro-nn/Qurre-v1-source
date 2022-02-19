@@ -8,8 +8,8 @@ namespace Qurre.Events
     {
         public static event AllEvents<StartRecallEvent> StartRecall;
         public static event AllEvents<FinishRecallEvent> FinishRecall;
-        internal static void Invokes(StartRecallEvent ev) => StartRecall?.invoke(ev);
-        internal static void Invokes(FinishRecallEvent ev) => FinishRecall?.invoke(ev);
+        internal static void Invokes(StartRecallEvent ev) => StartRecall?.CustomInvoke(ev);
+        internal static void Invokes(FinishRecallEvent ev) => FinishRecall?.CustomInvoke(ev);
     }
     #endregion
     #region Scp079
@@ -26,16 +26,16 @@ namespace Qurre.Events
         public static event AllEvents<Scp079InteractLiftEvent> InteractLift;
         public static event AllEvents<Scp079InteractTeslaEvent> InteractTesla;
         public static event AllEvents<Scp079LockdownEvent> Lockdown;
-        internal static void Invokes(GeneratorActivateEvent ev) => GeneratorActivate?.invoke(ev);
-        internal static void Invokes(GetEXPEvent ev) => GetEXP?.invoke(ev);
-        internal static void Invokes(GetLVLEvent ev) => GetLVL?.invoke(ev);
-        internal static void Invokes(ChangeCameraEvent ev) => ChangeCamera?.invoke(ev);
-        internal static void Invokes(Scp079InteractDoorEvent ev) => InteractDoor?.invoke(ev);
-        internal static void Invokes(Scp079LockDoorEvent ev) => LockDoor?.invoke(ev);
-        internal static void Invokes(Scp079SpeakerEvent ev) => Speaker?.invoke(ev);
-        internal static void Invokes(Scp079ElevatorTeleportEvent ev) => ElevatorTeleport?.invoke(ev);
-        internal static void Invokes(Scp079InteractLiftEvent ev) => InteractLift?.invoke(ev);
-        internal static void Invokes(Scp079InteractTeslaEvent ev) => InteractTesla?.invoke(ev);
+        internal static void Invokes(GeneratorActivateEvent ev) => GeneratorActivate?.CustomInvoke(ev);
+        internal static void Invokes(GetEXPEvent ev) => GetEXP?.CustomInvoke(ev);
+        internal static void Invokes(GetLVLEvent ev) => GetLVL?.CustomInvoke(ev);
+        internal static void Invokes(ChangeCameraEvent ev) => ChangeCamera?.CustomInvoke(ev);
+        internal static void Invokes(Scp079InteractDoorEvent ev) => InteractDoor?.CustomInvoke(ev);
+        internal static void Invokes(Scp079LockDoorEvent ev) => LockDoor?.CustomInvoke(ev);
+        internal static void Invokes(Scp079SpeakerEvent ev) => Speaker?.CustomInvoke(ev);
+        internal static void Invokes(Scp079ElevatorTeleportEvent ev) => ElevatorTeleport?.CustomInvoke(ev);
+        internal static void Invokes(Scp079InteractLiftEvent ev) => InteractLift?.CustomInvoke(ev);
+        internal static void Invokes(Scp079InteractTeslaEvent ev) => InteractTesla?.CustomInvoke(ev);
         internal static void Invokes(Scp079LockdownEvent ev) => Lockdown?.Invoke(ev);
     }
     #endregion
@@ -49,13 +49,13 @@ namespace Qurre.Events
         public static event AllEvents<PreWindupEvent> PreWindup;
         public static event AllEvents<EndPryGateEvent> EndPryGate;
         public static event AllEvents<StartPryGateEvent> StartPryGate;
-        internal static void Invokes(StartPryGateEvent ev) => StartPryGate?.invoke(ev);
-        internal static void Invokes(EndPryGateEvent ev) => EndPryGate?.invoke(ev);
-        internal static void Invokes(PreWindupEvent ev) => PreWindup?.invoke(ev);
-        internal static void Invokes(EnrageEvent ev) => Enrage?.invoke(ev);
-        internal static void Invokes(WindupEvent ev) => Windup?.invoke(ev);
-        internal static void Invokes(CalmDownEvent ev) => CalmDown?.invoke(ev);
-        internal static void Invokes(AddTargetEvent ev) => AddTarget?.invoke(ev);
+        internal static void Invokes(StartPryGateEvent ev) => StartPryGate?.CustomInvoke(ev);
+        internal static void Invokes(EndPryGateEvent ev) => EndPryGate?.CustomInvoke(ev);
+        internal static void Invokes(PreWindupEvent ev) => PreWindup?.CustomInvoke(ev);
+        internal static void Invokes(EnrageEvent ev) => Enrage?.CustomInvoke(ev);
+        internal static void Invokes(WindupEvent ev) => Windup?.CustomInvoke(ev);
+        internal static void Invokes(CalmDownEvent ev) => CalmDown?.CustomInvoke(ev);
+        internal static void Invokes(AddTargetEvent ev) => AddTarget?.CustomInvoke(ev);
     }
     #endregion
     #region Scp106
@@ -68,13 +68,13 @@ namespace Qurre.Events
         public static event AllEvents<PocketEnterEvent> PocketEnter;
         public static event AllEvents<PocketEscapeEvent> PocketEscape;
         public static event AllEvents<PocketFailEscapeEvent> PocketFailEscape;
-        internal static void Invokes(PortalUsingEvent ev) => PortalUsing?.invoke(ev);
-        internal static void Invokes(PortalCreateEvent ev) => PortalCreate?.invoke(ev);
-        internal static void Invokes(ContainEvent ev) => Contain?.invoke(ev);
-        internal static void Invokes(FemurBreakerEnterEvent ev) => FemurBreakerEnter?.invoke(ev);
-        internal static void Invokes(PocketEnterEvent ev) => PocketEnter?.invoke(ev);
-        internal static void Invokes(PocketEscapeEvent ev) => PocketEscape?.invoke(ev);
-        internal static void Invokes(PocketFailEscapeEvent ev) => PocketFailEscape?.invoke(ev);
+        internal static void Invokes(PortalUsingEvent ev) => PortalUsing?.CustomInvoke(ev);
+        internal static void Invokes(PortalCreateEvent ev) => PortalCreate?.CustomInvoke(ev);
+        internal static void Invokes(ContainEvent ev) => Contain?.CustomInvoke(ev);
+        internal static void Invokes(FemurBreakerEnterEvent ev) => FemurBreakerEnter?.CustomInvoke(ev);
+        internal static void Invokes(PocketEnterEvent ev) => PocketEnter?.CustomInvoke(ev);
+        internal static void Invokes(PocketEscapeEvent ev) => PocketEscape?.CustomInvoke(ev);
+        internal static void Invokes(PocketFailEscapeEvent ev) => PocketFailEscape?.CustomInvoke(ev);
     }
     #endregion
     #region Scp173
@@ -82,8 +82,8 @@ namespace Qurre.Events
     {
         public static event AllEvents<BlinkEvent> Blink;
         public static event AllEvents<TantrumPlaceEvent> TantrumPlace;
-        internal static void Invokes(BlinkEvent ev) => Blink?.invoke(ev);
-        internal static void Invokes(TantrumPlaceEvent ev) => TantrumPlace?.invoke(ev);
+        internal static void Invokes(BlinkEvent ev) => Blink?.CustomInvoke(ev);
+        internal static void Invokes(TantrumPlaceEvent ev) => TantrumPlace?.CustomInvoke(ev);
     }
     #endregion
     #region Scp914
@@ -96,13 +96,13 @@ namespace Qurre.Events
         public static event AllEvents<UpgradePickupEvent> UpgradePickup;
         public static event AllEvents<UpgradedItemInventoryEvent> UpgradedItemInventory;
         public static event AllEvents<UpgradedItemPickupEvent> UpgradedItemPickup;
-        internal static void Invokes(ActivatingEvent ev) => Activating?.invoke(ev);
-        internal static void Invokes(KnobChangeEvent ev) => KnobChange?.invoke(ev);
-        internal static void Invokes(UpgradeEvent ev) => Upgrade?.invoke(ev);
-        internal static void Invokes(UpgradePlayerEvent ev) => UpgradePlayer?.invoke(ev);
-        internal static void Invokes(UpgradePickupEvent ev) => UpgradePickup?.invoke(ev);
-        internal static void Invokes(UpgradedItemInventoryEvent ev) => UpgradedItemInventory?.invoke(ev);
-        internal static void Invokes(UpgradedItemPickupEvent ev) => UpgradedItemPickup?.invoke(ev);
+        internal static void Invokes(ActivatingEvent ev) => Activating?.CustomInvoke(ev);
+        internal static void Invokes(KnobChangeEvent ev) => KnobChange?.CustomInvoke(ev);
+        internal static void Invokes(UpgradeEvent ev) => Upgrade?.CustomInvoke(ev);
+        internal static void Invokes(UpgradePlayerEvent ev) => UpgradePlayer?.CustomInvoke(ev);
+        internal static void Invokes(UpgradePickupEvent ev) => UpgradePickup?.CustomInvoke(ev);
+        internal static void Invokes(UpgradedItemInventoryEvent ev) => UpgradedItemInventory?.CustomInvoke(ev);
+        internal static void Invokes(UpgradedItemPickupEvent ev) => UpgradedItemPickup?.CustomInvoke(ev);
     }
     #endregion
 }

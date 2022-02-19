@@ -46,9 +46,14 @@ namespace Qurre.API.Modules
                 }
             }
             string text = File.ReadAllText(path, Encoding.UTF8);
-            var _ = (IConfig)Deserializer.Deserialize(text, cfg.GetType());
+            IConfig _ = DeSer();
             if (_ != null) cfg.CopyProperties(_);
             Save(cfg);
+            IConfig DeSer()
+            {
+                try { return (IConfig)Deserializer.Deserialize(text.Replace("\\n", "\n"), cfg.GetType()); }
+                catch { return (IConfig)Deserializer.Deserialize(text, cfg.GetType()); }
+            }
         }
         internal static void Save(IConfig cfg)
         {

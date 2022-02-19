@@ -3,6 +3,9 @@ using UnityEngine.SceneManagement;
 using MapGeneration;
 using UnityEngine;
 using System.Collections.Generic;
+using Qurre.API.Objects;
+using CustomPlayerEffects;
+
 namespace Qurre.Events.Modules
 {
     internal static class Etc
@@ -38,17 +41,17 @@ namespace Qurre.Events.Modules
             API.Round.ActiveGenerators = 0;
             if (Loader.AllUnits)
             {
-                API.Round.AddUnit(API.Objects.TeamUnitType.ClassD, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.ChaosInsurgency, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.NineTailedFox, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.Scientist, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.Scp, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.None, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.ClassD, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.ChaosInsurgency, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.NineTailedFox, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.Scientist, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.Scp, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.Tutorial, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.None, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
             }
             else if (Loader.OnlyTutorialUnit)
             {
-                API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#31d400>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.Tutorial, $"<color=#31d400>Qurre v{PluginManager.Version}</color>");
             }
         }
         private static void FixOneSerial()

@@ -6,7 +6,7 @@ using Qurre.API;
 namespace Qurre.Patches.Modules
 {
     [HarmonyPatch(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.GenerateNew))]
-    internal static class UnitsGenerate
+    internal static class UnitName
     {
         private static bool Prefix(NineTailedFoxNamingRule __instance, SpawnableTeamType type, out string regular)
         {

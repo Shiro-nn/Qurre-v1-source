@@ -3,7 +3,7 @@ namespace Qurre.Events.Modules
 {
     public static class Event
     {
-        public static void invoke<T>(this Main.AllEvents<T> ev, T arg)
+        public static void CustomInvoke<T>(this Main.AllEvents<T> ev, T arg)
             where T : EventArgs
         {
             if (ev == null)
@@ -22,7 +22,7 @@ namespace Qurre.Events.Modules
                 }
             }
         }
-        public static void invoke(this Main.AllEvents ev)
+        public static void CustomInvoke(this Main.AllEvents ev)
         {
             if (ev == null)
                 return;

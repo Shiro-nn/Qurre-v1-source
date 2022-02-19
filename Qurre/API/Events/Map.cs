@@ -14,10 +14,11 @@ namespace Qurre.API.Events
     public class LczAnnounceEvent : EventArgs
     {
         private int id;
-        public LczAnnounceEvent(int announcementId, bool isGlobal)
+        public LczAnnounceEvent(int announcementId, bool isGlobal, bool allowed = true)
         {
             Id = announcementId;
             IsGlobal = isGlobal;
+            Allowed = allowed;
         }
         public int Id
         {
@@ -25,6 +26,7 @@ namespace Qurre.API.Events
             set => id = Mathf.Clamp(value, 0, 6);
         }
         public bool IsGlobal { get; set; }
+        public bool Allowed { get; set; }
     }
     public class MTFAnnouncementEvent : EventArgs
     {

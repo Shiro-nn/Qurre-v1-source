@@ -56,5 +56,9 @@ namespace Qurre.Events.Invoke
         public static void CoinFlip(CoinFlipEvent ev) => Invokes(ev);
         public static void HideBadge(HideBadgeEvent ev) => Invokes(ev);
         public static void ShowBadge(ShowBadgeEvent ev) => Invokes(ev);
+        public static void InteractScp330(InteractScp330Event ev) => Invokes(ev);
+        public static void PickupCandy(PickupCandyEvent ev) => Invokes(ev);
+        public static void EatingScp330(EatingScp330Event ev) => Invokes(ev);
+        public static void Jump(JumpEvent ev) => Invokes(ev);
     }
 }

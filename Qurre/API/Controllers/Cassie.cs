@@ -1,9 +1,7 @@
 ﻿using Respawning;
-using Subtitles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Utils.Networking;
 namespace Qurre.API.Controllers
 {
     public class Cassie
@@ -14,35 +12,23 @@ namespace Qurre.API.Controllers
             Hold = makeHold;
             Noise = makeNoise;
         }
-        public Cassie(string message, bool makeHold, bool makeNoise, List<SubtitlePart> subtitles)
-        {
-            Message = message;
-            Hold = makeHold;
-            Noise = makeNoise;
-            if (subtitles is not null && subtitles != default) Subtitles = subtitles;
-        }
         public string Message = "";
         public bool Hold = false;
         public bool Noise = false;
-        public readonly List<SubtitlePart> Subtitles = new();
         public bool Active { get; private set; }
         public void Send()
         {
             if (Active) return;
             Active = true;
             RespawnEffectsController.PlayCassieAnnouncement(Message, Hold, Noise);
-            if (Subtitles.Count == 0) return;
-            new SubtitleMessage(Subtitles.ToArray()).SendToAuthenticated();
         }
         internal static void End()
         {
             if (Map.Cassies.FirstOrDefault() != null) Map.Cassies.FirstOrDefault().Send();
         }
         public static bool Lock { get; set; }
-        public static void Send(string msg, bool makeHold = false, bool makeNoise = false, bool instant = false, List<SubtitlePart> subtitles = null) =>
-            Map.Cassies.Add(new Cassie(msg, makeHold, makeNoise, subtitles), instant);
-        public static void Send(string msg, List<SubtitlePart> subtitles, bool makeHold = false, bool makeNoise = false, bool instant = false) =>
-            Map.Cassies.Add(new Cassie(msg, makeHold, makeNoise, subtitles), instant);
+        public static void Send(string msg, bool makeHold = false, bool makeNoise = false, bool instant = false) =>
+            Map.Cassies.Add(new Cassie(msg, makeHold, makeNoise), instant);
     }
     public class CassieList
     {
