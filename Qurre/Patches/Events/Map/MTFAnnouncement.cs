@@ -12,10 +12,18 @@ namespace Qurre.Patches.Events.Map
         {
             try
             {
-                if (regular == null) return false;
+                if (regular is null) return false;
+                if (regular is "") return false;
                 int scpsLeft = Player.List.Where(x => x.Team == Team.SCP && x.Role != RoleType.Scp0492).Count();
-                string[] unitInformations = regular.Split('-');
-                var ev = new MTFAnnouncementEvent(scpsLeft, unitInformations[0], int.Parse(unitInformations[1]));
+                string[] inf = regular.Split('-');
+                string unit = "";
+                int num = 0;
+                if(inf.Length >= 2)
+                {
+                    unit = inf[0];
+                    num = int.Parse(inf[1]);
+                }
+                var ev = new MTFAnnouncementEvent(scpsLeft, unit, num);
                 Qurre.Events.Invoke.Map.MTFAnnouncement(ev);
                 regular = $"{ev.UnitName}-{ev.UnitNumber}";
                 return ev.Allowed;

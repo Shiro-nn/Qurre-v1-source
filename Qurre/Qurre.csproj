@@ -120,6 +120,7 @@
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
     <Compile Include="API\Controllers\Bot.cs" />
+    <Compile Include="API\Controllers\Items\Scp330.cs" />
     <Compile Include="API\Controllers\Items\GrenadeFlash.cs" />
     <Compile Include="API\Controllers\Items\GrenadeFrag.cs" />
     <Compile Include="API\Controllers\Sinkhole.cs" />
@@ -257,6 +258,7 @@
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
     <Compile Include="Patches\Events\player\SinkholeWalking.cs" />
     <Compile Include="Patches\Events\SCPs\Scp079\ChangeCamera.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\Recontain.cs" />
     <Compile Include="Patches\Events\SCPs\Scp079\Interact.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\PryGate.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\PreWindup.cs" />

@@ -92,15 +92,15 @@ namespace Qurre.API
             { SpawnableTeamType.Tutorial, new() },
             { SpawnableTeamType.None, new() }
         };
-        private static int Umc = 20;
+        private static int _umc = 20;
         public static int UnitMaxCode
         {
-            get => Umc;
+            get => _umc;
             set
             {
                 if (value < 0) value = 0;
                 else if (value > 99) value = 99;
-                Umc = value;
+                _umc = value;
             }
         }
         public static void Restart() => RoundRestart.InitiateRoundRestart();

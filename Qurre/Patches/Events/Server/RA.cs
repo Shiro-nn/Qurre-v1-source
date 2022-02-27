@@ -18,7 +18,7 @@ namespace Qurre.Patches.Events.Server
 				var ev = new SendingRAEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Server.Host : (API.Player.Get(sender.SenderId) ?? API.Server.Host), q, name, args);
 				IdleMode.PreauthStopwatch.Restart();
 				IdleMode.SetIdleMode(false);
-				if (q == "REQUEST_DATA PLAYER_LIST SILENT")
+				if (q == "$0 1")
 				{
 					var _ev = new RaRequestPlayerListEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Server.Host : (API.Player.Get(sender.SenderId) ?? API.Server.Host), q, name, args);
 					Qurre.Events.Invoke.Server.RaRequestPlayerList(_ev);

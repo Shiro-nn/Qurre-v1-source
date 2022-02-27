@@ -4,8 +4,7 @@ using MapGeneration;
 using UnityEngine;
 using System.Collections.Generic;
 using Qurre.API.Objects;
-using CustomPlayerEffects;
-
+using System.Linq;
 namespace Qurre.Events.Modules
 {
     internal static class Etc
@@ -115,8 +114,20 @@ namespace Qurre.Events.Modules
                     return;
                 }
                 string text16 = ev.Command.Substring(ev.Name.Length + ev.Args[0].Length + 2);
-                API.Map.Broadcast(text16, System.Convert.ToUInt16(ev.Args[0])); ev.Success = true;
+                API.Map.Broadcast(text16, System.Convert.ToUInt16(ev.Args[0]));
+                ev.Success = true;
                 ev.ReplyMessage = "Broadcast sent.";
+            }
+            else if (ev.Name.StartsWith("@") && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.AdminChat))
+            {
+                ev.Allowed = false;
+                var list = API.Player.List.Where(x => PermissionsHandler.IsPermitted(x.Sender.Permissions, PlayerPermissions.AdminChat));
+                string content = $"<color=#ffa500>[Admin Chat]</color> <color=#008000>{ev.Name.Substring(1)} ~ {ev.CommandSender.Nickname}</color>";
+                foreach (var pl in list)
+                {
+                    pl.Broadcast(content, 5, true);
+                    pl.SendConsoleMessage(content, "green");
+                }
             }
             else if (ev.Name == "pbc" && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
             {
