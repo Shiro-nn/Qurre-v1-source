@@ -118,11 +118,11 @@ namespace Qurre.Events.Modules
                 ev.Success = true;
                 ev.ReplyMessage = "Broadcast sent.";
             }
-            else if (ev.Name.StartsWith("@") && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.AdminChat))
+            else if (ev.Command.StartsWith("@") && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.AdminChat))
             {
                 ev.Allowed = false;
                 var list = API.Player.List.Where(x => PermissionsHandler.IsPermitted(x.Sender.Permissions, PlayerPermissions.AdminChat));
-                string content = $"<color=#ffa500>[Admin Chat]</color> <color=#008000>{ev.Name.Substring(1)} ~ {ev.CommandSender.Nickname}</color>";
+                string content = $"<color=#ffa500>[Admin Chat]</color> <color=#008000>{ev.Command.Substring(1)} ~ {ev.CommandSender.Nickname}</color>";
                 foreach (var pl in list)
                 {
                     pl.Broadcast(content, 5, true);
