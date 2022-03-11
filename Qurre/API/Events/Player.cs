@@ -3,7 +3,11 @@ using InventorySystem.Items.Firearms.BasicMessages;
 using InventorySystem.Items.MicroHID;
 using InventorySystem.Items.Radio;
 using InventorySystem.Items.ThrowableProjectiles;
+<<<<<<< HEAD
 using InventorySystem.Items.Usables.Scp330;
+=======
+using InventorySystem.Items.Usables.Scp330;
+>>>>>>> 5bcab29aaf87b64d74a77fd4999a3f7a38363a22
 using PlayerStatsSystem;
 using Qurre.API.Controllers;
 using Qurre.API.Controllers.Items;
@@ -779,6 +783,23 @@ namespace Qurre.API.Events
         public string Badge { get; set; }
         public bool Allowed { get; set; }
     }
+<<<<<<< HEAD
+    public class ShowBadgeEvent : EventArgs
+    {
+        public ShowBadgeEvent(Player player, string badge, bool global, bool allowed = true)
+        {
+            Player = player;
+            Global = global;
+            Badge = badge;
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public bool Global { get; }
+        public string Badge { get; set; }
+        public bool Allowed { get; set; }
+    }
+=======
+>>>>>>> 5bcab29aaf87b64d74a77fd4999a3f7a38363a22
     public class HideBadgeEvent : EventArgs
     {
         public HideBadgeEvent(Player player, string badge, bool global, bool allowed = true)
@@ -792,7 +813,11 @@ namespace Qurre.API.Events
         public bool Global { get; }
         public string Badge { get; set; }
         public bool Allowed { get; set; }
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> 5bcab29aaf87b64d74a77fd4999a3f7a38363a22
     public class InteractScp330Event : EventArgs
     {
         public InteractScp330Event(Player player, bool allowed = true)
@@ -802,25 +827,39 @@ namespace Qurre.API.Events
         }
         public Player Player { get; }
         public bool Allowed { get; set; }
+<<<<<<< HEAD
     }
+=======
+    }
+>>>>>>> 5bcab29aaf87b64d74a77fd4999a3f7a38363a22
     public class EatingScp330Event : EventArgs
     {
         public EatingScp330Event(Player player, CandyKindID candy, bool allowed = true)
         {
             Player = player;
             Candy = candy;
+<<<<<<< HEAD
             Allowed = allowed;
         }
         public Player Player { get; }
         public CandyKindID Candy { get; set; }
         public bool Allowed { get; set; }
     }
+=======
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public CandyKindID Candy { get; set; }
+        public bool Allowed { get; set; }
+    }
+>>>>>>> 5bcab29aaf87b64d74a77fd4999a3f7a38363a22
     public class PickupCandyEvent : EventArgs
     {
         public PickupCandyEvent(Player player, List<CandyKindID> candy, bool allowed = true)
         {
             Player = player;
             Candy = candy;
+<<<<<<< HEAD
             Allowed = allowed;
         }
         public Player Player { get; }
@@ -829,14 +868,33 @@ namespace Qurre.API.Events
     }
     public class JumpEvent : EventArgs
     {
+=======
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public List<CandyKindID> Candy { get; set; }
+        public bool Allowed { get; set; }
+    }
+    public class JumpEvent : EventArgs
+    {
+>>>>>>> 5bcab29aaf87b64d74a77fd4999a3f7a38363a22
         public JumpEvent(Player player, Vector3 position, bool allowed = true)
         {
             Player = player;
             Position = position;
+<<<<<<< HEAD
             Allowed = allowed;
         }
         public Player Player { get; }
         public Vector3 Position { get; set; }
         public bool Allowed { get; set; }
     }
+=======
+            Allowed = allowed;
+        }
+        public Player Player { get; }
+        public Vector3 Position { get; set; }
+        public bool Allowed { get; set; }
+    }
+>>>>>>> 5bcab29aaf87b64d74a77fd4999a3f7a38363a22
 }
