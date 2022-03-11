@@ -614,7 +614,7 @@ namespace Qurre.API
 			Connection.Send(msg);
 			NetworkWriterPool.Recycle(writer);
 		}
-		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetPlayersClass(newRole, GameObject, reason, lite);
+		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector2 newRotation = default, string deathReason = "")
 		{
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, new CustomReasonDamageHandler(deathReason), this);
@@ -848,12 +848,8 @@ namespace Qurre.API
 		}
 		public void ChangeEffectIntensity<T>(byte intensity) where T : PlayerEffect => PlayerEffectsController.ChangeEffectIntensity<T>(intensity);
 		public void ChangeEffectIntensity(string effect, byte intensity, float duration = 0) => PlayerEffectsController.ChangeByString(effect, intensity, duration);
-		public void ShowHint(string text, float duration = 1f, bool blink = false)
-        {
-			if (blink) HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
-			else HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, null, duration));
-		}
-	
+		public void ShowHint(string text, float duration = 1f) =>
+			HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
 		public void BodyDelete()
 		{
 			foreach (var doll in Map.Ragdolls.Where(x => x.Owner == this)) doll.Destroy();

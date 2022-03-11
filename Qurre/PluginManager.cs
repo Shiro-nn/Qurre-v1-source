@@ -12,11 +12,7 @@ namespace Qurre
 	public static class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new();
-<<<<<<< HEAD
-		public static Version Version { get; } = new Version(1, 12, 3);
-=======
 		public static Version Version { get; } = new Version(1, 12, 2);
->>>>>>> 5bcab29aaf87b64d74a77fd4999a3f7a38363a22
 		//private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
