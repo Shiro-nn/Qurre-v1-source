@@ -1,9 +1,6 @@
 ﻿using HarmonyLib;
 using Qurre.API.Events;
-using Subtitles;
 using System;
-using Utils.Networking;
-
 namespace Qurre.Patches.Events.Alpha
 {
     [HarmonyPatch(typeof(AlphaWarheadController), nameof(AlphaWarheadController.StartDetonation))]
@@ -24,18 +21,6 @@ namespace Qurre.Patches.Events.Alpha
                     var ev = new AlphaStartEvent(API.Server.Host);
                     Qurre.Events.Invoke.Alpha.Starting(ev);
                     if (!ev.Allowed) return false;
-                    if (!instant)
-                    {
-                        bool flag = AlphaWarheadController._resumeScenario < 0;
-                        NetworkUtils.SendToAuthenticated(new SubtitleMessage(new SubtitlePart[1]
-                        {
-                        new SubtitlePart(flag ? SubtitleType.AlphaWarheadEngage : SubtitleType.AlphaWarheadResumed, new string[1]
-                        {
-                            (flag ? __instance.scenarios_start[AlphaWarheadController._startScenario].tMinusTime :
-                            __instance.scenarios_resume[AlphaWarheadController._resumeScenario].tMinusTime).ToString()
-                        })
-                        }));
-                    }
                     __instance.NetworkinProgress = true;
                 }
                 return false;

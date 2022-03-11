@@ -1,5 +1,6 @@
 ﻿using Qurre.API.Addons;
 using System.IO;
+using System.Text;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using YamlDotNet.Serialization.NodeDeserializers;
@@ -23,7 +24,7 @@ namespace Qurre.API.Modules
             .Build();
         internal static void Destroy(IConfig cfg)
         {
-            var path = Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}.yaml");
+            var path = Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}-{Server.Port}.yaml");
             if (File.Exists(path)) File.Delete(path);
         }
         internal static void Load(IConfig cfg)
@@ -40,21 +41,26 @@ namespace Qurre.API.Modules
                 var staticPacth = Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}.yaml");
                 if (File.Exists(staticPacth))
                 {
-                    string staticText = File.ReadAllText(staticPacth);
-                    File.WriteAllText(path, staticText);
+                    string staticText = File.ReadAllText(staticPacth, Encoding.UTF8);
+                    File.WriteAllText(path, staticText, Encoding.UTF8);
                 }
             }
-            string text = File.ReadAllText(path);
-            var _ = (IConfig)Deserializer.Deserialize(text, cfg.GetType());
+            string text = File.ReadAllText(path, Encoding.UTF8);
+            IConfig _ = DeSer();
             if (_ != null) cfg.CopyProperties(_);
             Save(cfg);
+            IConfig DeSer()
+            {
+                try { return (IConfig)Deserializer.Deserialize(text.Replace("\\n", "\n"), cfg.GetType()); }
+                catch { return (IConfig)Deserializer.Deserialize(text, cfg.GetType()); }
+            }
         }
         internal static void Save(IConfig cfg)
         {
             string data = Serializer.Serialize(cfg);
             var path = Path.Combine(PluginManager.CustomConfigsDirectory, $"{cfg.Name}-{Server.Port}.yaml");
             if (!File.Exists(path)) return;
-            File.WriteAllText(path, data ,System.Text.Encoding.UTF8);
+            File.WriteAllText(path, data ?? string.Empty, Encoding.UTF8);
         }
     }
 }

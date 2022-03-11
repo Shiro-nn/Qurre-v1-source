@@ -8,7 +8,7 @@ namespace Qurre.API.Addons.Textures
         public readonly GameObject GameObject;
         public readonly Primitive Primitive;
 
-        public ModelPrimitive(Model model, PrimitiveType primitiveType, Color color, Vector3 position, Vector3 rotation, Vector3 size = default)
+        public ModelPrimitive(Model model, PrimitiveType primitiveType, Color color, Vector3 position, Vector3 rotation, Vector3 size = default, bool collider = true)
         {
             try
             {
@@ -18,6 +18,7 @@ namespace Qurre.API.Addons.Textures
                 GameObject.transform.localPosition = position;
                 GameObject.transform.localRotation = Quaternion.Euler(rotation);
                 GameObject.transform.localScale = size;
+                Primitive.Collider = collider;
             }
             catch (Exception ex)
             {

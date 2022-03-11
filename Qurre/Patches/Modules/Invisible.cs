@@ -38,6 +38,7 @@ namespace Qurre.Patches.Modules
                         Array.Copy(__instance.ReceivedData, __instance._transmitBuffer, __instance._usedData);
                         for (int k = 0; k < __instance._usedData; k++)
                         {
+                            if (player.Role == RoleType.Spectator) continue;
                             var showinvoid = false;
                             var playerToShow = players[k];
                             var vector = __instance._transmitBuffer[k].position - player.Position;
@@ -63,7 +64,6 @@ namespace Qurre.Patches.Modules
                                 showinvoid = true;
                                 goto AA_001;
                             }
-                            if (player.Role == RoleType.Spectator) continue;
                             if (Math.Abs(vector.y) > 35f)
                             {
                                 showinvoid = true;

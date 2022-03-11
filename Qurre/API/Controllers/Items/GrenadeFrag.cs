@@ -18,7 +18,7 @@ namespace Qurre.API.Controllers.Items
             FuseTime = grenade._fuseTime;
             Player = Player.Get(itemBase.Owner);
         }
-        internal GrenadeFrag(ItemType type, Player player = null)
+        public GrenadeFrag(ItemType type, Player player = null)
             : base(player == null ? (ThrowableItem)Server.Host.Inventory.CreateItemInstance(type, false) : (ThrowableItem)player.Inventory.CreateItemInstance(type, true))
         {
             ExplosionGrenade grenade = (ExplosionGrenade)Base.Projectile;

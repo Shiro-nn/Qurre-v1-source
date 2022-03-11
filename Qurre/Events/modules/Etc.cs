@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 using MapGeneration;
 using UnityEngine;
 using System.Collections.Generic;
+using Qurre.API.Objects;
+using System.Linq;
 namespace Qurre.Events.Modules
 {
     internal static class Etc
@@ -38,17 +40,17 @@ namespace Qurre.Events.Modules
             API.Round.ActiveGenerators = 0;
             if (Loader.AllUnits)
             {
-                API.Round.AddUnit(API.Objects.TeamUnitType.ClassD, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.ChaosInsurgency, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.NineTailedFox, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.Scientist, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.Scp, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
-                API.Round.AddUnit(API.Objects.TeamUnitType.None, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.ClassD, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.ChaosInsurgency, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.NineTailedFox, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.Scientist, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.Scp, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.Tutorial, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.None, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
             }
             else if (Loader.OnlyTutorialUnit)
             {
-                API.Round.AddUnit(API.Objects.TeamUnitType.Tutorial, $"<color=#31d400>Qurre v{PluginManager.Version}</color>");
+                API.Round.AddUnit(TeamUnitType.Tutorial, $"<color=#31d400>Qurre v{PluginManager.Version}</color>");
             }
         }
         private static void FixOneSerial()
@@ -112,8 +114,20 @@ namespace Qurre.Events.Modules
                     return;
                 }
                 string text16 = ev.Command.Substring(ev.Name.Length + ev.Args[0].Length + 2);
-                API.Map.Broadcast(text16, System.Convert.ToUInt16(ev.Args[0])); ev.Success = true;
+                API.Map.Broadcast(text16, System.Convert.ToUInt16(ev.Args[0]));
+                ev.Success = true;
                 ev.ReplyMessage = "Broadcast sent.";
+            }
+            else if (ev.Command.StartsWith("@") && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.AdminChat))
+            {
+                ev.Allowed = false;
+                var list = API.Player.List.Where(x => PermissionsHandler.IsPermitted(x.Sender.Permissions, PlayerPermissions.AdminChat));
+                string content = $"<color=#ffa500>[Admin Chat]</color> <color=#008000>{ev.Command.Substring(1)} ~ {ev.CommandSender.Nickname}</color>";
+                foreach (var pl in list)
+                {
+                    pl.Broadcast(content, 5, true);
+                    pl.SendConsoleMessage(content, "green");
+                }
             }
             else if (ev.Name == "pbc" && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
             {

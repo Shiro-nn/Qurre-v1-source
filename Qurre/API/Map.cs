@@ -20,6 +20,8 @@ using InventorySystem.Items.Pickups;
 using System;
 using PlayerStatsSystem;
 using Light = Qurre.API.Controllers.Light;
+using Qurre.API.Addons.Audio;
+using Camera = Qurre.API.Controllers.Camera;
 namespace Qurre.API
 {
 	public static class Map
@@ -32,7 +34,7 @@ namespace Qurre.API
 		public static List<_ragdoll> Ragdolls { get; } = new();
 		public static List<Sinkhole> Sinkholes { get; } = new();
 		public static List<Room> Rooms { get; } = new();
-		public static List<Controllers.Camera> Cameras { get; } = new();
+		public static List<Camera> Cameras { get; } = new();
 		public static List<Tesla> Teslas { get; } = new();
 		public static List<_workStation> WorkStations { get; } = new();
 		public static List<Bot> Bots { get; } = new();
@@ -97,7 +99,12 @@ namespace Qurre.API
 		}
 		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
-			var bc = new MapBroadcast(message, duration, instant);
+			var bc = new MapBroadcast(message, duration, instant, false);
+			return bc;
+		}
+		public static MapBroadcast BroadcastAdmin(string message, ushort duration, bool instant = false)
+		{
+			var bc = new MapBroadcast(message, duration, instant, true);
 			return bc;
 		}
 		public static void ClearBroadcasts() => Server.Host.Broadcasts.Clear();
@@ -242,6 +249,8 @@ namespace Qurre.API
 		}
 		internal static void ClearObjects()
 		{
+			try { Teslas.ForEach(x => x.ImmunityRoles.Clear()); } catch { }
+			try { Teslas.ForEach(x => x.ImmunityPlayers.Clear()); } catch { }
 			Teslas.Clear();
 			Doors.Clear();
 			Lifts.Clear();
@@ -255,7 +264,20 @@ namespace Qurre.API
 			Lights.Clear();
 			Primitives.Clear();
 			ShootingTargets.Clear();
+			Cameras.Clear();
 			Patches.Events.player.Banned.Cached.Clear();
+			try
+			{
+				foreach (var m in AudioMicrophone.Cache) m.Dispose();
+				AudioMicrophone.Cache.Clear();
+			}
+			catch { }
+			try
+			{
+				foreach (var a in Audio.Audios) try { a.Microphone.Dispose(); } catch { }
+				Audio.Audios.Clear();
+			}
+			catch { }
 		}
 	}
 }

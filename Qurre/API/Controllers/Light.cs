@@ -1,15 +1,13 @@
-﻿using System.Collections.Generic;
-using AdminToys;
+﻿using AdminToys;
 using UnityEngine;
 using Mirror;
 using System;
 using System.Linq;
-
 namespace Qurre.API.Controllers
 {
     public class Light
     {
-        public Light(Vector3 position, Color lightColor = default, float lightIntensivity = 1, float lightRange = 10)
+        public Light(Vector3 position, Color lightColor = default, float lightIntensivity = 1, float lightRange = 10, bool shadows = true)
         {
             try
             {
@@ -27,6 +25,7 @@ namespace Qurre.API.Controllers
                 Color = lightColor;
                 Intensivity = lightIntensivity;
                 Range = lightRange;
+                EnableShadows = shadows;
                 Map.Lights.Add(this);
             }
             catch (Exception e)

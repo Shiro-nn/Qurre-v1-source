@@ -20,6 +20,8 @@ using MapGeneration;
 using NorthwoodLib;
 using PlayerStatsSystem;
 using Qurre.API.Addons;
+using InventorySystem.Items.Firearms;
+using Firearm = Qurre.API.Controllers.Items.Firearm;
 namespace Qurre.API
 {
 	public class Player
@@ -361,6 +363,7 @@ namespace Qurre.API
 		}
 		public void HideTag() => ClassManager.CmdRequestHideTag();
 		public void ShowTag() => ClassManager.CmdRequestShowTag(false);
+		public void SevereHands() => EnableEffect(EffectType.SeveredHands);
 		public string HiddenBadge => ServerRoles.HiddenBadge;
 		public bool BadgeHidden
 		{
@@ -611,7 +614,7 @@ namespace Qurre.API
 			Connection.Send(msg);
 			NetworkWriterPool.Recycle(writer);
 		}
-		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
+		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetPlayersClass(newRole, GameObject, reason, lite);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector2 newRotation = default, string deathReason = "")
 		{
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, new CustomReasonDamageHandler(deathReason), this);
@@ -646,8 +649,15 @@ namespace Qurre.API
 		public Item AddItem(ItemType itemType)
 		{
 			Item item = Item.Get(Inventory.ServerAddItem(itemType));
-			AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, item.Base);
-			if (item is Firearm firearm) firearm.Ammo = firearm.MaxAmmo;
+			if (item is Firearm firearm)
+			{
+				if(AttachmentsServerHandler.PlayerPreferences.TryGetValue(ReferenceHub, out var _d) && _d.TryGetValue(itemType, out var _y))
+					firearm.Base.ApplyAttachmentsCode(_y, true);
+				FirearmStatusFlags status = FirearmStatusFlags.MagazineInserted;
+				if (firearm.Base.CombinedAttachments.AdditionalPros.HasFlagFast(AttachmentDescriptiveAdvantages.Flashlight))
+					status |= FirearmStatusFlags.FlashlightEnabled;
+				firearm.Base.Status = new FirearmStatus(firearm.MaxAmmo, status, firearm.Base.GetCurrentAttachmentsCode());
+			}
 			return item;
 		}
 		public void AddItem(ItemType itemType, int amount)
@@ -838,15 +848,19 @@ namespace Qurre.API
 		}
 		public void ChangeEffectIntensity<T>(byte intensity) where T : PlayerEffect => PlayerEffectsController.ChangeEffectIntensity<T>(intensity);
 		public void ChangeEffectIntensity(string effect, byte intensity, float duration = 0) => PlayerEffectsController.ChangeByString(effect, intensity, duration);
-		public void ShowHint(string text, float duration = 1f) =>
-			HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
+		public void ShowHint(string text, float duration = 1f, bool blink = false)
+        {
+			if (blink) HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
+			else HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, null, duration));
+		}
+	
 		public void BodyDelete()
 		{
 			foreach (var doll in Map.Ragdolls.Where(x => x.Owner == this)) doll.Destroy();
 		}
 		public List<string> GetGameObjectsInRange(float range)
 		{
-			List<string> gameObjects = new List<string>();
+			List<string> gameObjects = new();
 			foreach (GameObject obj in UnityEngine.Object.FindObjectsOfType<GameObject>()) { if (Vector3.Distance(obj.transform.position, Position) <= range && !obj.name.Contains("mixamorig") && !obj.name.Contains("Pos")) { gameObjects.Add(obj.name.Trim() + "\n"); } }
 			return gameObjects;
 		}
@@ -1035,17 +1049,6 @@ namespace Qurre.API
 					player.Inventory.SendAmmoNextFrame = true;
 				}
 			}
-		}
-		[Obsolete("Use 'Movement'")]
-		public PlayerMovementSync PlayerMovementSync => rh.playerMovementSync;
-		[Obsolete("Use 'HiddenBadge'")]
-		public string HiddenTag => HiddenBadge;
-
-		[Obsolete("Use 'BadgeHidden'")]
-		public bool TagHidden
-		{
-			get => BadgeHidden;
-			set => BadgeHidden = value;
 		}
 	}
 }

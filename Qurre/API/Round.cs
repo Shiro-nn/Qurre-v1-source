@@ -4,6 +4,7 @@ using Respawning;
 using Respawning.NamingRules;
 using RoundRestarting;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 namespace Qurre.API
 {
@@ -49,6 +50,58 @@ namespace Qurre.API
         {
             get => RoundSummary.KilledBySCPs;
             set => RoundSummary.KilledBySCPs = value;
+        }
+        public static Dictionary<SpawnableTeamType, List<string>> UnitsToGenerate { get; private set; } = new()
+        {
+            { SpawnableTeamType.ChaosInsurgency, new() { } },
+            { SpawnableTeamType.ClassD, new() { } },
+            {
+                SpawnableTeamType.NineTailedFox,
+                new()
+                {
+                    "ALPHA",
+                    "BRAVO",
+                    "CHARLIE",
+                    "DELTA",
+                    "ECHO",
+                    "FOXTROT",
+                    "GOLF",
+                    "HOTEL",
+                    "INDIA",
+                    "JULIETT",
+                    "KILO",
+                    "LIMA",
+                    "MIKE",
+                    "NOVEMBER",
+                    "OSCAR",
+                    "PAPA",
+                    "QUEBEC",
+                    "ROMEO",
+                    "SIERRA",
+                    "TANGO",
+                    "UNIFORM",
+                    "VICTOR",
+                    "WHISKEY",
+                    "XRAY",
+                    "YANKEE",
+                    "ZULU"
+                }
+            },
+            { SpawnableTeamType.Scientist, new() },
+            { SpawnableTeamType.SCP, new() },
+            { SpawnableTeamType.Tutorial, new() },
+            { SpawnableTeamType.None, new() }
+        };
+        private static int _umc = 20;
+        public static int UnitMaxCode
+        {
+            get => _umc;
+            set
+            {
+                if (value < 0) value = 0;
+                else if (value > 99) value = 99;
+                _umc = value;
+            }
         }
         public static void Restart() => RoundRestart.InitiateRoundRestart();
         public static void Start() => CharacterClassManager.ForceRoundStart();

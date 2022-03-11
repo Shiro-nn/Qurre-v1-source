@@ -48,13 +48,13 @@
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>..\..\Qurre\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="CommandSystem.Core">
       <HintPath>..\lib\CommandSystem.Core.dll</HintPath>
     </Reference>
-    <Reference Include="DissonanceVoip">
-      <HintPath>..\lib\DissonanceVoip.dll</HintPath>
+    <Reference Include="DissonanceVoip_publicized">
+      <HintPath>..\lib\DissonanceVoip_publicized.dll</HintPath>
     </Reference>
     <Reference Include="Mirror">
       <HintPath>..\lib\Mirror.dll</HintPath>
@@ -68,9 +68,13 @@
     <Reference Include="MongoDB.Driver.Core">
       <HintPath>..\lib\MongoDB.Driver.Core.dll</HintPath>
     </Reference>
-    <Reference Include="MongoDB.Libmongocrypt, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="MongoDB.Libmongocrypt">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\MongoDB.Libmongocrypt.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NorthwoodLib">
       <HintPath>..\lib\NorthwoodLib.dll</HintPath>
@@ -80,28 +84,32 @@
     <Reference Include="UnityEngine">
       <HintPath>..\lib\UnityEngine.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.AnimationModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UnityEngine.AnimationModule">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\UnityEngine.AnimationModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.AudioModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UnityEngine.AudioModule">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\UnityEngine.AudioModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.CoreModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UnityEngine.CoreModule">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\UnityEngine.CoreModule.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEngine.PhysicsModule, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="UnityEngine.PhysicsModule">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\UnityEngine.PhysicsModule.dll</HintPath>
     </Reference>
-    <Reference Include="YamlDotNet, Version=11.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+    <Reference Include="YamlDotNet">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\YamlDotNet.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Addons\Audio\AudioMicrophone.cs" />
+    <Compile Include="API\Addons\Audio\AudioStatusType.cs" />
+    <Compile Include="API\Addons\Audio\AudioExtensions.cs" />
+    <Compile Include="API\Addons\Audio\IMicrophone.cs" />
     <Compile Include="API\Addons\ListConfigs.cs" />
     <Compile Include="API\Addons\Config.cs" />
     <Compile Include="API\Addons\KillElement.cs" />
@@ -109,16 +117,20 @@
     <Compile Include="API\Addons\Textures\ModelLight.cs" />
     <Compile Include="API\Addons\Textures\ModelPrimitive.cs" />
     <Compile Include="API\Addons\Textures\Model.cs" />
-    <Compile Include="API\Audio.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
     <Compile Include="API\Controllers\Bot.cs" />
+    <Compile Include="API\Controllers\Items\Scp330.cs" />
     <Compile Include="API\Controllers\Items\GrenadeFlash.cs" />
     <Compile Include="API\Controllers\Items\GrenadeFrag.cs" />
     <Compile Include="API\Controllers\Sinkhole.cs" />
     <Compile Include="API\Controllers\ShootingTarget.cs" />
     <Compile Include="API\Controllers\Light.cs" />
     <Compile Include="API\Controllers\Primitive.cs" />
+    <Compile Include="API\DataBase\Builds.cs" />
+    <Compile Include="API\DataBase\Database.cs" />
+    <Compile Include="API\DataBase\Collection.cs" />
+    <Compile Include="API\Events\Effect.cs" />
     <Compile Include="API\Modules\CommentsOGV.cs" />
     <Compile Include="API\Modules\ObjectDescriptor.cs" />
     <Compile Include="API\Modules\PropertyDescriptor.cs" />
@@ -128,15 +140,14 @@
     <Compile Include="API\Modules\CustomConfigsManager.cs" />
     <Compile Include="API\Modules\ConfigManager.cs" />
     <Compile Include="API\Objects\AuthType.cs" />
+    <Compile Include="API\Objects\Scp079SpeakerType.cs" />
     <Compile Include="API\Objects\ShootingTargetType.cs" />
     <Compile Include="API\Objects\DamageTypes.cs" />
     <Compile Include="API\Objects\DamageTypesPrimitive.cs" />
     <Compile Include="API\Controllers\Window.cs" />
     <Compile Include="API\Controllers\Items\Ammo.cs" />
     <Compile Include="API\Controllers\Items\Armor.cs" />
-    <Compile Include="API\Controllers\Items\ExplosiveGrenade.cs" />
     <Compile Include="API\Controllers\Items\Firearm.cs" />
-    <Compile Include="API\Controllers\Items\FlashGrenade.cs" />
     <Compile Include="API\Controllers\Items\Flashlight.cs" />
     <Compile Include="API\Controllers\Items\Keycard.cs" />
     <Compile Include="API\Controllers\Items\MicroHid.cs" />
@@ -146,10 +157,9 @@
     <Compile Include="API\Controllers\Items\Pickup.cs" />
     <Compile Include="API\Controllers\Item.cs" />
     <Compile Include="API\Controllers\Locker.cs" />
-    <Compile Include="API\DataBase\DataBase.cs" />
+    <Compile Include="API\DataBase\Client.cs" />
     <Compile Include="API\Controllers\Broadcast.cs" />
     <Compile Include="API\Controllers\Lights.cs" />
-    <Compile Include="API\DataBase\MongoDataBases.cs" />
     <Compile Include="API\Events\Voice.cs" />
     <Compile Include="API\Extensions.cs" />
     <Compile Include="API\Controllers\Alpha.cs" />
@@ -183,7 +193,6 @@
     <Compile Include="API\Server.cs" />
     <Compile Include="API\Controllers\Decontamination.cs" />
     <Compile Include="API\Controllers\Door.cs" />
-    <Compile Include="API\Objects\Effect.cs" />
     <Compile Include="API\Events\Alpha.cs" />
     <Compile Include="API\Events\Map.cs" />
     <Compile Include="API\Events\Player.cs" />
@@ -200,7 +209,10 @@
     <Compile Include="API\Player.cs" />
     <Compile Include="API\Round.cs" />
     <Compile Include="API\Controllers\Scp914.cs" />
+    <Compile Include="API\Audio.cs" />
     <Compile Include="Events\Alpha.cs" />
+    <Compile Include="Events\Effect.cs" />
+    <Compile Include="Events\Invoke\Effect.cs" />
     <Compile Include="Events\Modules\Commands\Configs.cs" />
     <Compile Include="Events\Modules\Commands\Plugins.cs" />
     <Compile Include="Events\Modules\Commands\Reload.cs" />
@@ -230,14 +242,24 @@
     <Compile Include="Patches\Controllers\LockerInitial.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
+    <Compile Include="Patches\Events\Effects\ChangeIntensity.cs" />
     <Compile Include="Patches\Events\Map\ConvertUnitName.cs" />
     <Compile Include="Patches\Events\player\ChangeSpectate.cs" />
+    <Compile Include="Patches\Events\player\InteractScp330.cs" />
+    <Compile Include="Patches\Events\player\EatingScp330.cs" />
+    <Compile Include="Patches\Events\player\Jump.cs" />
+    <Compile Include="Patches\Events\player\PickupCandy.cs" />
+    <Compile Include="Patches\Events\player\ShowBadge.cs" />
+    <Compile Include="Patches\Events\player\HideBadge.cs" />
     <Compile Include="Patches\Events\player\CoinFlip.cs" />
     <Compile Include="Patches\Events\player\DamageProcess.cs" />
     <Compile Include="Patches\Events\player\TantrumWalking.cs" />
     <Compile Include="Patches\Events\player\PickupArmor.cs" />
     <Compile Include="Patches\Events\player\PickupAmmo.cs" />
     <Compile Include="Patches\Events\player\SinkholeWalking.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\ChangeCamera.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\Recontain.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp079\Interact.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\PryGate.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\PreWindup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
@@ -249,6 +271,7 @@
     <Compile Include="Patches\Fixes\MaxHp.cs" />
     <Compile Include="Patches\Fixes\ShootDisconnect.cs" />
     <Compile Include="Patches\Fixes\DoubleSpawn.cs" />
+    <Compile Include="Patches\Modules\Audio.cs" />
     <Compile Include="Patches\Modules\UseStamina.cs" />
     <Compile Include="Patches\Fixes\LiteSpawn.cs" />
     <Compile Include="Patches\Modules\EscapeFix.cs" />

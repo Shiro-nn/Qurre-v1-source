@@ -14,8 +14,7 @@ namespace Qurre.Patches.Events.player
             {
                 var ev = new HealEvent(API.Player.Get(__instance.Hub), healAmount);
                 Qurre.Events.Invoke.Player.Heal(ev);
-                if (ev.Allowed)
-                    __instance.CurValue = Mathf.Min(__instance.CurValue + Mathf.Abs(ev.Hp), ev.Player.MaxHp);
+                if (ev.Allowed) __instance.CurValue = Mathf.Min(__instance.CurValue + Mathf.Abs(ev.Hp), ev.Player.MaxHp);
                 return false;
             }
             catch (Exception e)

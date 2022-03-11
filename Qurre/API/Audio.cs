@@ -1,82 +1,57 @@
-﻿using Dissonance.Audio.Capture;
-using Dissonance.Integrations.MirrorIgnorance;
-using Dissonance.Networking;
-using NAudio.Wave;
-using System;
+﻿using Qurre.API.Addons.Audio;
+using System.Collections.Generic;
 using System.IO;
-using System.Net;
-using UnityEngine;
+using System.Linq;
 namespace Qurre.API
 {
-	[Obsolete("Сurrently unavailable")]
-	public static class Audio
+	public class Audio
 	{
-		///<summary>
-		///<para>Plays music from the stream.</para>
-		///<para>format - WaveFormat(48000, 1) /*(.ogg)*/</para>
-		///<para>Example:</para>
-		/// <example>
-		/// <code>
-		/// Play(new MemoryStream(audio), 1);
-		/// </code>
-		/// </example>
-		///</summary>
-		public static void Play(Stream stream, float volume) => Play(stream, 999, volume);
+		public static List<Audio> Audios { get; private set; } = new();
 		///<summary>
 		///<para>Plays music from a file.</para>
-		///<para>format - WaveFormat(48000, 1) /*(.ogg)*/</para>
 		///<para>Example:</para>
 		/// <example>
 		/// <code>
-		/// PlayFromFile($"{PluginManager.PluginsDirectory}/audio/OmegaWarhead.raw", 1);
+		/// new Audio($"{PluginManager.PluginsDirectory}/Audio/OmegaWarhead.raw", 100, true, frameSize: 1920, sampleRate: 48000);
 		/// </code>
 		/// </example>
 		///</summary>
-		public static void PlayFromFile(string path, float volume) => Play(new FileStream(path, FileMode.Open), volume);
+		public Audio(string path, byte volume, bool instant = false, int frameSize = 1920, int sampleRate = 48000) :
+			this(new FileStream(path, FileMode.Open), volume, instant, frameSize, sampleRate) { }
 		///<summary>
-		///<para>Plays music from a link.</para>
-		///<para>format - WaveFormat(48000, 1) /*(.ogg)*/</para>
+		///<para>Plays music from the stream.</para>
 		///<para>Example:</para>
 		/// <example>
 		/// <code>
-		/// PlayFromUrl("https://cdn.scpsl.store/qurre/audio/OmegaWarhead.raw", 1);
+		/// new Audio(new MemoryStream(audio), 100, false, frameSize: 1920, sampleRate: 48000);
 		/// </code>
 		/// </example>
 		///</summary>
-		public static void PlayFromUrl(string url, float volume)
+		public Audio(Stream stream, byte volume, bool instant = false, int frameSize = 1920, int sampleRate = 48000)
 		{
-            using var wc = new WebClient();
-            byte[] byteData = wc.DownloadData(url);
-            Play(new MemoryStream(byteData), volume);
-        }
-		public static MirrorIgnoranceClient client;
-		public static ClientInfo<MirrorConn> СlientInfo;
-		private static void Play(Stream stream, ushort playerid, float volume)
-		{
+			Microphone = AudioExtensions.DissonanceComms.gameObject.AddComponent<AudioMicrophone>().Create(stream, volume, frameSize, sampleRate, this);
+            if (instant && Audios.Count > 0)
+			{
+				var _cur = Audios.FirstOrDefault();
+				Audios.Remove(_cur);
+				List<Audio> list = new();
+				list.Add(this);
+				list.AddRange(Audios);
+				Audios = list;
+				_cur.Microphone.StopCapture();
+			}
+            else
+            {
+				Audios.Add(this);
+				if (Audios.FirstOrDefault() == this) Microphone.ResetMicrophone(Microphone.Name, true);
+			}
 		}
-		public class MicrophoneModule : MonoBehaviour, IMicrophoneCapture
+		public readonly IMicrophone Microphone;
+		/*public static void PlayFromUrl(string url, float volume)
 		{
-			public bool IsRecording { get; private set; }
-			public TimeSpan Latency { get; private set; }
-			public WaveFormat StartCapture(string name)
-			{
-				return new WaveFormat(48000, 1);
-			}
-			public void StopCapture()
-			{
-			}
-			public void Subscribe(IMicrophoneSubscriber listener)
-			{
-			}
-			public bool Unsubscribe(IMicrophoneSubscriber listener)
-			{
-				return false;
-			}
-			public bool UpdateSubscribers()
-			{
-				return false;
-			}
-			public Stream _file;
-		}
+			using var wc = new WebClient();
+			byte[] byteData = wc.DownloadData(url);
+			Play(new MemoryStream(byteData), volume);
+		}*/
 	}
 }

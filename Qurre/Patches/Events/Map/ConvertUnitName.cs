@@ -6,7 +6,7 @@ namespace Qurre.Patches.Events.Map
     [HarmonyPatch(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.GetCassieUnitName))]
     internal static class ConvertUnitName
     {
-        private static bool Prefix(NineTailedFoxNamingRule __instance, string regular, ref string __result)
+        private static bool Prefix(string regular, ref string __result)
         {
             try
             {
