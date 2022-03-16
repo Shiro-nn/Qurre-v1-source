@@ -37,7 +37,7 @@ namespace Qurre.Patches.Events.player
 					return false;
 				}
 				if (!SetAmout(ev.Amount)) ev.Amount = doAmout;
-				if (!ev.Target.GodMode && (ev.Amount == -1 || ev.Amount >= (ev.Target.Hp + ev.Target.Ahp)))
+				/*if (!ev.Target.GodMode && (ev.Amount == -1 || ev.Amount >= (ev.Target.Hp + ev.Target.Ahp)))
 				{
 					var dE = new DiesEvent(ev.Attacker, ev.Target, handler, type);
 					Qurre.Events.Invoke.Player.Dies(dE);
@@ -46,7 +46,7 @@ namespace Qurre.Patches.Events.player
 						__result = false;
 						return false;
 					}
-				}
+				}*/
 				return true;
 			}
 			catch (Exception e)

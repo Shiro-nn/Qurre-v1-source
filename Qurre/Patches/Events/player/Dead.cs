@@ -9,6 +9,24 @@ namespace Qurre.Patches.Events.player
     [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.KillPlayer))]
     internal static class Dead
     {
+        private static bool Prefix(PlayerStats __instance, DamageHandlerBase handler)
+        {
+            try
+            {
+                var attacker = handler.GetAttacker();
+                Player target = Player.Get(__instance.gameObject);
+                if (attacker is null) attacker = target;
+                if ((target != null && (target.GodMode || target.IsHost)) || attacker == null) return true;
+                var ev = new DiesEvent(attacker, target, handler, handler.GetDamageType());
+                Qurre.Events.Invoke.Player.Dies(ev);
+                return ev.Allowed;
+            }
+            catch (System.Exception e)
+            {
+                Log.Error($"umm, error in patching Player [Dies]:\n{e}\n{e.StackTrace}");
+                return true;
+            }
+        }
         private static void Postfix(PlayerStats __instance, DamageHandlerBase handler)
         {
             try

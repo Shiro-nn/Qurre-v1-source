@@ -50,6 +50,7 @@ namespace Qurre
             CustomNetworkManager.Modded = true;
             Timing.RunCoroutine(PluginManager.LoadPlugins());
             Events.Modules.Etc.Load();
+            API.Addons.Prefabs.Init();
             CommandProcessor.RemoteAdminCommandHandler.RegisterCommand(Events.Modules.Commands.Reload.Instance);
             GameCore.Console.singleton.ConsoleCommandHandler.RegisterCommand(Events.Modules.Commands.Reload.Instance);
         }

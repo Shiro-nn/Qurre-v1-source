@@ -56,8 +56,8 @@
     <Reference Include="DissonanceVoip_publicized">
       <HintPath>..\lib\DissonanceVoip_publicized.dll</HintPath>
     </Reference>
-    <Reference Include="Mirror">
-      <HintPath>..\lib\Mirror.dll</HintPath>
+    <Reference Include="Mirror_publicized">
+      <HintPath>..\lib\Mirror_publicized.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>..\lib\MongoDB.Bson.dll</HintPath>
@@ -110,13 +110,19 @@
     <Compile Include="API\Addons\Audio\AudioStatusType.cs" />
     <Compile Include="API\Addons\Audio\AudioExtensions.cs" />
     <Compile Include="API\Addons\Audio\IMicrophone.cs" />
+    <Compile Include="API\Addons\Prefabs.cs" />
     <Compile Include="API\Addons\ListConfigs.cs" />
     <Compile Include="API\Addons\Config.cs" />
     <Compile Include="API\Addons\KillElement.cs" />
-    <Compile Include="API\Addons\Textures\ModelEnums.cs" />
-    <Compile Include="API\Addons\Textures\ModelLight.cs" />
-    <Compile Include="API\Addons\Textures\ModelPrimitive.cs" />
-    <Compile Include="API\Addons\Textures\Model.cs" />
+    <Compile Include="API\Addons\Models\ModelWorkStation.cs" />
+    <Compile Include="API\Addons\Models\ModelGenerator.cs" />
+    <Compile Include="API\Addons\Models\ModelDoor.cs" />
+    <Compile Include="API\Addons\Models\ModelLocker.cs" />
+    <Compile Include="API\Addons\Models\ModelTarget.cs" />
+    <Compile Include="API\Addons\Models\ModelEnums.cs" />
+    <Compile Include="API\Addons\Models\ModelLight.cs" />
+    <Compile Include="API\Addons\Models\ModelPrimitive.cs" />
+    <Compile Include="API\Addons\Models\Model.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
     <Compile Include="API\Controllers\Bot.cs" />
@@ -131,6 +137,7 @@
     <Compile Include="API\DataBase\Database.cs" />
     <Compile Include="API\DataBase\Collection.cs" />
     <Compile Include="API\Events\Effect.cs" />
+    <Compile Include="API\Modules\DoorsUpdater.cs" />
     <Compile Include="API\Modules\CommentsOGV.cs" />
     <Compile Include="API\Modules\ObjectDescriptor.cs" />
     <Compile Include="API\Modules\PropertyDescriptor.cs" />
@@ -140,8 +147,9 @@
     <Compile Include="API\Modules\CustomConfigsManager.cs" />
     <Compile Include="API\Modules\ConfigManager.cs" />
     <Compile Include="API\Objects\AuthType.cs" />
+    <Compile Include="API\Objects\TargetPrefabs.cs" />
+    <Compile Include="API\Objects\LockerPrefabs.cs" />
     <Compile Include="API\Objects\Scp079SpeakerType.cs" />
-    <Compile Include="API\Objects\ShootingTargetType.cs" />
     <Compile Include="API\Objects\DamageTypes.cs" />
     <Compile Include="API\Objects\DamageTypesPrimitive.cs" />
     <Compile Include="API\Controllers\Window.cs" />
@@ -265,6 +273,7 @@
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemPickup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemInventory.cs" />
+    <Compile Include="Patches\Events\Server\PreAuth.cs" />
     <Compile Include="Patches\Events\Voice\PressPrimaryChat.cs" />
     <Compile Include="Patches\Events\Voice\PressAltChat.cs" />
     <Compile Include="Patches\Fixes\FixVoice.cs" />
@@ -300,7 +309,6 @@
     <Compile Include="Patches\Events\SCPs\Scp173\Blink.cs" />
     <Compile Include="Patches\Controllers\GeneratorController.cs" />
     <Compile Include="Patches\Controllers\LiftController.cs" />
-    <Compile Include="Patches\Controllers\DoorController.cs" />
     <Compile Include="Patches\Modules\NukeLock.cs" />
     <Compile Include="Patches\Modules\Console.cs" />
     <Compile Include="Patches\Modules\FriendlyFire.cs" />

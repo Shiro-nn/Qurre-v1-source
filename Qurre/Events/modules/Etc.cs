@@ -30,8 +30,15 @@ namespace Qurre.Events.Modules
             API.Player.Dictionary.Clear();
             API.Map.ClearObjects();
         }
+        private static bool first = true;
         private static void Waiting()
         {
+            if (first)
+            {
+                first = false;
+                API.Addons.Prefabs.InitLate();
+            }
+            API.Round.CurrentRound++;
             API.Map.AddObjects();
             if (API.Round.BotSpawned) Patches.Controllers.Bot.UnInitialize();
             API.Round.BotSpawned = false;

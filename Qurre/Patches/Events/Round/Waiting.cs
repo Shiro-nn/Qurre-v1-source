@@ -1,15 +1,24 @@
 ﻿using HarmonyLib;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Reflection.Emit;
 namespace Qurre.Patches.Events.Round
 {
-    [HarmonyPatch(typeof(ServerConsole), nameof(ServerConsole.AddLog))]
+    [HarmonyPatch]
     internal static class Waiting
     {
-        private static void Postfix(string q)
+        private static MethodBase TargetMethod() => AccessTools.Method(AccessTools.Inner(typeof(CharacterClassManager), "<Init>d__115"), "MoveNext");
+        private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
-            if (q == "Waiting for players...")
+            bool need = true;
+            foreach (CodeInstruction ins in instructions)
             {
-                API.Round.CurrentRound++;
-                Qurre.Events.Invoke.Round.Waiting();
+                if (need && ins.opcode == OpCodes.Ldstr && ins.operand as string == "Waiting for players...")
+                {
+                    need = false;
+                    yield return new CodeInstruction(OpCodes.Call, AccessTools.Method(typeof(Qurre.Events.Invoke.Round), nameof(Qurre.Events.Invoke.Round.Waiting)));
+                }
+                yield return ins;
             }
         }
     }
