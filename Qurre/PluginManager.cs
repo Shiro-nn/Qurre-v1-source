@@ -106,11 +106,12 @@ namespace Qurre
 						continue;
 					}
 
-					if (Version < p.NeededQurreVersion)
+					if (!CheckPlugin(p))
 					{
 						Log.Warn($"Plugin {p.Name} not loaded. Requires Qurre version at least {p.NeededQurreVersion}, your version: {Version}");
 						continue;
 					}
+
 					p.Assembly = assembly;
 
 					plugins.Add(p);
@@ -121,6 +122,41 @@ namespace Qurre
 			{
 				Log.Error($"An error occurred while processing {assembly.FullName}\n{ex}");
 			}
+		}
+		public static bool CheckPlugin(Plugin plugin)
+        {
+			var needed = plugin.NeededQurreVersion;
+
+			if (Version.Major != needed.Major)
+            {
+				if (Version.Major > needed.Major)
+                {
+					Log.Warn(string.Format("Plugin {0} not loaded because he is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
+					return false;
+                }
+				
+				if (Version.Major < needed.Major)
+                {
+					Log.Warn(string.Format("Plugin {0} not loaded because your Qurre version is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
+					return false;
+				}
+            }
+			else if (Version.Minor != needed.Minor)
+			{
+				if (Version.Minor > needed.Minor)
+				{
+					Log.Warn(string.Format("Plugin {0} not loaded because he is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
+					return false;
+				}
+
+				if (Version.Minor < needed.Minor)
+				{
+					Log.Warn(string.Format("Plugin {0} not loaded because your Qurre version is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
+					return false;
+				}
+			}
+
+			return true;
 		}
 		public static void Enable()
 		{
