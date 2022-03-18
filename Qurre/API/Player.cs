@@ -170,7 +170,7 @@ namespace Qurre.API
 		public bool Overwatch
 		{
 			get => ServerRoles.OverwatchEnabled;
-			set => ServerRoles.UserCode_TargetSetOverwatch(NetworkIdentity.connectionToClient, value);
+			set => ServerRoles.SetOverwatchStatus(value);
 		}
 		public Player Cuffer
 		{
@@ -858,13 +858,7 @@ namespace Qurre.API
 		}
 		public void ChangeEffectIntensity<T>(byte intensity) where T : PlayerEffect => PlayerEffectsController.ChangeEffectIntensity<T>(intensity);
 		public void ChangeEffectIntensity(string effect, byte intensity, float duration = 0) => PlayerEffectsController.ChangeByString(effect, intensity, duration);
-		public void ShowHint(string text, float duration = 1f) =>
-			HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
-		public void ShowHint(string text, bool blink, float duration = 1f)
-		{
-			if (blink) HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
-			else HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, null, duration));
-		}
+		public void ShowHint(string text, float duration = 3f, HintEffect[] Effect = null) => HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, Effect, duration));
 		public void BodyDelete()
 		{
 			foreach (var doll in Map.Ragdolls.Where(x => x.Owner == this)) doll.Destroy();
