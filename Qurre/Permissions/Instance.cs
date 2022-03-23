@@ -21,7 +21,7 @@ namespace Qurre.Permissions
         {
             var path = Path.Combine(PermissionConfigsDirectory, $"Permissions-{Server.Port}.yaml");
             string list_content = "";
-            for (int i = 0; i < per.AllowedServerRoles.Count; i++) list_content += "-"+ per.AllowedServerRoles[i];
+            for (int i = 0; i < per.AllowedServerRoles.Count; i++) list_content += "-" + per.AllowedServerRoles[i];
             File.WriteAllText(path, string.Concat($"{per.Name}:\n",
                     $"l{list_content}\n"));
         }
