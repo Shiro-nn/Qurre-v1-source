@@ -22,6 +22,8 @@ using PlayerStatsSystem;
 using Qurre.API.Addons;
 using InventorySystem.Items.Firearms;
 using Firearm = Qurre.API.Controllers.Items.Firearm;
+using MEC;
+
 namespace Qurre.API
 {
 	public class Player
@@ -44,7 +46,7 @@ namespace Qurre.API
 			Scp079Controller = new Scp079(this);
 			Scp096Controller = new Scp096(this);
 			Scp106Controller = new Scp106(this);
-			Scp173Controller = new Scp173();
+			Scp173Controller = new Scp173(this);
 			Broadcasts = new ListBroadcasts();
 			Ammo = new AmmoBoxManager(this);
 			BlockSpawnTeleport = false;
@@ -1036,6 +1038,29 @@ namespace Qurre.API
 		public float DistanceTo(Player player) => Vector3.Distance(Position, player.Position);
 		public float DistanceTo(Vector3 position) => Vector3.Distance(Position, position);
 		public float DistanceTo(GameObject Object) => Vector3.Distance(Position, Object.transform.localPosition);
+		public string CustomInfoString => ReferenceHub.nicknameSync._customPlayerInfoString;
+		public static IEnumerator<float> CountTicks()
+		{
+			for (; ; )
+			{
+				Loader.Ticks += 1;
+				yield return float.NegativeInfinity;
+			}
+			yield break;
+		}
+
+		// Token: 0x06000012 RID: 18 RVA: 0x00002416 File Offset: 0x00000616
+		public static IEnumerator<float> CountTicksUpdate()
+		{
+			for (; ; )
+			{
+				Loader.TicksMinutes = (int)(Loader.Ticks / 5);
+				Loader.Ticks = 0;
+				yield return Timing.WaitForSeconds(5f);
+			}
+			yield break;
+		}
+		public int TPS => Loader.TicksMinutes;
 		public class AmmoBoxManager
 		{
 			private readonly Player player;

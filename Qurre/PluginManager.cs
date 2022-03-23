@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using MEC;
+using Qurre.API;
 using System;
 using System.Collections.Generic;
 //using System.Diagnostics;
@@ -12,7 +13,7 @@ namespace Qurre
 	public static class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new();
-		public static Version Version { get; } = new Version(1, 13, 0);
+		public static Version Version { get; } = new Version(1, 13, 1);
 		//private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -216,6 +217,8 @@ namespace Qurre
 				UnPatchMethods();
 
 				Timing.RunCoroutine(LoadPlugins());
+				Timing.RunCoroutine(Player.CountTicks());
+				Timing.RunCoroutine(Player.CountTicksUpdate());
 			}
 			catch (Exception ex)
 			{

@@ -13,34 +13,46 @@ using YamlDotNet.Serialization.NodeDeserializers;
 
 namespace Qurre.Permissions
 {
-    internal class Instance
+    public class Instance
     {
-        public List<IPermission> CustomPermissions { get; } = new();
-        public static string PermissionConfigsDirectory { get; private set; } = Path.Combine(Qurre.PluginManager.ConfigsPath, "Permissions");
-        public void Save(IPermission per)
+        public static HashSet<IPermission> CustomPermissions { get; } = new();
+        public bool Register(IPermission permission)
         {
-            var path = Path.Combine(PermissionConfigsDirectory, $"Permissions-{Server.Port}.yaml");
-            string list_content = "";
-            for (int i = 0; i < per.AllowedServerRoles.Count; i++) list_content += "-" + per.AllowedServerRoles[i];
-            File.WriteAllText(path, string.Concat($"{per.Name}:\n",
-                    $"l{list_content}\n"));
+            if (permission == null)
+            {
+                Log.Error("Failed to register a null permission");
+                return false;
+            }
+
+            if (CustomPermissions.Add(permission))
+            {
+                Log.Error("This permission is already to register");
+                return false;
+            }
+
+            CustomPermissions.Add(permission);
+            Log.Debug($"IPermission-{permission.Name} has been register!");
+            return true;
         }
-        public void Load()
+        public bool Unregister()
         {
-            if (!Directory.Exists(PermissionConfigsDirectory))
+            if (CustomPermissions.Count > 0)
             {
-                Log.Custom($"Permissions directory not found - creating: {PermissionConfigsDirectory}", "Warn", ConsoleColor.DarkYellow);
-                Directory.CreateDirectory(PermissionConfigsDirectory);
+                CustomPermissions.Clear();
+                Log.Debug("All Permissions have been destory");
+                return true;
             }
-            var path = Path.Combine(PermissionConfigsDirectory, $"Permissions-{Server.Port}.yaml");
-            if (!File.Exists(path))
+            Log.Error("There isn't a ipermission in CustomPermissions HashSet");
+            return false;
+        }
+        public IPermission Get(string name)
+        {
+            IPermission permission1 = default;
+            foreach (var permission in CustomPermissions)
             {
-                File.Create(path);
-                foreach (var per in CustomPermissions)
-                {
-                    Save(per);
-                }
+                if (permission.Name == name) permission1 = permission;
             }
+            return permission1;
         }
     }
 }

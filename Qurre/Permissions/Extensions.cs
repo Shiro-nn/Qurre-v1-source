@@ -12,7 +12,7 @@ namespace Qurre.Permissions
 {
     public static class Extensions
     {
-        public static bool GetAccess(this Player target, IPermission permission)
+        public static bool GetAccess(Player target, IPermission permission)
         {
             bool result;
             if (permission.AllowedServerRoles.Contains(target.ServerRoles))
@@ -22,6 +22,18 @@ namespace Qurre.Permissions
             else
             {
                 result = false;
+            }
+            return result;
+        }
+        public static string GetAllPermissions(Player target)
+        {
+            string result = "";
+            foreach (var per in Instance.CustomPermissions)
+            {
+                if (per.AllowedServerRoles.Contains(target.ServerRoles))
+                {
+                    result += $"{per.Name}\n";
+                }
             }
             return result;
         }
