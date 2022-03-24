@@ -1060,7 +1060,7 @@ namespace Qurre.API
 			}
 			yield break;
 		}
-		public int TPS => Loader.TicksMinutes;
+		public int TransactionsPerSecond => Loader.TicksMinutes;
 		public class AmmoBoxManager
 		{
 			private readonly Player player;
