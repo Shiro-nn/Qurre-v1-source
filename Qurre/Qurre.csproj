@@ -124,6 +124,7 @@
     <Compile Include="API\Addons\Models\ModelLight.cs" />
     <Compile Include="API\Addons\Models\ModelPrimitive.cs" />
     <Compile Include="API\Addons\Models\Model.cs" />
+    <Compile Include="API\Addons\Translation.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
     <Compile Include="API\Controllers\Bot.cs" />
