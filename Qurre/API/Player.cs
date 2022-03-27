@@ -311,26 +311,20 @@ namespace Qurre.API
 					MaxHp = (int)value;
 			}
 		}
-		private int mhp = 100;
 		public int MaxHp
 		{
-			get => mhp;
-			set => mhp = value;
+			get => int.Parse(PlayerStats.GetModule<AhpStat>().MaxValue.ToString());
+			set => PlayerStats.GetModule<AhpStat>()._maxSoFar = value;
 		}
 		public float Ahp
 		{
-			get => PlayerStats.StatModules[1].CurValue;
+			get => PlayerStats.GetModule<PlayerStatsSystem.AhpStat>().CurValue;
 			set
 			{
 				if (value > MaxAhp)
 					MaxAhp = Mathf.CeilToInt(value);
-				PlayerStats.StatModules[1].CurValue = value;
+				PlayerStats.GetModule<PlayerStatsSystem.AhpStat>().CurValue = value;
 			}
-		}
-		public float MaxAhp
-		{
-			get => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar;
-			set => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar = value;
 		}
 		public List<AhpStat.AhpProcess> AhpActiveProcesses
 		{
