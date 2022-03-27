@@ -316,6 +316,11 @@ namespace Qurre.API
 			get => int.Parse(PlayerStats.GetModule<AhpStat>().MaxValue.ToString());
 			set => PlayerStats.GetModule<AhpStat>()._maxSoFar = value;
 		}
+		public float MaxAhp
+		{
+			get => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar;
+			set => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar = value;
+		}
 		public float Ahp
 		{
 			get => PlayerStats.GetModule<PlayerStatsSystem.AhpStat>().CurValue;
@@ -325,6 +330,10 @@ namespace Qurre.API
 					MaxAhp = Mathf.CeilToInt(value);
 				PlayerStats.GetModule<PlayerStatsSystem.AhpStat>().CurValue = value;
 			}
+		}
+		public void AddAhp(float Amount,float Limit,float Decay = 0,float Efficacy = 0.7f,float Sustain = 0,bool Persistant =false)
+        {
+			rh.playerStats.GetModule<AhpStat>().ServerAddProcess(Amount, Limit, Decay, Efficacy, Sustain, Persistant);
 		}
 		public List<AhpStat.AhpProcess> AhpActiveProcesses
 		{
@@ -1028,6 +1037,17 @@ namespace Qurre.API
 		{
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 42);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
+		}
+		public void Heal(float Amount, bool IsOverride)
+		{
+			if (IsOverride)
+			{
+				Hp += Amount;
+			}
+			else
+			{
+				((HealthStat)rh.playerStats.StatModules[0]).ServerHeal(Amount);
+			}
 		}
 		public float DistanceTo(Player player) => Vector3.Distance(Position, player.Position);
 		public float DistanceTo(Vector3 position) => Vector3.Distance(Position, position);
