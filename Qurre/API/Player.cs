@@ -300,6 +300,7 @@ namespace Qurre.API
 			get => ClassManager.GodMode;
 			set => ClassManager.GodMode = value;
 		}
+	private int mhp = 100;
 		public float Hp
 		{
 			get => PlayerStats.StatModules[0].CurValue;
@@ -313,21 +314,21 @@ namespace Qurre.API
 		}
 		public int MaxHp
 		{
+			get => int.Parse(PlayerStats.GetModule<PlayerStatsSystem.HealthStat>().MaxValue.ToString());
+			set => mhp = value;
+		}
+		public int MaxAHp
+		{
 			get => int.Parse(PlayerStats.GetModule<AhpStat>().MaxValue.ToString());
 			set => PlayerStats.GetModule<AhpStat>()._maxSoFar = value;
-		}
-		public float MaxAhp
-		{
-			get => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar;
-			set => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar = value;
 		}
 		public float Ahp
 		{
 			get => PlayerStats.GetModule<PlayerStatsSystem.AhpStat>().CurValue;
 			set
 			{
-				if (value > MaxAhp)
-					MaxAhp = Mathf.CeilToInt(value);
+				if (value > MaxAHp)
+					MaxAHp = Mathf.CeilToInt(value);
 				PlayerStats.GetModule<PlayerStatsSystem.AhpStat>().CurValue = value;
 			}
 		}
@@ -1063,7 +1064,6 @@ namespace Qurre.API
 			yield break;
 		}
 
-		// Token: 0x06000012 RID: 18 RVA: 0x00002416 File Offset: 0x00000616
 		public static IEnumerator<float> CountTicksUpdate()
 		{
 			for (; ; )
@@ -1074,7 +1074,7 @@ namespace Qurre.API
 			}
 			yield break;
 		}
-		public int TransactionsPerSecond => Loader.TicksMinutes;
+		public int TransactionsPerSecond { get; } = Loader.TicksMinutes;
 		public class AmmoBoxManager
 		{
 			private readonly Player player;
