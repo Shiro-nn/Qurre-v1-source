@@ -84,9 +84,8 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                     else
                     {
                         HashSet<RoomIdentifier> hashSet = RoomIdUtils.FindRooms(RoomName.Unnamed, roomIdentifier.Zone, RoomShape.Undefined);
-                        hashSet.RemoveWhere((RoomIdentifier room) => (room.Name == RoomName.Hcz106 || room.Name == RoomName.EzGateA ||
-                        room.Name == RoomName.EzGateB || (room.Zone == FacilityZone.LightContainment && room.Shape == RoomShape.Curve) || room.Name == RoomName.HczTesla
-                        ) && room.Zone != roomIdentifier.Zone);
+                         hashSet.RemoveWhere((RoomIdentifier room) => room.Name == RoomName.Hcz106 || room.Name == RoomName.EzGateA ||
+                        room.Name == RoomName.EzGateB || (room.Zone == FacilityZone.LightContainment && room.Shape == RoomShape.Curve));
                         while (hashSet.Count > 0)
                         {
                             RoomIdentifier roomIdentifier2 = hashSet.ElementAt(Random.Range(0, hashSet.Count));
