@@ -300,8 +300,7 @@ namespace Qurre.API
 			get => ClassManager.GodMode;
 			set => ClassManager.GodMode = value;
 		}
-	private int mhp = 100;
-		public float Hp
+	public float Hp
 		{
 			get => PlayerStats.StatModules[0].CurValue;
 			set
@@ -312,25 +311,26 @@ namespace Qurre.API
 					MaxHp = (int)value;
 			}
 		}
+		private int mhp = 100;
 		public int MaxHp
 		{
-			get => int.Parse(PlayerStats.GetModule<PlayerStatsSystem.HealthStat>().MaxValue.ToString());
+			get => mhp;
 			set => mhp = value;
-		}
-		public int MaxAHp
-		{
-			get => int.Parse(PlayerStats.GetModule<AhpStat>().MaxValue.ToString());
-			set => PlayerStats.GetModule<AhpStat>()._maxSoFar = value;
 		}
 		public float Ahp
 		{
-			get => PlayerStats.GetModule<PlayerStatsSystem.AhpStat>().CurValue;
+			get => PlayerStats.StatModules[1].CurValue;
 			set
 			{
-				if (value > MaxAHp)
-					MaxAHp = Mathf.CeilToInt(value);
-				PlayerStats.GetModule<PlayerStatsSystem.AhpStat>().CurValue = value;
+				if (value > MaxAhp)
+					MaxAhp = Mathf.CeilToInt(value);
+				PlayerStats.StatModules[1].CurValue = value;
 			}
+		}
+		public float MaxAhp
+		{
+			get => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar;
+			set => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar = value;
 		}
 		public void AddAhp(float Amount,float Limit,float Decay = 0,float Efficacy = 0.7f,float Sustain = 0,bool Persistant =false)
         {
