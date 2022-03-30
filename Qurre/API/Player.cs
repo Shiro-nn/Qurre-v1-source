@@ -1061,7 +1061,6 @@ namespace Qurre.API
 				Loader.Ticks += 1;
 				yield return float.NegativeInfinity;
 			}
-			yield break;
 		}
 
 		public static IEnumerator<float> CountTicksUpdate()
@@ -1072,7 +1071,6 @@ namespace Qurre.API
 				Loader.Ticks = 0;
 				yield return Timing.WaitForSeconds(5f);
 			}
-			yield break;
 		}
 		public int TransactionsPerSecond { get; } = Loader.TicksMinutes;
 		public class AmmoBoxManager
