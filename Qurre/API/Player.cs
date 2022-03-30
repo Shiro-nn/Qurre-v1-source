@@ -1072,7 +1072,7 @@ namespace Qurre.API
 				yield return Timing.WaitForSeconds(5f);
 			}
 		}
-		public int TransactionsPerSecond { get; } = Loader.TicksMinutes;
+		public int TransactionsPerSeconds { get; } = Loader.TicksMinutes;
 		public class AmmoBoxManager
 		{
 			private readonly Player player;
