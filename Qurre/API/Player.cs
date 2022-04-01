@@ -23,6 +23,7 @@ using Qurre.API.Addons;
 using InventorySystem.Items.Firearms;
 using Firearm = Qurre.API.Controllers.Items.Firearm;
 using MEC;
+using InventorySystem.Items.Usables.Scp330;
 
 namespace Qurre.API
 {
@@ -1049,6 +1050,36 @@ namespace Qurre.API
 			{
 				((HealthStat)rh.playerStats.StatModules[0]).ServerHeal(Amount);
 			}
+		}
+		public bool Addcandy(CandyType Type)
+        {
+			var candyType = CandyKindID.None;
+			switch (Type)
+            {
+				case CandyType.None:candyType = CandyKindID.None;break;
+				case CandyType.Red:candyType = CandyKindID.Red; break;
+				case CandyType.Blue:candyType = CandyKindID.Blue; break;
+				case CandyType.Green:candyType= CandyKindID.Green; break;
+				case CandyType.Purple:candyType= CandyKindID.Purple; break;
+				case CandyType.Pink:candyType= CandyKindID.Pink; break;
+            }
+			if (Scp330Bag.TryGetBag(rh, out Scp330Bag bag))
+			{
+				bool result = bag.TryAddSpecific(candyType);
+				if (result)
+					bag.ServerRefreshBag();
+				return result;
+			}
+			if (Player.Get(rh).AllItems.Count > 7)
+				return false;
+			Scp330 scp330 = (Scp330)Player.Get(rh).AddItem(ItemType.SCP330);
+			Timing.CallDelayed(0.02f, () =>
+			{
+				foreach (CandyKindID item in scp330.Candies)
+					scp330.Remove(item);
+			});
+			scp330.Add(candyType);
+			return true;
 		}
 		public float DistanceTo(Player player) => Vector3.Distance(Position, player.Position);
 		public float DistanceTo(Vector3 position) => Vector3.Distance(Position, position);
