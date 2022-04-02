@@ -320,12 +320,12 @@ namespace Qurre.API
 		}
 		public float Ahp
 		{
-			get => PlayerStats.StatModules[1].CurValue;
+			get => ReferenceHub.playerStats.GetModule<AhpStat>().CurValue;
 			set
 			{
 				if (value > MaxAhp)
 					MaxAhp = Mathf.CeilToInt(value);
-				PlayerStats.StatModules[1].CurValue = value;
+				foreach (var process in this.AhpActiveProcesses) process.CurrentAmount = value;
 			}
 		}
 		public float MaxAhp
@@ -783,8 +783,8 @@ namespace Qurre.API
 		public void Ban(int duration, string reason, string issuer = "API") => PlayerManager.localPlayer.GetComponent<BanPlayer>().BanUser(GameObject, duration, reason, issuer, false);
 		public void Kick(string reason, string issuer = "API") => Ban(0, reason, issuer);
 		public void Disconnect(string reason = null) => ServerConsole.Disconnect(GameObject, string.IsNullOrEmpty(reason) ? "" : reason);
-		public void Kill(DeathTranslation deathReason) => PlayerStats.DealDamage(new UniversalDamageHandler(-1, deathReason));
-		public void Kill(string deathReason = "") => PlayerStats.DealDamage(new CustomReasonDamageHandler(deathReason));
+		public void Kill(DeathTranslation deathReason) => PlayerStats.KillPlayer(new UniversalDamageHandler(-1, deathReason));
+		public void Kill(string deathReason = "") => PlayerStats.KillPlayer(new CustomReasonDamageHandler(deathReason));
 		public void ChangeModel(RoleType newModel)
 		{
 			GameObject gameObject = GameObject;
