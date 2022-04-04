@@ -1,4 +1,4 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using MEC;
 using Qurre.API;
 using System;
@@ -47,7 +47,7 @@ namespace Qurre
 
 			foreach (string mod in Directory.GetFiles(PluginsDirectory))
 			{
-                try
+				try
 				{
 					Log.Debug($"Loading {mod}");
 					byte[] file = global::Loader.ReadFile(mod);
@@ -125,23 +125,23 @@ namespace Qurre
 			}
 		}
 		public static bool CheckPlugin(Plugin plugin)
-        {
+		{
 			var needed = plugin.NeededQurreVersion;
 
 			if (Version.Major != needed.Major)
-            {
+			{
 				if (Version.Major > needed.Major)
-                {
+				{
 					Log.Warn(string.Format("Plugin {0} not loaded because he is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
 					return false;
-                }
-				
+				}
+
 				if (Version.Major < needed.Major)
-                {
+				{
 					Log.Warn(string.Format("Plugin {0} not loaded because your Qurre version is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
 					return false;
 				}
-            }
+			}
 			else if (Version.Minor != needed.Minor)
 			{
 				if (Version.Minor > needed.Minor)
