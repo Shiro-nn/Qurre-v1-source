@@ -110,6 +110,9 @@
     <Compile Include="API\Addons\Audio\AudioStatusType.cs" />
     <Compile Include="API\Addons\Audio\AudioExtensions.cs" />
     <Compile Include="API\Addons\Audio\IMicrophone.cs" />
+    <Compile Include="API\Addons\Models\ModelPickup.cs" />
+    <Compile Include="API\Addons\Models\ModelBot.cs" />
+    <Compile Include="API\Addons\Models\ModelBody.cs" />
     <Compile Include="API\Addons\Prefabs.cs" />
     <Compile Include="API\Addons\ListConfigs.cs" />
     <Compile Include="API\Addons\Config.cs" />
@@ -147,6 +150,8 @@
     <Compile Include="API\Modules\CustomConfigsManager.cs" />
     <Compile Include="API\Modules\ConfigManager.cs" />
     <Compile Include="API\Objects\AuthType.cs" />
+    <Compile Include="API\Objects\CandyType.cs" />
+    <Compile Include="API\Objects\HotKeyType.cs" />
     <Compile Include="API\Objects\TargetPrefabs.cs" />
     <Compile Include="API\Objects\LockerPrefabs.cs" />
     <Compile Include="API\Objects\Scp079SpeakerType.cs" />
@@ -186,7 +191,6 @@
     <Compile Include="API\Objects\MovementDirection.cs" />
     <Compile Include="API\Objects\ScpAttackType.cs" />
     <Compile Include="API\Objects\RoomType.cs" />
-    <Compile Include="API\Objects\KeycardPermissions.cs" />
     <Compile Include="API\Objects\RadioStatusSettings.cs" />
     <Compile Include="API\Objects\RadioStatus.cs" />
     <Compile Include="API\Objects\ItemState.cs" />
@@ -253,6 +257,7 @@
     <Compile Include="Patches\Events\Effects\ChangeIntensity.cs" />
     <Compile Include="Patches\Events\Map\ConvertUnitName.cs" />
     <Compile Include="Patches\Events\player\ChangeSpectate.cs" />
+    <Compile Include="Patches\Events\player\HotKeyPress.cs" />
     <Compile Include="Patches\Events\player\InteractScp330.cs" />
     <Compile Include="Patches\Events\player\EatingScp330.cs" />
     <Compile Include="Patches\Events\player\Jump.cs" />
