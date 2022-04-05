@@ -14,8 +14,6 @@ namespace Qurre
         internal static bool Better268 => Plugin.Config.GetBool("Qurre_Better268", false, "SCP 079 & SCP 096 will not see the wearer of SCP 268");
         internal static bool LateJoinSpawn => Plugin.Config.GetBool("Qurre_LateJoinSpawn", true, "If enabled, will spawn those who entered after the start of the round");
         internal static string ReloadAccess => Plugin.Config.GetString("Qurre_ReloadAccess", "owner, 746538986@steam,309800126721@discord", "Those who can use the \"reload\" command");
-        public static int TicksMinutes { get; set; }
-        internal static short Ticks { get; set; }
         public static void QurreLoad()
         {
             Log.Info($"Initializing Qurre...");

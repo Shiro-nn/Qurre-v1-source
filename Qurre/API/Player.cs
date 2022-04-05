@@ -22,9 +22,6 @@ using PlayerStatsSystem;
 using Qurre.API.Addons;
 using InventorySystem.Items.Firearms;
 using Firearm = Qurre.API.Controllers.Items.Firearm;
-using MEC;
-using InventorySystem.Items.Usables.Scp330;
-
 namespace Qurre.API
 {
 	public class Player
@@ -47,7 +44,7 @@ namespace Qurre.API
 			Scp079Controller = new Scp079(this);
 			Scp096Controller = new Scp096(this);
 			Scp106Controller = new Scp106(this);
-			Scp173Controller = new Scp173(this);
+			Scp173Controller = new Scp173();
 			Broadcasts = new ListBroadcasts();
 			Ammo = new AmmoBoxManager(this);
 			BlockSpawnTeleport = false;
@@ -173,7 +170,7 @@ namespace Qurre.API
 		public bool Overwatch
 		{
 			get => ServerRoles.OverwatchEnabled;
-			set => ServerRoles.SetOverwatchStatus(value);
+			set => ServerRoles.UserCode_TargetSetOverwatch(NetworkIdentity.connectionToClient, value);
 		}
 		public Player Cuffer
 		{
@@ -301,7 +298,7 @@ namespace Qurre.API
 			get => ClassManager.GodMode;
 			set => ClassManager.GodMode = value;
 		}
-	public float Hp
+		public float Hp
 		{
 			get => PlayerStats.StatModules[0].CurValue;
 			set
@@ -320,22 +317,18 @@ namespace Qurre.API
 		}
 		public float Ahp
 		{
-			get => ReferenceHub.playerStats.GetModule<AhpStat>().CurValue;
+			get => PlayerStats.StatModules[1].CurValue;
 			set
 			{
 				if (value > MaxAhp)
 					MaxAhp = Mathf.CeilToInt(value);
-				foreach (var process in this.AhpActiveProcesses) process.CurrentAmount = value;
+				PlayerStats.StatModules[1].CurValue = value;
 			}
 		}
 		public float MaxAhp
 		{
 			get => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar;
 			set => ((AhpStat)PlayerStats.StatModules[1])._maxSoFar = value;
-		}
-		public void AddAhp(float Amount,float Limit,float Decay = 0,float Efficacy = 0.7f,float Sustain = 0,bool Persistant =false)
-        {
-			rh.playerStats.GetModule<AhpStat>().ServerAddProcess(Amount, Limit, Decay, Efficacy, Sustain, Persistant);
 		}
 		public List<AhpStat.AhpProcess> AhpActiveProcesses
 		{
@@ -783,8 +776,8 @@ namespace Qurre.API
 		public void Ban(int duration, string reason, string issuer = "API") => PlayerManager.localPlayer.GetComponent<BanPlayer>().BanUser(GameObject, duration, reason, issuer, false);
 		public void Kick(string reason, string issuer = "API") => Ban(0, reason, issuer);
 		public void Disconnect(string reason = null) => ServerConsole.Disconnect(GameObject, string.IsNullOrEmpty(reason) ? "" : reason);
-		public void Kill(DeathTranslation deathReason) => PlayerStats.KillPlayer(new UniversalDamageHandler(-1, deathReason));
-		public void Kill(string deathReason = "") => PlayerStats.KillPlayer(new CustomReasonDamageHandler(deathReason));
+		public void Kill(DeathTranslation deathReason) => PlayerStats.DealDamage(new UniversalDamageHandler(-1, deathReason));
+		public void Kill(string deathReason = "") => PlayerStats.DealDamage(new CustomReasonDamageHandler(deathReason));
 		public void ChangeModel(RoleType newModel)
 		{
 			GameObject gameObject = GameObject;
@@ -865,7 +858,13 @@ namespace Qurre.API
 		}
 		public void ChangeEffectIntensity<T>(byte intensity) where T : PlayerEffect => PlayerEffectsController.ChangeEffectIntensity<T>(intensity);
 		public void ChangeEffectIntensity(string effect, byte intensity, float duration = 0) => PlayerEffectsController.ChangeByString(effect, intensity, duration);
-		public void ShowHint(string text, float duration = 3f, HintEffect[] Effect = null) => HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, Effect, duration));
+		public void ShowHint(string text, float duration = 1f) =>
+			HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
+		public void ShowHint(string text, bool blink, float duration = 1f)
+		{
+			if (blink) HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, HintEffectPresets.FadeInAndOut(0f, 1f, 0f), duration));
+			else HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, null, duration));
+		}
 		public void BodyDelete()
 		{
 			foreach (var doll in Map.Ragdolls.Where(x => x.Owner == this)) doll.Destroy();
@@ -1040,70 +1039,9 @@ namespace Qurre.API
 			DoorType door = (DoorType)UnityEngine.Random.Range(1, 42);
 			Position = Extensions.GetDoor(door).Position + Vector3.up;
 		}
-		public void Heal(float Amount, bool IsOverride)
-		{
-			if (IsOverride)
-			{
-				Hp += Amount;
-			}
-			else
-			{
-				((HealthStat)rh.playerStats.StatModules[0]).ServerHeal(Amount);
-			}
-		}
-		public bool Addcandy(CandyType Type)
-        {
-			var candyType = CandyKindID.None;
-			switch (Type)
-            {
-				case CandyType.None:candyType = CandyKindID.None;break;
-				case CandyType.Red:candyType = CandyKindID.Red; break;
-				case CandyType.Blue:candyType = CandyKindID.Blue; break;
-				case CandyType.Green:candyType= CandyKindID.Green; break;
-				case CandyType.Purple:candyType= CandyKindID.Purple; break;
-				case CandyType.Pink:candyType= CandyKindID.Pink; break;
-            }
-			if (Scp330Bag.TryGetBag(rh, out Scp330Bag bag))
-			{
-				bool result = bag.TryAddSpecific(candyType);
-				if (result)
-					bag.ServerRefreshBag();
-				return result;
-			}
-			if (Player.Get(rh).AllItems.Count > 7)
-				return false;
-			Scp330 scp330 = (Scp330)Player.Get(rh).AddItem(ItemType.SCP330);
-			Timing.CallDelayed(0.02f, () =>
-			{
-				foreach (CandyKindID item in scp330.Candies)
-					scp330.Remove(item);
-			});
-			scp330.Add(candyType);
-			return true;
-		}
 		public float DistanceTo(Player player) => Vector3.Distance(Position, player.Position);
 		public float DistanceTo(Vector3 position) => Vector3.Distance(Position, position);
 		public float DistanceTo(GameObject Object) => Vector3.Distance(Position, Object.transform.localPosition);
-		public string CustomInfoString => ReferenceHub.nicknameSync._customPlayerInfoString;
-		public static IEnumerator<float> CountTicks()
-		{
-			for (; ; )
-			{
-				Loader.Ticks += 1;
-				yield return float.NegativeInfinity;
-			}
-		}
-
-		public static IEnumerator<float> CountTicksUpdate()
-		{
-			for (; ; )
-			{
-				Loader.TicksMinutes = (int)(Loader.Ticks / 5);
-				Loader.Ticks = 0;
-				yield return Timing.WaitForSeconds(5f);
-			}
-		}
-		public int TransactionsPerSeconds { get; } = Loader.TicksMinutes;
 		public class AmmoBoxManager
 		{
 			private readonly Player player;

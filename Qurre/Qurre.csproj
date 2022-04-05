@@ -48,7 +48,7 @@
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>..\..\Qurre\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="CommandSystem.Core">
       <HintPath>..\lib\CommandSystem.Core.dll</HintPath>
@@ -57,7 +57,7 @@
       <HintPath>..\lib\DissonanceVoip_publicized.dll</HintPath>
     </Reference>
     <Reference Include="Mirror_publicized">
-      <HintPath>..\..\Qurre\Mirror_publicized.dll</HintPath>
+      <HintPath>..\lib\Mirror_publicized.dll</HintPath>
     </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>..\lib\MongoDB.Bson.dll</HintPath>
@@ -110,7 +110,6 @@
     <Compile Include="API\Addons\Audio\AudioStatusType.cs" />
     <Compile Include="API\Addons\Audio\AudioExtensions.cs" />
     <Compile Include="API\Addons\Audio\IMicrophone.cs" />
-    <Compile Include="API\Addons\Permission.cs" />
     <Compile Include="API\Addons\Prefabs.cs" />
     <Compile Include="API\Addons\ListConfigs.cs" />
     <Compile Include="API\Addons\Config.cs" />
@@ -124,7 +123,6 @@
     <Compile Include="API\Addons\Models\ModelLight.cs" />
     <Compile Include="API\Addons\Models\ModelPrimitive.cs" />
     <Compile Include="API\Addons\Models\Model.cs" />
-    <Compile Include="API\Addons\Translation.cs" />
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
     <Compile Include="API\Controllers\Bot.cs" />
@@ -376,8 +374,6 @@
     <Compile Include="Patches\Events\Round\Waiting.cs" />
     <Compile Include="Patches\Events\Report\Cheater.cs" />
     <Compile Include="Patches\Events\Report\Local.cs" />
-    <Compile Include="Permissions\Extensions.cs" />
-    <Compile Include="Permissions\Instance.cs" />
     <Compile Include="Plugin.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Loader.cs" />
@@ -386,6 +382,5 @@
   <ItemGroup>
     <Content Include="qurre_ol.ico" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,5 @@
 using HarmonyLib;
 using MEC;
-using Qurre.API;
 using System;
 using System.Collections.Generic;
 //using System.Diagnostics;
@@ -13,7 +12,7 @@ namespace Qurre
 	public static class PluginManager
 	{
 		public static readonly List<Plugin> plugins = new();
-		public static Version Version { get; } = new Version(1, 13, 1);
+		public static Version Version { get; } = new Version(1, 13, 0);
 		//private static string Domain { get; } = "localhost"; //qurre.team
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -47,7 +46,7 @@ namespace Qurre
 
 			foreach (string mod in Directory.GetFiles(PluginsDirectory))
 			{
-				try
+                try
 				{
 					Log.Debug($"Loading {mod}");
 					byte[] file = global::Loader.ReadFile(mod);
@@ -107,12 +106,11 @@ namespace Qurre
 						continue;
 					}
 
-					if (!CheckPlugin(p))
+					if (Version < p.NeededQurreVersion)
 					{
 						Log.Warn($"Plugin {p.Name} not loaded. Requires Qurre version at least {p.NeededQurreVersion}, your version: {Version}");
 						continue;
 					}
-
 					p.Assembly = assembly;
 
 					plugins.Add(p);
@@ -123,41 +121,6 @@ namespace Qurre
 			{
 				Log.Error($"An error occurred while processing {assembly.FullName}\n{ex}");
 			}
-		}
-		public static bool CheckPlugin(Plugin plugin)
-		{
-			var needed = plugin.NeededQurreVersion;
-
-			if (Version.Major != needed.Major)
-			{
-				if (Version.Major > needed.Major)
-				{
-					Log.Warn(string.Format("Plugin {0} not loaded because he is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
-					return false;
-				}
-
-				if (Version.Major < needed.Major)
-				{
-					Log.Warn(string.Format("Plugin {0} not loaded because your Qurre version is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
-					return false;
-				}
-			}
-			else if (Version.Minor != needed.Minor)
-			{
-				if (Version.Minor > needed.Minor)
-				{
-					Log.Warn(string.Format("Plugin {0} not loaded because he is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
-					return false;
-				}
-
-				if (Version.Minor < needed.Minor)
-				{
-					Log.Warn(string.Format("Plugin {0} not loaded because your Qurre version is outdated. Qurre Version: {1}. Needed Version: {2}.", plugin.Name, needed, Version.ToString(3)));
-					return false;
-				}
-			}
-
-			return true;
 		}
 		public static void Enable()
 		{
@@ -217,8 +180,6 @@ namespace Qurre
 				UnPatchMethods();
 
 				Timing.RunCoroutine(LoadPlugins());
-				Timing.RunCoroutine(Player.CountTicks());
-				Timing.RunCoroutine(Player.CountTicksUpdate());
 			}
 			catch (Exception ex)
 			{
