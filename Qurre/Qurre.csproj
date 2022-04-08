@@ -19,7 +19,7 @@
     <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -275,6 +275,7 @@
     <Compile Include="Patches\Events\SCPs\Scp079\Interact.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\PryGate.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\PreWindup.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp106\PocketEscape.cs" />
     <Compile Include="Patches\Events\SCPs\Scp173\TantrumPlace.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemPickup.cs" />
     <Compile Include="Patches\Events\SCPs\Scp914\UpgradedItemInventory.cs" />
@@ -363,7 +364,7 @@
     <Compile Include="Patches\Events\SCPs\Scp096\CalmDown.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\AddTarget.cs" />
     <Compile Include="Patches\Events\SCPs\Scp096\Enrage.cs" />
-    <Compile Include="Patches\Events\SCPs\Scp106\PocketEscape.cs" />
+    <Compile Include="Patches\Events\SCPs\Scp106\PocketTryEscape.cs" />
     <Compile Include="Patches\Events\SCPs\Scp106\PocketEnter.cs" />
     <Compile Include="Patches\Events\SCPs\Scp106\FemurBreakerEnter.cs" />
     <Compile Include="Patches\Events\SCPs\Scp106\Contain.cs" />

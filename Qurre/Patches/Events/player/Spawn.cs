@@ -56,9 +56,9 @@ namespace Qurre.Patches.Events.player
                         }
                         if (__pl == null) __pl = API.Server.Host;
                         else __pl.Zoomed = false;
-                        var ev = new SpawnEvent(__pl, __instance.CurClass, pos, rotY);
+                        var ev = new SpawnEvent(__pl, __instance.CurClass, pos, new PlayerMovementSync.PlayerRotation(0f, rotY));
                         Qurre.Events.Invoke.Player.Spawn(ev);
-                        if (!ev.Player.BlockSpawnTeleport) __instance._pms.OnPlayerClassChange(ev.Position, ev.RotationY);
+                        if (!ev.Player.BlockSpawnTeleport) __instance._pms.OnPlayerClassChange(ev.Position, ev.Rotation);
                         else
                         {
                             ev.Player.BlockSpawnTeleport = false;
