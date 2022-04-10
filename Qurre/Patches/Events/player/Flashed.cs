@@ -20,7 +20,6 @@ namespace Qurre.Patches.Events.player
 				float num = vector.magnitude;
 				float num2 = __instance._deafenDurationOverDistance.Evaluate(num);
 				if (num2 > __instance._minimalEffectDuration) target.EnableEffect<Deafened>(num2, true);
-				if (Physics.Linecast(__instance.transform.position, hub.PlayerCameraReference.position, __instance._blindingMask)) return false;
 				if (hub.transform.position.y > 900f) num /= __instance._surfaceZoneDistanceIntensifier;
 				float num3 = __instance._blindingOverDistance.Evaluate(num) * __instance._blindingOverDot.Evaluate(Vector3.Dot(hub.PlayerCameraReference.forward, vector.normalized));
 				bool allowed = false;

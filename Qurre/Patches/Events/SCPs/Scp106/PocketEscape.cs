@@ -1,82 +1,114 @@
-﻿using Achievements;
-using CustomPlayerEffects;
+﻿using System.Collections.Generic;
+using System.Linq;
 using HarmonyLib;
+using Mirror;
+using UnityEngine;
+using Qurre.API.Events;
 using MapGeneration;
 using Qurre.API;
-using Qurre.API.Events;
-using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+using Qurre.API.Objects;
+using LightContainmentZoneDecontamination;
+using Achievements;
+using PlayerStatsSystem;
 namespace Qurre.Patches.Events.SCPs.Scp106
 {
-    [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.SuccessEscape))]
+    [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnTriggerEnter))]
     internal static class PocketEscape
     {
-        private static bool Prefix(PocketDimensionTeleport __instance, ReferenceHub hub)
+        private static bool Prefix(PocketDimensionTeleport __instance, Collider other)
         {
             try
             {
-                if (!(hub.scp106PlayerScript.GrabbedPosition == Vector3.zero))
-                {
-                    _ = hub.scp106PlayerScript.GrabbedPosition;
-                }
-                else
-                {
-                    hub.scp106PlayerScript.GrabbedPosition = RoomIdentifier.AllRoomIdentifiers.ElementAt(Random.Range(0, RoomIdentifier.AllRoomIdentifiers.Count - 1)).transform.position;
-                }
+                if (!NetworkServer.active) return false;
 
-                RoomIdentifier roomIdentifier = RoomIdUtils.RoomAtPosition(hub.scp106PlayerScript.GrabbedPosition);
-                if (roomIdentifier.Zone == FacilityZone.Surface)
+                var component = other.GetComponent<NetworkIdentity>();
+                if (component == null) return false;
+                var type = __instance._type;
+                var pl = Player.Get(component?.gameObject);
+                if (pl == null) return false;
+                if (type == PocketDimensionTeleport.PDTeleportType.Killer || BlastDoor.OneDoor.isClosed)
                 {
-                    ReferenceHub referenceHub = null;
-                    foreach (ReferenceHub value in ReferenceHub.GetAllHubs().Values)
+                    if (type == PocketDimensionTeleport.PDTeleportType.Killer)
                     {
-                        if (value.characterClassManager.CurClass == RoleType.Scp106)
+                        var ev = new PocketFailEscapeEvent(pl, __instance);
+                        Qurre.Events.Invoke.Scp106.PocketFailEscape(ev);
+                        if (!ev.Allowed) return false;
+                    }
+                    pl.Damage(9999, DeathTranslations.PocketDecay);
+                }
+                else if (__instance._type == PocketDimensionTeleport.PDTeleportType.Exit)
+                {
+                    if (pl.Scp106PlayerScript.GrabbedPosition != Vector3.zero) _ = pl.Scp106PlayerScript.GrabbedPosition;
+                    else
+                    {
+                        List<Vector3> tp = new();
+                        bool flag = false;
+                        DecontaminationController.DecontaminationPhase[] dP = DecontaminationController.Singleton.DecontaminationPhases;
+                        if (DecontaminationController.GetServerTime > dP[dP.Length - 2].TimeTrigger) flag = true;
+                        var _cfg = GameCore.ConfigFile.ServerConfig.GetStringList(flag ? "pd_random_exit_rids_after_decontamination" : "pd_random_exit_rids");
+                        foreach (GameObject gO in GameObject.FindGameObjectsWithTag("RoomID"))
                         {
-                            referenceHub = hub;
-                            break;
+                            var _rid = gO.GetComponent<Rid>();
+                            if (_rid != null && _cfg.Contains(_rid.id)) tp.Add(gO.transform.position);
+                        }
+                        if (_cfg.Contains("PORTAL"))
+                            foreach (Scp106PlayerScript _script in Object.FindObjectsOfType<Scp106PlayerScript>())
+                                if (_script.portalPosition != Vector3.zero)
+                                    tp.Add(_script.portalPosition);
+                        if (tp == null || tp.Count == 0)
+                            foreach (GameObject _go in GameObject.FindGameObjectsWithTag("PD_EXIT"))
+                                tp.Add(_go.transform.position);
+                        pl.Scp106PlayerScript.GrabbedPosition = tp[Random.Range(0, tp.Count)];
+                        pl.Scp106PlayerScript.GrabbedPosition.y += 2f;
+                    }
+                    RoomIdentifier roomIdentifier = RoomIdUtils.RoomAtPosition(pl.Scp106PlayerScript.GrabbedPosition);
+                    if (roomIdentifier.Zone == FacilityZone.Surface)
+                    {
+                        foreach (var value in Player.List)
+                        {
+                            if (value.Role == RoleType.Scp106)
+                            {
+                                SafeTeleportPosition componentInChildren = roomIdentifier.GetComponentInChildren<SafeTeleportPosition>();
+                                float num = Vector3.Distance(value.Position, componentInChildren.SafePositions[0].position);
+                                float num2 = Vector3.Distance(value.Position, componentInChildren.SafePositions[1].position);
+                                var pos = (num2 < num) ? componentInChildren.SafePositions[0].position : componentInChildren.SafePositions[1].position;
+                                var ev = new PocketEscapeEvent(pl, pos);
+                                Qurre.Events.Invoke.Scp106.PocketEscape(ev);
+                                if (!ev.Allowed) return false;
+                                pos = ev.TeleportPosition;
+                                pl.Movement.OverridePosition(pos, Random.value * 360f);
+                                break;
+                            }
                         }
                     }
-
-                    Vector3 a = ((referenceHub == null) ? Vector3.zero : referenceHub.playerMovementSync.RealModelPosition);
-                    SafeTeleportPosition componentInChildren = roomIdentifier.GetComponentInChildren<SafeTeleportPosition>();
-                    float num = Vector3.Distance(a, componentInChildren.SafePositions[0].position);
-                    float num2 = Vector3.Distance(a, componentInChildren.SafePositions[1].position);
-                    var ev = new PocketEscapeEvent(Player.Get(hub), (num2 < num) ? componentInChildren.SafePositions[0].position : componentInChildren.SafePositions[1].position);
-                    Qurre.Events.Invoke.Scp106.PocketEscape(ev);
-                    if (!ev.Allowed) return false;
-                    hub.playerMovementSync.OverridePosition(ev.TeleportPosition, new PlayerMovementSync.PlayerRotation(null, Random.value * 360f));
-                }
-                else
-                {
-                    HashSet<RoomIdentifier> hashSet = RoomIdUtils.FindRooms(RoomName.Unnamed, roomIdentifier.Zone, RoomShape.Undefined);
-                    while (hashSet.Count > 0)
+                    else
                     {
-                        RoomIdentifier roomIdentifier2 = hashSet.ElementAt(Random.Range(0, hashSet.Count));
-                        Vector3 position = roomIdentifier2.transform.position;
-                        SafeTeleportPosition componentInChildren2 = roomIdentifier2.GetComponentInChildren<SafeTeleportPosition>();
-                        if (componentInChildren2 != null && componentInChildren2.SafePositions.Length != 0)
+                        HashSet<RoomIdentifier> hashSet = RoomIdUtils.FindRooms(RoomName.Unnamed, roomIdentifier.Zone, RoomShape.Undefined);
+                        hashSet.RemoveWhere((RoomIdentifier room) => room.Name == RoomName.Hcz106 || room.Name == RoomName.EzGateA ||
+                        room.Name == RoomName.EzGateB || (room.Zone == FacilityZone.LightContainment && room.Shape == RoomShape.Curve));
+                        while (hashSet.Count > 0)
                         {
-                            position = componentInChildren2.SafePositions[Random.Range(0, componentInChildren2.SafePositions.Length - 1)].position;
-                        }
+                            RoomIdentifier roomIdentifier2 = hashSet.ElementAt(Random.Range(0, hashSet.Count));
+                            if (PlayerMovementSync.FindSafePosition(roomIdentifier2.transform.position, out Vector3 safePos))
+                            {
+                                var ev = new PocketEscapeEvent(pl, safePos);
+                                Qurre.Events.Invoke.Scp106.PocketEscape(ev);
+                                if (!ev.Allowed) return false;
+                                safePos = ev.TeleportPosition;
+                                pl.Movement.OverridePosition(safePos, Random.value * 360f);
+                                break;
+                            }
 
-                        if (PlayerMovementSync.FindSafePosition(position, out var safePos))
-                        {
-                            var ev = new PocketEscapeEvent(Player.Get(hub), safePos);
-                            Qurre.Events.Invoke.Scp106.PocketEscape(ev);
-                            if (!ev.Allowed) return false;
-                            safePos = ev.TeleportPosition;
-                            hub.playerMovementSync.OverridePosition(safePos, new PlayerMovementSync.PlayerRotation(null, Random.value * 360f));
-                            break;
+                            hashSet.Remove(roomIdentifier2);
                         }
-
-                        hashSet.Remove(roomIdentifier2);
                     }
+                    pl.EnableEffect(EffectType.Disabled, 10f, addDurationIfActive: true);
+                    pl.GetEffect(EffectType.Corroding).Intensity = 0;
+                    AchievementHandlerBase.ServerAchieve(component.connectionToClient, AchievementName.LarryFriend);
                 }
-
-                hub.playerEffectsController.EnableEffect<Disabled>(10f, addDurationIfActive: true);
-                hub.playerEffectsController.GetEffect<Corroding>().Intensity = 0;
-                AchievementHandlerBase.ServerAchieve(hub.networkIdentity.connectionToClient, AchievementName.LarryFriend);
+                ImageGenerator.pocketDimensionGenerator.GenerateRandom();
+                foreach (var larry in Player.List.Where(x => x.Scp106Controller.PocketPlayers.Contains(pl)))
+                    larry.Scp106Controller.PocketPlayers.Remove(pl);
                 return false;
             }
             catch (System.Exception e)

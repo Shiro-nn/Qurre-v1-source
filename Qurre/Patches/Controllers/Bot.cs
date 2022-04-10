@@ -47,17 +47,17 @@ namespace Qurre.Patches.Controllers
             if (player != null && player.Bot) return false;
             return true;
         }
-        public static bool Position(PlayerMovementSync __instance, Vector3 pos, PlayerMovementSync.PlayerRotation? rot = null, bool forceGround = false)
+        public static bool Position(PlayerMovementSync __instance, Vector3 pos, float rot, bool forceGround = false)
         {
             if (!Round.BotSpawned) return true;
             bool error_send = true;
             try
             {
                 try { _ = __instance.transform.localScale; } catch { error_send = false; }
-                if (forceGround && Physics.Raycast(pos, Vector3.down, out var hitInfo, 100f, __instance.CollidableSurfaces))
-                    pos = hitInfo.point + Vector3.up * 1.23f;
-                if (rot.HasValue) __instance.ForceRotation(rot.Value);
+                if (forceGround && Physics.Raycast(pos, Vector3.down, out var raycastHit, 100f, __instance.CollidableSurfaces))
+                    pos = raycastHit.point + Vector3.up * 1.23f * __instance.transform.localScale.y;
                 __instance.ForcePosition(pos);
+                __instance.TargetSetRotation(__instance.connectionToClient, rot);
                 return false;
             }
             catch (Exception e)
