@@ -131,7 +131,7 @@ namespace Qurre.API
 			{
 				if (Bot)
 				{
-					if (ui == null) ui = $"7{UnityEngine.Random.Range(0, 99999999)}{UnityEngine.Random.Range(0, 99999999)}@bot";
+					if (ui is null) ui = $"7{UnityEngine.Random.Range(0, 99999999)}{UnityEngine.Random.Range(0, 99999999)}@bot";
 					return ui;
 				}
 				try
@@ -142,7 +142,7 @@ namespace Qurre.API
 						ui = _;
 						return _;
 					}
-					else return ui;
+					return ui;
 				}
 				catch { return ui; }
 			}
@@ -319,22 +319,26 @@ namespace Qurre.API
 		}
 		public float Ahp
 		{
-			get => PlayerStats.GetModule<AhpStat>().CurValue;
+			get => AhpActiveProcesses.FirstOrDefault()?.CurrentAmount ?? 0f;
 			set
 			{
 				if (value > MaxAhp) MaxAhp = Mathf.CeilToInt(value);
-				foreach (var process in AhpActiveProcesses) process.CurrentAmount = value;
+				var process = AhpActiveProcesses.FirstOrDefault();
+				if (process is not null)
+				{
+					process.Limit = MaxAhp;
+					process.CurrentAmount = value;
+				}
+				else AddAhp(value, MaxAhp);
 			}
 		}
+		private float _maxAhp = 75f;
 		public float MaxAhp
 		{
-			get => PlayerStats.GetModule<AhpStat>()._maxSoFar;
-			set => PlayerStats.GetModule<AhpStat>()._maxSoFar = value;
+			get => _maxAhp;
+			set => _maxAhp = value;
 		}
-		public List<AhpStat.AhpProcess> AhpActiveProcesses
-		{
-			get => PlayerStats.GetModule<AhpStat>()._activeProcesses;
-		}
+		public List<AhpStat.AhpProcess> AhpActiveProcesses => PlayerStats.GetModule<AhpStat>()._activeProcesses;
 		public void AddAhp(float amount, float limit, float decay = 0, float efficacy = 0.7f, float sustain = 0, bool persistant = false) =>
 			PlayerStats.GetModule<AhpStat>().ServerAddProcess(amount, limit, decay, efficacy, sustain, persistant);
 		public ItemIdentifier CurrentItem
@@ -447,7 +451,7 @@ namespace Qurre.API
 			get
 			{
 				if (string.IsNullOrEmpty(ServerRoles.NetworkGlobalBadge)) return string.Empty;
-				return ServerRoles.NetworkGlobalBadge.Split(new string[] { "Badge text: [" }, StringSplitOptions.None)[1].Split(']')[0];
+				return ServerRoles.NetworkGlobalBadge.Split(new string[] { "Badge text: [" }, StringSplitOptions.None)[1]?.Split(']')[0] ?? string.Empty;
 			}
 		}
 		public int Ping => Mirror.LiteNetLib4Mirror.LiteNetLib4MirrorServer.Peers[Connection.connectionId].Ping;
@@ -605,23 +609,6 @@ namespace Qurre.API
 				netId = component.netId,
 				componentIndex = component.ComponentIndex,
 				functionHash = typeof(AlphaWarheadController).FullName.GetStableHashCode() * 503 + "RpcShake".GetStableHashCode(),
-				payload = writer.ToArraySegment()
-			};
-			Connection.Send(msg);
-			NetworkWriterPool.Recycle(writer);
-		}
-		public void PlaceBlood(Vector3 pos, int type = 1, float size = 2f)
-		{
-			var component = ClassManager;
-			var writer = NetworkWriterPool.GetWriter();
-			writer.WriteVector3(pos);
-			writer.WriteInt32(type);
-			writer.WriteSingle(size);
-			var msg = new RpcMessage
-			{
-				netId = component.netId,
-				componentIndex = component.ComponentIndex,
-				functionHash = typeof(CharacterClassManager).FullName.GetStableHashCode() * 503 + "RpcPlaceBlood".GetStableHashCode(),
 				payload = writer.ToArraySegment()
 			};
 			Connection.Send(msg);
@@ -907,7 +894,7 @@ namespace Qurre.API
 		{
 			GameObject localPlayer = PlayerManager.localPlayer;
 			NetworkIdentity component = localPlayer.GetComponent<NetworkIdentity>();
-			ObjectDestroyMessage msg = default(ObjectDestroyMessage);
+			ObjectDestroyMessage msg = default;
 			msg.netId = component.netId;
 			NetworkConnection connectionToClient = GameObject.GetComponent<NetworkIdentity>().connectionToClient;
 			if (GameObject != localPlayer)
@@ -922,39 +909,17 @@ namespace Qurre.API
 
 		private Team GetTeam(RoleType rt)
 		{
-			switch (rt)
+			return rt switch
 			{
-				case RoleType.ChaosConscript:
-				case RoleType.ChaosMarauder:
-				case RoleType.ChaosRepressor:
-				case RoleType.ChaosRifleman:
-					return Team.CHI;
-				case RoleType.Scientist:
-					return Team.RSC;
-				case RoleType.ClassD:
-					return Team.CDP;
-				case RoleType.Scp049:
-				case RoleType.Scp93953:
-				case RoleType.Scp93989:
-				case RoleType.Scp0492:
-				case RoleType.Scp079:
-				case RoleType.Scp096:
-				case RoleType.Scp106:
-				case RoleType.Scp173:
-					return Team.SCP;
-				case RoleType.Spectator:
-					return Team.RIP;
-				case RoleType.FacilityGuard:
-				case RoleType.NtfCaptain:
-				case RoleType.NtfPrivate:
-				case RoleType.NtfSergeant:
-				case RoleType.NtfSpecialist:
-					return Team.MTF;
-				case RoleType.Tutorial:
-					return Team.TUT;
-				default:
-					return Team.RIP;
-			}
+				RoleType.ChaosConscript or RoleType.ChaosMarauder or RoleType.ChaosRepressor or RoleType.ChaosRifleman => Team.CHI,
+				RoleType.Scientist => Team.RSC,
+				RoleType.ClassD => Team.CDP,
+				RoleType.Scp049 or RoleType.Scp93953 or RoleType.Scp93989 or RoleType.Scp0492 or RoleType.Scp079 or RoleType.Scp096 or RoleType.Scp106 or RoleType.Scp173 => Team.SCP,
+				RoleType.Spectator => Team.RIP,
+				RoleType.FacilityGuard or RoleType.NtfCaptain or RoleType.NtfPrivate or RoleType.NtfSergeant or RoleType.NtfSpecialist => Team.MTF,
+				RoleType.Tutorial => Team.TUT,
+				_ => Team.RIP,
+			};
 		}
 		private Side GetSide(Team team)
 		{

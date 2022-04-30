@@ -85,9 +85,9 @@ namespace Qurre.API
 		public static Sinkhole GetSinkhole(this SinkholeEnvironmentalHazard hole) => Map.Sinkholes.FirstOrDefault(x => x.EnvironmentalHazard == hole);
 		public static bool TryFind<TSource>(this IEnumerable<TSource> source, out TSource found, Func<TSource, bool> predicate)
 		{
-			foreach(TSource t in source)
-            {
-                if (predicate(t))
+			foreach (TSource t in source)
+			{
+				if (predicate(t))
 				{
 					found = t;
 					return true;

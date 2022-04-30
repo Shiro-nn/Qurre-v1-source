@@ -110,6 +110,7 @@
     <Compile Include="API\Addons\Audio\AudioStatusType.cs" />
     <Compile Include="API\Addons\Audio\AudioExtensions.cs" />
     <Compile Include="API\Addons\Audio\IMicrophone.cs" />
+    <Compile Include="API\Addons\UnitGenerator.cs" />
     <Compile Include="API\Addons\Models\ModelPickup.cs" />
     <Compile Include="API\Addons\Models\ModelBot.cs" />
     <Compile Include="API\Addons\Models\ModelBody.cs" />
@@ -151,6 +152,7 @@
     <Compile Include="API\Modules\ConfigManager.cs" />
     <Compile Include="API\Objects\AuthType.cs" />
     <Compile Include="API\Objects\CandyType.cs" />
+    <Compile Include="API\Objects\BloodType.cs" />
     <Compile Include="API\Objects\HotKeyType.cs" />
     <Compile Include="API\Objects\TargetPrefabs.cs" />
     <Compile Include="API\Objects\LockerPrefabs.cs" />

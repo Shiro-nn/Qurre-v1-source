@@ -10,14 +10,14 @@ namespace Qurre.Patches.Modules
     {
         private static bool Prefix(NineTailedFoxNamingRule __instance, SpawnableTeamType type, out string regular)
         {
-            if (!Round.UnitsToGenerate.TryGetValue(type, out var list) || list.Count == 0)
+            if (!Round.UnitsToGenerate.TryFind(out var list, _type => _type.Team == type) || list.Units.Count == 0)
             {
                 regular = "";
                 return false;
             }
             do
             {
-                regular = list[Random.Range(0, list.Count)] + "-" + Random.Range(0, Round.UnitMaxCode).ToString("00");
+                regular = list.Units[Random.Range(0, list.Units.Count - 1)] + "-" + Random.Range(0, list.MaxCode).ToString("00");
             }
             while (UnitNamingRule.UsedCombinations.Contains(regular));
             __instance.AddCombination(regular, type);

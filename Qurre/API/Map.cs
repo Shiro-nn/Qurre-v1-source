@@ -136,20 +136,20 @@ namespace Qurre.API
 		}
 		public static void PlayCIEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
-		public static void PlaceBlood(Vector3 position, int type, float size) => PlayerManager.localPlayer.GetComponent<CharacterClassManager>().RpcPlaceBlood(position, type, size);
+		public static void PlaceBlood(Vector3 position, BloodType type, float size = 1f) => PlayerManager.hostHub.characterClassManager.RpcPlaceBlood(position, (int)type, size);
 		public static AmbientSoundPlayer AmbientSoundPlayer { get; private set; }
 		public static void PlayAmbientSound() => AmbientSoundPlayer.GenerateRandom();
 		public static void PlayAmbientSound(int id)
 		{
 			if (id >= AmbientSoundPlayer.clips.Length)
-				throw new IndexOutOfRangeException($"[Qurre.API.Map.PlayAmbientSound] no, no, no, no more than {AmbientSoundPlayer.clips.Length} sounds.");
+				throw new IndexOutOfRangeException($"[Qurre.API.Map.PlayAmbientSound] no, no, no; no more than {AmbientSoundPlayer.clips.Length} sounds.");
 			AmbientSoundPlayer.RpcPlaySound(AmbientSoundPlayer.clips[id].index);
 		}
 		public static void ShowHint(string message, float duration, Hints.HintEffect[] effect = null)
 		{
 			foreach (Player player in Player.List) player.ShowHint(message, duration, effect);
 		}
-		public static void AnnounceNtfEntrance(int scpsLeft, int mtfNumber, char mtfLetter)
+		public static void AnnounceMtfEntrance(int scpsLeft, int mtfNumber, char mtfLetter)
 		{
 			if (scpsLeft == 0) Cassie.Send($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining NoSCPsLeft", true, true, true);
 			else Cassie.Send($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining AwaitingRecontainment {scpsLeft} scpsubjects", true, true, true);
@@ -281,5 +281,8 @@ namespace Qurre.API
 			}
 			catch { }
 		}
+
+		[Obsolete("Use \"AnnounceMtfEntrance\"")]
+		public static void AnnounceNtfEntrance(int scpsLeft, int mtfNumber, char mtfLetter) => AnnounceMtfEntrance(scpsLeft, mtfNumber, mtfLetter);
 	}
 }

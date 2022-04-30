@@ -1,4 +1,5 @@
 using GameCore;
+using Qurre.API.Addons;
 using Qurre.API.Objects;
 using Respawning;
 using Respawning.NamingRules;
@@ -11,8 +12,8 @@ namespace Qurre.API
     public static class Round
     {
         internal static bool BotSpawned { get; set; } = false;
-        private static RespawnManager rm => RespawnManager.Singleton;
-        private static RoundSummary rs => RoundSummary.singleton;
+        private static RespawnManager _rm => RespawnManager.Singleton;
+        private static RoundSummary _rs => RoundSummary.singleton;
         internal static bool ForceEnd { get; set; } = false;
         public static TimeSpan ElapsedTime => RoundStart.RoundLength;
         public static DateTime StartedTime => DateTime.Now - ElapsedTime;
@@ -20,11 +21,11 @@ namespace Qurre.API
         public static int ActiveGenerators { get; internal set; } = 0;
         public static float NextRespawn
         {
-            get => rm._timeForNextSequence - (float)rm._stopwatch.Elapsed.TotalSeconds;
-            set => rm._timeForNextSequence = value + (float)rm._stopwatch.Elapsed.TotalSeconds;
+            get => _rm._timeForNextSequence - (float)_rm._stopwatch.Elapsed.TotalSeconds;
+            set => _rm._timeForNextSequence = value + (float)_rm._stopwatch.Elapsed.TotalSeconds;
         }
         public static bool Started => RoundSummary.RoundInProgress();
-        public static bool Ended => rs is not null && rs.RoundEnded;
+        public static bool Ended => _rs is not null && _rs.RoundEnded;
         public static bool Waiting => RoundStart.singleton is not null && !Started && !Ended;
         public static bool Lock
         {
@@ -51,46 +52,43 @@ namespace Qurre.API
             get => RoundSummary.KilledBySCPs;
             set => RoundSummary.KilledBySCPs = value;
         }
-        public static Dictionary<SpawnableTeamType, List<string>> UnitsToGenerate { get; private set; } = new()
+        public static List<UnitGenerator> UnitsToGenerate { get; private set; } = new()
         {
-            { SpawnableTeamType.ChaosInsurgency, new() { } },
-            { SpawnableTeamType.ClassD, new() { } },
+            new(SpawnableTeamType.None, new()),
+            new(SpawnableTeamType.ChaosInsurgency, new()),
+            new(SpawnableTeamType.NineTailedFox, new()
             {
-                SpawnableTeamType.NineTailedFox,
-                new()
-                {
-                    "ALPHA",
-                    "BRAVO",
-                    "CHARLIE",
-                    "DELTA",
-                    "ECHO",
-                    "FOXTROT",
-                    "GOLF",
-                    "HOTEL",
-                    "INDIA",
-                    "JULIETT",
-                    "KILO",
-                    "LIMA",
-                    "MIKE",
-                    "NOVEMBER",
-                    "OSCAR",
-                    "PAPA",
-                    "QUEBEC",
-                    "ROMEO",
-                    "SIERRA",
-                    "TANGO",
-                    "UNIFORM",
-                    "VICTOR",
-                    "WHISKEY",
-                    "XRAY",
-                    "YANKEE",
-                    "ZULU"
-                }
-            },
-            { SpawnableTeamType.Scientist, new() },
-            { SpawnableTeamType.SCP, new() },
-            { SpawnableTeamType.Tutorial, new() },
-            { SpawnableTeamType.None, new() }
+                "ALPHA",
+                "BRAVO",
+                "CHARLIE",
+                "DELTA",
+                "ECHO",
+                "FOXTROT",
+                "GOLF",
+                "HOTEL",
+                "INDIA",
+                "JULIETT",
+                "KILO",
+                "LIMA",
+                "MIKE",
+                "NOVEMBER",
+                "OSCAR",
+                "PAPA",
+                "QUEBEC",
+                "ROMEO",
+                "SIERRA",
+                "TANGO",
+                "UNIFORM",
+                "VICTOR",
+                "WHISKEY",
+                "XRAY",
+                "YANKEE",
+                "ZULU"
+            }),
+            new(SpawnableTeamType.ClassD, new()),
+            new(SpawnableTeamType.Scientist, new()),
+            new(SpawnableTeamType.SCP, new()),
+            new(SpawnableTeamType.Tutorial, new())
         };
         private static int _umc = 20;
         public static int UnitMaxCode
@@ -106,11 +104,11 @@ namespace Qurre.API
         public static void Restart() => RoundRestart.InitiateRoundRestart();
         public static void Start() => CharacterClassManager.ForceRoundStart();
         public static void End() => ForceEnd = true;
-        public static void DimScreen() => rs.RpcDimScreen();
+        public static void DimScreen() => _rs.RpcDimScreen();
         public static void ShowRoundSummary(RoundSummary.SumInfo_ClassList remainingPlayers, LeadingTeam team)
         {
             var timeToRoundRestart = Mathf.Clamp(ConfigFile.ServerConfig.GetInt("auto_round_restart_time", 10), 5, 1000);
-            rs.RpcShowRoundSummary(rs.classlistStart, remainingPlayers, team, EscapedDPersonnel, EscapedScientists, ScpKills, timeToRoundRestart);
+            _rs.RpcShowRoundSummary(_rs.classlistStart, remainingPlayers, team, EscapedDPersonnel, EscapedScientists, ScpKills, timeToRoundRestart);
         }
         public static void AddUnit(TeamUnitType team, string unit)
         {
