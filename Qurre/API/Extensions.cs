@@ -158,82 +158,93 @@ namespace Qurre.API
 				_ => DamageTypesPrimitive.Unknow,
 			};
 		}
+		internal static readonly Dictionary<DamageHandlerBase, DamageTypes> DamagesCached = new();
 		public static DamageTypes GetDamageType(this DamageHandlerBase handler)
 		{
-			switch (handler)
+			if(DamagesCached.TryGetValue(handler, out var damageType)) return damageType;
+			var _type = _get();
+			DamagesCached.Add(handler, _type);
+			return _type;
+			DamageTypes _get()
 			{
-				case UniversalDamageHandler tr:
-					{
-						if (tr.TranslationId == 0) return DamageTypes.Recontainment;
-						if (tr.TranslationId == 1) return DamageTypes.Nuke;
-						if (tr.TranslationId == 2) return DamageTypes.Scp049;
-						if (tr.TranslationId == 4) return DamageTypes.Asphyxiation;
-						if (tr.TranslationId == 5) return DamageTypes.Bleeding;
-						if (tr.TranslationId == 6) return DamageTypes.Falldown;
-						if (tr.TranslationId == 7) return DamageTypes.Pocket;
-						if (tr.TranslationId == 8) return DamageTypes.Decont;
-						if (tr.TranslationId == 9) return DamageTypes.Poison;
-						if (tr.TranslationId == 10) return DamageTypes.Scp207;
-						if (tr.TranslationId == 11) return DamageTypes.SeveredHands;
-						if (tr.TranslationId == 12) return DamageTypes.MicroHid;
-						if (tr.TranslationId == 13) return DamageTypes.Tesla;
-						if (tr.TranslationId == 14) return DamageTypes.Explosion;
-						if (tr.TranslationId == 15) return DamageTypes.Scp096;
-						if (tr.TranslationId == 16) return DamageTypes.Scp173;
-						if (tr.TranslationId == 17) return DamageTypes.Scp939;
-						if (tr.TranslationId == 18) return DamageTypes.Scp0492;
-						if (tr.TranslationId == 20) return DamageTypes.Wall;
-						if (tr.TranslationId == 21) return DamageTypes.Contain;
-						if (tr.TranslationId == 22) return DamageTypes.FriendlyFireDetector;
-					}
-					break;
-				case FirearmDamageHandler fr:
-					{
-						if (fr.WeaponType == ItemType.GunAK) return DamageTypes.AK;
-						if (fr.WeaponType == ItemType.GunCOM15) return DamageTypes.Com15;
-						if (fr.WeaponType == ItemType.GunCOM18) return DamageTypes.Com18;
-						if (fr.WeaponType == ItemType.GunCrossvec) return DamageTypes.CrossVec;
-						if (fr.WeaponType == ItemType.GunE11SR) return DamageTypes.E11SR;
-						if (fr.WeaponType == ItemType.GunFSP9) return DamageTypes.FSP9;
-						if (fr.WeaponType == ItemType.GunLogicer) return DamageTypes.Logicer;
-						if (fr.WeaponType == ItemType.GunRevolver) return DamageTypes.Revolver;
-						if (fr.WeaponType == ItemType.GunShotgun) return DamageTypes.Shotgun;
-					}
-					break;
-				case ScpDamageHandler sr:
-					{
-						if (sr._translationId == 0) return DamageTypes.Recontainment;
-						if (sr._translationId == 1) return DamageTypes.Nuke;
-						if (sr._translationId == 2) return DamageTypes.Scp049;
-						if (sr._translationId == 4) return DamageTypes.Asphyxiation;
-						if (sr._translationId == 5) return DamageTypes.Bleeding;
-						if (sr._translationId == 6) return DamageTypes.Falldown;
-						if (sr._translationId == 7) return DamageTypes.Pocket;
-						if (sr._translationId == 8) return DamageTypes.Decont;
-						if (sr._translationId == 9) return DamageTypes.Poison;
-						if (sr._translationId == 10) return DamageTypes.Scp207;
-						if (sr._translationId == 11) return DamageTypes.SeveredHands;
-						if (sr._translationId == 12) return DamageTypes.MicroHid;
-						if (sr._translationId == 13) return DamageTypes.Tesla;
-						if (sr._translationId == 14) return DamageTypes.Explosion;
-						if (sr._translationId == 15) return DamageTypes.Scp096;
-						if (sr._translationId == 16) return DamageTypes.Scp173;
-						if (sr._translationId == 17) return DamageTypes.Scp939;
-						if (sr._translationId == 18) return DamageTypes.Scp0492;
-						if (sr._translationId == 20) return DamageTypes.Wall;
-						if (sr._translationId == 21) return DamageTypes.Contain;
-						if (sr._translationId == 22) return DamageTypes.FriendlyFireDetector;
-					}
-					break;
-				case WarheadDamageHandler _: return DamageTypes.Nuke;
-				case Scp096DamageHandler _: return DamageTypes.Scp096;
-				case Scp018DamageHandler _: return DamageTypes.Scp018;
-				case RecontainmentDamageHandler _: return DamageTypes.Recontainment;
-				case MicroHidDamageHandler _: return DamageTypes.MicroHid;
-				case ExplosionDamageHandler _: return DamageTypes.Explosion;
-				default: return DamageTypes.None;
+				switch (handler)
+				{
+					case UniversalDamageHandler tr:
+						{
+							if (tr.TranslationId == 0) return DamageTypes.Recontainment;
+							if (tr.TranslationId == 1) return DamageTypes.Nuke;
+							if (tr.TranslationId == 2) return DamageTypes.Scp049;
+							if (tr.TranslationId == 4) return DamageTypes.Asphyxiation;
+							if (tr.TranslationId == 5) return DamageTypes.Bleeding;
+							if (tr.TranslationId == 6) return DamageTypes.Falldown;
+							if (tr.TranslationId == 7) return DamageTypes.Pocket;
+							if (tr.TranslationId == 8) return DamageTypes.Decont;
+							if (tr.TranslationId == 9) return DamageTypes.Poison;
+							if (tr.TranslationId == 10) return DamageTypes.Scp207;
+							if (tr.TranslationId == 11) return DamageTypes.SeveredHands;
+							if (tr.TranslationId == 12) return DamageTypes.MicroHid;
+							if (tr.TranslationId == 13) return DamageTypes.Tesla;
+							if (tr.TranslationId == 14) return DamageTypes.Explosion;
+							if (tr.TranslationId == 15) return DamageTypes.Scp096;
+							if (tr.TranslationId == 16) return DamageTypes.Scp173;
+							if (tr.TranslationId == 17) return DamageTypes.Scp939;
+							if (tr.TranslationId == 18) return DamageTypes.Scp0492;
+							if (tr.TranslationId == 20) return DamageTypes.Wall;
+							if (tr.TranslationId == 21) return DamageTypes.Contain;
+							if (tr.TranslationId == 22) return DamageTypes.FriendlyFireDetector;
+							if (tr.TranslationId == 23) return DamageTypes.Hypothermia;
+						}
+						break;
+					case FirearmDamageHandler fr:
+						{
+							if (fr.WeaponType == ItemType.GunAK) return DamageTypes.AK;
+							if (fr.WeaponType == ItemType.GunCOM15) return DamageTypes.Com15;
+							if (fr.WeaponType == ItemType.GunCOM18) return DamageTypes.Com18;
+							if (fr.WeaponType == ItemType.GunCrossvec) return DamageTypes.CrossVec;
+							if (fr.WeaponType == ItemType.GunE11SR) return DamageTypes.E11SR;
+							if (fr.WeaponType == ItemType.GunFSP9) return DamageTypes.FSP9;
+							if (fr.WeaponType == ItemType.GunLogicer) return DamageTypes.Logicer;
+							if (fr.WeaponType == ItemType.GunRevolver) return DamageTypes.Revolver;
+							if (fr.WeaponType == ItemType.GunShotgun) return DamageTypes.Shotgun;
+							if (fr.WeaponType == ItemType.ParticleDisruptor) return DamageTypes.ParticleDisruptor;
+						}
+						break;
+					case ScpDamageHandler sr:
+						{
+							if (sr._translationId == 0) return DamageTypes.Recontainment;
+							if (sr._translationId == 1) return DamageTypes.Nuke;
+							if (sr._translationId == 2) return DamageTypes.Scp049;
+							if (sr._translationId == 4) return DamageTypes.Asphyxiation;
+							if (sr._translationId == 5) return DamageTypes.Bleeding;
+							if (sr._translationId == 6) return DamageTypes.Falldown;
+							if (sr._translationId == 7) return DamageTypes.Pocket;
+							if (sr._translationId == 8) return DamageTypes.Decont;
+							if (sr._translationId == 9) return DamageTypes.Poison;
+							if (sr._translationId == 10) return DamageTypes.Scp207;
+							if (sr._translationId == 11) return DamageTypes.SeveredHands;
+							if (sr._translationId == 12) return DamageTypes.MicroHid;
+							if (sr._translationId == 13) return DamageTypes.Tesla;
+							if (sr._translationId == 14) return DamageTypes.Explosion;
+							if (sr._translationId == 15) return DamageTypes.Scp096;
+							if (sr._translationId == 16) return DamageTypes.Scp173;
+							if (sr._translationId == 17) return DamageTypes.Scp939;
+							if (sr._translationId == 18) return DamageTypes.Scp0492;
+							if (sr._translationId == 20) return DamageTypes.Wall;
+							if (sr._translationId == 21) return DamageTypes.Contain;
+							if (sr._translationId == 22) return DamageTypes.FriendlyFireDetector;
+							if (sr._translationId == 23) return DamageTypes.Hypothermia;
+						}
+						break;
+					case WarheadDamageHandler _: return DamageTypes.Nuke;
+					case Scp096DamageHandler _: return DamageTypes.Scp096;
+					case Scp018DamageHandler _: return DamageTypes.Scp018;
+					case RecontainmentDamageHandler _: return DamageTypes.Recontainment;
+					case MicroHidDamageHandler _: return DamageTypes.MicroHid;
+					case ExplosionDamageHandler _: return DamageTypes.Explosion;
+					default: return DamageTypes.None;
+				}
+				return DamageTypes.None;
 			}
-			return DamageTypes.None;
 		}
 		public static ItemType GetItemType(this AmmoType type)
 		{

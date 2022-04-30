@@ -266,6 +266,7 @@ namespace Qurre.API
 			ShootingTargets.Clear();
 			Cameras.Clear();
 			Patches.Events.player.Banned.Cached.Clear();
+			Extensions.DamagesCached.Clear();
 			try { Addons.Models.Model.ClearCache(); } catch { }
 			try
 			{
