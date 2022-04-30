@@ -37,8 +37,7 @@ namespace Qurre.Patches.Events.SCPs.Scp096
                 }
                 if (transform != null)
                 {
-                    float rot = transform.rotation.eulerAngles.y - __instance.Hub.PlayerCameraReference.rotation.eulerAngles.y;
-                    __instance.Hub.playerMovementSync.OverridePosition(transform.position, rot, true);
+                    __instance.Hub.playerMovementSync.OverridePosition(transform.position, new PlayerMovementSync.PlayerRotation(null, transform.rotation.eulerAngles.y), true);
                 }
                 MEC.Timing.RunCoroutine(__instance.MoveThroughGate(gate));
                 MEC.Timing.RunCoroutine(__instance.ResetGateAnim());

@@ -7,16 +7,15 @@ using Qurre.API.Controllers;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
-    [HarmonyPatch(typeof(ThrowableNetworkHandler), nameof(ThrowableNetworkHandler.ServerProcessMessages))]
+    [HarmonyPatch(typeof(ThrowableItem), nameof(ThrowableItem.ServerProcessInitiation))]
     internal static class ThrowItemPatch
     {
-        private static bool Prefix(NetworkConnection conn, ThrowableNetworkHandler.ThrowableItemMessage msg)
+        private static bool Prefix(ThrowableItem __instance)
         {
             try
             {
-                if (!ReferenceHub.TryGetHubNetID(conn.identity.netId, out ReferenceHub hub) ||
-                    hub.inventory.CurItem.SerialNumber != msg.Serial || !(hub.inventory.CurInstance is ThrowableItem)) return false;
-                var ev = new ThrowItemEvent(Player.Get(hub), Item.Get(msg.Serial), msg.Request);
+                if (!__instance.AllowHolster) return false;
+                var ev = new ThrowItemEvent(Player.Get(__instance.Owner), Item.Get(__instance.ItemSerial));
                 Qurre.Events.Invoke.Player.ThrowItem(ev);
                 return ev.Allowed;
             }

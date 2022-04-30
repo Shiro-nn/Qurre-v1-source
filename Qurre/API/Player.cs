@@ -202,7 +202,7 @@ namespace Qurre.API
 		public Vector3 Position
 		{
 			get => rh.playerMovementSync.GetRealPosition();
-			set => rh.playerMovementSync.OverridePosition(value, 0f);
+			set => rh.playerMovementSync.OverridePosition(value);
 		}
 		public Vector2 Rotation
 		{
@@ -698,7 +698,7 @@ namespace Qurre.API
 				if (AttachmentsServerHandler.PlayerPreferences.TryGetValue(ReferenceHub, out var _d) && _d.TryGetValue(itemType, out var _y))
 					firearm.Base.ApplyAttachmentsCode(_y, true);
 				FirearmStatusFlags status = FirearmStatusFlags.MagazineInserted;
-				if (firearm.Base.CombinedAttachments.AdditionalPros.HasFlagFast(AttachmentDescriptiveAdvantages.Flashlight))
+				if (firearm.Base.HasAdvantageFlag(AttachmentDescriptiveAdvantages.Flashlight))
 					status |= FirearmStatusFlags.FlashlightEnabled;
 				firearm.Base.Status = new FirearmStatus(firearm.MaxAmmo, status, firearm.Base.GetCurrentAttachmentsCode());
 			}
