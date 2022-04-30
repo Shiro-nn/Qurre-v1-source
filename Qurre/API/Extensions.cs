@@ -85,14 +85,16 @@ namespace Qurre.API
 		public static Sinkhole GetSinkhole(this SinkholeEnvironmentalHazard hole) => Map.Sinkholes.FirstOrDefault(x => x.EnvironmentalHazard == hole);
 		public static bool TryFind<TSource>(this IEnumerable<TSource> source, out TSource found, Func<TSource, bool> predicate)
 		{
-			var list = source.Where(predicate);
-			if (list.Count() == 0)
-			{
-				found = default;
-				return false;
+			foreach(TSource t in source)
+            {
+                if (predicate(t))
+				{
+					found = t;
+					return true;
+				}
 			}
-			found = list.First();
-			return true;
+			found = default;
+			return false;
 		}
 		public static void UpdateData(this NetworkIdentity identity) => NetworkServer.SendToAll(identity.SpawnMsg());
 		public static SpawnMessage SpawnMsg(this NetworkIdentity identity)
@@ -129,17 +131,17 @@ namespace Qurre.API
 		}
 		public static Player GetAttacker(this DamageHandlerBase handler)
 		{
-			var plz = GetAttackerPLZ(handler);
+			var plz = _getHandler();
 			if (plz == null) return null;
 			return Player.Get(plz.Attacker.Hub);
-		}
-		public static AttackerDamageHandler GetAttackerPLZ(DamageHandlerBase handler)
-		{
-			return handler switch
+			AttackerDamageHandler _getHandler()
 			{
-				AttackerDamageHandler adh2 => adh2,
-				_ => null,
-			};
+				return handler switch
+				{
+					AttackerDamageHandler adh2 => adh2,
+					_ => null,
+				};
+			}
 		}
 		public static DamageTypesPrimitive GetDamageTypesPrimitive(this DamageHandlerBase handler)
 		{
