@@ -630,12 +630,10 @@ namespace Qurre.API
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector2 newRotation = default, string deathReason = "")
 		{
+			ClassManager.RefreshPlyModel(newRole);
+			if (newPosition != default) Position = newPosition;
+			if (newRotation != default) Rotation = newRotation;
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, new CustomReasonDamageHandler(deathReason), this);
-			if (newPosition == default) newPosition = Position;
-			if (newRotation == default) newRotation = Rotation;
-			ChangeModel(newRole);
-			Position = newPosition;
-			Rotation = newRotation;
 		}
 		public Controllers.Broadcast Broadcast(string message, ushort time, bool instant = false) => Broadcast(time, message, instant);
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)

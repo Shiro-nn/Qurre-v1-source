@@ -65,7 +65,7 @@ namespace Qurre.API.Controllers
         }
         public Quaternion Rotation
         {
-            get => Base.transform.localRotation;
+            get => Base.transform.rotation;
             set
             {
                 if (Static) return;
