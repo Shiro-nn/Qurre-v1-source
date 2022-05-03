@@ -94,6 +94,7 @@ namespace Qurre.API
 		public PlayerEffectsController PlayerEffectsController => rh.playerEffectsController;
 		public NicknameSync NicknameSync => rh.nicknameSync;
 		public PlayerMovementSync Movement => rh.playerMovementSync;
+		public string CustomInfo => NicknameSync.CustomPlayerInfo;
 		public string Tag
 		{
 			get => _tag;
@@ -1035,7 +1036,6 @@ namespace Qurre.API
 		public float DistanceTo(Player player) => Vector3.Distance(Position, player.Position);
 		public float DistanceTo(Vector3 position) => Vector3.Distance(Position, position);
 		public float DistanceTo(GameObject Object) => Vector3.Distance(Position, Object.transform.localPosition);
-		public string CustomInfomation => NicknameSync.CustomPlayerInfo;
 		public class AmmoBoxManager
 		{
 			private readonly Player player;

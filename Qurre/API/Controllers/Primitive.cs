@@ -43,6 +43,11 @@ namespace Qurre.API.Controllers
         private Color _color;
         private PrimitiveType _type;
         public bool Static { get; private set; }
+        public byte MovementSmoothing
+        {
+            get => Base.NetworkMovementSmoothing;
+            set => Base.NetworkMovementSmoothing = value;
+        }
         public Vector3 Position
         {
             get => Base.transform.position;
