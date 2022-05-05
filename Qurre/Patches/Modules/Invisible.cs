@@ -21,23 +21,21 @@ namespace Qurre.Patches.Modules
                 if (!NetworkServer.active)
                     return false;
 
-                int ii = __instance._frame; ii++;
-                __instance._frame = ii;
+                __instance._frame++;
 
                 if (__instance._frame != __instance._syncFrequency)
                     return false;
 
                 __instance._frame = 0;
 
-                List<Player> players = Player.List.ToList();
-                players.AddRange(Map.Bots.Select(x => x.Player));
+                var players = Player.Dictionary.Values;
                 __instance._usedData = players.Count;
 
                 if (__instance.ReceivedData is null || __instance.ReceivedData.Length < __instance._usedData)
                     __instance.ReceivedData = new PlayerPositionData[__instance._usedData * 2];
 
                 for (int i = 0; i < __instance._usedData; i++)
-                    __instance.ReceivedData[i] = new PlayerPositionData(players[i].ReferenceHub);
+                    __instance.ReceivedData[i] = new PlayerPositionData(players.ElementAt(i).ReferenceHub);
 
                 if (__instance._transmitBuffer == null || __instance._transmitBuffer.Length < __instance._usedData)
                     __instance._transmitBuffer = new PlayerPositionData[__instance._usedData * 2];
@@ -57,7 +55,7 @@ namespace Qurre.Patches.Modules
                                 continue;
 
                             bool showinvoid = false;
-                            Player playerToShow = players[k];
+                            Player playerToShow = players.ElementAt(k);
                             Vector3 vector = __instance._transmitBuffer[k].position - player.Position;
 
                             if (player.Role == RoleType.Scp173)
