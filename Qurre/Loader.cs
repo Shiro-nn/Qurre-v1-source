@@ -34,10 +34,11 @@ namespace Qurre
             }
 
             PluginManager.ConfigsPath = Path.Combine(PluginManager.ConfigsDirectory, $"{Port}-cfg.yml");
+            Plugin.Config = new Config();
 
             if (!File.Exists(PluginManager.ConfigsPath))
             {
-                File.Create(PluginManager.ConfigsPath).Close();
+                File.Create(PluginManager.ConfigsPath);
                 _ = Log.Debugging;
                 _ = Log.Logging;
                 _ = Log.AllLogging;
@@ -53,7 +54,6 @@ namespace Qurre
                 sw.Close();
             }
 
-            Plugin.Config = new Config();
             Server.DataBase = new API.DataBase.Client();
             CustomNetworkManager.Modded = true;
             Timing.RunCoroutine(PluginManager.LoadPlugins());
