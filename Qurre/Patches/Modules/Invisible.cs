@@ -1,51 +1,69 @@
-﻿using CustomPlayerEffects;
+using CustomPlayerEffects;
 using HarmonyLib;
 using Mirror;
 using PlayableScps;
 using Qurre.API;
 using Qurre.API.Events;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
 namespace Qurre.Patches.Modules
 {
-    [HarmonyPatch(typeof(PlayerPositionManager), nameof(PlayerPositionManager.TransmitData))]
+    [HarmonyPatch(typeof(PlayerPositionManager), "TransmitData")]
     internal static class InvisiblePatch
     {
         internal static bool Prefix(PlayerPositionManager __instance)
         {
             try
             {
-                if (!NetworkServer.active) return false;
+                if (!NetworkServer.active)
+                    return false;
+
                 __instance._frame++;
-                if (__instance._frame != __instance._syncFrequency) return false;
+
+                if (__instance._frame != __instance._syncFrequency)
+                    return false;
+
                 __instance._frame = 0;
+
                 var players = Player.Dictionary.Values;
                 __instance._usedData = players.Count;
-                if (__instance.ReceivedData == null || __instance.ReceivedData.Length < __instance._usedData)
+
+                if (__instance.ReceivedData is null || __instance.ReceivedData.Length < __instance._usedData)
                     __instance.ReceivedData = new PlayerPositionData[__instance._usedData * 2];
-                for (var i = 0; i < __instance._usedData; i++)
+
+                for (int i = 0; i < __instance._usedData; i++)
                     __instance.ReceivedData[i] = new PlayerPositionData(players.ElementAt(i).ReferenceHub);
+
                 if (__instance._transmitBuffer == null || __instance._transmitBuffer.Length < __instance._usedData)
                     __instance._transmitBuffer = new PlayerPositionData[__instance._usedData * 2];
-                foreach (var player in players)
+
+                foreach (Player player in players)
                 {
                     try
                     {
-                        if (player.Connection == null) continue;
+                        if (player.Connection is null)
+                            continue;
+
                         Array.Copy(__instance.ReceivedData, __instance._transmitBuffer, __instance._usedData);
+
                         for (int k = 0; k < __instance._usedData; k++)
                         {
-                            if (player.Role == RoleType.Spectator) continue;
-                            var showinvoid = false;
-                            var playerToShow = players.ElementAt(k);
-                            var vector = __instance._transmitBuffer[k].position - player.Position;
+                            if (player.Role == RoleType.Spectator)
+                                continue;
+
+                            bool showinvoid = false;
+                            Player playerToShow = players.ElementAt(k);
+                            Vector3 vector = __instance._transmitBuffer[k].position - player.Position;
+
                             if (player.Role == RoleType.Scp173)
                             {
                                 if ((playerToShow.Team == Team.SCP && !Loader.ScpTrigger173) || player.Scp173Controller.IgnoredPlayers.Contains(playerToShow) || playerToShow.Invisible)
                                 {
-                                    var posinfo = __instance._transmitBuffer[k];
-                                    var rot = Quaternion.LookRotation(playerToShow.Position - player.Position).eulerAngles.y;
+                                    PlayerPositionData posinfo = __instance._transmitBuffer[k];
+                                    float rot = Quaternion.LookRotation(playerToShow.Position - player.Position).eulerAngles.y;
                                     __instance._transmitBuffer[k] = new PlayerPositionData(posinfo.position, rot, posinfo.playerID);
                                 }
                             }
@@ -69,7 +87,7 @@ namespace Qurre.Patches.Modules
                             }
                             else
                             {
-                                var sqrMagnitude = vector.sqrMagnitude;
+                                float sqrMagnitude = vector.sqrMagnitude;
                                 if (player.Position.y < 800f)
                                 {
                                     if (sqrMagnitude >= 1764f)
@@ -86,7 +104,7 @@ namespace Qurre.Patches.Modules
 
                                 if (playerToShow != null)
                                 {
-                                    var scp = player.ReferenceHub.scpsController.CurrentScp as Scp096;
+                                    Scp096 scp = player.ReferenceHub.scpsController.CurrentScp as Scp096;
                                     if (scp != null && scp.Enraged && !scp.HasTarget(playerToShow.ReferenceHub))
                                     {
                                         showinvoid = true;
@@ -94,25 +112,27 @@ namespace Qurre.Patches.Modules
                                     }
                                     if (playerToShow.ReferenceHub.playerEffectsController.GetEffect<Invisible>().IsEnabled)
                                     {
-                                        var flag = false;
+                                        bool flag = false;
                                         if (scp != null) flag = scp.HasTarget(playerToShow.ReferenceHub);
 
                                         if (player.Role == RoleType.Scp079 || flag)
                                         {
                                             if (Loader.Better268) showinvoid = true;
                                         }
-                                        else showinvoid = true;
+                                        else
+                                        {
+                                            showinvoid = true;
+                                        }
                                     }
                                 }
                             }
 
+AA_001:
+                            PlayerPositionData posData = __instance._transmitBuffer[k];
+                            float rotation = posData.rotation;
+                            Vector3 pos = posData.position;
 
-                        AA_001:
-                            var posData = __instance._transmitBuffer[k];
-                            var rotation = posData.rotation;
-                            var pos = posData.position;
-
-                            var ev = new TransmitPlayerDataEvent(player, playerToShow, pos, rotation, showinvoid);
+                            TransmitPlayerDataEvent ev = new TransmitPlayerDataEvent(player, playerToShow, pos, rotation, showinvoid);
                             Qurre.Events.Invoke.Player.TransmitPlayerData(ev);
                             pos = ev.Position;
                             rotation = ev.Rotation;
@@ -122,12 +142,17 @@ namespace Qurre.Patches.Modules
                             if (showinvoid) __instance._transmitBuffer[k] = new PlayerPositionData(Vector3.up * 6000f, 0.0f, playerToShow.Id);
                             else __instance._transmitBuffer[k] = new PlayerPositionData(pos, rotation, playerToShow.Id);
                         }
-                        var conn = player.Connection;
-                        if (__instance._usedData <= 20) conn.Send(new PositionPPMMessage(__instance._transmitBuffer, (byte)__instance._usedData, 0), 1);
+
+                        NetworkConnection conn = player.Connection;
+
+                        if (__instance._usedData <= 20)
+                        {
+                            conn.Send(new PositionPPMMessage(__instance._transmitBuffer, (byte)__instance._usedData, 0), 1);
+                        }
                         else
                         {
                             byte b = 0;
-                            while ((int)b < __instance._usedData / 20)
+                            while (b < __instance._usedData / 20)
                             {
                                 conn.Send(new PositionPPMMessage(__instance._transmitBuffer, 20, b), 1);
                                 b += 1;
