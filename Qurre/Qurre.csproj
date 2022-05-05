@@ -48,7 +48,7 @@
       <HintPath>..\lib\Assembly-CSharp-firstpass.dll</HintPath>
     </Reference>
     <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>..\..\Qurre-loader\QurreModLoaderPatcher\bin\Debug\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>..\..\Refs\QurreRefs\Assembly-CSharp_publicized.dll</HintPath>
     </Reference>
     <Reference Include="CommandSystem.Core">
       <HintPath>..\lib\CommandSystem.Core.dll</HintPath>
@@ -76,8 +76,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NorthwoodLib">
-      <HintPath>..\lib\NorthwoodLib.dll</HintPath>
+    <Reference Include="NorthwoodLib, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Refs\QurreRefs\NorthwoodLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -252,7 +253,6 @@
     <Compile Include="Patches\Controllers\CassieController.cs" />
     <Compile Include="Patches\Controllers\Bot.cs" />
     <Compile Include="Patches\Controllers\Window.cs" />
-    <Compile Include="Patches\Controllers\ItemController.cs" />
     <Compile Include="Patches\Controllers\LockerInitial.cs" />
     <Compile Include="Patches\Controllers\RagdollController.cs" />
     <Compile Include="Patches\Controllers\Scp173Controller.cs" />
