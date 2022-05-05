@@ -17,7 +17,8 @@ namespace Qurre.API
 		/// </example>
 		///</summary>
 		public Audio(string path, byte volume, bool instant = false, int frameSize = 1920, int sampleRate = 48000) :
-			this(new FileStream(path, FileMode.Open), volume, instant, frameSize, sampleRate) { }
+			this(new FileStream(path, FileMode.Open), volume, instant, frameSize, sampleRate)
+		{ }
 		///<summary>
 		///<para>Plays music from the stream.</para>
 		///<para>Example:</para>
@@ -30,18 +31,17 @@ namespace Qurre.API
 		public Audio(Stream stream, byte volume, bool instant = false, int frameSize = 1920, int sampleRate = 48000)
 		{
 			Microphone = AudioExtensions.DissonanceComms.gameObject.AddComponent<AudioMicrophone>().Create(stream, volume, frameSize, sampleRate, this);
-            if (instant && Audios.Count > 0)
+			if (instant && Audios.Count > 0)
 			{
 				var _cur = Audios.FirstOrDefault();
 				Audios.Remove(_cur);
-				List<Audio> list = new();
-				list.Add(this);
+				List<Audio> list = new() { this };
 				list.AddRange(Audios);
 				Audios = list;
 				_cur.Microphone.StopCapture();
 			}
-            else
-            {
+			else
+			{
 				Audios.Add(this);
 				if (Audios.FirstOrDefault() == this) Microphone.ResetMicrophone(Microphone.Name, true);
 			}

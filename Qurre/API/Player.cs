@@ -35,7 +35,6 @@ namespace Qurre.API
 		private string _tag = "";
 		private Radio radio;
 		private Escape escape;
-		internal readonly List<Item> ItemsValue = new(8);
 		internal List<KillElement> _kills = new();
 		public Player(ReferenceHub RH)
 		{
@@ -352,7 +351,7 @@ namespace Qurre.API
 			get => Inventory.CurInstance;
 			set => Inventory.CurInstance = value;
 		}
-		public IReadOnlyCollection<Item> AllItems => ItemsValue.AsReadOnly();
+		public IEnumerable<Item> AllItems => Inventory.UserInventory.Items.Select(x => Item.Get(x.Value));
 		public ItemType ItemTypeInHand => Inventory.CurItem.TypeId;
 		public Item ItemInHand
 		{
@@ -668,7 +667,7 @@ namespace Qurre.API
 				if (result) bag.ServerRefreshBag();
 				return result;
 			}
-			if (AllItems.Count > 7) return false;
+			if (AllItems.Count() > 7) return false;
 			Scp330 scp330 = (Scp330)AddItem(ItemType.SCP330);
 			Timing.CallDelayed(0.02f, () =>
 			{
@@ -714,7 +713,6 @@ namespace Qurre.API
 			itemBase.OnAdded(itemBase.PickupDropModel);
 			if (itemBase is InventorySystem.Items.Firearms.Firearm)
 				AttachmentsServerHandler.SetupProvidedWeapon(ReferenceHub, itemBase);
-			ItemsValue.Add(item);
 
 			Inventory.SendItemsNextFrame = true;
 			return item;
@@ -736,19 +734,14 @@ namespace Qurre.API
 		public int CountItems(ItemType item) => Inventory.UserInventory.Items.Count(tempItem => tempItem.Value.ItemTypeId == item);
 		public bool RemoveItem(Item item, bool destroy = true)
 		{
-			if (!ItemsValue.Contains(item)) return false;
 			if (!Inventory.UserInventory.Items.ContainsKey(item.Serial))
-			{
-				ItemsValue.Remove(item);
 				return false;
-			}
 			if (destroy) Inventory.ServerRemoveItem(item.Serial, null);
 			else
 			{
 				if (ItemInHand != null && ItemInHand.Serial == item.Serial)
 					Inventory.NetworkCurItem = ItemIdentifier.None;
 				Inventory.UserInventory.Items.Remove(item.Serial);
-				ItemsValue.Remove(item);
 				Inventory.SendItemsNextFrame = true;
 			}
 
@@ -775,8 +768,8 @@ namespace Qurre.API
 		}
 		public void ClearInventory()
 		{
-			while (AllItems.Count > 0) RemoveItem(AllItems.ElementAt(0), true);
-			ItemsValue.Clear();
+			var _arr = AllItems;
+			for (int i = 0; i < _arr.Count(); i++) RemoveItem(_arr.ElementAt(i), true);
 		}
 		public void DropItems() => Inventory.ServerDropEverything();
 		public Throwable ThrowGrenade(GrenadeType type, bool fullForce = true)
