@@ -29,7 +29,6 @@ namespace Qurre.Patches.Fixes
                     Player ply = Player.Get(hub);
                     if (ply is not null && !ply.Bot && hub != firearm.Owner)
                     {
-                        RoleType curClass = hub.characterClassManager.CurClass;
                         if (hub.characterClassManager.CurClass is RoleType.Spectator or RoleType.Scp079 || !((hub.transform.position - owner.transform.position).sqrMagnitude > num2))
                         {
                             hub.networkIdentity.connectionToClient.Send(new GunAudioMessage(owner, clipId, (byte)Mathf.RoundToInt(Mathf.Clamp(num, 0f, 255f)), hub));
