@@ -2,27 +2,44 @@
 using MEC;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+
 namespace Qurre
 {
     public static class PluginManager
     {
-        public static readonly List<Plugin> plugins = new();
+        internal static List<Plugin> _plugins = new();
+
         public static Version Version { get; } = new Version(1, 13, 4);
-        //private static string Domain { get; } = "localhost"; //qurre.team
+
+        //private static string _domain { get; } = "localhost"; //qurre.team
+
+        public static ReadOnlyCollection<Plugin> Plugins => _plugins.AsReadOnly();
+
         public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+
         public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
+
         public static string PluginsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Plugins");
+
         public static string LoadedDependenciesDirectory { get; private set; } = Path.Combine(PluginsDirectory, "dependencies");
+
         public static string ConfigsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Configs");
+
         public static string CustomConfigsDirectory { get; private set; } = Path.Combine(ConfigsDirectory, "Custom");
+
         public static string LogsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Logs");
+
         public static string ManagedAssembliesDirectory { get; private set; } = Path.Combine(Path.Combine(Environment.CurrentDirectory, "SCPSL_Data"), "Managed");
+
         public static string ConfigsPath { get; internal set; }
+
         internal static Harmony _harmony;
+
         internal static IEnumerator<float> LoadPlugins()
         {
             if (!Directory.Exists(PluginsDirectory))
@@ -61,6 +78,7 @@ namespace Qurre
 
             Enable();
         }
+
         private static void LoadDependencies()
         {
             if (!Directory.Exists(LoadedDependenciesDirectory))
@@ -77,6 +95,7 @@ namespace Qurre
 
             Log.Custom("Dependencies loaded!", "Loader", ConsoleColor.Green);
         }
+
         public static void LoadPlugin(Assembly assembly)
         {
             try
@@ -110,7 +129,7 @@ namespace Qurre
 
                     p.Assembly = assembly;
 
-                    plugins.Add(p);
+                    _plugins.Add(p);
                     Log.Debug($"{type.FullName} loaded");
                 }
             }
@@ -119,6 +138,7 @@ namespace Qurre
                 Log.Error($"An error occurred while processing {assembly.FullName}\n{ex}");
             }
         }
+
         public static bool CheckPlugin(Plugin plugin)
         {
             if (Version.Major != plugin.NeededQurreVersion.Major)
@@ -143,9 +163,10 @@ namespace Qurre
 
             return true;
         }
+
         public static void Enable()
         {
-            foreach (Plugin plugin in plugins.OrderByDescending(o => o.Priority))
+            foreach (Plugin plugin in _plugins.OrderByDescending(o => o.Priority))
             {
                 try
                 {
@@ -159,9 +180,10 @@ namespace Qurre
                 }
             }
         }
+
         public static void Reload()
         {
-            foreach (Plugin plugin in plugins)
+            foreach (Plugin plugin in _plugins)
             {
                 try
                 {
@@ -174,9 +196,10 @@ namespace Qurre
                 }
             }
         }
+
         public static void Disable()
         {
-            foreach (Plugin plugin in plugins)
+            foreach (Plugin plugin in _plugins)
             {
                 try
                 {
@@ -190,6 +213,7 @@ namespace Qurre
                 }
             }
         }
+
         public static void ReloadPlugins()
         {
             try
@@ -197,7 +221,7 @@ namespace Qurre
                 Log.Info($"Reloading Plugins...");
                 Disable();
                 Reload();
-                plugins.Clear();
+                _plugins.Clear();
                 UnPatchMethods();
 
                 Timing.RunCoroutine(LoadPlugins());
@@ -207,6 +231,7 @@ namespace Qurre
                 Log.Error($"umm, error in reloading.\n{ex}");
             }
         }
+
         private static void PatchMethods()
         {
             try
@@ -220,6 +245,7 @@ namespace Qurre
                 Log.Error($"Harmony Patching threw an error:\n{ex}");
             }
         }
+
         private static void UnPatchMethods()
         {
             try
@@ -232,6 +258,7 @@ namespace Qurre
                 Log.Error($"Harmony UnPatching threw an error:\n{ex}");
             }
         }
+
         private static Assembly LoadFromUrl(string link) // Web Loader
         {
             try
@@ -246,6 +273,7 @@ namespace Qurre
                 return null;
             }
         }
+
         private static void DownloadDependencies()
         {/*
 			try
@@ -267,6 +295,7 @@ namespace Qurre
 				Log.Error($"Plan checking threw an error:\n{ex}");
 			}*/
         }
+
         private static void DownloadPlugins()
         {/*
 			try
