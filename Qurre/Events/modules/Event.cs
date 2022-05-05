@@ -1,4 +1,5 @@
 ﻿using System;
+
 namespace Qurre.Events.Modules
 {
     public static class Event
@@ -6,10 +7,9 @@ namespace Qurre.Events.Modules
         public static void CustomInvoke<T>(this Main.AllEvents<T> ev, T arg)
             where T : EventArgs
         {
-            if (ev == null)
+            if (ev is null)
                 return;
 
-            var eventName = ev.GetType().FullName;
             foreach (Main.AllEvents<T> handler in ev.GetInvocationList())
             {
                 try
@@ -18,16 +18,16 @@ namespace Qurre.Events.Modules
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"umm, method '{handler.Method.Name}' of class '{handler.Method.ReflectedType?.FullName}' threw an exception. Event: {eventName}\n{ex}");
+                    Log.Error($"Method '{handler.Method.Name}' of class '{handler.Method.ReflectedType?.FullName}' threw an exception. Event: {ev.GetType().FullName}\n{ex}");
                 }
             }
         }
+
         public static void CustomInvoke(this Main.AllEvents ev)
         {
-            if (ev == null)
+            if (ev is null)
                 return;
 
-            string eventName = ev.GetType().FullName;
             foreach (Main.AllEvents handler in ev.GetInvocationList())
             {
                 try
@@ -36,7 +36,7 @@ namespace Qurre.Events.Modules
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"umm, method '{handler.Method.Name}' of class '{handler.Method.ReflectedType?.FullName}' threw an exception. Event: {eventName}\n{ex}");
+                    Log.Error($"umm, method '{handler.Method.Name}' of class '{handler.Method.ReflectedType?.FullName}' threw an exception. Event: {ev.GetType().FullName}\n{ex}");
                 }
             }
         }
