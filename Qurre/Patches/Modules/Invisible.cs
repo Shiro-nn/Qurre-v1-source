@@ -1,4 +1,4 @@
-﻿using CustomPlayerEffects;
+using CustomPlayerEffects;
 using HarmonyLib;
 using Mirror;
 using PlayableScps;
