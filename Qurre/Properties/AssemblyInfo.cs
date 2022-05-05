@@ -1,6 +1,7 @@
 ﻿using System.Resources;
 using System.Reflection;
 using System.Runtime.InteropServices;
+
 [assembly: AssemblyTitle("Qurre")]
 [assembly: AssemblyDescription("Framework for SCP:SL servers with unique functions & api")]
 [assembly: AssemblyMetadata("RepositoryUrl", "https://github.com/Qurre-Team/Qurre-sl")]
