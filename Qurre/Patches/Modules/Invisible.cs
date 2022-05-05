@@ -5,6 +5,7 @@ using PlayableScps;
 using Qurre.API;
 using Qurre.API.Events;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -28,7 +29,7 @@ namespace Qurre.Patches.Modules
 
                 __instance._frame = 0;
 
-                System.Collections.Generic.List<Player> players = Player.List.ToList();
+                List<Player> players = Player.List.ToList();
                 players.AddRange(Map.Bots.Select(x => x.Player));
                 __instance._usedData = players.Count;
 
