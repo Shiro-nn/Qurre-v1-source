@@ -45,7 +45,7 @@ namespace Qurre.Patches.Controllers
         {
             if (!Round.BotSpawned) return true;
             var player = Player.Get(__instance.gameObject);
-            if (player != null && player.Bot) return false;
+            if (player is not null && player.Bot) return false;
             return true;
         }
         public static bool Position(PlayerMovementSync __instance, Vector3 pos, PlayerMovementSync.PlayerRotation? rot = null, bool forceGround = false)
@@ -74,7 +74,7 @@ namespace Qurre.Patches.Controllers
             {
                 if (!ReferenceHub.TryGetHubNetID(netId, out ReferenceHub hub)) return false;
                 var pl = Player.Get(hub);
-                if (pl == null || pl.Bot) return false;
+                if (pl is null || pl.Bot) return false;
                 foreach (ReferenceHub hub2 in hub.spectatorManager.ServerCurrentSpectatingPlayers)
                 {
                     hub2.networkIdentity.connectionToClient.Send(new GunHitMessage(false, damage, origin));

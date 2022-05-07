@@ -132,7 +132,7 @@ namespace Qurre.API
 		public static Player GetAttacker(this DamageHandlerBase handler)
 		{
 			var plz = _getHandler();
-			if (plz == null) return null;
+			if (plz is null) return null;
 			return Player.Get(plz.Attacker.Hub);
 			AttackerDamageHandler _getHandler()
 			{

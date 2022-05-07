@@ -235,7 +235,7 @@ namespace Qurre.API
 					{
 						var room = Rooms.FirstOrDefault(x => x.Id == pair.Key);
 						var door = interactable.GetComponentInParent<DoorVariant>();
-						if (room == null || door == null) continue;
+						if (room is null || door is null) continue;
 						var sdoor = door.GetDoor();
 						sdoor.Rooms.Add(room);
 						room.Doors.Add(sdoor);

@@ -11,8 +11,7 @@ namespace Qurre.API.Controllers
         {
             try
             {
-                var mod = Addons.Prefabs.Primitive;
-                if (!mod.TryGetComponent<AdminToyBase>(out var primitiveToyBase)) return;
+                if (!Addons.Prefabs.Primitive.TryGetComponent<AdminToyBase>(out var primitiveToyBase)) return;
                 AdminToyBase prim = UnityEngine.Object.Instantiate(primitiveToyBase, position, rotation);
                 Base = (PrimitiveObjectToy)prim;
                 Base.SpawnerFootprint = new Footprinting.Footprint(Server.Host.ReferenceHub);

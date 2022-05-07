@@ -111,9 +111,8 @@ namespace Qurre.API.Controllers
         }
         public static Item Get(ushort serial)
         {
-            var _ = Object.FindObjectsOfType<ItemBase>().Where(x => x.ItemSerial == serial);
-            if (_.Count() == 0) return null;
-            return Get(_.First());
+            if (Object.FindObjectsOfType<ItemBase>().TryFind(out ItemBase _bs, x => x.ItemSerial == serial)) return Get(_bs);
+            return null;
         }
         public void Give(Player player) => player.AddItem(Base);
         public virtual Pickup Spawn(Vector3 position, Quaternion rotation = default)

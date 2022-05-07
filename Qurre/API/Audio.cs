@@ -49,8 +49,8 @@ namespace Qurre.API
 		public readonly IMicrophone Microphone;
 		/*public static void PlayFromUrl(string url, float volume)
 		{
-			using var wc = new WebClient();
-			byte[] byteData = wc.DownloadData(url);
+			using WebClient _web = new();
+			byte[] byteData = _web.DownloadData(url);
 			Play(new MemoryStream(byteData), volume);
 		}*/
 	}

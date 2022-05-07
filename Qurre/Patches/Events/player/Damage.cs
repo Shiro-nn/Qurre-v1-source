@@ -11,7 +11,6 @@ namespace Qurre.Patches.Events.player
 	{
 		public static bool Prefix(PlayerStats __instance, ref bool __result, ref DamageHandlerBase handler)
 		{
-			var _handler = handler;
 			try
 			{
 				var attacker = handler.GetAttacker();
@@ -26,7 +25,7 @@ namespace Qurre.Patches.Events.player
 					return true;
 				}
 				if (attacker == null || attacker.IsHost) return true;
-				var doAmout = GetAmout();
+				var doAmout = GetAmout(handler);
 				var ev = new DamageEvent(attacker, target, handler, type, doAmout);
 				if (ev.Target.IsHost) return true;
 				Qurre.Events.Invoke.Player.Damage(ev);
@@ -36,7 +35,7 @@ namespace Qurre.Patches.Events.player
 					__result = false;
 					return false;
 				}
-				if (!SetAmout(ev.Amount)) ev.Amount = doAmout;
+				if (!SetAmout(handler, ev.Amount)) ev.Amount = doAmout;
 				/*if (!ev.Target.GodMode && (ev.Amount == -1 || ev.Amount >= (ev.Target.Hp + ev.Target.Ahp)))
 				{
 					var dE = new DiesEvent(ev.Attacker, ev.Target, handler, type);
@@ -54,17 +53,17 @@ namespace Qurre.Patches.Events.player
 				Log.Error($"umm, error in patching Player [Damage]:\n{e}\n{e.StackTrace}");
 				return true;
 			}
-			float GetAmout()
+			float GetAmout(DamageHandlerBase handler)
 			{
-				return _handler switch
+				return handler switch
 				{
 					StandardDamageHandler data => data.Damage,
 					_ => -1,
 				};
 			}
-			bool SetAmout(float amout)
+			bool SetAmout(DamageHandlerBase handler, float amout)
 			{
-				if (_handler is StandardDamageHandler data) data.Damage = amout;
+				if (handler is StandardDamageHandler data) data.Damage = amout;
 				else return false;
 				return true;
 			}

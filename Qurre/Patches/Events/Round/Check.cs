@@ -54,7 +54,7 @@ namespace Qurre.Patches.Events.Round
                 bool ScpAlive = scp > 0;
                 bool DClassAlive = nd > 0;
                 bool ScientistsAlive = ns > 0;
-                var scps = API.Player.List.Where(x => x.Team == Team.SCP);
+                var scps = API.Player.Dictionary.Values.Where(x => x.Team == Team.SCP);
                 var cList = new RoundSummary.SumInfo_ClassList
                 {
                     class_ds = d,
