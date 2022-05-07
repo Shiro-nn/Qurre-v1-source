@@ -15,20 +15,21 @@ namespace Qurre.Patches.Controllers
         private static MethodInfo _showhit;
         internal static void Initialize()
         {
+            //Log.Info("Patching Bot Controller");
             {
                 var original = AccessTools.Method(typeof(NetworkBehaviour), "SendTargetRPCInternal");
                 var method = typeof(Bot).GetMethod(nameof(Mirror));
-                _mirror = PluginManager.hInstance.Patch(original, new HarmonyMethod(method));
+                _mirror = PluginManager._harmony.Patch(original, new HarmonyMethod(method));
             }
             {
                 var original = AccessTools.Method(typeof(PlayerMovementSync), nameof(PlayerMovementSync.OverridePosition));
                 var method = typeof(Bot).GetMethod(nameof(Position));
-                _position = PluginManager.hInstance.Patch(original, new HarmonyMethod(method));
+                _position = PluginManager._harmony.Patch(original, new HarmonyMethod(method));
             }
             {
                 var original = AccessTools.Method(typeof(StandardHitregBase), nameof(StandardHitregBase.ShowHitIndicator));
                 var method = typeof(Bot).GetMethod(nameof(ShowHit));
-                _showhit = PluginManager.hInstance.Patch(original, new HarmonyMethod(method));
+                _showhit = PluginManager._harmony.Patch(original, new HarmonyMethod(method));
             }
         }
         internal static void UnInitialize()
@@ -36,9 +37,9 @@ namespace Qurre.Patches.Controllers
             var mirror_original = AccessTools.Method(typeof(NetworkBehaviour), "SendTargetRPCInternal");
             var position_original = AccessTools.Method(typeof(PlayerMovementSync), nameof(PlayerMovementSync.OverridePosition));
             var showhit_original = AccessTools.Method(typeof(StandardHitregBase), nameof(StandardHitregBase.ShowHitIndicator));
-            try { if (_mirror is not null) PluginManager.hInstance.Unpatch(mirror_original, _mirror); } catch { }
-            try { if (_position is not null) PluginManager.hInstance.Unpatch(position_original, _position); } catch { }
-            try { if (_showhit is not null) PluginManager.hInstance.Unpatch(showhit_original, _showhit); } catch { }
+            try { if (_mirror is not null) PluginManager._harmony.Unpatch(mirror_original, _mirror); } catch { }
+            try { if (_position is not null) PluginManager._harmony.Unpatch(position_original, _position); } catch { }
+            try { if (_showhit is not null) PluginManager._harmony.Unpatch(showhit_original, _showhit); } catch { }
         }
         public static bool Mirror(NetworkBehaviour __instance)
         {

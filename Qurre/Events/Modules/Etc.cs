@@ -19,7 +19,6 @@ namespace Qurre.Events.Modules
             Round.Restart += RoundRestart;
             Player.SyncData += SyncData;
             Server.SendingRA += FixRaBc;
-            Player.Spawn += FixItems;
             Player.DamageProcess += FixFF;
             Round.Waiting += FixOneSerial;
         }
@@ -92,12 +91,6 @@ namespace Qurre.Events.Modules
 
             if (ev.NewRole == RoleType.Spectator)
                 ev.Player.DropItems();
-        }
-
-        private static void FixItems(SpawnEvent ev)
-        {
-            if (ev.Player.AllItems.Count is not 0 && ev.Player.Inventory.UserInventory.Items.Count is 0)
-                ev.Player.ItemsValue.Clear();
         }
 
         private static void RoundRestart() => API.Map.ClearObjects();
