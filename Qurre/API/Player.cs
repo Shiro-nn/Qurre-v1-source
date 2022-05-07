@@ -93,7 +93,7 @@ namespace Qurre.API
 		public NicknameSync NicknameSync => rh.nicknameSync;
 		public PlayerMovementSync Movement => rh.playerMovementSync;
 		public string CustomInfo
-        {
+		{
 			get => NicknameSync.CustomPlayerInfo;
 			set => NicknameSync.CustomPlayerInfo = value;
 		}

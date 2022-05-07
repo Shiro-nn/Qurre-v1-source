@@ -17,7 +17,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 		{
 			try
 			{
-				if (__instance is null || !__instance._interactRateLimit.CanExecute(true) || !__instance.iAm079)
+				if (__instance is null || __instance.gameObject is null || !__instance._interactRateLimit.CanExecute(true) || !__instance.iAm079)
 					return false;
 
 				Console.AddDebugLog("SCP079", "Command received from a client: " + command, MessageImportance.LessImportant, false);
@@ -95,7 +95,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 								return false;
 							}
 
-							if (doorVariant is null)
+							if (doorVariant is null || doorVariant.gameObject is null)
 								return false;
 
 							if (doorVariant.TryGetComponent(out DoorNametagExtension doorNametagExtension) && list.Count > 0 && list.Contains(doorNametagExtension.GetName))
@@ -152,6 +152,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 						{
 							string text2 = __instance.CurrentRoom.transform.parent.name + "/" + __instance.CurrentRoom.name + "/Scp079Speaker";
 							GameObject gameObject = GameObject.Find(text2);
+							if (gameObject is null) return false;
 							float manaFromLabel = __instance.GetManaFromLabel("Speaker Start", __instance.abilities);
 
 							var ev = new Scp079SpeakerEvent(player, gameObject, API.Objects.Scp079SpeakerType.StartSpeaker, manaFromLabel);
@@ -166,15 +167,10 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 								return false;
 							}
 
-							if (gameObject is not null)
-							{
-								__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
-								__instance.Speaker = text2;
-								__instance.AddInteractionToHistory(gameObject, true);
-								return false;
-							}
-
-							break;
+							__instance.Mana -= player.BypassMode ? 0 : ev.PowerCost;
+							__instance.Speaker = text2;
+							__instance.AddInteractionToHistory(gameObject, true);
+							return false;
 						}
 					case Command079.StopSpeaker:
 						{
@@ -317,7 +313,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 									bool flag2 = false;
 									foreach (Lift.Elevator elevator in lift.elevators)
 									{
-										__instance.AddInteractionToHistory(elevator.door.GetComponentInParent<global::Scp079Interactable>().gameObject, !flag2);
+										__instance.AddInteractionToHistory(elevator.door.GetComponentInParent<Scp079Interactable>().gameObject, !flag2);
 										flag2 = true;
 									}
 								}
@@ -415,7 +411,7 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 									return false;
 								}
 
-								HashSet<DoorVariant> hashSet2 = new HashSet<DoorVariant>();
+								HashSet<DoorVariant> hashSet2 = new();
 								Console.AddDebugLog("SCP079", "Looking for doors to lock...", MessageImportance.LeastImportant, false);
 
 								var ev = new Scp079LockdownEvent(player,
