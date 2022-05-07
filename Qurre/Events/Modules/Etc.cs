@@ -98,13 +98,13 @@ namespace Qurre.Events.Modules
                     ev.ReplyMessage = "Using: bc [Time] [Message].";
                     return;
                 }
-                if (!ushort.TryParse(ev.Args[0], out ushort num8) || num8 < 1)
+                if (!ushort.TryParse(ev.Args[0], out ushort time) || time < 1)
                 {
                     ev.Success = false;
                     ev.ReplyMessage = "First argument must be a positive integer.";
                     return;
                 }
-                API.Map.Broadcast(ev.Command.Substring(ev.Name.Length + ev.Args[0].Length + 2), System.Convert.ToUInt16(ev.Args[0]));
+                API.Map.Broadcast(ev.Command.Substring(ev.Name.Length + ev.Args[0].Length + 2), time);
                 ev.Success = true;
                 ev.ReplyMessage = "Broadcast sent.";
             }
@@ -129,25 +129,23 @@ namespace Qurre.Events.Modules
                     ev.ReplyMessage = "Using: pbc [Id] [Time] [Message].";
                     return;
                 }
-                if (!ushort.TryParse(ev.Args[1], out ushort num8) || num8 < 1)
+                if (!ushort.TryParse(ev.Args[1], out ushort time) || time < 1)
                 {
                     ev.Success = false;
                     ev.ReplyMessage = "Second argument must be a positive integer.";
                     return;
                 }
                 string content = ev.Command.Substring(ev.Name.Length + ev.Args[0].Length + ev.Args[1].Length + 3);
-                ushort dur = System.Convert.ToUInt16(ev.Args[1]);
                 foreach (string strs in ev.Args[0].Split('.'))
                 {
                     if (ushort.TryParse(strs, out ushort pi) && pi > 0)
                     {
                         API.Player pl = API.Player.Get(pi);
-                        if(pl is not null) pl.Broadcast(content, dur);
+                        if(pl is not null) pl.Broadcast(content, time);
                     }
                 }
                 ev.ReplyMessage = "Broadcast sent.";
                 content = null;
-                dur = 0;
             }
         }
     }
