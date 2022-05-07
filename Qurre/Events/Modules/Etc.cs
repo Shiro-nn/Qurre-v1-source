@@ -71,7 +71,8 @@ namespace Qurre.Events.Modules
         {
             if (API.Server.FriendlyFire || ev.Target is null || ev.Attacker is null || ev.Attacker.FriendlyFire)
                 return;
-            ev.FriendlyFire = ev.Target.Side == ev.Attacker.Side;
+            if (ev.Target == ev.Attacker && ev.PrimitiveType == DamageTypesPrimitive.Explosion) ev.FriendlyFire = false;
+            else ev.FriendlyFire = ev.Target.Side == ev.Attacker.Side;
         }
         private static void ChangeRole(RoleChangeEvent ev)
         {
