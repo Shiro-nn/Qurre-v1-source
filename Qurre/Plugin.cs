@@ -1,4 +1,4 @@
-using Qurre.API;
+﻿using Qurre.API;
 using CommandSystem;
 using RemoteAdmin;
 using System;

@@ -1,7 +1,6 @@
-﻿using CommandSystem;
-using System;
+﻿using System;
 using System.Collections.Generic;
-
+using CommandSystem;
 namespace Qurre.Events.Modules.Commands
 {
     [CommandHandler(typeof(GameConsoleCommandHandler))]
@@ -10,40 +9,26 @@ namespace Qurre.Events.Modules.Commands
     {
         internal static bool CheckPerms(string UserId)
         {
-            if (UserId is "SERVER CONSOLE")
-                return true;
-
+            if (UserId == "SERVER CONSOLE") return true;
             string _ = Loader.ReloadAccess;
             string[] str = _.Split(',');
             List<string> strl = new();
-
-            foreach (string st in str)
-                strl.Add(st.Trim());
-
-            if (strl.Contains(UserId))
-                return true;
-
-            API.Player __ = API.Player.Get(UserId);
-
-            return __ is null || strl.Contains(__.UserId) || strl.Contains(__.GroupName);
+            foreach (string st in str) strl.Add(st.Trim());
+            if (strl.Contains(UserId)) return true;
+            var __ = API.Player.Get(UserId);
+            if (__ == null) return false;
+            return strl.Contains(__.UserId) || strl.Contains(__.GroupName);
         }
-
         public static Reload Instance { get; } = new();
-
         public Reload() => LoadGeneratedCommands();
-
         public override string Command => "reload";
-
         public override string[] Aliases => new string[0];
-
         public override string Description => "Reloads Configs & Plugins";
-
         public override void LoadGeneratedCommands()
         {
             RegisterCommand(Plugins.Instance);
             RegisterCommand(Configs.Instance);
         }
-
         protected override bool ExecuteParent(ArraySegment<string> arguments, ICommandSender sender, out string response)
         {
             if (!CheckPerms((sender as CommandSender).SenderId))
@@ -51,8 +36,7 @@ namespace Qurre.Events.Modules.Commands
                 response = "Access denied";
                 return false;
             }
-
-            response = "Specify an existing subcommand.\nUsing: reload (plugins or configs)";
+            response = "Specify an existing subcommand.\nExamples:\n - reload plugins\n - reload configs";
             return true;
         }
     }

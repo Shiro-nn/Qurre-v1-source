@@ -37,7 +37,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>QurreLogo.ico</ApplicationIcon>
+    <ApplicationIcon>qurreLogo.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
@@ -77,7 +77,7 @@
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="NorthwoodLib">
-      <HintPath>..\..\Qurre\lib\NorthwoodLib.dll</HintPath>
+      <HintPath>..\lib\NorthwoodLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -162,7 +162,7 @@
     <Compile Include="API\Controllers\Window.cs" />
     <Compile Include="API\Controllers\Items\Ammo.cs" />
     <Compile Include="API\Controllers\Items\Armor.cs" />
-    <Compile Include="API\Controllers\Items\Firearm.cs" />
+    <Compile Include="API\Controllers\Items\Gun.cs" />
     <Compile Include="API\Controllers\Items\Flashlight.cs" />
     <Compile Include="API\Controllers\Items\Keycard.cs" />
     <Compile Include="API\Controllers\Items\MicroHid.cs" />
@@ -387,7 +387,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="QurreLogo.ico" />
+    <Content Include="qurreLogo.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

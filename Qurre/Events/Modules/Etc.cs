@@ -1,4 +1,4 @@
-using Qurre.API.Events;
+﻿using Qurre.API.Events;
 using UnityEngine.SceneManagement;
 using MapGeneration;
 using UnityEngine;
@@ -31,7 +31,7 @@ namespace Qurre.Events.Modules
         }
         private static void Waiting()
         {
-            if (API.Round.CurrentRound is 0)
+            if (API.Round.CurrentRound == 0)
                 API.Addons.Prefabs.InitLate();
             API.Round.CurrentRound++;
             API.Map.AddObjects();
@@ -88,11 +88,11 @@ namespace Qurre.Events.Modules
         }
         private static void FixRaBc(SendingRAEvent ev)
         {
-            if ((ev.Name is "bc" || ev.Name is "broadcast") && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
+            if ((ev.Name == "bc" || ev.Name == "broadcast") && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
             {
                 ev.Prefix = ev.Name.ToUpper();
                 ev.Allowed = false;
-                if (ev.Args.Length is 0)
+                if (ev.Args.Length == 0)
                 {
                     ev.Success = false;
                     ev.ReplyMessage = "Using: bc [Time] [Message].";
@@ -119,7 +119,7 @@ namespace Qurre.Events.Modules
                 }
                 content = null;
             }
-            else if (ev.Name is "pbc" && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
+            else if (ev.Name == "pbc" && PermissionsHandler.IsPermitted(ev.CommandSender.Permissions, PlayerPermissions.Broadcasting))
             {
                 ev.Prefix = ev.Name.ToUpper();
                 ev.Allowed = false;

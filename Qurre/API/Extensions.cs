@@ -163,7 +163,7 @@ namespace Qurre.API
 		internal static readonly Dictionary<DamageHandlerBase, DamageTypes> DamagesCached = new();
 		public static DamageTypes GetDamageType(this DamageHandlerBase handler)
 		{
-			if(DamagesCached.TryGetValue(handler, out var damageType)) return damageType;
+			if (DamagesCached.TryGetValue(handler, out var damageType)) return damageType;
 			var _type = _get();
 			DamagesCached.Add(handler, _type);
 			return _type;
@@ -173,79 +173,79 @@ namespace Qurre.API
 				{
 					case UniversalDamageHandler tr:
 						{
-                            return tr.TranslationId switch
-                            {
-                                0 => DamageTypes.Recontainment,
-                                1 => DamageTypes.Nuke,
-                                2 => DamageTypes.Scp049,
-                                4 => DamageTypes.Asphyxiation,
-                                5 => DamageTypes.Bleeding,
-                                6 => DamageTypes.Falldown,
-                                7 => DamageTypes.Pocket,
-                                8 => DamageTypes.Decont,
-                                9 => DamageTypes.Poison,
-                                10 => DamageTypes.Scp207,
-                                11 => DamageTypes.SeveredHands,
-                                12 => DamageTypes.MicroHid,
-                                13 => DamageTypes.Tesla,
-                                14 => DamageTypes.Explosion,
-                                15 => DamageTypes.Scp096,
-                                16 => DamageTypes.Scp173,
-                                17 => DamageTypes.Scp939,
-                                18 => DamageTypes.Scp0492,
-                                20 => DamageTypes.Wall,
-                                21 => DamageTypes.Contain,
-                                22 => DamageTypes.FriendlyFireDetector,
-                                23 => DamageTypes.Hypothermia,
-                                _ => DamageTypes.None,
-                            };
-                        }
+							return tr.TranslationId switch
+							{
+								0 => DamageTypes.Recontainment,
+								1 => DamageTypes.Nuke,
+								2 => DamageTypes.Scp049,
+								4 => DamageTypes.Asphyxiation,
+								5 => DamageTypes.Bleeding,
+								6 => DamageTypes.Falldown,
+								7 => DamageTypes.Pocket,
+								8 => DamageTypes.Decont,
+								9 => DamageTypes.Poison,
+								10 => DamageTypes.Scp207,
+								11 => DamageTypes.SeveredHands,
+								12 => DamageTypes.MicroHid,
+								13 => DamageTypes.Tesla,
+								14 => DamageTypes.Explosion,
+								15 => DamageTypes.Scp096,
+								16 => DamageTypes.Scp173,
+								17 => DamageTypes.Scp939,
+								18 => DamageTypes.Scp0492,
+								20 => DamageTypes.Wall,
+								21 => DamageTypes.Contain,
+								22 => DamageTypes.FriendlyFireDetector,
+								23 => DamageTypes.Hypothermia,
+								_ => DamageTypes.None,
+							};
+						}
 					case FirearmDamageHandler fr:
 						{
-                            return fr.WeaponType switch
-                            {
-                                ItemType.GunAK => DamageTypes.AK,
-                                ItemType.GunCOM15 => DamageTypes.Com15,
-                                ItemType.GunCOM18 => DamageTypes.Com18,
-                                ItemType.GunCrossvec => DamageTypes.CrossVec,
-                                ItemType.GunE11SR => DamageTypes.E11SR,
-                                ItemType.GunFSP9 => DamageTypes.FSP9,
-                                ItemType.GunLogicer => DamageTypes.Logicer,
-                                ItemType.GunRevolver => DamageTypes.Revolver,
-                                ItemType.GunShotgun => DamageTypes.Shotgun,
-                                ItemType.ParticleDisruptor => DamageTypes.ParticleDisruptor,
-                                _ => DamageTypes.None,
-                            };
-                        }
+							return fr.WeaponType switch
+							{
+								ItemType.GunAK => DamageTypes.AK,
+								ItemType.GunCOM15 => DamageTypes.Com15,
+								ItemType.GunCOM18 => DamageTypes.Com18,
+								ItemType.GunCrossvec => DamageTypes.CrossVec,
+								ItemType.GunE11SR => DamageTypes.E11SR,
+								ItemType.GunFSP9 => DamageTypes.FSP9,
+								ItemType.GunLogicer => DamageTypes.Logicer,
+								ItemType.GunRevolver => DamageTypes.Revolver,
+								ItemType.GunShotgun => DamageTypes.Shotgun,
+								ItemType.ParticleDisruptor => DamageTypes.ParticleDisruptor,
+								_ => DamageTypes.None,
+							};
+						}
 					case ScpDamageHandler sr:
 						{
-                            return sr._translationId switch
-                            {
-                                0 => DamageTypes.Recontainment,
-                                1 => DamageTypes.Nuke,
-                                2 => DamageTypes.Scp049,
-                                4 => DamageTypes.Asphyxiation,
-                                5 => DamageTypes.Bleeding,
-                                6 => DamageTypes.Falldown,
-                                7 => DamageTypes.Pocket,
-                                8 => DamageTypes.Decont,
-                                9 => DamageTypes.Poison,
-                                10 => DamageTypes.Scp207,
-                                11 => DamageTypes.SeveredHands,
-                                12 => DamageTypes.MicroHid,
-                                13 => DamageTypes.Tesla,
-                                14 => DamageTypes.Explosion,
-                                15 => DamageTypes.Scp096,
-                                16 => DamageTypes.Scp173,
-                                17 => DamageTypes.Scp939,
-                                18 => DamageTypes.Scp0492,
-                                20 => DamageTypes.Wall,
-                                21 => DamageTypes.Contain,
-                                22 => DamageTypes.FriendlyFireDetector,
-                                23 => DamageTypes.Hypothermia,
-                                _ => DamageTypes.None,
-                            };
-                        }
+							return sr._translationId switch
+							{
+								0 => DamageTypes.Recontainment,
+								1 => DamageTypes.Nuke,
+								2 => DamageTypes.Scp049,
+								4 => DamageTypes.Asphyxiation,
+								5 => DamageTypes.Bleeding,
+								6 => DamageTypes.Falldown,
+								7 => DamageTypes.Pocket,
+								8 => DamageTypes.Decont,
+								9 => DamageTypes.Poison,
+								10 => DamageTypes.Scp207,
+								11 => DamageTypes.SeveredHands,
+								12 => DamageTypes.MicroHid,
+								13 => DamageTypes.Tesla,
+								14 => DamageTypes.Explosion,
+								15 => DamageTypes.Scp096,
+								16 => DamageTypes.Scp173,
+								17 => DamageTypes.Scp939,
+								18 => DamageTypes.Scp0492,
+								20 => DamageTypes.Wall,
+								21 => DamageTypes.Contain,
+								22 => DamageTypes.FriendlyFireDetector,
+								23 => DamageTypes.Hypothermia,
+								_ => DamageTypes.None,
+							};
+						}
 					case WarheadDamageHandler _: return DamageTypes.Nuke;
 					case Scp096DamageHandler _: return DamageTypes.Scp096;
 					case Scp018DamageHandler _: return DamageTypes.Scp018;
