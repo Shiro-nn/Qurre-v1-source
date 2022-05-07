@@ -10,6 +10,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
+                if (__instance is null || __instance._hub is null || value is null) return;
                 var player = Player.Get(__instance._hub);
                 if (player != null)
                 {
