@@ -99,7 +99,7 @@ namespace Qurre.Patches.Modules
                                 if (playerToShow != null)
                                 {
                                     Scp096 scp = player.ScpsController.CurrentScp as Scp096;
-                                    if (scp is not null && scp.Enraged && !scp.HasTarget(playerToShow.ReferenceHub))
+                                    if (scp is not null && scp.Enraged && !scp.HasTarget(playerToShow.ReferenceHub) && playerToShow.Team is not Team.SCP)
                                     {
                                         _show = true;
                                         goto AA_001;
