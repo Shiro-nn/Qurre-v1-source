@@ -33,12 +33,8 @@ namespace Qurre.API
 			Microphone = AudioExtensions.DissonanceComms.gameObject.AddComponent<AudioMicrophone>().Create(stream, volume, frameSize, sampleRate, this);
 			if (instant && Audios.Count > 0)
 			{
-				var _cur = Audios.FirstOrDefault();
-				Audios.Remove(_cur);
-				List<Audio> list = new() { this };
-				list.AddRange(Audios);
-				Audios = list;
-				_cur.Microphone.StopCapture();
+				Audios.First().Microphone.StopCapture();
+				Audios[0] = this;
 			}
 			else
 			{
