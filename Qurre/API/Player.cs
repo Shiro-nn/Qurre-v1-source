@@ -768,8 +768,8 @@ namespace Qurre.API
 		}
 		public void ClearInventory()
 		{
-			IEnumerable<Item> _arr = AllItems;
-			for (int i = 0; i < _arr.Count(); i++) RemoveItem(_arr.ElementAt(i), true);
+			while (Inventory.UserInventory.Items.Count > 0)
+				Inventory.ServerRemoveItem(Inventory.UserInventory.Items.ElementAt(0).Key, null);
 		}
 		public void DropItems() => Inventory.ServerDropEverything();
 		public Throwable ThrowGrenade(GrenadeType type, bool fullForce = true)

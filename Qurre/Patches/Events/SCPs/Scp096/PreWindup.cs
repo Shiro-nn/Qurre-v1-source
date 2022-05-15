@@ -16,8 +16,7 @@ namespace Qurre.Patches.Events.SCPs.Scp096
                     return false;
                 var ev = new PreWindupEvent(__instance, API.Player.Get(__instance.Hub.gameObject), delay);
                 Qurre.Events.Invoke.Scp096.PreWindup(ev);
-                if (!ev.Allowed)
-                    return false;
+                if (!ev.Allowed) return false;
                 __instance._preWindupTime = ev.Delay;
                 return false;
             }

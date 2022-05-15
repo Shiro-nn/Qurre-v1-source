@@ -14,7 +14,11 @@ namespace Qurre.Patches.Events.player
                 var player = Player.Get(__instance._hub);
                 if (player != null)
                 {
-                    var ev = new ChangeSpectateEvent(player, Player.Get(__instance.CurrentSpectatedPlayer), Player.Get(value));
+                    Player _val = null;
+                    try { _val = Player.Get(value); } catch { }
+                    Player _cur = null;
+                    try { _cur = Player.Get(__instance.CurrentSpectatedPlayer); } catch { }
+                    var ev = new ChangeSpectateEvent(player, _cur, _val);
                     Qurre.Events.Invoke.Player.ChangeSpectate(ev);
                     if (!ev.Allowed)
                     {
@@ -22,6 +26,8 @@ namespace Qurre.Patches.Events.player
                         return;
                     }
                     value = ev.NewTarget?.ReferenceHub ?? ev.Player.ReferenceHub;
+                    _val = null;
+                    _cur = null;
                 }
             }
             catch (System.Exception e)

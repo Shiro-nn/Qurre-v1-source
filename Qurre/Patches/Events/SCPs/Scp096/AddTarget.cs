@@ -2,6 +2,9 @@
 using UnityEngine;
 using Qurre.API.Events;
 using PlayerStatsSystem;
+using Mirror;
+using PlayableScps;
+using PlayableScps.Messages;
 
 namespace Qurre.Patches.Events.SCPs.Scp096
 {
@@ -12,13 +15,29 @@ namespace Qurre.Patches.Events.SCPs.Scp096
         {
             try
             {
-                if (target == null) return true;
-                API.Player targetPL = API.Player.Get(target);
-                if (targetPL == null) return true;
-                API.Player player = API.Player.Get(__instance.Hub.gameObject);
-                var ev = new AddTargetEvent(__instance, player, targetPL);
-                Qurre.Events.Invoke.Scp096.AddTarget(ev);
-                return ev.Allowed;
+                if (!NetworkServer.active) return false;
+                if (target is null) return true;
+                ReferenceHub hub = ReferenceHub.GetHub(target);
+                if (__instance.CanReceiveTargets && hub is not null && !__instance._targets.Contains(hub))
+                {
+                    if (!CollectionExtensions.IsEmpty(__instance._targets) || 
+                        __instance.PlayerState is Scp096PlayerState.Docile or Scp096PlayerState.TryNotToCry || __instance.Enraging)
+                    {
+                        __instance.AddReset();
+                    }
+
+                    var ev = new AddTargetEvent(__instance, API.Player.Get(__instance.Hub.gameObject), API.Player.Get(hub));
+                    Qurre.Events.Invoke.Scp096.AddTarget(ev);
+                    if (!ev.Allowed) return false;
+
+                    if (CollectionExtensions.IsEmpty(__instance._targets))
+                    {
+                        __instance.Hub.characterClassManager.netIdentity.connectionToClient.Send(new Scp096ToTargetMessage(__instance.Hub));
+                    }
+                    __instance._targets.Add(hub);
+                    hub.characterClassManager.netIdentity.connectionToClient.Send(new Scp096ToTargetMessage(hub));
+                }
+                return false;
             }
             catch (System.Exception e)
             {

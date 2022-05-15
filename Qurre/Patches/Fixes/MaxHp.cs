@@ -11,7 +11,8 @@ namespace Qurre.Patches.Fixes
 			try
 			{
 				if (__instance is null) return true;
-				var pl = Player.Get(__instance.Hub);
+				Player pl = null;
+				try { pl = Player.Get(__instance.Hub); } catch { return true; }
 				if (pl is null) return true;
 				__result = pl.MaxHp;
 				return false;
