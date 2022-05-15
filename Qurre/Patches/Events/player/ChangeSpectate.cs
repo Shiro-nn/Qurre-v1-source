@@ -20,14 +20,14 @@ namespace Qurre.Patches.Events.player
                     try { _cur = Player.Get(__instance.CurrentSpectatedPlayer); } catch { }
                     var ev = new ChangeSpectateEvent(player, _cur, _val);
                     Qurre.Events.Invoke.Player.ChangeSpectate(ev);
+                    _val = null;
+                    _cur = null;
                     if (!ev.Allowed)
                     {
                         value = __instance.CurrentSpectatedPlayer;
                         return;
                     }
                     value = ev.NewTarget?.ReferenceHub ?? ev.Player.ReferenceHub;
-                    _val = null;
-                    _cur = null;
                 }
             }
             catch (System.Exception e)
