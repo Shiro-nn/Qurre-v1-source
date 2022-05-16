@@ -617,7 +617,7 @@ namespace Qurre.API
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector2 newRotation = default, string deathReason = "")
 		{
-			ClassManager.RefreshPlyModel(newRole);
+			ClassManager.SetClassIDAdv(newRole, true, CharacterClassManager.SpawnReason.None);
 			if (newPosition != default) Position = newPosition;
 			if (newRotation != default) Rotation = newRotation;
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, new CustomReasonDamageHandler(deathReason), this);

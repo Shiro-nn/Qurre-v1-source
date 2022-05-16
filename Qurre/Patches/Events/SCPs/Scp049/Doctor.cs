@@ -2,7 +2,6 @@
 using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
-using GameCore;
 using Qurre.API;
 using InventorySystem.Items.MicroHID;
 using Qurre.API.Objects;
@@ -18,35 +17,20 @@ namespace Qurre.Patches.Events.SCPs.Scp049
             {
                 if (num == 2)
                 {
-                    if (!__instance._interactRateLimit.CanExecute() || go == null)
+                    if (!__instance._interactRateLimit.CanExecute() || go is null)
                         return false;
                     Ragdoll component = go.GetComponent<Ragdoll>();
-                    if (component == null)
+                    if (component is null) return false;
+                    if (!API.Map.Ragdolls.TryFind(out var ragdl, x => x.ragdoll == component)) return false;
+                    Player owner = ragdl.Owner;
+                    if (owner is null) return false;
+                    if (!__instance._recallInProgressServer || owner.ReferenceHub != __instance._recallHubServer || __instance._recallProgressServer < 0.85f)
                         return false;
-                    ReferenceHub ownerHub = component.Info.OwnerHub;
-                    if (ownerHub == null)
-                    {
-                        Console.AddDebugLog("SCPCTRL", "SCP-049 | Request 'finish recalling' rejected; no target found", MessageImportance.LessImportant);
-                        return false;
-                    }
-                    if (!__instance._recallInProgressServer || ownerHub != __instance._recallHubServer || __instance._recallProgressServer < 0.85f)
-                    {
-                        Console.AddDebugLog("SCPCTRL", "SCP-049 | Request 'finish recalling' rejected; Debug code: ", MessageImportance.LessImportant);
-                        Console.AddDebugLog("SCPCTRL", "SCP-049 | CONDITION#1 " + (__instance._recallInProgressServer ? "<color=green>PASSED</color>" :
-                            ("<color=red>ERROR</color> - " + __instance._recallInProgressServer)), MessageImportance.LessImportant, nospace: true);
-                        Console.AddDebugLog("SCPCTRL", "SCP-049 | CONDITION#2 " + ((ownerHub == __instance._recallHubServer) ? "<color=green>PASSED</color>" :
-                            ("<color=red>ERROR</color> - " + ownerHub.playerId + "-" + ((__instance._recallHubServer == null) ? "null" :
-                            __instance._recallHubServer.playerId.ToString()))), MessageImportance.LessImportant);
-                        Console.AddDebugLog("SCPCTRL", "SCP-049 | CONDITION#3 " + ((__instance._recallProgressServer >= 0.85f) ? "<color=green>PASSED</color>" :
-                            ("<color=red>ERROR</color> - " + __instance._recallProgressServer)), MessageImportance.LessImportant, nospace: true);
-                        return false;
-                    }
-                    if (ownerHub.characterClassManager.CurClass != RoleType.Spectator) return false;
-                    var ev = new FinishRecallEvent(Player.Get(__instance.Hub.gameObject), Player.Get(ownerHub));
+                    if (owner.Role != RoleType.Spectator) return false;
+                    var ev = new FinishRecallEvent(Player.Get(__instance.Hub.gameObject), owner);
                     Qurre.Events.Invoke.Scp049.FinishRecall(ev);
                     if (!ev.Allowed) return false;
-                    Console.AddDebugLog("SCPCTRL", "SCP-049 | Request 'finish recalling' accepted", MessageImportance.LessImportant);
-                    ownerHub.characterClassManager.SetClassID(RoleType.Scp0492, CharacterClassManager.SpawnReason.Revived);
+                    owner.SetRole(RoleType.Scp0492, reason: CharacterClassManager.SpawnReason.Revived);
                     if (component.CompareTag("Ragdoll")) NetworkServer.Destroy(component.gameObject);
                     __instance._recallInProgressServer = false;
                     __instance._recallHubServer = null;
@@ -55,46 +39,29 @@ namespace Qurre.Patches.Events.SCPs.Scp049
                 }
                 else if (num == 1)
                 {
-                    if (!__instance._interactRateLimit.CanExecute() || go == null)
-                        return false;
-                    Ragdoll component2 = go.GetComponent<Ragdoll>();
-                    if (component2 == null)
-                    {
-                        Console.AddDebugLog("SCPCTRL", "SCP-049 | Request 'start recalling' rejected; provided object is not a dead body", MessageImportance.LessImportant);
-                        return false;
-                    }
-                    if (component2.Info.ExistenceTime > PlayableScps.Scp049.ReviveEligibilityDuration)
-                    {
-                        Console.AddDebugLog("SCPCTRL", "SCP-049 | Request 'start recalling' rejected; provided object has decayed too far", MessageImportance.LessImportant);
-                        return false;
-                    }
-                    if (component2.Info.OwnerHub == null)
-                    {
-                        Console.AddDebugLog("SCPCTRL", "SCP-049 | Request 'start recalling' rejected; target not found", MessageImportance.LessImportant);
-                        return false;
-                    }
+                    if (!__instance._interactRateLimit.CanExecute() || go is null) return false;
+                    Ragdoll component = go.GetComponent<Ragdoll>();
+                    if (component is null) return false;
+                    if (component.Info.ExistenceTime > PlayableScps.Scp049.ReviveEligibilityDuration) return false;
+                    if (!API.Map.Ragdolls.TryFind(out var ragdl, x => x.ragdoll == component)) return false;
+                    if (ragdl.Owner is null) return false;
                     bool flag = false;
-                    Rigidbody[] componentsInChildren = component2.GetComponentsInChildren<Rigidbody>();
+                    Rigidbody[] componentsInChildren = component.GetComponentsInChildren<Rigidbody>();
                     for (int i = 0; i < componentsInChildren.Length; i++)
                     {
                         if (Vector3.Distance(componentsInChildren[i].transform.position,
                             __instance.Hub.PlayerCameraReference.transform.position) <= PlayableScps.Scp049.ReviveDistance * 1.3f)
                         {
                             flag = true;
-                            component2.Info.OwnerHub.characterClassManager.DeathPosition = __instance.Hub.playerMovementSync.RealModelPosition;
+                            ragdl.Owner.ClassManager.DeathPosition = __instance.Hub.playerMovementSync.RealModelPosition;
                             break;
                         }
                     }
-                    if (!flag)
-                    {
-                        Console.AddDebugLog("SCPCTRL", "SCP - 049 | Request 'start recalling' rejected; Distance was too great.", MessageImportance.LessImportant);
-                        return false;
-                    }
-                    var ev = new StartRecallEvent(Player.Get(__instance.Hub.gameObject), Player.Get(component2.Info.OwnerHub));
+                    if (!flag) return false;
+                    var ev = new StartRecallEvent(Player.Get(__instance.Hub.gameObject), ragdl.Owner, ragdl);
                     Qurre.Events.Invoke.Scp049.StartRecall(ev);
                     if (!ev.Allowed) return false;
-                    Console.AddDebugLog("SCPCTRL", "SCP-049 | Request 'start recalling' accepted", MessageImportance.LessImportant);
-                    __instance._recallHubServer = component2.Info.OwnerHub;
+                    __instance._recallHubServer = ragdl.Owner.ReferenceHub;
                     __instance._recallProgressServer = 0f;
                     __instance._recallInProgressServer = true;
                     return false;
@@ -116,7 +83,6 @@ namespace Qurre.Patches.Events.SCPs.Scp049
                         Qurre.Events.Invoke.Player.ScpAttack(ev);
                         if (!ev.Allowed) return false;
                         target.DealDamage(new ScpDamageHandler(scp.ReferenceHub, DeathTranslations.Scp049));
-                        Console.AddDebugLog("SCPCTRL", "SCP-049 | Sent 'death time' RPC", MessageImportance.LessImportant);
                         __instance.Hub.scpsController.RpcTransmit_Byte(0);
                         __instance.RemainingServerKillCooldown = PlayableScps.Scp049.KillCooldown;
                         return false;
