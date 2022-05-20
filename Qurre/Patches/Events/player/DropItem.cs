@@ -18,7 +18,7 @@ namespace Qurre.Patches.Events.player
                 if (!__instance.UserInventory.Items.TryGetValue(itemSerial, out ItemBase value) || !value.CanHolster()) return false;
                 Player pl = Player.Get(__instance._hub);
                 Item item = Item.Get(value);
-                if (item == null || pl == null) return false;
+                if (item is null || pl is null) return false;
                 var ev = new DroppingItemEvent(pl, item);
                 Qurre.Events.Invoke.Player.DroppingItem(ev);
                 return ev.Allowed;
@@ -35,9 +35,8 @@ namespace Qurre.Patches.Events.player
             {
                 if (!__instance.UserInventory.Items.TryGetValue(itemSerial, out ItemBase value) || !value.CanHolster()) return;
                 Player pl = Player.Get(__instance._hub);
-                Pickup pick = API.Map.Pickups.Find(x => x.Serial == itemSerial);
-                if (pl == null || pick == null) return;
-                Qurre.Events.Invoke.Player.DropItem(new DropItemEvent(pl, pick));
+                if(pl is null || !API.Map.Pickups.TryFind(out var pick, x => x.Serial == itemSerial)) return;
+                Qurre.Events.Invoke.Player.DropItem(new(pl, pick));
             }
             catch (Exception e)
             {

@@ -54,7 +54,7 @@ namespace Qurre.Patches.Events.player
                             }
                             else pos = __instance.DeathPosition;
                         }
-                        if (__pl == null) __pl = API.Server.Host;
+                        if (__pl is null) __pl = API.Server.Host;
                         else __pl.Zoomed = false;
                         var ev = new SpawnEvent(__pl, __instance.CurClass, pos, new PlayerMovementSync.PlayerRotation(0f, rotY));
                         Qurre.Events.Invoke.Player.Spawn(ev);

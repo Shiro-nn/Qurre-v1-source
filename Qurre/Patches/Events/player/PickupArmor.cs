@@ -13,8 +13,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                var pickup = Pickup.Get(__instance.TargetPickup);
-                var ev = new PickupItemEvent(Player.Get(__instance.Hub), pickup);
+                var ev = new PickupItemEvent(Player.Get(__instance.Hub), Pickup.Get(__instance.TargetPickup));
                 Qurre.Events.Invoke.Player.PickupItem(ev);
                 if (!ev.Allowed)
                 {

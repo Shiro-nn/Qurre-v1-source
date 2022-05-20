@@ -14,7 +14,7 @@ namespace Qurre.Patches.Events.player
             try
             {
                 var locker = __instance.GetLocker();
-                if (locker == null) return true;
+                if (locker is null) return true;
                 if (colliderId >= __instance.Chambers.Length || !__instance.Chambers[colliderId].CanInteract) return false;
                 bool allow = true;
                 if (!__instance.CheckPerms(__instance.Chambers[colliderId].RequiredPermissions, ply) && !ply.serverRoles.BypassMode) allow = false;

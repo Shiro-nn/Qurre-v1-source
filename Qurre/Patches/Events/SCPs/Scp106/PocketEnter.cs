@@ -16,7 +16,7 @@ namespace Qurre.Patches.Events.SCPs.Scp106
             try
             {
                 if (!__instance._iawRateLimit.CanExecute(true) || !__instance.iAm106 || !ServerTime.CheckSynchronization(t)) return false;
-                if (ply == null) return false;
+                if (ply is null) return false;
                 Player pl = Player.Get(ply);
                 CharacterClassManager characterClassManager = pl.ClassManager;
                 if (characterClassManager == null || characterClassManager.GodMode || !characterClassManager.IsHuman()) return false;

@@ -15,7 +15,7 @@ namespace Qurre.Patches.Events.player
                 if (msg.Status == StatusMessage.StatusType.Start)
                 {
                     Item item = Item.Get(msg.ItemSerial);
-                    if (item == null) return true;
+                    if (item is null) return true;
                     var ev = new ItemUsingEvent(item.Owner, item);
                     Qurre.Events.Invoke.Player.ItemUsing(ev);
                     return ev.Allowed;
@@ -23,7 +23,7 @@ namespace Qurre.Patches.Events.player
                 else
                 {
                     Item item = Item.Get(msg.ItemSerial);
-                    if (item == null) return true;
+                    if (item is null) return true;
                     var ev = new ItemStoppingEvent(item.Owner, item);
                     Qurre.Events.Invoke.Player.ItemStopping(ev);
                     return ev.Allowed;

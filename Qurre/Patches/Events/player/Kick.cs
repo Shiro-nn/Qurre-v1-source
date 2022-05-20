@@ -11,7 +11,7 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                if (player == null) return false;
+                if (player is null) return false;
                 var ev = new KickedEvent(API.Player.Get(player), message);
                 Qurre.Events.Invoke.Player.Kicked(ev);
                 message = ev.Reason;

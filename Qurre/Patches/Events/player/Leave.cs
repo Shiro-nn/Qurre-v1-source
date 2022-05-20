@@ -14,9 +14,9 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                if (conn.identity == null || conn.identity.gameObject == null) return;
+                if (conn.identity is null || conn.identity.gameObject is null) return;
                 Player player = Player.Get(conn.identity.gameObject);
-                if (player == null || player.IsHost) return;
+                if (player is null || player.IsHost) return;
                 var ev = new LeaveEvent(player);
                 ServerConsole.AddLog($"Player {player.Nickname} ({player.UserId}) ({player.Id}) disconnected", ConsoleColor.DarkMagenta);
                 Qurre.Events.Invoke.Player.Leave(ev);
@@ -35,7 +35,7 @@ namespace Qurre.Patches.Events.player
             try
             {
                 if (Player.Get(__instance) is not Player player) return;
-                if (player == null || player.IsHost) return;
+                if (player is null || player.IsHost) return;
                 if (Player.Dictionary.ContainsKey(player.GameObject)) Player.Dictionary.Remove(player.GameObject);
                 if (Player.IdPlayers.ContainsKey(player.Id)) Player.IdPlayers.Remove(player.Id);
                 if (player.UserId != null) if (Player.UserIDPlayers.ContainsKey(player.UserId)) Player.UserIDPlayers.Remove(player.UserId);

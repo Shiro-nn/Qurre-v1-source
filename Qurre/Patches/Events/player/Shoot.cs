@@ -12,15 +12,12 @@ namespace Qurre.Patches.Events.player
     {
         private static bool Prefix(NetworkConnection conn, ShotMessage msg)
         {
-            bool logging_error = true;
             try
             {
-                try { _ = conn.identity.gameObject; } catch { logging_error = false; }
-                if (!ReferenceHub.TryGetHub(conn.identity.gameObject, out ReferenceHub hub)) return false;
-                Player pl = Player.Get(hub);
-                if (msg.ShooterWeaponSerial != hub.inventory.CurItem.SerialNumber) return false;
-                Firearm firearm = pl.CurInstance as Firearm;
-                if (firearm == null) return false;
+                Player pl = Player.Get(conn?.identity?.gameObject);
+                if (pl is null) return true;
+                if (msg.ShooterWeaponSerial != pl.Inventory.CurItem.SerialNumber) return false;
+                if (pl.CurInstance is not Firearm firearm) return false;
                 var ev = new ShootingEvent(pl, msg);
                 Qurre.Events.Invoke.Player.Shooting(ev);
                 if (!ev.Allowed) return false;
@@ -31,7 +28,7 @@ namespace Qurre.Patches.Events.player
             }
             catch (Exception e)
             {
-                if (logging_error) Log.Error($"umm, error in patching Player [Shoot]:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [Shoot]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

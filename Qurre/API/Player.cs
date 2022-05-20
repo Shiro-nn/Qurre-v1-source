@@ -483,7 +483,7 @@ namespace Qurre.API
 		public static IEnumerable<Player> Get(Team team) => List.Where(player => player.Team == team);
 		public static IEnumerable<Player> Get(RoleType role) => List.Where(player => player.Role == role);
 		public static Player Get(CommandSender sender) => sender is null ? null : Get(sender.SenderId);
-		public static Player Get(ReferenceHub referenceHub) => referenceHub is null ? null : Get(referenceHub.gameObject);
+		public static Player Get(ReferenceHub referenceHub) { try { return referenceHub is null ? null : Get(referenceHub.gameObject); } catch { return null; } }
 		public static Player Get(GameObject gameObject)
 		{
 			if (gameObject is null) return null;

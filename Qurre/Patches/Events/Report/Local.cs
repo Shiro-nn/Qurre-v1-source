@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.Server.Report
             {
                 Player issuer = Player.Get(__instance.gameObject);
                 Player target = Player.Get(playerId);
-                if (target == null) return false;
+                if (target is null) return false;
                 var ev = new ReportLocalEvent(issuer, target, reason, notifyGm);
                 Qurre.Events.Invoke.Report.Local(ev);
                 notifyGm = ev.GlobalReport;

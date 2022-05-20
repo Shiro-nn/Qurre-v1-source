@@ -16,15 +16,13 @@ namespace Qurre.Patches.Events.Effects
                 byte intensity = __instance._intensity;
                 if (intensity == 0 && value > 0)
                 {
-                    var pl = API.Player.Get(__instance.Hub);
-                    var ev = new EffectEnabledEvent(pl, __instance);
+                    var ev = new EffectEnabledEvent(API.Player.Get(__instance.Hub), __instance);
                     Effect.Enabled(ev);
                     if (!ev.Allowed) return false;
                 }
                 else if (intensity > 0 && 0 >= value)
                 {
-                    var pl = API.Player.Get(__instance.Hub);
-                    var ev = new EffectDisabledEvent(pl, __instance);
+                    var ev = new EffectDisabledEvent(API.Player.Get(__instance.Hub), __instance);
                     Effect.Disabled(ev);
                     if (!ev.Allowed) return false;
                 }

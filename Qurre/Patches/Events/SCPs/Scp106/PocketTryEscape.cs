@@ -21,12 +21,12 @@ namespace Qurre.Patches.Events.SCPs.Scp106
                 if (component == null) return false;
                 if(!ReferenceHub.TryGetHubNetID(component.netId, out var hub)) return false;
                 var pl = Player.Get(hub);
-                if (pl == null) return false;
-                if (hub.characterClassManager.GodMode || __instance._type == PDTT.Exit)
+                if (pl is null) return false;
+                if (hub.characterClassManager.GodMode || __instance._type is PDTT.Exit)
                 {
                     __instance.SuccessEscape(hub);
                 }
-                else if ((__instance._type == PDTT.Killer || BlastDoor.OneDoor.isClosed))
+                else if ((__instance._type is PDTT.Killer || BlastDoor.OneDoor.isClosed))
                 {
                     var ev = new PocketFailEscapeEvent(pl, __instance);
                     Qurre.Events.Invoke.Scp106.PocketFailEscape(ev);

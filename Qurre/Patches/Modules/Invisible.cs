@@ -46,14 +46,13 @@ namespace Qurre.Patches.Modules
                         {
                             if (player.Role is RoleType.Spectator) continue;
 
-                            bool _show = false;
+                            bool _invis = false;
                             Player playerToShow = players.ElementAt(k);
                             Vector3 vector = __instance._transmitBuffer[k].position - player.Position;
 
                             if (player.Role is RoleType.Scp173)
                             {
-                                if ((playerToShow.Team is Team.SCP && !Loader.ScpTrigger173) ||
-                                    player.Scp173Controller.IgnoredPlayers.Contains(playerToShow) || playerToShow.Invisible)
+                                if (player.Scp173Controller.IgnoredPlayers.Contains(playerToShow) || playerToShow.Invisible)
                                 {
                                     PlayerPositionData posinfo = __instance._transmitBuffer[k];
                                     float rot = Quaternion.LookRotation(playerToShow.Position - player.Position).eulerAngles.y;
@@ -65,18 +64,18 @@ namespace Qurre.Patches.Modules
                                 if (__instance._transmitBuffer[k].position.y < 800f && playerToShow.Team is not Team.RIP and not Team.SCP &&
                                     !playerToShow.ReferenceHub.GetComponent<Scp939_VisionController>().CanSee(player.PlayerEffectsController.GetEffect<Visuals939>()))
                                 {
-                                    _show = true;
+                                    _invis = true;
                                     goto AA_001;
                                 }
                             }
                             if (playerToShow.Invisible)
                             {
-                                _show = true;
+                                _invis = true;
                                 goto AA_001;
                             }
                             if (Math.Abs(vector.y) > 35f)
                             {
-                                _show = true;
+                                _invis = true;
                                 goto AA_001;
                             }
                             else
@@ -86,13 +85,13 @@ namespace Qurre.Patches.Modules
                                 {
                                     if (sqrMagnitude >= 1764f)
                                     {
-                                        _show = true;
+                                        _invis = true;
                                         goto AA_001;
                                     }
                                 }
                                 else if (sqrMagnitude >= 7225f)
                                 {
-                                    _show = true;
+                                    _invis = true;
                                     goto AA_001;
                                 }
 
@@ -101,17 +100,17 @@ namespace Qurre.Patches.Modules
                                     Scp096 scp = player.ScpsController.CurrentScp as Scp096;
                                     if (scp is not null && scp.Enraged && !scp.HasTarget(playerToShow.ReferenceHub) && playerToShow.Team is not Team.SCP)
                                     {
-                                        _show = true;
+                                        _invis = true;
                                         goto AA_001;
                                     }
                                     if (playerToShow.GetEffect<Invisible>().IsEnabled)
                                     {
-                                        if (player.Role == RoleType.Scp079 || 
+                                        if (player.Role is RoleType.Scp079 || 
                                             (scp is not null && scp.HasTarget(playerToShow.ReferenceHub)))
                                         {
-                                            if (Loader.Better268) _show = true;
+                                            if (Loader.Better268) _invis = true;
                                         }
-                                        else _show = true;
+                                        else _invis = true;
                                     }
                                 }
                             }
@@ -122,14 +121,14 @@ namespace Qurre.Patches.Modules
                             float rotation = posData.rotation;
                             Vector3 pos = posData.position;
 
-                            TransmitPlayerDataEvent ev = new(player, playerToShow, pos, rotation, _show);
+                            TransmitPlayerDataEvent ev = new(player, playerToShow, pos, rotation, _invis);
                             Qurre.Events.Invoke.Player.TransmitPlayerData(ev);
                             pos = ev.Position;
                             rotation = ev.Rotation;
-                            _show = ev.Invisible;
-                            if (player == playerToShow) _show = false;
+                            _invis = ev.Invisible;
+                            if (player == playerToShow) _invis = false;
 
-                            if (_show) __instance._transmitBuffer[k] = new PlayerPositionData(Vector3.up * 6000f, 0.0f, playerToShow.Id);
+                            if (_invis) __instance._transmitBuffer[k] = new PlayerPositionData(Vector3.up * 6000f, 0.0f, playerToShow.Id);
                             else __instance._transmitBuffer[k] = new PlayerPositionData(pos, rotation, playerToShow.Id);
                         }
                         NetworkConnection conn = player.Connection;

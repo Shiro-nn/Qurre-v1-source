@@ -7,7 +7,7 @@ namespace Qurre.Patches.Modules
     {
         internal static bool Prefix(ref bool __result, ReferenceHub attacker)
         {
-            if (Player.Get(attacker) == null) return true;
+            if (Player.Get(attacker) is null) return true;
             __result = Player.Get(attacker).FriendlyFire || Server.FriendlyFire;
             return !__result;
         }

@@ -10,7 +10,6 @@ namespace Qurre
         internal static bool AllUnits => Plugin.Config.GetBool("Qurre_AllUnit", false, "Should I show the Qurre version on Units for all roles?");
         internal static bool OnlyTutorialUnit => Plugin.Config.GetBool("Qurre_OnlyTutorialUnit", false, "Should I show the Qurre version on Units only for the Tutorial role?");
         internal static bool SpawnBlood => Plugin.Config.GetBool("Qurre_Spawn_Blood", true, "Allow the appearance of blood?");
-        internal static bool ScpTrigger173 => Plugin.Config.GetBool("Qurre_ScpTrigger173", false, "Can other SCPs look at SCP-173?");
         internal static bool Better268 => Plugin.Config.GetBool("Qurre_Better268", false, "SCP 079 & SCP 096 will not see the wearer of SCP 268");
         internal static bool LateJoinSpawn => Plugin.Config.GetBool("Qurre_LateJoinSpawn", true, "If enabled, will spawn those who entered after the start of the round");
         internal static string ReloadAccess => Plugin.Config.GetString("Qurre_ReloadAccess", "owner, UserId64@steam, UserDiscordId@discord", "Those who can use the \"reload\" command");
@@ -33,7 +32,6 @@ namespace Qurre
                 _ = AllUnits;
                 _ = OnlyTutorialUnit;
                 _ = SpawnBlood;
-                _ = ScpTrigger173;
                 _ = Better268;
                 _ = LateJoinSpawn;
                 _ = ReloadAccess;

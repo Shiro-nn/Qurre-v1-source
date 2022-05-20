@@ -255,70 +255,103 @@ namespace Qurre.API.Events
     public class DamageEvent : EventArgs
     {
         private DamageHandlerBase damageInfo;
-        public DamageEvent(Player attacker, Player target, DamageHandlerBase dInfo, DamageTypes type, float amount, bool allowed = true)
+        public DamageEvent(Player attacker, Player target, DamageHandlerBase dInfo, float amount, bool allowed = true)
         {
             Attacker = attacker;
             Target = target;
             DamageInfo = dInfo;
-            DamageType = type;
             Amount = amount;
             Allowed = allowed;
-            PrimitiveType = damageInfo.GetDamageTypesPrimitive();
         }
+        private DamageTypes _type = DamageTypes.None;
+        private DamageTypesPrimitive _primType = DamageTypesPrimitive.Unknow;
         public Player Attacker { get; }
         public Player Target { get; }
-        public DamageHandlerBase DamageInfo
+        public DamageHandlerBase DamageInfo { get; }
+        public DamageTypes DamageType
         {
-            get => damageInfo;
-            private set => damageInfo = value;
+            get
+            {
+                if (_type is DamageTypes.None) _type = DamageInfo.GetDamageType();
+                return _type;
+            }
         }
-        public DamageTypes DamageType { get; }
-        public DamageTypesPrimitive PrimitiveType { get; }
+        public DamageTypesPrimitive PrimitiveType
+        {
+            get
+            {
+                if (_primType is DamageTypesPrimitive.Unknow) _primType = DamageInfo.GetDamageTypesPrimitive();
+                return _primType;
+            }
+        }
         public float Amount { get; set; }
         public bool Allowed { get; set; }
     }
     public class DamageProcessEvent : EventArgs
     {
-        private DamageHandlerBase damageInfo;
-        public DamageProcessEvent(Player attacker, Player target, DamageHandlerBase dInfo, DamageTypes type, float amount, bool friendlyFire, bool allowed = true)
+        public DamageProcessEvent(Player attacker, Player target, DamageHandlerBase dInfo, float amount, bool friendlyFire, bool allowed = true)
         {
             Attacker = attacker;
             Target = target;
             DamageInfo = dInfo;
-            DamageType = type;
             Amount = amount;
             FriendlyFire = friendlyFire;
             Allowed = allowed;
-            PrimitiveType = damageInfo.GetDamageTypesPrimitive();
         }
+        private DamageTypes _type = DamageTypes.None;
+        private DamageTypesPrimitive _primType = DamageTypesPrimitive.Unknow;
         public Player Attacker { get; }
         public Player Target { get; }
-        public DamageHandlerBase DamageInfo
+        public DamageHandlerBase DamageInfo { get; }
+        public DamageTypes DamageType
         {
-            get => damageInfo;
-            private set => damageInfo = value;
+            get
+            {
+                if (_type is DamageTypes.None) _type = DamageInfo.GetDamageType();
+                return _type;
+            }
         }
-        public DamageTypes DamageType { get; }
-        public DamageTypesPrimitive PrimitiveType { get; }
+        public DamageTypesPrimitive PrimitiveType
+        {
+            get
+            {
+                if (_primType is DamageTypesPrimitive.Unknow) _primType = DamageInfo.GetDamageTypesPrimitive();
+                return _primType;
+            }
+        }
         public float Amount { get; set; }
         public bool FriendlyFire { get; set; }
         public bool Allowed { get; set; }
     }
     public class DiesEvent : EventArgs
     {
-        public DiesEvent(Player killer, Player target, DamageHandlerBase damageInfo, DamageTypes type, bool allowed = true)
+        public DiesEvent(Player killer, Player target, DamageHandlerBase damageInfo, bool allowed = true)
         {
             Killer = killer;
             Target = target;
-            DamageType = type;
             DamageInfo = damageInfo;
             Allowed = allowed;
-            PrimitiveType = damageInfo.GetDamageTypesPrimitive();
         }
+        private DamageTypes _type = DamageTypes.None;
+        private DamageTypesPrimitive _primType = DamageTypesPrimitive.Unknow;
         public Player Killer { get; }
         public Player Target { get; }
-        public DamageTypes DamageType { get; }
-        public DamageTypesPrimitive PrimitiveType { get; }
+        public DamageTypes DamageType
+        {
+            get
+            {
+                if (_type is DamageTypes.None) _type = DamageInfo.GetDamageType();
+                return _type;
+            }
+        }
+        public DamageTypesPrimitive PrimitiveType
+        {
+            get
+            {
+                if (_primType is DamageTypesPrimitive.Unknow) _primType = DamageInfo.GetDamageTypesPrimitive();
+                return _primType;
+            }
+        }
         public DamageHandlerBase DamageInfo { get; }
         public bool Allowed { get; set; }
     }

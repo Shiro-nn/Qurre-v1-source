@@ -14,7 +14,6 @@ namespace Qurre.Patches.Events.player
 		{
 			try
 			{
-				Player thrower = Player.Get(__instance.PreviousOwner.Hub);
 				Player target = Player.Get(hub);
 				Vector3 vector = __instance.transform.position - hub.PlayerCameraReference.position;
 				float num = vector.magnitude;
@@ -25,7 +24,7 @@ namespace Qurre.Patches.Events.player
 				float num3 = __instance._blindingOverDistance.Evaluate(num) * __instance._blindingOverDot.Evaluate(Vector3.Dot(hub.PlayerCameraReference.forward, vector.normalized));
 				bool allowed = false;
 				if (num3 > __instance._minimalEffectDuration) allowed = true;
-				var ev = new FlashedEvent(thrower, target, __instance.transform.position, allowed);
+				var ev = new FlashedEvent(Player.Get(__instance?.PreviousOwner.Hub), target, __instance.transform.position, allowed);
 				Qurre.Events.Invoke.Player.Flashed(ev);
 				if (ev.Allowed)
 				{

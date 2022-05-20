@@ -26,7 +26,6 @@ namespace Qurre.Patches.Events.SCPs.Scp173
                     foreach (TeslaGate teslaGate in __instance._teslaGateController.TeslaGates)
                         if (teslaGate.PlayerInIdleRange(__instance.Hub))
                             teslaGate.TantrumsToBeDestroyed.Add(gameObject);
-                return false;
             }
             catch (Exception e)
             {

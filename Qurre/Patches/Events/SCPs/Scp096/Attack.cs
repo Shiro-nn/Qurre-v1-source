@@ -31,7 +31,7 @@ namespace Qurre.Patches.Events.SCPs.Scp096
 					return false;
 				}
 				if (!ReferenceHub.TryGetHub(target, out ReferenceHub hub)) return false;
-				if (hub == null || hub == __instance.Hub || hub.characterClassManager.IsAnyScp()) return false;
+				if (hub is null || hub == __instance.Hub || hub.characterClassManager.IsAnyScp()) return false;
 				if (Physics.Linecast(__instance.Hub.playerMovementSync.RealModelPosition, hub.playerMovementSync.RealModelPosition,
 					PlayableScps.Scp096._solidObjectMask)) return false;
 				if (Vector3.Distance(hub.playerMovementSync.RealModelPosition, hub.playerMovementSync.RealModelPosition) > 5f)

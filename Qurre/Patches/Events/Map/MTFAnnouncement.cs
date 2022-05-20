@@ -12,13 +12,12 @@ namespace Qurre.Patches.Events.Map
         {
             try
             {
-                if (regular is null) return false;
-                if (regular is "") return false;
+                if (string.IsNullOrEmpty(regular)) return false;
                 int scpsLeft = Player.List.Where(x => x.Team == Team.SCP && x.Role != RoleType.Scp0492).Count();
                 string[] inf = regular.Split('-');
                 string unit = "";
                 int num = 0;
-                if(inf.Length >= 2)
+                if (inf.Length >= 2)
                 {
                     unit = inf[0];
                     num = int.Parse(inf[1]);

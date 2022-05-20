@@ -17,7 +17,7 @@ namespace Qurre.Patches.Events.SCPs.Scp049
 				if (!__instance._iawRateLimit.CanExecute(true) || plyObj == null) return false;
                 Player scp = Player.Get(__instance._hub);
                 Player target = Player.Get(plyObj);
-				if (target == null) return false;
+				if (target is null) return false;
                 if (Vector3.Distance(scp.Position, target.Position) > __instance.distance * 1.5f || !__instance.iAm049_2) return false;
                 var ev = new ScpAttackEvent(scp, target, ScpAttackType.Scp0492);
                 Qurre.Events.Invoke.Player.ScpAttack(ev);

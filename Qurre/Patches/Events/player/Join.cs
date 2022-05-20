@@ -2,7 +2,6 @@
 using Qurre.API;
 using HarmonyLib;
 using MEC;
-using Qurre.API.Events;
 namespace Qurre.Patches.Events.player
 {
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkIsVerified), MethodType.Setter)]
@@ -23,11 +22,9 @@ namespace Qurre.Patches.Events.player
                 ServerConsole.AddLog($"Player {player?.Nickname} ({player?.UserId}) ({player?.Id}) connected. iP: {player?.Ip}", ConsoleColor.Magenta);
                 Timing.CallDelayed(0.25f, () =>
                 {
-                    if (player != null && player.Muted)
-                        player.ClassManager.SetDirtyBit(1UL);
+                    if (player is not null && player.Muted) player.ClassManager.SetDirtyBit(1UL);
                 });
-                var ev = new JoinEvent(player);
-                Qurre.Events.Invoke.Player.Join(ev);
+                Qurre.Events.Invoke.Player.Join(new(player));
             }
             catch (Exception e)
             {

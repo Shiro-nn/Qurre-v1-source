@@ -16,8 +16,8 @@ namespace Qurre.Patches.Events.player
                 var attacker = handler.GetAttacker();
                 Player target = Player.Get(__instance.gameObject);
                 if (attacker is null) attacker = target;
-                if ((target != null && (target.GodMode || target.IsHost)) || attacker == null) return true;
-                var ev = new DiesEvent(attacker, target, handler, handler.GetDamageType());
+                if ((target is not null && (target.GodMode || target.IsHost)) || attacker is null) return true;
+                var ev = new DiesEvent(attacker, target, handler);
                 Qurre.Events.Invoke.Player.Dies(ev);
                 return ev.Allowed;
             }
@@ -34,7 +34,7 @@ namespace Qurre.Patches.Events.player
                 var attacker = handler.GetAttacker();
                 Player target = Player.Get(__instance.gameObject);
                 if (attacker is null) attacker = target;
-                if ((target != null && (target.Role != RoleType.Spectator || target.GodMode || target.IsHost)) || attacker == null) return;
+                if ((target is not null && (target.Role != RoleType.Spectator || target.GodMode || target.IsHost)) || attacker == null) return;
                 target.Zoomed = false;
                 var type = handler.GetDamageType();
                 var ev = new DeadEvent(attacker, target, handler, type);
@@ -44,7 +44,7 @@ namespace Qurre.Patches.Events.player
                     attacker._kills.Add(new KillElement(attacker, target, type, System.DateTime.Now));
                     target.DeathsCount++;
                 }
-                if (target.Bot) API.Map.Bots.FirstOrDefault(x => x.Player == target).Destroy();
+                if (target.Bot && API.Map.Bots.TryFind(out var _bot, x => x.Player == target)) _bot.Destroy();
             }
             catch (System.Exception e)
             {

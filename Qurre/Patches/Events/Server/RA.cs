@@ -15,17 +15,17 @@ namespace Qurre.Patches.Events.Server
 				string[] allarguments = q.Split(' ');
 				string name = allarguments[0].ToLower();
 				string[] args = allarguments.Skip(1).ToArray();
-				var ev = new SendingRAEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Server.Host : (API.Player.Get(sender.SenderId) ?? API.Server.Host), q, name, args);
 				IdleMode.PreauthStopwatch.Restart();
 				IdleMode.SetIdleMode(false);
 				if (q == "$0 1")
 				{
-					var _ev = new RaRequestPlayerListEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Server.Host : (API.Player.Get(sender.SenderId) ?? API.Server.Host), q, name, args);
-					Qurre.Events.Invoke.Server.RaRequestPlayerList(_ev);
-					return _ev.Allowed;
+					var ev = new RaRequestPlayerListEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Server.Host : (API.Player.Get(sender.SenderId) ?? API.Server.Host), q, name, args);
+					Qurre.Events.Invoke.Server.RaRequestPlayerList(ev);
+					return ev.Allowed;
 				}
 				else
 				{
+					var ev = new SendingRAEvent(sender, string.IsNullOrEmpty(sender.SenderId) ? API.Server.Host : (API.Player.Get(sender.SenderId) ?? API.Server.Host), q, name, args);
 					Qurre.Events.Invoke.Server.SendingRA(ev);
 					if (!string.IsNullOrEmpty(ev.ReplyMessage))
 						sender.RaReply(ev.ReplyMessage, ev.Success, true, string.Empty);

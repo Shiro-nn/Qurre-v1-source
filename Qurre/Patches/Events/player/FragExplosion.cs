@@ -14,8 +14,7 @@ namespace Qurre.Patches.Events.player
 		{
 			try
 			{
-				Player thrower = Player.Get(attacker.Hub);
-				var ev = new FragExplosionEvent(thrower, settingsReference, position);
+				var ev = new FragExplosionEvent(Player.Get(attacker.Hub), settingsReference, position);
 				Qurre.Events.Invoke.Player.FragExplosion(ev);
 				return ev.Allowed;
 			}

@@ -5,11 +5,9 @@ using System.Reflection.Emit;
 using GameCore;
 using HarmonyLib;
 using MEC;
-using Qurre.API.Controllers.Items;
 using Qurre.API.Events;
 using RoundRestarting;
 using UnityEngine;
-using Rd = Qurre.API.Controllers.Ragdoll;
 namespace Qurre.Patches.Events.Round
 {
     [HarmonyPatch(typeof(RoundSummary), nameof(RoundSummary.Start))]
@@ -22,7 +20,7 @@ namespace Qurre.Patches.Events.Round
             foreach (var code in codes.Select((x, i) => new { Value = x, Index = i }))
             {
                 if (code.Value.opcode != OpCodes.Call) continue;
-                if (code.Value.operand != null && code.Value.operand is MethodBase methodBase &&
+                if (code.Value.operand is not null && code.Value.operand is MethodBase methodBase &&
                     methodBase.Name == nameof(RoundSummary._ProcessServerSideCode))
                     codes[code.Index].operand = CustomProcess;
             }
@@ -31,9 +29,9 @@ namespace Qurre.Patches.Events.Round
         private static IEnumerator<float> ProcessServerSide(RoundSummary instance)
         {
             float time = Time.unscaledTime;
-            while (instance != null)
+            while (instance is not null)
             {
-                   yield return Timing.WaitForSeconds(2.5f);
+                yield return Timing.WaitForSeconds(2.5f);
                 while (RoundSummary.RoundLock || !RoundSummary.RoundInProgress() || Time.unscaledTime - time < 15f ||
                     (instance._keepRoundOnOne && PlayerManager.players.Count < 2))
                     yield return Timing.WaitForSeconds(1);
@@ -42,27 +40,51 @@ namespace Qurre.Patches.Events.Round
                 int cw = 0;
                 int mw = 0;
                 int sw = 0;
-                int nd = API.Player.List.Where(x => x.Team == Team.CDP).Count();
-                int ns = API.Player.List.Where(x => x.Team == Team.RSC).Count();
+                int nd = 0;
+                int ns = 0;
+                int ci = 0;
+                int mtf = 0;
+                int scp = 0;
+                int zombies = 0;
+                foreach (var pl in API.Player.List)
+                {
+                    switch (pl.Team)
+                    {
+                        case Team.CDP:
+                            nd++;
+                            break;
+                        case Team.RSC:
+                            ns++;
+                            break;
+                        case Team.CHI:
+                            ci++;
+                            break;
+                        case Team.MTF:
+                            mtf++;
+                            break;
+                        case Team.SCP:
+                            {
+                                scp++;
+                                if (pl.Role is RoleType.Scp0492) zombies++;
+                                break;
+                            }
+                    }
+                }
                 int d = RoundSummary.EscapedClassD + nd;
                 int s = RoundSummary.EscapedScientists + ns;
-                int ci = API.Player.List.Where(x => x.Team == Team.CHI).Count();
-                int mtf = API.Player.List.Where(x => x.Team == Team.MTF).Count();
-                int scp = API.Player.List.Where(x => x.Team == Team.SCP).Count();
                 bool MTFAlive = mtf > 0;
                 bool CiAlive = ci > 0;
                 bool ScpAlive = scp > 0;
                 bool DClassAlive = nd > 0;
                 bool ScientistsAlive = ns > 0;
-                var scps = API.Player.Dictionary.Values.Where(x => x.Team == Team.SCP);
                 var cList = new RoundSummary.SumInfo_ClassList
                 {
                     class_ds = d,
                     scientists = s,
                     chaos_insurgents = ci,
                     mtf_and_guards = mtf,
-                    scps_except_zombies = scps.Where(x => x.Role != RoleType.Scp0492).Count(),
-                    zombies = scps.Where(x => x.Role == RoleType.Scp0492).Count(),
+                    scps_except_zombies = scp - zombies,
+                    zombies = zombies,
                     warhead_kills = AlphaWarheadController.Host.detonated ? AlphaWarheadController.Host.warheadKills : -1,
                     time = (int)Time.realtimeSinceStartup
                 };
@@ -108,9 +130,8 @@ namespace Qurre.Patches.Events.Round
                 var ev = new CheckEvent(leading, cList, end);
                 Qurre.Events.Invoke.Round.Check(ev);
                 cList = ev.ClassList;
-                instance.RoundEnded = ev.RoundEnd;
+                instance.RoundEnded = ev.RoundEnd || API.Round.ForceEnd;
                 leading = ev.LeadingTeam;
-                if (API.Round.ForceEnd) instance.RoundEnded = API.Round.ForceEnd;
                 if (instance.RoundEnded)
                 {
                     FriendlyFireConfig.PauseDetector = true;
@@ -119,7 +140,7 @@ namespace Qurre.Patches.Events.Round
                     ServerLogs.AddLog(ServerLogs.Modules.Logger, text, ServerLogs.ServerLogType.GameEvent);
                     yield return Timing.WaitForSeconds(0.5f);
                     int to_restart = Mathf.Clamp(ConfigFile.ServerConfig.GetInt("auto_round_restart_time", 10), 5, 1000);
-                    if (instance != null)
+                    if (instance is not null)
                     {
                         var end_ev = new RoundEndEvent(leading, cList, to_restart);
                         Qurre.Events.Invoke.Round.End(end_ev);
@@ -134,13 +155,15 @@ namespace Qurre.Patches.Events.Round
                     Timing.CallDelayed(1f, () => RoundRestart.InitiateRoundRestart());
                     try
                     {
-                        var __list = API.Player.List.Where(x => x.Role != RoleType.Spectator);
-                        foreach (var pl in __list)
+                        foreach (var pl in API.Player.List)
                         {
                             try
                             {
-                                pl.ClearInventory();
-                                pl.Role = RoleType.Spectator;
+                                if (pl.Role != RoleType.Spectator)
+                                {
+                                    pl.ClearInventory();
+                                    pl.Role = RoleType.Spectator;
+                                }
                             }
                             catch { }
                         }
@@ -148,15 +171,13 @@ namespace Qurre.Patches.Events.Round
                     catch { }
                     try
                     {
-                        var __pics = new List<Pickup>();
-                        foreach (var item in API.Map.Pickups) try { __pics.Add(item); } catch { }
+                        var __pics = API.Map.Pickups.ToArray();
                         foreach (var p in __pics) try { p.Destroy(); } catch { }
                     }
                     catch { }
                     try
                     {
-                        var __dolls = new List<Rd>();
-                        foreach (var doll in API.Map.Ragdolls) try { __dolls.Add(doll); } catch { }
+                        var __dolls = API.Map.Ragdolls.ToArray();
                         foreach (var doll in __dolls) try { doll.Destroy(); } catch { }
                     }
                     catch { }

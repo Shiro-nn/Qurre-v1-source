@@ -58,7 +58,7 @@ namespace Qurre.Patches.Events.Round
                     }
                     catch (Exception ex)
                     {
-                        if (pl != null && pl.ReferenceHub != null)
+                        if (pl is not null && pl.ReferenceHub is not null)
                             ServerLogs.AddLog(ServerLogs.Modules.ClassChange, $"Player {pl.ReferenceHub.LoggedNameFromRefHub()} couldn't be spawned. Err msg: {ex.Message}",
                                 ServerLogs.ServerLogType.GameEvent, false);
                         else ServerLogs.AddLog(ServerLogs.Modules.ClassChange, "Couldn't spawn a player - target's ReferenceHub is null.", ServerLogs.ServerLogType.GameEvent, false);

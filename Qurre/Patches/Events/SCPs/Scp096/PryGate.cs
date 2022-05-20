@@ -35,17 +35,13 @@ namespace Qurre.Patches.Events.SCPs.Scp096
                         transform = transform2;
                     }
                 }
-                if (transform != null)
+                if (transform is not null)
                 {
                     __instance.Hub.playerMovementSync.OverridePosition(transform.position, new PlayerMovementSync.PlayerRotation(null, transform.rotation.eulerAngles.y), true);
                 }
                 MEC.Timing.RunCoroutine(__instance.MoveThroughGate(gate));
                 MEC.Timing.RunCoroutine(__instance.ResetGateAnim());
-                MEC.Timing.CallDelayed(2f, () =>
-                {
-                    var evEnd = new EndPryGateEvent(__instance, pl, door);
-                    Qurre.Events.Invoke.Scp096.EndPryGate(evEnd);
-                });
+                MEC.Timing.CallDelayed(2f, () => Qurre.Events.Invoke.Scp096.EndPryGate(new EndPryGateEvent(__instance, pl, door)));
                 return false;
             }
             catch (Exception e)

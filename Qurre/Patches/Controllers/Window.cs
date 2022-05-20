@@ -11,7 +11,7 @@ namespace Qurre.Patches.Controllers
             try
             {
                 var window = __instance.GetWindow();
-                if (window == null) return true;
+                if (window is null) return true;
                 return window.AllowBreak;
             }
             catch (Exception e)

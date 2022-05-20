@@ -19,7 +19,7 @@ namespace Qurre.Patches.Events.player
 					allowed = false;
 				}
 				var attacker = Player.Get(__instance.Attacker.Hub);
-				if (attacker == null) attacker = API.Server.Host;
+				if (attacker is null) attacker = API.Server.Host;
 				if (ply.networkIdentity.netId == __instance.Attacker.NetId)
 				{
 					if (!__instance.AllowSelfDamage && !__instance.ForceFullFriendlyFire && !attacker.FriendlyFire)
@@ -37,8 +37,7 @@ namespace Qurre.Patches.Events.player
 					if (AttackerDamageHandler._ffMultiplier > 0.1f) __instance.Damage *= AttackerDamageHandler._ffMultiplier;
 					__instance.IsFriendlyFire = true;
 				}
-				var type = __instance.GetDamageType();
-				var ev = new DamageProcessEvent(attacker, Player.Get(ply), __instance, type, __instance.Damage, __instance.IsFriendlyFire, allowed);
+				var ev = new DamageProcessEvent(attacker, Player.Get(ply), __instance, __instance.Damage, __instance.IsFriendlyFire, allowed);
 				Qurre.Events.Invoke.Player.DamageProcess(ev);
 				if (ev.Amount == -1) ev.Amount = ev.Target.Hp + 1;
 				__instance.Damage = ev.Amount;

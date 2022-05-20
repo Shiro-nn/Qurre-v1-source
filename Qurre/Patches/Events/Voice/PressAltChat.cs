@@ -11,7 +11,7 @@ namespace Qurre.Patches.Events.Voice
 			try
 			{
 				var pl = Player.Get(__instance._hub);
-				if (pl == null) return;
+				if (pl is null) return;
 				var ev = new PressAltChatEvent(pl, value);
 				Qurre.Events.Invoke.Voice.PressAltChat(ev);
 				value = ev.Value;

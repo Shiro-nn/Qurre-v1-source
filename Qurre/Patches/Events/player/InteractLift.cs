@@ -13,9 +13,9 @@ namespace Qurre.Patches.Events.player
             try
             {
                 if (!__instance.CanInteract) return false;
-                if (elevator == null) return false;
+                if (elevator is null) return false;
                 Lift component = elevator.GetComponent<Lift>();
-                if (component == null) return false;
+                if (component is null) return false;
                 foreach (Lift.Elevator elevator2 in component.elevators)
                 {
                     if (__instance.ChckDis(elevator2.door.transform.position))

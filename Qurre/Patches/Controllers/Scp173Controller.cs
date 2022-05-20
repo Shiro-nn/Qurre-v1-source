@@ -11,12 +11,12 @@ namespace Qurre.Patches.Controllers
 		{
 			try
 			{
-				if (__instance == null || __instance.Hub == null) return true;
+				if (__instance is null || __instance.Hub is null) return true;
 				var peanut = Player.Get(__instance.Hub);
-				if (peanut == null) return true;
+				if (peanut is null) return true;
 				foreach (Player pl in Player.List)
 				{
-					if (pl.Role == RoleType.Spectator || pl == peanut || pl.Team == Team.SCP || peanut.Scp173Controller.IgnoredPlayers.Contains(pl))
+					if (pl.Role is RoleType.Spectator || pl == peanut || pl.Team is Team.SCP || peanut.Scp173Controller.IgnoredPlayers.Contains(pl))
 					{
 						if (__instance._observingPlayers.Contains(pl.ReferenceHub)) __instance._observingPlayers.Remove(pl.ReferenceHub);
 					}

@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.Map
         {
             try
             {
-                if (__instance == null || __instance.gameObject == null) return true;
+                if (__instance is null || __instance.gameObject is null) return true;
                 var ev = new DoorLockEvent(Extensions.GetDoor(__instance), reason, newState);
                 Qurre.Events.Invoke.Map.DoorLock(ev);
                 return ev.Allowed;
@@ -31,7 +31,7 @@ namespace Qurre.Patches.Events.Map
         {
             try
             {
-                if(__instance == null || __instance.TargetDoor == null || __instance.TargetDoor.gameObject == null) return true;
+                if(__instance is null || __instance.TargetDoor is null || __instance.TargetDoor.gameObject is null) return true;
                 var ev = new DoorOpenEvent(Extensions.GetDoor(__instance.TargetDoor), eventType);
                 Qurre.Events.Invoke.Map.DoorOpen(ev);
                 return ev.Allowed;
