@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using Qurre.API.Objects;
 using System.Linq;
+using Assets._Scripts.Dissonance;
 namespace Qurre.Events.Modules
 {
     internal static class Etc
@@ -31,6 +32,8 @@ namespace Qurre.Events.Modules
         }
         private static void Waiting()
         {
+            API.Server.Host.Radio.Network_syncPrimaryVoicechatButton = true;
+            API.Server.Host.Dissonance.NetworkspeakingFlags = SpeakingFlags.IntercomAsHuman;
             if (API.Round.CurrentRound == 0)
                 API.Addons.Prefabs.InitLate();
             API.Round.CurrentRound++;
@@ -141,7 +144,7 @@ namespace Qurre.Events.Modules
                     if (ushort.TryParse(strs, out ushort pi) && pi > 0)
                     {
                         API.Player pl = API.Player.Get(pi);
-                        if(pl is not null) pl.Broadcast(content, time);
+                        if (pl is not null) pl.Broadcast(content, time);
                     }
                 }
                 ev.ReplyMessage = "Broadcast sent.";

@@ -193,7 +193,7 @@ namespace Qurre.API.Events
         public Player Target { get; }
         public DamageTypes DamageType { get; }
         public DamageTypesPrimitive PrimitiveType { get; }
-        public DamageHandlerBase DamageInfo { get; set; }
+        public DamageHandlerBase DamageInfo { get; }
     }
     public class EscapeEvent : EventArgs
     {
@@ -254,7 +254,6 @@ namespace Qurre.API.Events
     }
     public class DamageEvent : EventArgs
     {
-        private DamageHandlerBase damageInfo;
         public DamageEvent(Player attacker, Player target, DamageHandlerBase dInfo, float amount, bool allowed = true)
         {
             Attacker = attacker;

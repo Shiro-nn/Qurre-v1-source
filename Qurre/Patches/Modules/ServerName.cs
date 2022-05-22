@@ -17,7 +17,7 @@ namespace Qurre.Patches.Modules
 					del = true;
 				}
 			}
-			ServerConsole._serverName += $" <color=#00000000><size=1>Qurre v{PluginManager.Version}</size></color>";
+			ServerConsole._serverName += $" <color=#00000000><size=1>Qurre v{PluginManager.Version}-dev</size></color>";
 		}
 	}
 }
