@@ -99,6 +99,8 @@ namespace Qurre.API.Addons.Audio
 
             UpdateFrames(task);
 
+            task.Active = true;
+
             return task.Format;
         }
         public virtual void StopCapture()
@@ -107,7 +109,10 @@ namespace Qurre.API.Addons.Audio
             Server.Host.Radio.Network_syncPrimaryVoicechatButton = false;
             IsRecording = false;
             Status = StatusType.Stopped;
-            _tasks.Remove(_tasks[0]);
+            AudioTask task = _tasks[0];
+            _tasks.Remove(task);
+            task.Alive = false;
+            task.Active = false;
             if (_tasks.Count > 0) ResetMicrophone();
         }
         public virtual void Pause()
