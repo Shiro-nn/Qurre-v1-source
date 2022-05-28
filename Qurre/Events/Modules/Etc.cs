@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Qurre.API.Objects;
 using System.Linq;
 using Assets._Scripts.Dissonance;
+using Dissonance;
 namespace Qurre.Events.Modules
 {
     internal static class Etc
@@ -29,9 +30,15 @@ namespace Qurre.Events.Modules
             API.Player.ArgsPlayers.Clear();
             API.Player.Dictionary.Clear();
             API.Map.ClearObjects();
+            try { Radio.comms.OnPlayerJoinedSession -= AudioSessionJoin; } catch { }
+        }
+        public static void AudioSessionJoin(VoicePlayerState state)
+        {
+            Radio.comms.PlayerChannels.Open(state._name, false, ChannelPriority.Default, 1);
         }
         private static void Waiting()
         {
+            Radio.comms.OnPlayerJoinedSession += AudioSessionJoin;
             API.Server.Host.Radio.Network_syncPrimaryVoicechatButton = true;
             API.Server.Host.Dissonance.NetworkspeakingFlags = SpeakingFlags.IntercomAsHuman;
             if (API.Round.CurrentRound == 0)

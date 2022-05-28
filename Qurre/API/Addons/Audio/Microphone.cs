@@ -8,10 +8,10 @@ using System.Linq;
 using UnityEngine;
 namespace Qurre.API.Addons.Audio
 {
-	public class AudioMicrophone : MonoBehaviour, IMicrophone, IDisposable
+	internal class Microphone : MonoBehaviour, IMicrophone, IDisposable
 	{
-		internal static readonly List<AudioMicrophone> Cache = new();
-		~AudioMicrophone() => Dispose(false);
+		internal static readonly List<Microphone> Cache = new();
+		~Microphone() => Dispose(false);
 		internal virtual IMicrophone Create(Stream stream, float volume, int frameSize, int rate, API.Audio audio)
 		{
 			Stream = stream ?? throw new ArgumentNullException("[Qurre Addons > Audio] Stream is null");
@@ -41,7 +41,7 @@ namespace Qurre.API.Addons.Audio
 		{
 			get
 			{
-				if (dissonanceComms == null) dissonanceComms = GetComponent<DissonanceComms>();
+				if (dissonanceComms is null) dissonanceComms = GetComponent<DissonanceComms>();
 				return dissonanceComms;
 			}
 		}
@@ -51,7 +51,7 @@ namespace Qurre.API.Addons.Audio
 		public virtual RoomChannel RoomChannel { get; private set; }
 		public TimeSpan Duration { get; protected set; }
 		public TimeSpan Progression => Stream.Position.GetDuration();
-		public virtual AudioStatusType Status { get; protected set; }
+		public virtual StatusType Status { get; protected set; }
 
 		public virtual string Name { get; protected set; } = "Audio Player";
 		public virtual void ResetMicrophone(string name, bool Instant = true)
@@ -60,7 +60,7 @@ namespace Qurre.API.Addons.Audio
 
 			if (Instant) StopCapture();
 
-			if (DissonanceComms._capture._network == null) DissonanceComms._capture._network = DissonanceComms._net;
+			if (DissonanceComms._capture._network is null) DissonanceComms._capture._network = DissonanceComms._net;
 
 			DissonanceComms._capture._micName = Name = string.IsNullOrEmpty(name) ? Name : name;
 			DissonanceComms._capture._microphone = this;
@@ -71,7 +71,7 @@ namespace Qurre.API.Addons.Audio
 		{
 			if (CacheCleared) throw new ObjectDisposedException(GetType().FullName);
 
-			if (Stream == null)
+			if (Stream is null)
 			{
 				Log.Error($"Stream is null. Microphone: '{name}'.");
 				return format;
@@ -90,7 +90,7 @@ namespace Qurre.API.Addons.Audio
 			DissonanceComms._capture._microphone = this;
 
 			IsRecording = true;
-			Status = AudioStatusType.Playing;
+			Status = StatusType.Playing;
 			DissonanceComms.IsMuted = false;
 
 			return format;
@@ -103,7 +103,7 @@ namespace Qurre.API.Addons.Audio
 				DissonanceComms.RoomChannels.Close(RoomChannel);
 
 			IsRecording = false;
-			Status = AudioStatusType.Stopped;
+			Status = StatusType.Stopped;
 
 			if (Stream?.CanSeek ?? false) Stream.Seek(0, SeekOrigin.Begin);
 
@@ -122,13 +122,13 @@ namespace Qurre.API.Addons.Audio
 				DissonanceComms.RoomChannels.Close(RoomChannel);
 
 			IsRecording = false;
-			Status = AudioStatusType.Paused;
+			Status = StatusType.Paused;
 		}
 		public void Subscribe(IMicrophoneSubscriber listener) => subscribers.Add(listener);
 		public bool Unsubscribe(IMicrophoneSubscriber listener) => subscribers.Remove(listener);
 		public virtual bool UpdateSubscribers()
 		{
-			if (Stream == null)
+			if (Stream is null)
 			{
 				StopCapture();
 				return true;

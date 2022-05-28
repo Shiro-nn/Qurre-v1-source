@@ -106,9 +106,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\Addons\Audio\AudioMicrophone.cs" />
-    <Compile Include="API\Addons\Audio\AudioStatusType.cs" />
-    <Compile Include="API\Addons\Audio\AudioExtensions.cs" />
+    <Compile Include="API\Addons\Audio\Microphone.cs" />
+    <Compile Include="API\Addons\Audio\StatusType.cs" />
+    <Compile Include="API\Addons\Audio\Extensions.cs" />
     <Compile Include="API\Addons\Audio\IMicrophone.cs" />
     <Compile Include="API\Addons\UnitGenerator.cs" />
     <Compile Include="API\Addons\Models\ModelPickup.cs" />

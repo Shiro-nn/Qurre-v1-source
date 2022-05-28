@@ -20,8 +20,8 @@ using InventorySystem.Items.Pickups;
 using System;
 using PlayerStatsSystem;
 using Light = Qurre.API.Controllers.Light;
-using Qurre.API.Addons.Audio;
 using Camera = Qurre.API.Controllers.Camera;
+using Microphone = Qurre.API.Addons.Audio.Microphone;
 namespace Qurre.API
 {
 	public static class Map
@@ -270,8 +270,8 @@ namespace Qurre.API
 			try { Addons.Models.Model.ClearCache(); } catch { }
 			try
 			{
-				foreach (var m in AudioMicrophone.Cache) m.Dispose();
-				AudioMicrophone.Cache.Clear();
+				foreach (var m in Microphone.Cache) m.Dispose();
+				Microphone.Cache.Clear();
 			}
 			catch { }
 			try

@@ -30,7 +30,14 @@ namespace Qurre.API
 		///</summary>
 		public Audio(Stream stream, byte volume, bool instant = false, int frameSize = 1920, int sampleRate = 48000)
 		{
-			Microphone = AudioExtensions.DissonanceComms.gameObject.AddComponent<AudioMicrophone>().Create(stream, volume, frameSize, sampleRate, this);
+			Server.Host.ReferenceHub.nicknameSync.Network_displayName = "Qurre Audio";
+			foreach (var channel in Radio.comms.PlayerChannels._openChannelsBySubId.Values.ToList())
+			{
+				Radio.comms.PlayerChannels.Close(channel);
+				Radio.comms.PlayerChannels.Open(channel.TargetId, false, Dissonance.ChannelPriority.Default, 1);
+			}
+			Microphone = Radio.comms.gameObject.AddComponent<Microphone>().Create(stream, volume, frameSize, sampleRate, this);
+			Radio.comms.IsMuted = false;
 			if (instant && Audios.Count > 0)
 			{
 				Audios[0].Microphone.StopCapture();
