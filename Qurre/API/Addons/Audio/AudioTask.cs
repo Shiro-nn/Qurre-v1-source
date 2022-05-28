@@ -44,6 +44,8 @@ namespace Qurre.API.Addons.Audio
             Stream = null;
 
             _clearedCache = true;
+            Alive = false;
+            Active = false;
 
             GC.SuppressFinalize(this);
         }

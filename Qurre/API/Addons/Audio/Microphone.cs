@@ -107,12 +107,15 @@ namespace Qurre.API.Addons.Audio
         {
             if (_tasks.Count == 0) return;
             Server.Host.Radio.Network_syncPrimaryVoicechatButton = false;
+
             IsRecording = false;
             Status = StatusType.Stopped;
+
             AudioTask task = _tasks[0];
             _tasks.Remove(task);
             task.Alive = false;
             task.Active = false;
+
             if (_tasks.Count > 0) ResetMicrophone();
         }
         public virtual void Pause()
