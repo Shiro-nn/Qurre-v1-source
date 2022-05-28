@@ -73,6 +73,7 @@ namespace Qurre.API.Addons.Audio
         public virtual WaveFormat StartCapture(string name)
         {
             if (_tasks.Count == 0) throw new NullReferenceException(GetType().FullName);
+            Server.Host.Radio.Network_syncPrimaryVoicechatButton = true;
             AudioTask task = _tasks[0];
 
             if (task.Stream is null)
@@ -103,6 +104,7 @@ namespace Qurre.API.Addons.Audio
         public virtual void StopCapture()
         {
             if (_tasks.Count == 0) return;
+            Server.Host.Radio.Network_syncPrimaryVoicechatButton = false;
             IsRecording = false;
             Status = StatusType.Stopped;
             _tasks.Remove(_tasks[0]);
@@ -111,12 +113,14 @@ namespace Qurre.API.Addons.Audio
         public virtual void Pause()
         {
             if (Status is not StatusType.Playing) return;
+            Server.Host.Radio.Network_syncPrimaryVoicechatButton = false;
             IsRecording = false;
             Status = StatusType.Paused;
         }
         public virtual void Resume()
         {
             if (Status is not StatusType.Paused) return;
+            Server.Host.Radio.Network_syncPrimaryVoicechatButton = true;
             IsRecording = true;
             Status = StatusType.Playing;
         }
