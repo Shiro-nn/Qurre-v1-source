@@ -268,18 +268,7 @@ namespace Qurre.API
 			Patches.Events.player.Banned.Cached.Clear();
 			Extensions.DamagesCached.Clear();
 			try { Addons.Models.Model.ClearCache(); } catch { }
-			try
-			{
-				foreach (var m in Microphone.Cache) m.Dispose();
-				Microphone.Cache.Clear();
-			}
-			catch { }
-			try
-			{
-				foreach (var a in Audio.Audios) try { a.Microphone.Dispose(); } catch { }
-				Audio.Audios.Clear();
-			}
-			catch { }
+			try { Audio._micro?._tasks.Clear(); Audio._micro = null; } catch { }
 		}
 
 		[Obsolete("Use \"AnnounceMtfEntrance\"")]

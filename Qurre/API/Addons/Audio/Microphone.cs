@@ -1,180 +1,129 @@
-﻿using Dissonance;
-using Dissonance.Audio.Capture;
+﻿using Dissonance.Audio.Capture;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEngine;
 namespace Qurre.API.Addons.Audio
 {
-	internal class Microphone : MonoBehaviour, IMicrophone, IDisposable
-	{
-		internal static readonly List<Microphone> Cache = new();
-		~Microphone() => Dispose(false);
-		internal virtual IMicrophone Create(Stream stream, float volume, int frameSize, int rate, API.Audio audio)
-		{
-			Stream = stream ?? throw new ArgumentNullException("[Qurre Addons > Audio] Stream is null");
-			Volume = Mathf.Clamp(volume, 0, 100);
-			Duration = Stream.GetDuration();
-			_audio = audio;
-			FrameSize = frameSize;
-			SampleRate = rate;
-			format = new(SampleRate, 1);
-			frame = new float[FrameSize];
-			frameBytes = new byte[FrameSize * 4];
-			Cache.Add(this);
-			return this;
-		}
-		private API.Audio _audio;
-		public Stream Stream { get; protected set; }
-		public int FrameSize { get; protected set; }
-		public int SampleRate { get; protected set; }
-		private WaveFormat format = new(48000, 1);
-		private float[] frame = new float[1920];
-		private byte[] frameBytes = new byte[1920 * 4];
-		private readonly List<IMicrophoneSubscriber> subscribers = new();
-		private DissonanceComms dissonanceComms;
-		private float elapsedTime;
-		private bool CacheCleared;
-		public DissonanceComms DissonanceComms
-		{
-			get
-			{
-				if (dissonanceComms is null) dissonanceComms = GetComponent<DissonanceComms>();
-				return dissonanceComms;
-			}
-		}
-		public virtual bool IsRecording { get; protected set; }
-		public TimeSpan Latency { get; protected set; }
-		public virtual float Volume { get; set; }
-		public virtual RoomChannel RoomChannel { get; private set; }
-		public TimeSpan Duration { get; protected set; }
-		public TimeSpan Progression => Stream.Position.GetDuration();
-		public virtual StatusType Status { get; protected set; }
+    internal class Microphone : MonoBehaviour, IMicrophone
+    {
+        public IReadOnlyCollection<AudioTask> Tasks => _tasks.ReadOnly;
+        public virtual bool IsRecording { get; protected set; }
+        public virtual TimeSpan Latency { get; protected set; }
+        public virtual StatusType Status { get; protected set; }
 
-		public virtual string Name { get; protected set; } = "Audio Player";
-		public virtual void ResetMicrophone(string name, bool Instant = true)
-		{
-			if (CacheCleared) throw new ObjectDisposedException(GetType().FullName);
+        internal readonly TasksList _tasks = new();
+        private readonly List<IMicrophoneSubscriber> _subs = new();
 
-			if (Instant) StopCapture();
+        private float _elapsedTime;
+        private float[] _frame = new float[1920];
+        private byte[] _frameBytes = new byte[1920 * 4];
 
-			if (DissonanceComms._capture._network is null) DissonanceComms._capture._network = DissonanceComms._net;
+        internal void UpdateFrames(AudioTask task)
+        {
+            _frame = new float[task.FrameSize];
+            _frameBytes = new byte[task.FrameSize * 4];
+        }
 
-			DissonanceComms._capture._micName = Name = string.IsNullOrEmpty(name) ? Name : name;
-			DissonanceComms._capture._microphone = this;
+        public virtual void Subscribe(IMicrophoneSubscriber listener) => _subs.Add(listener);
+        public virtual bool Unsubscribe(IMicrophoneSubscriber listener) => _subs.Remove(listener);
+        public virtual bool UpdateSubscribers()
+        {
+            if (_tasks.Count == 0)
+            {
+                StopCapture();
+                return true;
+            }
+            if (Status != StatusType.Playing)
+                return true;
 
-			DissonanceComms.ResetMicrophoneCapture();
-		}
-		public virtual WaveFormat StartCapture(string name)
-		{
-			if (CacheCleared) throw new ObjectDisposedException(GetType().FullName);
+            AudioTask task = _tasks[0];
 
-			if (Stream is null)
-			{
-				Log.Error($"Stream is null. Microphone: '{name}'.");
-				return format;
-			}
-			else if (!Stream.CanRead)
-			{
-				Log.Error($"Stream cannot be read. Microphone: '{name}'.");
-				return format;
-			}
+            _elapsedTime += Time.unscaledDeltaTime;
 
-			RoomChannel = DissonanceComms.RoomChannels.Open("Intercom", false, ChannelPriority.High, Volume / 100);
+            while (_elapsedTime > 0.04f)
+            {
+                _elapsedTime -= 0.04f;
 
-			elapsedTime = 0;
+                var readLength = task.Stream.Read(_frameBytes, 0, _frameBytes.Length);
 
-			DissonanceComms._capture._micName = Name = string.IsNullOrEmpty(name) ? Name : name;
-			DissonanceComms._capture._microphone = this;
+                Array.Clear(_frame, 0, _frame.Length);
 
-			IsRecording = true;
-			Status = StatusType.Playing;
-			DissonanceComms.IsMuted = false;
+                Buffer.BlockCopy(_frameBytes, 0, _frame, 0, readLength);
 
-			return format;
-		}
-		public virtual void StopCapture()
-		{
-			if (CacheCleared) throw new ObjectDisposedException(GetType().FullName);
+                foreach (var subscriber in _subs)
+                    subscriber.ReceiveMicrophoneData(new ArraySegment<float>(_frame), task.Format);
+            }
 
-			if (!EqualityComparer<RoomChannel>.Default.Equals(RoomChannel, default))
-				DissonanceComms.RoomChannels.Close(RoomChannel);
+            if (task.Stream.Position != task.Stream.Length)
+                return false;
 
-			IsRecording = false;
-			Status = StatusType.Stopped;
+            if (task.Loop) task.Stream.Position = 0;
+            else StopCapture();
 
-			if (Stream?.CanSeek ?? false) Stream.Seek(0, SeekOrigin.Begin);
+            return false;
+        }
 
-			if (API.Audio.Audios.Count == 0) return;
-			if (API.Audio.Audios.Contains(_audio)) API.Audio.Audios.Remove(_audio);
-			if (API.Audio.Audios.Count == 0) return;
-			var _aud = API.Audio.Audios.First();
-			_aud.Microphone.ResetMicrophone(_aud.Microphone.Name, true);
-			Dispose();
-		}
-		public virtual void PauseCapture()
-		{
-			if (CacheCleared) throw new ObjectDisposedException(GetType().FullName);
+        public virtual void ResetMicrophone()
+        {
+            if (Radio.comms._capture._network is null) Radio.comms._capture._network = Radio.comms._net;
+            Radio.comms._capture._microphone = this;
+            Radio.comms.ResetMicrophoneCapture();
+        }
+        public virtual WaveFormat StartCapture(string name)
+        {
+            if (_tasks.Count == 0) throw new NullReferenceException(GetType().FullName);
+            AudioTask task = _tasks[0];
 
-			if (!EqualityComparer<RoomChannel>.Default.Equals(RoomChannel, default))
-				DissonanceComms.RoomChannels.Close(RoomChannel);
+            if (task.Stream is null)
+            {
+                Log.Error($"Stream is null. Microphone: '{name}'; Task Player Name: '{task.PlayerName}'");
+                return task.Format;
+            }
+            else if (!task.Stream.CanRead)
+            {
+                Log.Error($"Stream cannot be read. Microphone: '{name}'; Task Player Name: '{task.PlayerName}'");
+                return task.Format;
+            }
 
-			IsRecording = false;
-			Status = StatusType.Paused;
-		}
-		public void Subscribe(IMicrophoneSubscriber listener) => subscribers.Add(listener);
-		public bool Unsubscribe(IMicrophoneSubscriber listener) => subscribers.Remove(listener);
-		public virtual bool UpdateSubscribers()
-		{
-			if (Stream is null)
-			{
-				StopCapture();
-				return true;
-			}
+            Radio.comms._capture._micName = task.PlayerName;
+            Radio.comms._capture._microphone = this;
+            Radio.comms._capture._network = Radio.comms._net;
+            Radio.comms.IsMuted = false;
+            try { Server.Host.ReferenceHub.nicknameSync.Network_displayName = task.PlayerName; } catch { }
 
-			elapsedTime += Time.unscaledDeltaTime;
+            IsRecording = true;
+            Latency = TimeSpan.Zero;
+            Status = StatusType.Playing;
 
-			while (elapsedTime > 0.04f)
-			{
-				elapsedTime -= 0.04f;
+            UpdateFrames(task);
 
-				var readLength = Stream.Read(frameBytes, 0, frameBytes.Length);
-
-				Array.Clear(frame, 0, frame.Length);
-
-				Buffer.BlockCopy(frameBytes, 0, frame, 0, readLength);
-
-				foreach (var subscriber in subscribers)
-					subscriber.ReceiveMicrophoneData(new ArraySegment<float>(frame), format);
-			}
-
-			if (Stream.Position == Stream.Length)
-				StopCapture();
-
-			return false;
-		}
-		public void Dispose()
-		{
-			Dispose(true);
-			GC.SuppressFinalize(this);
-		}
-		protected virtual void Dispose(bool shouldDisposeAllResources)
-		{
-			if (CacheCleared) throw new ObjectDisposedException(GetType().FullName);
-
-			StopCapture();
-
-			if (shouldDisposeAllResources)
-			{
-				Stream?.Dispose();
-				Stream = null;
-			}
-
-			CacheCleared = true;
-
-			Destroy(this);
-		}
-	}
+            return task.Format;
+        }
+        public virtual void StopCapture()
+        {
+            if (_tasks.Count == 0) return;
+            IsRecording = false;
+            Status = StatusType.Stopped;
+            _tasks.Remove(_tasks[0]);
+            if (_tasks.Count > 0) ResetMicrophone();
+        }
+        public virtual void Pause()
+        {
+            if (Status is not StatusType.Playing) return;
+            IsRecording = false;
+            Status = StatusType.Paused;
+        }
+        public virtual void Resume()
+        {
+            if (Status is not StatusType.Paused) return;
+            IsRecording = true;
+            Status = StatusType.Playing;
+        }
+        public virtual void Skip()
+        {
+            StopCapture();
+            Radio.comms.ResetMicrophoneCapture();
+        }
+    }
 }

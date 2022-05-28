@@ -38,6 +38,7 @@ namespace Qurre.Events.Modules
         }
         private static void Waiting()
         {
+            API.Audio._micro = Radio.comms.gameObject.AddComponent<API.Addons.Audio.Microphone>();
             Radio.comms.OnPlayerJoinedSession += AudioSessionJoin;
             API.Server.Host.Radio.Network_syncPrimaryVoicechatButton = true;
             API.Server.Host.Dissonance.NetworkspeakingFlags = SpeakingFlags.IntercomAsHuman;
