@@ -249,8 +249,9 @@ namespace Qurre.API
 		}
 		internal static void ClearObjects()
 		{
-			try { Teslas.ForEach(x => x.ImmunityRoles.Clear()); } catch { }
-			try { Teslas.ForEach(x => x.ImmunityPlayers.Clear()); } catch { }
+			//Кто try catch без пробелов пишет тоже пидор кста. Да и вообще, нахуя он тут?
+			Teslas.ForEach(x => x.ImmunityRoles.Clear()); 
+			Teslas.ForEach(x => x.ImmunityPlayers.Clear()); 
 			Teslas.Clear();
 			Doors.Clear();
 			Lifts.Clear();
@@ -265,13 +266,20 @@ namespace Qurre.API
 			Primitives.Clear();
 			ShootingTargets.Clear();
 			Cameras.Clear();
+			Round._rm = null;
+			Round._rs = null;
 			Patches.Events.player.Banned.Cached.Clear();
 			Extensions.DamagesCached.Clear();
-			try { Addons.Models.Model.ClearCache(); } catch { }
-			try { Audio._micro?._tasks.Clear(); Audio._micro = null; } catch { }
+			try 
+			{ 
+				Addons.Models.Model.ClearCache(); 
+			} 
+			catch { }
+			try 
+			{ 
+				Audio._micro?._tasks.Clear(); Audio._micro = null; 
+			}
+			catch { }
 		}
-
-		[Obsolete("Use \"AnnounceMtfEntrance\"")]
-		public static void AnnounceNtfEntrance(int scpsLeft, int mtfNumber, char mtfLetter) => AnnounceMtfEntrance(scpsLeft, mtfNumber, mtfLetter);
 	}
 }

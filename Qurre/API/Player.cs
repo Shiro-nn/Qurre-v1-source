@@ -23,6 +23,8 @@ using Qurre.API.Addons;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Usables.Scp330;
 using MEC;
+//Здесь столько кода что мне лень разбираться, как-что идите нахуй.
+
 namespace Qurre.API
 {
 	public class Player

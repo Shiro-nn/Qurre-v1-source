@@ -4,12 +4,14 @@ using System.Linq;
 using System.Reflection;
 using InventorySystem;
 using RoundRestarting;
+
 namespace Qurre.API
 {
     public static class Server
     {
-        private static Player host;
-        private static Inventory hinv;
+        private static Player _host;
+        private static Inventory _hostInventory;
+
         public static ServerConsole ServerConsole => ServerConsole.singleton;
         public static DataBase.Client DataBase { get; internal set; }
         public static ushort Port => global::Loader.Port;
@@ -45,16 +47,16 @@ namespace Qurre.API
         {
             get
             {
-                if (host == null || host.ReferenceHub == null) host = new Player(PlayerManager.hostHub);
-                return host;
+                if (_host == null || _host.ReferenceHub == null) _host = new Player(PlayerManager.hostHub);
+                return _host;
             }
         }
         public static Inventory InventoryHost
         {
             get
             {
-                if (hinv == null) hinv = ReferenceHub.GetHub(PlayerManager.localPlayer).inventory;
-                return hinv;
+                if (_hostInventory == null) _hostInventory = ReferenceHub.GetHub(PlayerManager.localPlayer).inventory;
+                return _hostInventory;
             }
         }
         public static int MaxConnections
@@ -69,6 +71,7 @@ namespace Qurre.API
             ServerStatic.StopNextRound = ServerStatic.NextRoundAction.Restart;
             RoundRestart.ChangeLevel(true);
         }
+        public static void Close() => Shutdown.Quit();
         public static void InvokeStaticMethod(this Type type, string methodName, object[] param)
         {
             BindingFlags flags = BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic |

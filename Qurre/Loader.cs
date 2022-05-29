@@ -39,7 +39,10 @@ namespace Qurre
                 sw.Write("Qurre_Banned: banned\nQurre_Kicked: kicked\nQurre_BanOrKick_msg: You have been %bok%.\nQurre_Reason: Reason\n");
                 sw.Close();
             }
-            else Plugin.Config = new Config();
+            else
+            {
+                Plugin.Config = new Config();
+            }
             Server.DataBase = new API.DataBase.Client();
             CustomNetworkManager.Modded = true;
             Timing.RunCoroutine(PluginManager.LoadPlugins());

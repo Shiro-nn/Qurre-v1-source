@@ -27,9 +27,12 @@ namespace Qurre.API
 	{
 		public static BreakableDoor GetPrefab(this DoorPrefabs prefab)
 		{
-			if (Prefabs.Doors.TryGetValue(prefab, out var door)) return door;
+			if (Prefabs.Doors.TryGetValue(prefab, out var door)) 
+				return door;
+
 			return Prefabs.Doors.First().Value;
 		}
+		// Да бля... Идите нахуй, что здесь за параша?
 		public static GameObject GetPrefab(this TargetPrefabs prefab)
 		{
 			if (Prefabs.Targets.TryGetValue(prefab, out var target)) return target;

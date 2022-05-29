@@ -15,8 +15,14 @@ namespace Qurre
 			if (Debugging)
 				ServerConsole.AddLog($"[DEBUG] [{Assembly.GetCallingAssembly().GetName().Name}] {message}", ConsoleColor.DarkGreen);
 		}
-		public static void Warn(object message, bool logging = true)
+		public static void Warn(object message)
 		{
+			string text = $"[WARN] [{Assembly.GetCallingAssembly().GetName().Name}] {message}";
+			ServerConsole.AddLog(text, ConsoleColor.DarkYellow);
+			LogTxt(text);
+		}
+		internal static void Warn(object message, bool logging)
+        {
 			string text = $"[WARN] [{Assembly.GetCallingAssembly().GetName().Name}] {message}";
 			ServerConsole.AddLog(text, ConsoleColor.DarkYellow);
 			if (logging) LogTxt(text);

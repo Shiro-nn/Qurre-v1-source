@@ -11,10 +11,12 @@ namespace Qurre.API
 {
     public static class Round
     {
+        internal static RespawnManager _rm;
+        internal static RoundSummary _rs;
+
         internal static bool BotSpawned { get; set; } = false;
-        private static RespawnManager _rm => RespawnManager.Singleton;
-        private static RoundSummary _rs => RoundSummary.singleton;
         internal static bool ForceEnd { get; set; } = false;
+
         public static TimeSpan ElapsedTime => RoundStart.RoundLength;
         public static DateTime StartedTime => DateTime.Now - ElapsedTime;
         public static int CurrentRound { get; internal set; } = 0;
@@ -94,12 +96,7 @@ namespace Qurre.API
         public static int UnitMaxCode
         {
             get => _umc;
-            set
-            {
-                if (value < 0) value = 0;
-                else if (value > 99) value = 99;
-                _umc = value;
-            }
+            set => _umc = Mathf.Clamp(value, 0, 99); // Что за хуйню я увидел?
         }
         public static void Restart() => RoundRestart.InitiateRoundRestart();
         public static void Start() => CharacterClassManager.ForceRoundStart();

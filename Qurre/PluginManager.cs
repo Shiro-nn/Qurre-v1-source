@@ -7,14 +7,17 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+//Кста пробел между using и namespace не соблюдатель - пидорасом быть.
+
 namespace Qurre
 {
 	public static class PluginManager
 	{
-		internal static readonly List<Plugin> _plugins = new();
 		internal static Harmony _harmony;
 
 		//private static string Domain { get; } = "localhost"; //qurre.team
+
+		public static List<Plugin> Plugin { get; } = new();
 		public static Version Version { get; } = new Version(1, 14, 0);
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -60,13 +63,17 @@ namespace Qurre
 		{
 			if (!Directory.Exists(LoadedDependenciesDirectory))
 				Directory.CreateDirectory(LoadedDependenciesDirectory);
+
 			foreach (string dll in Directory.GetFiles(LoadedDependenciesDirectory))
 			{
-				if (!dll.EndsWith(".dll") || global::Loader.Loaded(dll)) continue;
+				if (!dll.EndsWith(".dll") || global::Loader.Loaded(dll)) 
+					continue;
+
 				Assembly assembly = Assembly.Load(global::Loader.ReadFile(dll));
 				global::Loader.LocalLoaded.Add(assembly);
 				Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
 			}
+
 			DownloadDependencies();
 			Log.Custom("Dependencies loaded!", "Loader", ConsoleColor.Green);
 		}
@@ -101,7 +108,7 @@ namespace Qurre
 					if (!CheckPlugin(p)) continue;
 					p.Assembly = assembly;
 
-					_plugins.Add(p);
+					Plugin.Add(p);
 					Log.Debug($"{type.FullName} loaded");
 				}
 			}
@@ -116,15 +123,13 @@ namespace Qurre
 			{
 				if (Version.Major > plugin.NeededQurreVersion.Major)
 				{
-					Log.Warn($"Plugin {plugin.Name} not loaded because he is outdated. Qurre Version: {Version.ToString(3)}. " +
-                        $"Needed Version: {plugin.NeededQurreVersion}.");
+					Log.Warn($"Plugin {plugin.Name} not loaded because he is outdated. Qurre Version: {Version.ToString(3)}. Needed Version: {plugin.NeededQurreVersion}.");
 					return false;
 				}
 
 				if (Version.Major < plugin.NeededQurreVersion.Major)
 				{
-					Log.Warn($"Plugin {plugin.Name} not loaded because your Qurre version is outdated. Qurre Version: {Version.ToString(3)}. " +
-                        $"Needed Version: {plugin.NeededQurreVersion}.");
+					Log.Warn($"Plugin {plugin.Name} not loaded because your Qurre version is outdated. Qurre Version: {Version.ToString(3)}. Needed Version: {plugin.NeededQurreVersion}.");
 					return false;
 				}
 			}
@@ -138,7 +143,7 @@ namespace Qurre
 		}
 		public static void Enable()
 		{
-			foreach (Plugin plugin in _plugins.OrderByDescending(o => o.Priority))
+			foreach (Plugin plugin in Plugin.OrderByDescending(o => o.Priority))
 			{
 				try
 				{
@@ -154,7 +159,7 @@ namespace Qurre
 		}
 		public static void InvokeReload()
 		{
-			foreach (Plugin plugin in _plugins)
+			foreach (Plugin plugin in Plugin)
 			{
 				try
 				{
@@ -169,7 +174,7 @@ namespace Qurre
 		}
 		public static void Disable()
 		{
-			foreach (Plugin plugin in _plugins)
+			foreach (Plugin plugin in Plugin)
 			{
 				try
 				{
@@ -190,7 +195,7 @@ namespace Qurre
 				Log.Info("Reloading Plugins...");
 				Disable();
 				InvokeReload();
-				_plugins.Clear();
+				Plugin.Clear();
 				UnPatchMethods();
 
 				Timing.RunCoroutine(LoadPlugins());

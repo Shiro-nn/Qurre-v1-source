@@ -23,7 +23,10 @@ namespace Qurre
 		public virtual int Priority { get; } = 0;
 		public abstract void Enable();
 		public abstract void Disable();
-		public virtual void Reload() => Log.Debug($"Reloaded.\nPlugin - {Name}\nDeveloper - {Developer}\nVersion - {Version}\nNeeded Qurre Version - {NeededQurreVersion}");
+		public virtual void Reload()
+        {
+
+        }
 		public Assembly Assembly { get; internal protected set; }
 		public Dictionary<Type, Dictionary<Type, ICommand>> Commands { get; protected set; } = new()
 		{
