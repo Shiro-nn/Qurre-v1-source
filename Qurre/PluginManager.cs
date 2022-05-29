@@ -7,7 +7,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
-//Кста пробел между using и namespace не соблюдатель - пидорасом быть.
 
 namespace Qurre
 {
@@ -17,7 +16,7 @@ namespace Qurre
 
 		//private static string Domain { get; } = "localhost"; //qurre.team
 
-		public static List<Plugin> Plugin { get; } = new();
+		public static List<Plugin> Plugins { get; } = new();
 		public static Version Version { get; } = new Version(1, 14, 0);
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
@@ -108,7 +107,7 @@ namespace Qurre
 					if (!CheckPlugin(p)) continue;
 					p.Assembly = assembly;
 
-					Plugin.Add(p);
+					Plugins.Add(p);
 					Log.Debug($"{type.FullName} loaded");
 				}
 			}
@@ -143,7 +142,7 @@ namespace Qurre
 		}
 		public static void Enable()
 		{
-			foreach (Plugin plugin in Plugin.OrderByDescending(o => o.Priority))
+			foreach (Plugin plugin in Plugins.OrderByDescending(o => o.Priority))
 			{
 				try
 				{
@@ -159,7 +158,7 @@ namespace Qurre
 		}
 		public static void InvokeReload()
 		{
-			foreach (Plugin plugin in Plugin)
+			foreach (Plugin plugin in Plugins)
 			{
 				try
 				{
@@ -174,7 +173,7 @@ namespace Qurre
 		}
 		public static void Disable()
 		{
-			foreach (Plugin plugin in Plugin)
+			foreach (Plugin plugin in Plugins)
 			{
 				try
 				{
@@ -195,7 +194,7 @@ namespace Qurre
 				Log.Info("Reloading Plugins...");
 				Disable();
 				InvokeReload();
-				Plugin.Clear();
+				Plugins.Clear();
 				UnPatchMethods();
 
 				Timing.RunCoroutine(LoadPlugins());

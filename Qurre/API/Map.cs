@@ -22,6 +22,7 @@ using PlayerStatsSystem;
 using Light = Qurre.API.Controllers.Light;
 using Camera = Qurre.API.Controllers.Camera;
 using Microphone = Qurre.API.Addons.Audio.Microphone;
+
 namespace Qurre.API
 {
 	public static class Map
@@ -249,7 +250,6 @@ namespace Qurre.API
 		}
 		internal static void ClearObjects()
 		{
-			//Кто try catch без пробелов пишет тоже пидор кста. Да и вообще, нахуя он тут?
 			Teslas.ForEach(x => x.ImmunityRoles.Clear()); 
 			Teslas.ForEach(x => x.ImmunityPlayers.Clear()); 
 			Teslas.Clear();
