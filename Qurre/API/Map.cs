@@ -99,12 +99,12 @@ namespace Qurre.API
 		}
 		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
-            MapBroadcast bc = new MapBroadcast(message, duration, instant, false);
+            MapBroadcast bc = new (message, duration, instant, false);
 			return bc;
 		}
 		public static MapBroadcast BroadcastAdmin(string message, ushort duration, bool instant = false)
 		{
-            MapBroadcast bc = new MapBroadcast(message, duration, instant, true);
+            MapBroadcast bc = new (message, duration, instant, true);
 			return bc;
 		}
 		public static void ClearBroadcasts() => Server.Host.Broadcasts.Clear();
@@ -151,8 +151,14 @@ namespace Qurre.API
 		}
 		public static void AnnounceMtfEntrance(int scpsLeft, int mtfNumber, char mtfLetter)
 		{
-			if (scpsLeft == 0) Cassie.Send($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining NoSCPsLeft", true, true, true);
-			else Cassie.Send($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining AwaitingRecontainment {scpsLeft} scpsubjects", true, true, true);
+			if (scpsLeft == 0)
+            {
+				Cassie.Send($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining NoSCPsLeft", true, true, true);
+			}
+			else
+            {
+				Cassie.Send($"MTFUnit epsilon 11 designated NATO_{mtfLetter} {mtfNumber} HasEntered AllRemaining AwaitingRecontainment {scpsLeft} scpsubjects", true, true, true);
+			}
 		}
 		public static void AnnounceScpKill(string scpNumber, Player killer = null)
 		{
@@ -329,7 +335,8 @@ namespace Qurre.API
 			catch { }
 			try 
 			{ 
-				Audio._micro?._tasks.Clear(); Audio._micro = null; 
+				Audio._micro?._tasks.Clear(); 
+				Audio._micro = null; 
 			}
 			catch { }
 		}
