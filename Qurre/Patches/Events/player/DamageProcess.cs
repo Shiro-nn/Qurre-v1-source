@@ -32,7 +32,7 @@ namespace Qurre.Patches.Events.player
 				{
 					allowed = false;
 				}
-				else if (!HitboxIdentity.CheckFriendlyFire(__instance.Attacker.Role, curClass, true) && !attacker.FriendlyFire)
+				else if (!attacker.FriendlyFire && !HitboxIdentity.CheckFriendlyFire(__instance.Attacker.Role, curClass, true))
 				{
 					if (AttackerDamageHandler._ffMultiplier > 0.1f) __instance.Damage *= AttackerDamageHandler._ffMultiplier;
 					__instance.IsFriendlyFire = true;
