@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 namespace Qurre.API.Addons
 {
-    public class UnitGenerator
+    public struct UnitGenerator
     {
         public readonly SpawnableTeamType Team;
         public readonly List<string> Units;

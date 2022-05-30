@@ -87,7 +87,7 @@ namespace Qurre.Events.Modules
         {
             if ((ev.Player?.IsHost ?? true) is true || string.IsNullOrEmpty(ev.Player.UserId))
                 return;
-            if (ev.NewRole == RoleType.Spectator)
+            if (ev.NewRole is RoleType.Spectator)
                 ev.Player.DropItems();
         }
         private static void RoundRestart() => API.Map.ClearObjects();
@@ -105,7 +105,7 @@ namespace Qurre.Events.Modules
                 if (ev.Args.Length == 0)
                 {
                     ev.Success = false;
-                    ev.ReplyMessage = "Using: bc [Time] [Message].";
+                    ev.ReplyMessage = "Use: bc [Time] [Message].";
                     return;
                 }
                 if (!ushort.TryParse(ev.Args[0], out ushort time) || time < 1)
@@ -136,7 +136,7 @@ namespace Qurre.Events.Modules
                 if (ev.Args.Length < 3)
                 {
                     ev.Success = false;
-                    ev.ReplyMessage = "Using: pbc [Id] [Time] [Message].";
+                    ev.ReplyMessage = "Use: pbc [Id] [Time] [Message].";
                     return;
                 }
                 if (!ushort.TryParse(ev.Args[1], out ushort time) || time < 1)
