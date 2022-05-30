@@ -45,11 +45,6 @@ namespace Qurre.API
 			string playerName = "Qurre Audio")
 		{
 			if (stream is null) throw new System.NullReferenceException("Qurre.API.Audio.Play: Stream is null");
-			foreach (var channel in Radio.comms.PlayerChannels._openChannelsBySubId.Values.ToList())
-			{
-				Radio.comms.PlayerChannels.Close(channel);
-				Radio.comms.PlayerChannels.Open(channel.TargetId);
-			}
 			if (_micro is null)
 				_micro = Radio.comms.gameObject.AddComponent<Microphone>();
 			AudioTask task = new(stream, volume, loop, frameSize, sampleRate, playerName);

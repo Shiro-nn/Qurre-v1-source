@@ -73,6 +73,15 @@ namespace Qurre.API.Addons.Audio
         public virtual WaveFormat StartCapture(string name)
         {
             if (_tasks.Count == 0) throw new NullReferenceException(GetType().FullName);
+            try
+            {
+                foreach (var channel in Radio.comms.PlayerChannels._openChannelsBySubId.Values)
+                {
+                    Radio.comms.PlayerChannels.Close(channel);
+                    Radio.comms.PlayerChannels.Open(channel.TargetId);
+                }
+            }
+            catch { }
             Server.Host.Radio.Network_syncPrimaryVoicechatButton = true;
             AudioTask task = _tasks[0];
 

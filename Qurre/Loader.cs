@@ -17,7 +17,7 @@ namespace Qurre
             Log.Info("Initializing Qurre...");
             if (!Directory.Exists(PluginManager.ConfigsDirectory))
             {
-                Log.Warn($"Configs directory not found - creating: {PluginManager.ConfigsDirectory}", false);
+                Log.Custom($"Configs directory not found - creating: {PluginManager.ConfigsDirectory}", "WARN", System.ConsoleColor.DarkYellow);
                 Directory.CreateDirectory(PluginManager.ConfigsDirectory);
             }
             PluginManager.ConfigsPath = Path.Combine(PluginManager.ConfigsDirectory, $"{Port}-cfg.yml");

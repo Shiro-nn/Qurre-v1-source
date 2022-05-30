@@ -15,11 +15,11 @@ namespace Qurre
 			if (Debugging)
 				ServerConsole.AddLog($"[DEBUG] [{Assembly.GetCallingAssembly().GetName().Name}] {message}", ConsoleColor.DarkGreen);
 		}
-		public static void Warn(object message, bool logging = true)
+		public static void Warn(object message)
 		{
 			string text = $"[WARN] [{Assembly.GetCallingAssembly().GetName().Name}] {message}";
 			ServerConsole.AddLog(text, ConsoleColor.DarkYellow);
-			if (logging) LogTxt(text);
+			LogTxt(text);
 		}
 		public static void Error(object message)
 		{
@@ -35,7 +35,7 @@ namespace Qurre
 			if (!Directory.Exists(PluginManager.LogsDirectory))
 			{
 				Directory.CreateDirectory(PluginManager.LogsDirectory);
-				Warn($"Logs directory not found - creating: {PluginManager.LogsDirectory}", false);
+				Custom($"Logs directory not found - creating: {PluginManager.LogsDirectory}", "WARN", ConsoleColor.DarkYellow);
 			}
 			File.AppendAllText(Path.Combine(PluginManager.LogsDirectory, $"{Loader.Port}-log.txt"), $"[{DateTime.Now:dd.MM.yyyy HH:mm:ss}] {message}\n");
 		}
@@ -45,7 +45,7 @@ namespace Qurre
 			if (!Directory.Exists(PluginManager.LogsDirectory))
 			{
 				Directory.CreateDirectory(PluginManager.LogsDirectory);
-				Warn($"Logs directory not found - creating: {PluginManager.LogsDirectory}", false);
+				Custom($"Logs directory not found - creating: {PluginManager.LogsDirectory}", "WARN", ConsoleColor.DarkYellow);
 			}
 			File.AppendAllText(Path.Combine(PluginManager.LogsDirectory, $"{Loader.Port}-all-logs.txt"), $"[{DateTime.Now:dd.MM.yyyy HH:mm:ss}] {message}\n");
 		}
