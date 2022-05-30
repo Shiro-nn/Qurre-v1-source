@@ -21,7 +21,6 @@ using System;
 using PlayerStatsSystem;
 using Light = Qurre.API.Controllers.Light;
 using Camera = Qurre.API.Controllers.Camera;
-using Microphone = Qurre.API.Addons.Audio.Microphone;
 namespace Qurre.API
 {
 	public static class Map
@@ -97,16 +96,10 @@ namespace Qurre.API
 				foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>()) window.health = value;
 			}
 		}
-		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false)
-		{
-			var bc = new MapBroadcast(message, duration, instant, false);
-			return bc;
-		}
-		public static MapBroadcast BroadcastAdmin(string message, ushort duration, bool instant = false)
-		{
-			var bc = new MapBroadcast(message, duration, instant, true);
-			return bc;
-		}
+		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false) =>
+			new(message, duration, instant, false);
+		public static MapBroadcast BroadcastAdmin(string message, ushort duration, bool instant = false) =>
+			new(message, duration, instant, true);
 		public static void ClearBroadcasts() => Server.Host.Broadcasts.Clear();
 		public static Vector3 GetRandomSpawnPoint(RoleType roleType)
 		{
@@ -122,7 +115,7 @@ namespace Qurre.API
 		public static void ShakeScreen(float times) => ExplosionCameraShake.singleton.Shake(times);
 		public static void SetIntercomSpeaker(Player player)
 		{
-			if (player != null)
+			if (player is not null)
 			{
 				GameObject gameObject = player.GameObject;
 				gameObject.GetComponent<CharacterClassManager>().IntercomMuted = false;
@@ -130,9 +123,8 @@ namespace Qurre.API
 				return;
 			}
 			foreach (CharacterClassManager ccm in Object.FindObjectsOfType<CharacterClassManager>())
-			{
-				if (ccm.IntercomMuted) ccm.IntercomMuted = false;
-			}
+				if (ccm.IntercomMuted)
+					ccm.IntercomMuted = false;
 		}
 		public static void PlayCIEntranceMusic() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.UponRespawn, SpawnableTeamType.ChaosInsurgency);
 		public static void PlayIntercomSound(bool start) => PlayerManager.localPlayer.GetComponent<Intercom>().RpcPlaySound(start, 0);
@@ -249,8 +241,12 @@ namespace Qurre.API
 		}
 		internal static void ClearObjects()
 		{
-			try { Teslas.ForEach(x => x.ImmunityRoles.Clear()); } catch { }
-			try { Teslas.ForEach(x => x.ImmunityPlayers.Clear()); } catch { }
+			foreach (var x in Teslas)
+			{
+				if (x is null) continue;
+				x.ImmunityRoles.Clear();
+				x.ImmunityPlayers.Clear();
+			}
 			Teslas.Clear();
 			Doors.Clear();
 			Lifts.Clear();

@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using MEC;
-using Qurre.API;
 using System;
 using System.Collections.Generic;
 using static CharacterClassManager;
@@ -23,8 +22,6 @@ namespace Qurre.Patches.Fixes
 			}
 			var data = Data[__instance];
 			if ((DateTime.Now - data.Date).TotalSeconds < 1 && data.Role == id)
-				return false;
-			if (spawnReason == SpawnReason.LateJoin && !Loader.LateJoinSpawn)
 				return false;
 			else return true;
 		}
