@@ -28,8 +28,8 @@ namespace Qurre.API
             set => _rm._timeForNextSequence = value + (float)_rm._stopwatch.Elapsed.TotalSeconds;
         }
         public static bool Started => RoundSummary.RoundInProgress();
-        public static bool Ended => _rs is not null && _rs.RoundEnded;
-        public static bool Waiting => RoundStart.singleton is not null && !Started && !Ended;
+        public static bool Ended => _rs != null && _rs.RoundEnded;
+        public static bool Waiting => RoundStart.singleton != null && !Started && !Ended;
         public static bool Lock
         {
             get => RoundSummary.RoundLock;
@@ -97,7 +97,7 @@ namespace Qurre.API
         public static int UnitMaxCode
         {
             get => _umc;
-            set => _umc = Mathf.Clamp(value, 0, 99); // Что за хуйню я увидел?
+            set => _umc = Mathf.Clamp(value, 0, 99);
         }
         public static void Restart() => RoundRestart.InitiateRoundRestart();
         public static void Start() => CharacterClassManager.ForceRoundStart();
@@ -105,27 +105,20 @@ namespace Qurre.API
         public static void DimScreen() => _rs.RpcDimScreen();
         public static void ShowRoundSummary(RoundSummary.SumInfo_ClassList remainingPlayers, LeadingTeam team)
         {
-            var timeToRoundRestart = Mathf.Clamp(ConfigFile.ServerConfig.GetInt("auto_round_restart_time", 10), 5, 1000);
+            int timeToRoundRestart = Mathf.Clamp(ConfigFile.ServerConfig.GetInt("auto_round_restart_time", 10), 5, 1000);
             _rs.RpcShowRoundSummary(_rs.classlistStart, remainingPlayers, team, EscapedDPersonnel, EscapedScientists, ScpKills, timeToRoundRestart);
         }
         public static void AddUnit(TeamUnitType team, string unit)
         {
-            UnitNamingRule unitNamingRule;
-            if (!UnitNamingRules.AllNamingRules.TryGetValue((SpawnableTeamType)team, out unitNamingRule)) return;
+            if (!UnitNamingRules.AllNamingRules.TryGetValue((SpawnableTeamType)team, out UnitNamingRule unitNamingRule)) return;
             unitNamingRule.AddCombination(unit, (SpawnableTeamType)team);
         }
-        public static void RenameUnit(TeamUnitType team, int id, string newName)
+        public static void RenameUnit(TeamUnitType team, int id, string newName) => RespawnManager.Singleton.NamingManager.AllUnitNames[id] = new SyncUnit
         {
-            RespawnManager.Singleton.NamingManager.AllUnitNames[id] = new SyncUnit
-            {
-                SpawnableTeam = (byte)team,
-                UnitName = newName
-            };
-        }
-        public static void RemoveUnit(int id)
-        {
-            RespawnManager.Singleton.NamingManager.AllUnitNames.RemoveAt(id);
-        }
+            SpawnableTeam = (byte)team,
+            UnitName = newName
+        };
+        public static void RemoveUnit(int id) => RespawnManager.Singleton.NamingManager.AllUnitNames.RemoveAt(id);
         public static void ForceTeamRespawn(bool isCI) => RespawnManager.Singleton.ForceSpawnTeam(isCI ? SpawnableTeamType.ChaosInsurgency : SpawnableTeamType.NineTailedFox);
         public static void CallCICar() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.ChaosInsurgency);
         public static void CallMTFHelicopter() => RespawnEffectsController.ExecuteAllEffects(RespawnEffectsController.EffectType.Selection, SpawnableTeamType.NineTailedFox);

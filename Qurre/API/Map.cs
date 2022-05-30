@@ -1,31 +1,30 @@
+using Interactables.Interobjects.DoorUtils;
+using InventorySystem.Items.Firearms.Attachments;
+using InventorySystem.Items.Pickups;
+using LightContainmentZoneDecontamination;
+using MapGeneration;
+using Mirror;
+using PlayerStatsSystem;
+using Qurre.API.Controllers;
+using Qurre.API.Controllers.Items;
 using Qurre.API.Objects;
+using Respawning;
+using Scp914;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Object = UnityEngine.Object;
-using Mirror;
-using Respawning;
-using Interactables.Interobjects.DoorUtils;
 using _lift = Qurre.API.Controllers.Lift;
 using _locker = Qurre.API.Controllers.Locker;
 using _ragdoll = Qurre.API.Controllers.Ragdoll;
 using _workStation = Qurre.API.Controllers.WorkStation;
-using Qurre.API.Controllers;
-using LightContainmentZoneDecontamination;
-using MapGeneration;
-using InventorySystem.Items.Firearms.Attachments;
-using Scp914;
-using Qurre.API.Controllers.Items;
-using InventorySystem.Items.Pickups;
-using System;
-using PlayerStatsSystem;
-using Light = Qurre.API.Controllers.Light;
 using Camera = Qurre.API.Controllers.Camera;
-using Microphone = Qurre.API.Addons.Audio.Microphone;
+using Light = Qurre.API.Controllers.Light;
+using Object = UnityEngine.Object;
 
 namespace Qurre.API
 {
-	public static class Map
+    public static class Map
 	{
 		public static CassieList Cassies { get; private set; } = new CassieList();
 		public static List<Door> Doors { get; } = new();
@@ -100,12 +99,12 @@ namespace Qurre.API
 		}
 		public static MapBroadcast Broadcast(string message, ushort duration, bool instant = false)
 		{
-			var bc = new MapBroadcast(message, duration, instant, false);
+            MapBroadcast bc = new MapBroadcast(message, duration, instant, false);
 			return bc;
 		}
 		public static MapBroadcast BroadcastAdmin(string message, ushort duration, bool instant = false)
 		{
-			var bc = new MapBroadcast(message, duration, instant, true);
+            MapBroadcast bc = new MapBroadcast(message, duration, instant, true);
 			return bc;
 		}
 		public static void ClearBroadcasts() => Server.Host.Broadcasts.Clear();
@@ -158,7 +157,7 @@ namespace Qurre.API
 		public static void AnnounceScpKill(string scpNumber, Player killer = null)
 		{
 			GameObject gameObject = GameObject.Find("Host");
-			var rt = ("SCP-" + scpNumber) switch
+            RoleType rt = ("SCP-" + scpNumber) switch
 			{
 				"49" or "049" => RoleType.Scp049,
 				"79" or "079" => RoleType.Scp079,
@@ -170,7 +169,7 @@ namespace Qurre.API
 				_ => RoleType.None,
 			};
 			CharacterClassManager component2 = gameObject.GetComponent<CharacterClassManager>();
-			var _cassie = new ScpDamageHandler(killer.ReferenceHub, DeathTranslations.Unknown).CassieDeathAnnouncement;
+            DamageHandlerBase.CassieAnnouncement _cassie = new ScpDamageHandler(killer.ReferenceHub, DeathTranslations.Unknown).CassieDeathAnnouncement;
 			NineTailedFoxAnnouncer.scpDeaths.Add(new NineTailedFoxAnnouncer.ScpDeath
 			{
 				scpSubjects = new List<Role>(new Role[1]
@@ -186,72 +185,125 @@ namespace Qurre.API
 			DecontaminationController.Singleton.FinishDecontamination();
 			DecontaminationController.Singleton.NetworkRoundStartTime = -1.0;
 		}
-		public static void Remove(RemovableObject removable)
+		public static void Remove(Type type)
 		{
-			switch (removable)
+			switch (type.Name)
 			{
-				case RemovableObject.Doors:
-					foreach (Door door in Doors) Object.Destroy(door.GameObject);
+				case nameof(Door):
+					{
+                        foreach (Door door in Doors)
+                            Object.Destroy(door.GameObject);
+
+                        break;
+                    }
+				case nameof(DoorType):
+                    {
+						foreach (Door door in Doors.Where(door => door.Type == (DoorType)Enum.Parse(typeof(DoorType), type.Name, true)))
+							Object.Destroy(door.GameObject);
+
+						break;
+                    }
+				case nameof(Generator):
+					{
+                        foreach (Generator generator in Generators)
+                            Object.Destroy(generator.GameObject);
+
+                        break;
+                    }
+				case nameof(Locker):
+					{
+                        foreach (_locker locker in Lockers)
+                            Object.Destroy(locker.GameObject);
+                        break;
+                    }
+				case nameof(Tesla):
+					{
+						foreach (Tesla teslaGate in Teslas)
+							Object.Destroy(teslaGate.GameObject);
+
+						break;
+					}
+				case nameof(Window):
+					{
+					foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>())
+						Object.Destroy(window.gameObject);
+
 					break;
-				case RemovableObject.Generators:
-					foreach (Generator generator in Generators) Object.Destroy(generator.GameObject);
-					break;
-				case RemovableObject.Lockers:
-					foreach (_locker locker in Lockers) Object.Destroy(locker.GameObject);
-					break;
-				case RemovableObject.Teslagates:
-					foreach (Tesla teslaGate in Teslas) Object.Destroy(teslaGate.GameObject);
-					break;
-				case RemovableObject.Windows:
-					foreach (BreakableWindow window in Object.FindObjectsOfType<BreakableWindow>()) Object.Destroy(window.gameObject);
-					break;
-				case RemovableObject.Workstations:
-					foreach (_workStation workStation in WorkStations) Object.Destroy(workStation.GameObject);
-					break;
-				case RemovableObject.Rooms:
-					foreach (NetworkIdentity netId in Object.FindObjectsOfType<NetworkIdentity>()) if (netId.name.Contains("All")) Object.Destroy(netId);
-					break;
+			        }
+				case nameof(WorkStation):
+					{
+						foreach (_workStation workStation in WorkStations)
+							Object.Destroy(workStation.GameObject);
+
+						break;
+					}
+				case nameof(Room):
+                    {
+						foreach (NetworkIdentity netId in Object.FindObjectsOfType<NetworkIdentity>())
+							if (netId.name.Contains("All")) Object.Destroy(netId);
+
+						break;
+					}
+				default:
+                    {
+						throw new ArgumentException("");
+                    }
 			}
 		}
 		internal static void AddObjects()
 		{
 			AmbientSoundPlayer = PlayerManager.localPlayer.GetComponent<AmbientSoundPlayer>();
 			Cassies = new CassieList();
-			foreach (var room in RoomIdentifier.AllRoomIdentifiers)
+
+			foreach (RoomIdentifier room in RoomIdentifier.AllRoomIdentifiers)
 			{
-				var _room = new Room(room);
+                Room _room = new Room(room);
 				Rooms.Add(_room);
 				Cameras.AddRange(_room.Cameras);
 			}
-			foreach (var tesla in Server.GetObjectsOf<TeslaGate>()) Teslas.Add(new Tesla(tesla));
-			foreach (var station in WorkstationController.AllWorkstations) WorkStations.Add(new _workStation(station));
-			foreach (var door in Server.GetObjectsOf<DoorVariant>()) Doors.Add(new Door(door));
-			foreach (var window in Server.GetObjectsOf<BreakableWindow>()) Windows.Add(new Window(window));
-			foreach (var hole in Server.GetObjectsOf<SinkholeEnvironmentalHazard>()) Sinkholes.Add(new Sinkhole(hole));
-			foreach (var pair in Scp079Interactable.InteractablesByRoomId)
+
+			Teslas.AddRange(Server.GetObjectsOf<TeslaGate>().Select(tesla => new Tesla(tesla)));
+			WorkStations.AddRange(WorkstationController.AllWorkstations.Select(station => new _workStation(station)));
+			Doors.AddRange(Server.GetObjectsOf<DoorVariant>().Select(door => new Door(door)));
+			Windows.AddRange(Server.GetObjectsOf<BreakableWindow>().Select(window => new Window(window)));
+			Sinkholes.AddRange(Server.GetObjectsOf<SinkholeEnvironmentalHazard>().Select(hole => new Sinkhole(hole)));
+
+			foreach (KeyValuePair<int, HashSet<Scp079Interactable>> pair in Scp079Interactable.InteractablesByRoomId)
 			{
-				foreach (var interactable in pair.Value)
+				foreach (Scp079Interactable interactable in pair.Value)
 				{
 					try
 					{
-						var room = Rooms.FirstOrDefault(x => x.Id == pair.Key);
-						var door = interactable.GetComponentInParent<DoorVariant>();
+                        Room room = Rooms.FirstOrDefault(x => x.Id == pair.Key);
+                        DoorVariant door = interactable.GetComponentInParent<DoorVariant>();
 						if (room is null || door is null) continue;
-						var sdoor = door.GetDoor();
+                        Door sdoor = door.GetDoor();
 						sdoor.Rooms.Add(room);
 						room.Doors.Add(sdoor);
 					}
 					catch { }
 				}
 			}
+
 			Controllers.Scp914.Scp914Controller = Object.FindObjectOfType<Scp914Controller>();
 			Item.BaseToItem.Clear();
 			Pickup.BaseToItem.Clear();
 		}
 		internal static void ClearObjects()
 		{
-			Teslas.ForEach(x => x.ImmunityRoles.Clear()); 
-			Teslas.ForEach(x => x.ImmunityPlayers.Clear()); 
+			foreach (Tesla tesla in Teslas)
+            {
+				if (tesla.ImmunityRoles.Any())
+                {
+					tesla.ImmunityRoles.Clear();
+                }
+
+				if (tesla.ImmunityPlayers.Any())
+                {
+					tesla.ImmunityPlayers.Clear();
+                }
+            }
+
 			Teslas.Clear();
 			Doors.Clear();
 			Lifts.Clear();

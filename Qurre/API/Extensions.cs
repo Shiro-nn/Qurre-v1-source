@@ -21,50 +21,64 @@ using _lift = Qurre.API.Controllers.Lift;
 using _locker = Qurre.API.Controllers.Locker;
 using _workStation = Qurre.API.Controllers.WorkStation;
 using Camera = Qurre.API.Controllers.Camera;
+
 namespace Qurre.API
 {
-	public static class Extensions
+    public static class Extensions
 	{
 		public static BreakableDoor GetPrefab(this DoorPrefabs prefab)
 		{
-			if (Prefabs.Doors.TryGetValue(prefab, out var door)) 
+			if (Prefabs.Doors.TryGetValue(prefab, out BreakableDoor door)) 
 				return door;
 
 			return Prefabs.Doors.First().Value;
 		}
-		// Да бля... Идите нахуй, что здесь за параша?
 		public static GameObject GetPrefab(this TargetPrefabs prefab)
 		{
-			if (Prefabs.Targets.TryGetValue(prefab, out var target)) return target;
+			if (Prefabs.Targets.TryGetValue(prefab, out GameObject target)) 
+				return target;
+
 			return Prefabs.Targets.First().Value;
 		}
 		public static MapGeneration.Distributors.Locker GetPrefab(this LockerPrefabs prefab)
 		{
 			if (prefab == LockerPrefabs.Pedestal)
 			{
-				int rand = UnityEngine.Random.Range(0, 100);
-				if (rand > 80) prefab = LockerPrefabs.Pedestal268;
-				else if (rand > 60) prefab = LockerPrefabs.Pedestal207;
-				else if (rand > 40) prefab = LockerPrefabs.Pedestal500;
-				else if (rand > 20) prefab = LockerPrefabs.Pedestal018;
-				else prefab = LockerPrefabs.Pedestal2176;
+                switch (UnityEngine.Random.Range(0, 100))
+                {
+					case > 80:
+						prefab = LockerPrefabs.Pedestal268;
+						break;
+					case > 60:
+						prefab = LockerPrefabs.Pedestal207;
+						break;
+					case > 40:
+						prefab = LockerPrefabs.Pedestal500;
+						break;
+					case > 20:
+						prefab = LockerPrefabs.Pedestal018;
+						break;
+					default:
+						prefab = LockerPrefabs.Pedestal2176;
+						break;
+				}
 			}
-			if (Prefabs.Lockers.TryGetValue(prefab, out var locker)) return locker;
+
+			if (Prefabs.Lockers.TryGetValue(prefab, out MapGeneration.Distributors.Locker locker)) 
+				return locker;
+
 			return Prefabs.Lockers.First().Value;
 		}
-		public static HotKeyType GetKey(this ActionName act)
-		{
-			return act switch
-			{
-				ActionName.HotkeyGrenade => HotKeyType.Grenade,
-				ActionName.HotkeyKeycard => HotKeyType.Keycard,
-				ActionName.HotkeyMedical => HotKeyType.Medical,
-				ActionName.HotkeyPrimaryFirearm => HotKeyType.PrimaryGun,
-				ActionName.HotkeySecondaryFirearm => HotKeyType.SecondaryGun,
-				_ => HotKeyType.Unknow
-			};
-		}
-		public static Room GetRoom(this RoomName type) => Map.Rooms.FirstOrDefault(x => x.RoomName == type);
+        public static HotKeyType GetKey(this ActionName act) => act switch
+        {
+            ActionName.HotkeyGrenade => HotKeyType.Grenade,
+            ActionName.HotkeyKeycard => HotKeyType.Keycard,
+            ActionName.HotkeyMedical => HotKeyType.Medical,
+            ActionName.HotkeyPrimaryFirearm => HotKeyType.PrimaryGun,
+            ActionName.HotkeySecondaryFirearm => HotKeyType.SecondaryGun,
+            _ => HotKeyType.Unknown
+        };
+        public static Room GetRoom(this RoomName type) => Map.Rooms.FirstOrDefault(x => x.RoomName == type);
 		public static Room GetRoom(this RoomType type) => Map.Rooms.FirstOrDefault(x => x.Type == type);
 		public static Room GetRoom(this RoomIdentifier identifier) => Map.Rooms.FirstOrDefault(x => x.Identifier == identifier);
 		public static Door GetDoor(this DoorType type) => Map.Doors.FirstOrDefault(x => x.Type == type);
@@ -99,12 +113,12 @@ namespace Qurre.API
 			found = default;
 			return false;
 		}
-		public static void UpdateData(this NetworkIdentity identity) => NetworkServer.SendToAll(identity.SpawnMsg());
-		public static SpawnMessage SpawnMsg(this NetworkIdentity identity)
+		public static void UpdateData(this NetworkIdentity identity) => NetworkServer.SendToAll(identity.SpawnMessage());
+		public static SpawnMessage SpawnMessage(this NetworkIdentity identity)
 		{
-			var writer = NetworkWriterPool.GetWriter();
-			var writer2 = NetworkWriterPool.GetWriter();
-			var payload = NetworkServer.CreateSpawnMessagePayload(false, identity, writer, writer2);
+            PooledNetworkWriter writer = NetworkWriterPool.GetWriter();
+            PooledNetworkWriter writer2 = NetworkWriterPool.GetWriter();
+            ArraySegment<byte> payload = NetworkServer.CreateSpawnMessagePayload(false, identity, writer, writer2);
 			return new SpawnMessage
 			{
 				netId = identity.netId,
@@ -118,56 +132,47 @@ namespace Qurre.API
 				payload = payload
 			};
 		}
-		public static Team GetTeam(this RoleType roleType)
+        public static Team GetTeam(this RoleType roleType) => roleType switch
+        {
+            RoleType.ChaosConscript or RoleType.ChaosMarauder or RoleType.ChaosRepressor or RoleType.ChaosRifleman => Team.CHI,
+            RoleType.Scientist => Team.RSC,
+            RoleType.ClassD => Team.CDP,
+            RoleType.Scp049 or RoleType.Scp93953 or RoleType.Scp93989 or RoleType.Scp0492 or RoleType.Scp079 or RoleType.Scp096 or RoleType.Scp106 or RoleType.Scp173 => Team.SCP,
+            RoleType.Spectator => Team.RIP,
+            RoleType.FacilityGuard or RoleType.NtfCaptain or RoleType.NtfPrivate or RoleType.NtfSergeant or RoleType.NtfSpecialist => Team.MTF,
+            RoleType.Tutorial => Team.TUT,
+            _ => Team.RIP,
+        };
+        public static Player GetAttacker(this DamageHandlerBase handler)
 		{
-			return roleType switch
-			{
-				RoleType.ChaosConscript or RoleType.ChaosMarauder or RoleType.ChaosRepressor or RoleType.ChaosRifleman => Team.CHI,
-				RoleType.Scientist => Team.RSC,
-				RoleType.ClassD => Team.CDP,
-				RoleType.Scp049 or RoleType.Scp93953 or RoleType.Scp93989 or RoleType.Scp0492 or RoleType.Scp079 or RoleType.Scp096 or RoleType.Scp106 or RoleType.Scp173 => Team.SCP,
-				RoleType.Spectator => Team.RIP,
-				RoleType.FacilityGuard or RoleType.NtfCaptain or RoleType.NtfPrivate or RoleType.NtfSergeant or RoleType.NtfSpecialist => Team.MTF,
-				RoleType.Tutorial => Team.TUT,
-				_ => Team.RIP,
-			};
-		}
-		public static Player GetAttacker(this DamageHandlerBase handler)
-		{
-			var plz = _getHandler();
+            AttackerDamageHandler plz = _getHandler();
 			if (plz is null) return null;
 			return Player.Get(plz.Attacker.Hub);
-			AttackerDamageHandler _getHandler()
-			{
-				return handler switch
-				{
-					AttackerDamageHandler adh2 => adh2,
-					_ => null,
-				};
-			}
-		}
-		public static DamageTypesPrimitive GetDamageTypesPrimitive(this DamageHandlerBase handler)
-		{
-			return handler switch
-			{
-				CustomReasonDamageHandler _ => DamageTypesPrimitive.Custom,
-				ExplosionDamageHandler _ => DamageTypesPrimitive.Explosion,
-				FirearmDamageHandler _ => DamageTypesPrimitive.Firearm,
-				MicroHidDamageHandler _ => DamageTypesPrimitive.MicroHid,
-				RecontainmentDamageHandler _ => DamageTypesPrimitive.Recontainment,
-				Scp018DamageHandler _ => DamageTypesPrimitive.Scp018,
-				Scp096DamageHandler _ => DamageTypesPrimitive.Scp096,
-				ScpDamageHandler _ => DamageTypesPrimitive.ScpDamage,
-				UniversalDamageHandler _ => DamageTypesPrimitive.Universal,
-				WarheadDamageHandler _ => DamageTypesPrimitive.Warhead,
-				_ => DamageTypesPrimitive.Unknow,
-			};
-		}
-		internal static readonly Dictionary<DamageHandlerBase, DamageTypes> DamagesCached = new();
+            AttackerDamageHandler _getHandler() => handler switch
+            {
+                AttackerDamageHandler adh2 => adh2,
+                _ => null,
+            };
+        }
+        public static DamageTypesPrimitive GetDamageTypesPrimitive(this DamageHandlerBase handler) => handler switch
+        {
+            CustomReasonDamageHandler _ => DamageTypesPrimitive.Custom,
+            ExplosionDamageHandler _ => DamageTypesPrimitive.Explosion,
+            FirearmDamageHandler _ => DamageTypesPrimitive.Firearm,
+            MicroHidDamageHandler _ => DamageTypesPrimitive.MicroHid,
+            RecontainmentDamageHandler _ => DamageTypesPrimitive.Recontainment,
+            Scp018DamageHandler _ => DamageTypesPrimitive.Scp018,
+            Scp096DamageHandler _ => DamageTypesPrimitive.Scp096,
+            ScpDamageHandler _ => DamageTypesPrimitive.ScpDamage,
+            UniversalDamageHandler _ => DamageTypesPrimitive.Universal,
+            WarheadDamageHandler _ => DamageTypesPrimitive.Warhead,
+            _ => DamageTypesPrimitive.Unknow,
+        };
+        internal static readonly Dictionary<DamageHandlerBase, DamageTypes> DamagesCached = new();
 		public static DamageTypes GetDamageType(this DamageHandlerBase handler)
 		{
-			if (DamagesCached.TryGetValue(handler, out var damageType)) return damageType;
-			var _type = _get();
+			if (DamagesCached.TryGetValue(handler, out DamageTypes damageType)) return damageType;
+            DamageTypes _type = _get();
 			DamagesCached.Add(handler, _type);
 			return _type;
 			DamageTypes _get()
@@ -259,101 +264,89 @@ namespace Qurre.API
 				}
 			}
 		}
-		public static ItemType GetItemType(this AmmoType type)
-		{
-			return type switch
-			{
-				AmmoType.Ammo556 => ItemType.Ammo556x45,
-				AmmoType.Ammo762 => ItemType.Ammo762x39,
-				AmmoType.Ammo9 => ItemType.Ammo9x19,
-				AmmoType.Ammo12Gauge => ItemType.Ammo12gauge,
-				AmmoType.Ammo44Cal => ItemType.Ammo44cal,
-				_ => ItemType.None,
-			};
-		}
-		public static AmmoType GetAmmoType(this ItemType type)
-		{
-			return type switch
-			{
-				ItemType.Ammo9x19 => AmmoType.Ammo9,
-				ItemType.Ammo556x45 => AmmoType.Ammo556,
-				ItemType.Ammo762x39 => AmmoType.Ammo762,
-				ItemType.Ammo12gauge => AmmoType.Ammo12Gauge,
-				ItemType.Ammo44cal => AmmoType.Ammo44Cal,
-				_ => AmmoType.None,
-			};
-		}
-		public static Type Type(this EffectType effect)
-		{
-			return effect switch
-			{
-				EffectType.Amnesia => typeof(Amnesia),
-				EffectType.Asphyxiated => typeof(Asphyxiated),
-				EffectType.Bleeding => typeof(Bleeding),
-				EffectType.Blinded => typeof(Blinded),
-				EffectType.BodyshotReduction => typeof(BodyshotReduction),
-				EffectType.Burned => typeof(Burned),
-				EffectType.Concussed => typeof(Concussed),
-				EffectType.Corroding => typeof(Corroding),
-				EffectType.DamageReduction => typeof(DamageReduction),
-				EffectType.Deafened => typeof(Deafened),
-				EffectType.Decontaminating => typeof(Decontaminating),
-				EffectType.Disabled => typeof(Disabled),
-				EffectType.Ensnared => typeof(Ensnared),
-				EffectType.Exhausted => typeof(Exhausted),
-				EffectType.Flashed => typeof(Flashed),
-				EffectType.Hemorrhage => typeof(Hemorrhage),
-				EffectType.Hypothermia => typeof(Hypothermia),
-				EffectType.Invigorated => typeof(Invigorated),
-				EffectType.Invisible => typeof(Invisible),
-				EffectType.MovementBoost => typeof(MovementBoost),
-				EffectType.Poisoned => typeof(Poisoned),
-				EffectType.RainbowTaste => typeof(RainbowTaste),
-				EffectType.Scp207 => typeof(Scp207),
-				EffectType.SeveredHands => typeof(SeveredHands),
-				EffectType.SinkHole => typeof(SinkHole),
-				EffectType.Stained => typeof(Stained),
-				EffectType.Visuals939 => typeof(Visuals939),
-				EffectType.Vitality => typeof(Vitality),
-				_ => throw new InvalidOperationException("Invalid effect enum provided"),
-			};
-		}
-		public static EffectType GetEffectType(this PlayerEffect ef)
-		{
-			return ef switch
-			{
-				Amnesia _ => EffectType.Amnesia,
-				Asphyxiated _ => EffectType.Asphyxiated,
-				Bleeding _ => EffectType.Bleeding,
-				Blinded _ => EffectType.Blinded,
-				BodyshotReduction _ => EffectType.BodyshotReduction,
-				Burned _ => EffectType.Burned,
-				Concussed _ => EffectType.Concussed,
-				Corroding _ => EffectType.Corroding,
-				DamageReduction _ => EffectType.DamageReduction,
-				Deafened _ => EffectType.Deafened,
-				Decontaminating _ => EffectType.Decontaminating,
-				Disabled _ => EffectType.Disabled,
-				Ensnared _ => EffectType.Ensnared,
-				Exhausted _ => EffectType.Exhausted,
-				Flashed _ => EffectType.Flashed,
-				Hemorrhage _ => EffectType.Hemorrhage,
-				Hypothermia _ => EffectType.Hypothermia,
-				Invigorated _ => EffectType.Invigorated,
-				Invisible _ => EffectType.Invisible,
-				MovementBoost _ => EffectType.MovementBoost,
-				Poisoned _ => EffectType.Poisoned,
-				RainbowTaste _ => EffectType.RainbowTaste,
-				Scp207 _ => EffectType.Scp207,
-				SeveredHands _ => EffectType.SeveredHands,
-				SinkHole _ => EffectType.SinkHole,
-				Stained _ => EffectType.Stained,
-				Visuals939 _ => EffectType.Visuals939,
-				Vitality _ => EffectType.Vitality,
-				_ => EffectType.None,
-			};
-		}
-		public static System.Random Random { get; } = new System.Random();
+        public static ItemType GetItemType(this AmmoType type) => type switch
+        {
+            AmmoType.Ammo556 => ItemType.Ammo556x45,
+            AmmoType.Ammo762 => ItemType.Ammo762x39,
+            AmmoType.Ammo9 => ItemType.Ammo9x19,
+            AmmoType.Ammo12Gauge => ItemType.Ammo12gauge,
+            AmmoType.Ammo44Cal => ItemType.Ammo44cal,
+            _ => ItemType.None,
+        };
+        public static AmmoType GetAmmoType(this ItemType type) => type switch
+        {
+            ItemType.Ammo9x19 => AmmoType.Ammo9,
+            ItemType.Ammo556x45 => AmmoType.Ammo556,
+            ItemType.Ammo762x39 => AmmoType.Ammo762,
+            ItemType.Ammo12gauge => AmmoType.Ammo12Gauge,
+            ItemType.Ammo44cal => AmmoType.Ammo44Cal,
+            _ => AmmoType.None,
+        };
+        public static Type Type(this EffectType effect) => effect switch
+        {
+            EffectType.Amnesia => typeof(Amnesia),
+            EffectType.Asphyxiated => typeof(Asphyxiated),
+            EffectType.Bleeding => typeof(Bleeding),
+            EffectType.Blinded => typeof(Blinded),
+            EffectType.BodyshotReduction => typeof(BodyshotReduction),
+            EffectType.Burned => typeof(Burned),
+            EffectType.Concussed => typeof(Concussed),
+            EffectType.Corroding => typeof(Corroding),
+            EffectType.DamageReduction => typeof(DamageReduction),
+            EffectType.Deafened => typeof(Deafened),
+            EffectType.Decontaminating => typeof(Decontaminating),
+            EffectType.Disabled => typeof(Disabled),
+            EffectType.Ensnared => typeof(Ensnared),
+            EffectType.Exhausted => typeof(Exhausted),
+            EffectType.Flashed => typeof(Flashed),
+            EffectType.Hemorrhage => typeof(Hemorrhage),
+            EffectType.Hypothermia => typeof(Hypothermia),
+            EffectType.Invigorated => typeof(Invigorated),
+            EffectType.Invisible => typeof(Invisible),
+            EffectType.MovementBoost => typeof(MovementBoost),
+            EffectType.Poisoned => typeof(Poisoned),
+            EffectType.RainbowTaste => typeof(RainbowTaste),
+            EffectType.Scp207 => typeof(Scp207),
+            EffectType.SeveredHands => typeof(SeveredHands),
+            EffectType.SinkHole => typeof(SinkHole),
+            EffectType.Stained => typeof(Stained),
+            EffectType.Visuals939 => typeof(Visuals939),
+            EffectType.Vitality => typeof(Vitality),
+            _ => throw new InvalidOperationException("Invalid effect enum provided"),
+        };
+        public static EffectType GetEffectType(this PlayerEffect ef) => ef switch
+        {
+            Amnesia _ => EffectType.Amnesia,
+            Asphyxiated _ => EffectType.Asphyxiated,
+            Bleeding _ => EffectType.Bleeding,
+            Blinded _ => EffectType.Blinded,
+            BodyshotReduction _ => EffectType.BodyshotReduction,
+            Burned _ => EffectType.Burned,
+            Concussed _ => EffectType.Concussed,
+            Corroding _ => EffectType.Corroding,
+            DamageReduction _ => EffectType.DamageReduction,
+            Deafened _ => EffectType.Deafened,
+            Decontaminating _ => EffectType.Decontaminating,
+            Disabled _ => EffectType.Disabled,
+            Ensnared _ => EffectType.Ensnared,
+            Exhausted _ => EffectType.Exhausted,
+            Flashed _ => EffectType.Flashed,
+            Hemorrhage _ => EffectType.Hemorrhage,
+            Hypothermia _ => EffectType.Hypothermia,
+            Invigorated _ => EffectType.Invigorated,
+            Invisible _ => EffectType.Invisible,
+            MovementBoost _ => EffectType.MovementBoost,
+            Poisoned _ => EffectType.Poisoned,
+            RainbowTaste _ => EffectType.RainbowTaste,
+            Scp207 _ => EffectType.Scp207,
+            SeveredHands _ => EffectType.SeveredHands,
+            SinkHole _ => EffectType.SinkHole,
+            Stained _ => EffectType.Stained,
+            Visuals939 _ => EffectType.Visuals939,
+            Vitality _ => EffectType.Vitality,
+            _ => EffectType.None,
+        };
+        public static System.Random Random { get; } = new System.Random();
 		public static void Shuffle<T>(this IList<T> list)
 		{
 			RNGCryptoServiceProvider provider = new();
@@ -371,7 +364,10 @@ namespace Qurre.API
 		public static void CopyProperties(this object target, object source)
 		{
 			Type type = target.GetType();
-			if (type != source.GetType()) return;
+
+			if (type != source.GetType()) 
+				return;
+
 			foreach (PropertyInfo sourceProperty in type.GetProperties())
 				type.GetProperty(sourceProperty.Name)?.SetValue(target, sourceProperty.GetValue(source, null), null);
 		}

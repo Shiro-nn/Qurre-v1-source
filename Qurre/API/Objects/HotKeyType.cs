@@ -2,11 +2,11 @@
 {
     public enum HotKeyType : byte
     {
+        Unknown,
         Grenade,
         Keycard,
         Medical,
         PrimaryGun,
-        SecondaryGun,
-        Unknow
+        SecondaryGun
     }
 }

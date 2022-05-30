@@ -1,9 +1,9 @@
-﻿using System;
+﻿using InventorySystem;
+using RoundRestarting;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using InventorySystem;
-using RoundRestarting;
 
 namespace Qurre.API
 {
@@ -17,7 +17,7 @@ namespace Qurre.API
         public static ushort Port => global::Loader.Port;
         public static string Ip => ServerConsole.Ip;
         ///<summary>
-        ///<para>if true, then no items will be issued during the escape &amp; the escaped person will not change his location.</para>
+        ///<para>if true, then no items will be issued during the escape and the escaped person will not change his location.</para>
         ///</summary>
         public static bool RealEscape { get; set; } = false;
         public static string Name
@@ -40,14 +40,41 @@ namespace Qurre.API
             set
             {
                 ServerConsole.FriendlyFire = value;
-                foreach (Player pl in Player.List) pl.FriendlyFire = value;
+                ServerConfigSynchronizer.Singleton.RefreshMainBools();
+                PlayerStatsSystem.AttackerDamageHandler.RefreshConfigs();
+
+                foreach (Player pl in Player.List) 
+                    pl.FriendlyFire = value;
             }
+        }
+        public static bool HeavilyModded
+        {
+            get => CustomNetworkManager.HeavilyModded;
+            set => CustomNetworkManager.HeavilyModded = value;
+        }
+        public static float SpawnProtectDuration
+        {
+            get => CharacterClassManager.SProtectedDuration;
+            set => CharacterClassManager.SProtectedDuration = value;
+        }
+        public static float LaterJoinTime
+        {
+            get => CharacterClassManager.LaterJoinTime;
+            set => CharacterClassManager.LaterJoinTime = value;
+        }
+        public static bool LaterJoinEnabled
+        {
+            get => CharacterClassManager.LaterJoinEnabled;
+            set => CharacterClassManager.LaterJoinEnabled = value;
         }
         public static Player Host
         {
             get
             {
-                if (_host == null || _host.ReferenceHub == null) _host = new Player(PlayerManager.hostHub);
+                if (_host == null || _host.ReferenceHub == null)
+                {
+                    _host = new Player(PlayerManager.hostHub);
+                }
                 return _host;
             }
         }
@@ -55,14 +82,18 @@ namespace Qurre.API
         {
             get
             {
-                if (_hostInventory == null) _hostInventory = ReferenceHub.GetHub(PlayerManager.localPlayer).inventory;
+                if (_hostInventory == null)
+                {
+                    _hostInventory = _host.Inventory;
+                }
+
                 return _hostInventory;
             }
         }
         public static int MaxConnections
         {
-            get => new CustomNetworkManager().maxConnections;
-            set => new CustomNetworkManager().maxConnections = value;
+            get => CustomNetworkManager.singleton.maxConnections;
+            set => CustomNetworkManager.singleton.maxConnections = value;
         }
         public static List<TObject> GetObjectsOf<TObject>() where TObject : UnityEngine.Object => UnityEngine.Object.FindObjectsOfType<TObject>().ToList();
         public static TObject GetObjectOf<TObject>() where TObject : UnityEngine.Object => UnityEngine.Object.FindObjectOfType<TObject>();
@@ -71,11 +102,10 @@ namespace Qurre.API
             ServerStatic.StopNextRound = ServerStatic.NextRoundAction.Restart;
             RoundRestart.ChangeLevel(true);
         }
-        public static void Close() => Shutdown.Quit();
+        public static void Exit() => Shutdown.Quit();
         public static void InvokeStaticMethod(this Type type, string methodName, object[] param)
         {
-            BindingFlags flags = BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic |
-                                 BindingFlags.Static | BindingFlags.Public;
+            BindingFlags flags = BindingFlags.Instance | BindingFlags.InvokeMethod | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public;
             MethodInfo info = type.GetMethod(methodName, flags);
             info?.Invoke(null, param);
         }

@@ -4,7 +4,7 @@
     {
         Destroyed,
         Despawned,
-        Inventory,
-        Map
+        InInventory,
+        InMap
     }
 }
