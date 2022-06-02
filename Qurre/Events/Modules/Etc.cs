@@ -34,7 +34,13 @@ namespace Qurre.Events.Modules
         }
         public static void AudioSessionJoin(VoicePlayerState state)
         {
-            Radio.comms.PlayerChannels.Open(state._name, false, ChannelPriority.Default, 1);
+            Radio.comms.PlayerChannels.Open(state._name, false, ChannelPriority.Default, GetVolume());
+            static float GetVolume()
+            {
+                if (API.Audio.Microphone is null) return 1;
+                foreach (var task in API.Audio.Microphone.Tasks) return (float)task.Volume / 100;
+                return 1;
+            }
         }
         private static void Waiting()
         {

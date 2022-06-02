@@ -76,6 +76,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="NLayer">
+      <HintPath>..\lib\NLayer.dll</HintPath>
+    </Reference>
     <Reference Include="NorthwoodLib">
       <HintPath>..\lib\NorthwoodLib.dll</HintPath>
     </Reference>
@@ -107,10 +110,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API\Addons\Audio\AudioTask.cs" />
+    <Compile Include="API\Addons\Audio\AudioStream.cs" />
     <Compile Include="API\Addons\Audio\TasksList.cs" />
     <Compile Include="API\Addons\Audio\Microphone.cs" />
     <Compile Include="API\Addons\Audio\StatusType.cs" />
-    <Compile Include="API\Addons\Audio\Extensions.cs" />
     <Compile Include="API\Addons\Audio\IMicrophone.cs" />
     <Compile Include="API\Addons\UnitGenerator.cs" />
     <Compile Include="API\Addons\Models\ModelPickup.cs" />
