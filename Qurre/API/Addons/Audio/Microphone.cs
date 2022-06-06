@@ -1,4 +1,5 @@
-﻿using Dissonance.Audio.Capture;
+﻿using Dissonance;
+using Dissonance.Audio.Capture;
 using NAudio.Wave;
 using System;
 using System.Collections.Generic;
@@ -49,9 +50,9 @@ namespace Qurre.API.Addons.Audio
 
             _elapsedTime += Time.unscaledDeltaTime;
 
-            while (_elapsedTime > stream.UpdateInterval)
+            while (_elapsedTime > 0.04f)
             {
-                _elapsedTime -= stream.UpdateInterval;
+                _elapsedTime -= 0.04f;
 
                 var readLength = stream.Read(_frameBytes, 0, _frameBytes.Length);
 
@@ -112,7 +113,14 @@ namespace Qurre.API.Addons.Audio
             AudioTask task = _tasks[0];
             _tasks.Remove(task);
 
-            if (_tasks.Count > 0) ResetMicrophone();
+            MEC.Timing.RunCoroutine(DoRun());
+            IEnumerator<float> DoRun()
+            {
+                yield return MEC.Timing.WaitForOneFrame;
+                yield return MEC.Timing.WaitForOneFrame;
+                if (_tasks.Count > 0) ResetMicrophone();
+                yield break;
+            }
         }
         public virtual void Pause()
         {
