@@ -25,27 +25,28 @@ namespace Qurre.Patches.Events.player
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching Player [TantrumWalking]:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [TantrumEnter]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }
     }
-    [HarmonyPatch(typeof(TantrumEnvironmentalHazard), nameof(TantrumEnvironmentalHazard.OnStay))]
+    [HarmonyPatch(typeof(EnvironmentalHazard), nameof(EnvironmentalHazard.OnStay))]
     internal static class TantrumStay
     {
-        private static bool Prefix(TantrumEnvironmentalHazard __instance, ReferenceHub player)
+        private static bool Prefix(EnvironmentalHazard __instance, ReferenceHub player)
         {
             try
             {
+                if (__instance is not TantrumEnvironmentalHazard ins) return true;
                 var pl = Player.Get(player);
                 if (pl is null) return true;
-                var ev = new TantrumWalkingEvent(pl, __instance, HazardEventsType.Stay, !player.characterClassManager.IsAnyScp());
+                var ev = new TantrumWalkingEvent(pl, ins, HazardEventsType.Stay, !player.characterClassManager.IsAnyScp());
                 Qurre.Events.Invoke.Player.TantrumWalking(ev);
                 return ev.Allowed;
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching Player [TantrumWalking]:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [TantrumStay]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }
@@ -69,7 +70,7 @@ namespace Qurre.Patches.Events.player
             }
             catch (Exception e)
             {
-                Log.Error($"umm, error in patching Player [TantrumWalking]:\n{e}\n{e.StackTrace}");
+                Log.Error($"umm, error in patching Player [TantrumExit]:\n{e}\n{e.StackTrace}");
                 return true;
             }
         }

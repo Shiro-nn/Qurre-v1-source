@@ -52,16 +52,17 @@ namespace Qurre.Patches.Events.player
             }
         }
     }
-    [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.OnExit))]
+    [HarmonyPatch(typeof(EnvironmentalHazard), nameof(EnvironmentalHazard.OnExit))]
     internal static class SinkholeExit
     {
-        private static bool Prefix(SinkholeEnvironmentalHazard __instance, ReferenceHub player)
+        private static bool Prefix(EnvironmentalHazard __instance, ReferenceHub player)
         {
             try
             {
+                if (__instance is not SinkholeEnvironmentalHazard ins) return true;
                 var pl = Player.Get(player);
                 if (pl is null) return true;
-                var sink = __instance.GetSinkhole();
+                var sink = ins.GetSinkhole();
                 var ev = new SinkholeWalkingEvent(pl, sink, HazardEventsType.Exit, sink.ImmunityScps || !player.characterClassManager.IsAnyScp());
                 Qurre.Events.Invoke.Player.SinkholeWalking(ev);
                 return ev.Allowed;

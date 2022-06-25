@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -7,11 +8,12 @@ namespace Qurre.Patches.Events.Round
     [HarmonyPatch]
     internal static class Waiting
     {
-        private static MethodBase TargetMethod() => AccessTools.Method(AccessTools.Inner(typeof(CharacterClassManager), "<Init>d__115"), "MoveNext");
+        private static MethodBase TargetMethod() =>
+            AccessTools.Method(AccessTools.FirstInner(typeof(CharacterClassManager), (Type x) => x.Name.Contains("<Init>")), "MoveNext");
         private static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions)
         {
             bool need = true;
-            foreach (CodeInstruction ins in instructions)
+            foreach (var ins in instructions)
             {
                 if (need && ins.opcode == OpCodes.Ldstr && ins.operand as string == "Waiting for players...")
                 {

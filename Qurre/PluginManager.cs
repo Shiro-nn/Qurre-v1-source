@@ -27,6 +27,7 @@ namespace Qurre
 		public static string ConfigsPath { get; internal set; }
 		internal static IEnumerator<float> LoadPlugins()
 		{
+			//Harmony.DEBUG = true;
 			if (!Directory.Exists(PluginsDirectory))
 			{
 				Log.Warn($"Plugins directory not found - creating: {PluginsDirectory}");
