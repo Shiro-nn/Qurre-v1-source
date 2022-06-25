@@ -158,6 +158,7 @@
     <Compile Include="API\Objects\AuthType.cs" />
     <Compile Include="API\Objects\CandyType.cs" />
     <Compile Include="API\Objects\BloodType.cs" />
+    <Compile Include="API\Objects\HazardEventsType.cs" />
     <Compile Include="API\Objects\HotKeyType.cs" />
     <Compile Include="API\Objects\TargetPrefabs.cs" />
     <Compile Include="API\Objects\LockerPrefabs.cs" />

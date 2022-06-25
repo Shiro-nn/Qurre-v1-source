@@ -22,6 +22,7 @@ namespace Qurre.Events.Modules
             Server.SendingRA += FixRaBc;
             Player.DamageProcess += FixFF;
             Round.Waiting += FixOneSerial;
+            Player.ScpAttack += AntiCheat;
         }
         private static void SceneUnloaded(Scene _)
         {
@@ -32,7 +33,11 @@ namespace Qurre.Events.Modules
             API.Map.ClearObjects();
             try { Radio.comms.OnPlayerJoinedSession -= AudioSessionJoin; } catch { }
         }
-        public static void AudioSessionJoin(VoicePlayerState state)
+        private static void AntiCheat(ScpAttackEvent ev)
+        {
+            if (ev.Target.Team is Team.SCP) ev.Allowed = false;
+        }
+        private static void AudioSessionJoin(VoicePlayerState state)
         {
             Radio.comms.PlayerChannels.Open(state._name, false, ChannelPriority.Default, GetVolume());
             static float GetVolume()

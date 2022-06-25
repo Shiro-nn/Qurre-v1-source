@@ -113,14 +113,7 @@ namespace Qurre.API.Addons.Audio
             AudioTask task = _tasks[0];
             _tasks.Remove(task);
 
-            MEC.Timing.RunCoroutine(DoRun());
-            IEnumerator<float> DoRun()
-            {
-                yield return MEC.Timing.WaitForOneFrame;
-                yield return MEC.Timing.WaitForOneFrame;
-                if (_tasks.Count > 0) ResetMicrophone();
-                yield break;
-            }
+            MEC.Timing.CallDelayed(0.1f, () => { if (_tasks.Count > 0) ResetMicrophone(); });
         }
         public virtual void Pause()
         {

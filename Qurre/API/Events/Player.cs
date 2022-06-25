@@ -726,30 +726,34 @@ namespace Qurre.API.Events
     }
     public class SinkholeWalkingEvent : EventArgs
     {
-        public SinkholeWalkingEvent(Player pl, Sinkhole sinkhole, List<EffectType> effects, Dictionary<EffectType, float> durations, bool allowed = true)
+        public SinkholeWalkingEvent(Player pl, Sinkhole sinkhole, HazardEventsType ev, bool allowed = true)
         {
             Player = pl;
             Sinkhole = sinkhole;
-            Effects = effects;
-            Durations = durations;
+            Event = ev;
             Allowed = allowed;
         }
         public Player Player { get; }
         public Sinkhole Sinkhole { get; }
-        public List<EffectType> Effects { get; }
-        public Dictionary<EffectType, float> Durations { get; }
+        public HazardEventsType Event { get; }
         public bool Allowed { get; set; }
+        [Obsolete("removed")]
+        public List<EffectType> Effects { get; }
+        [Obsolete("removed")]
+        public Dictionary<EffectType, float> Durations { get; }
     }
     public class TantrumWalkingEvent : EventArgs
     {
-        public TantrumWalkingEvent(Player pl, TantrumEnvironmentalHazard tantrum, bool allowed = true)
+        public TantrumWalkingEvent(Player pl, TantrumEnvironmentalHazard tantrum, HazardEventsType ev, bool allowed = true)
         {
             Player = pl;
             Tantrum = tantrum;
+            Event = ev;
             Allowed = allowed;
         }
         public Player Player { get; }
         public TantrumEnvironmentalHazard Tantrum { get; }
+        public HazardEventsType Event { get; }
         public bool Allowed { get; set; }
     }
     public class ChangeSpectateEvent : EventArgs

@@ -33,7 +33,7 @@ namespace Qurre.Patches.Events.Round
             {
                 yield return Timing.WaitForSeconds(2.5f);
                 while (RoundSummary.RoundLock || !RoundSummary.RoundInProgress() || Time.unscaledTime - time < 15f ||
-                    (instance._keepRoundOnOne && PlayerManager.players.Count < 2))
+                    (instance._keepRoundOnOne && PlayerManager.players.Count < 2) || API.Round.ElapsedTime.TotalMinutes < 1)
                     yield return Timing.WaitForSeconds(1);
 
                 bool end = false;
