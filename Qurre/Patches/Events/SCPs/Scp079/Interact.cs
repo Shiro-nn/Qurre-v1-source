@@ -348,10 +348,9 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 										return false;
 									}
 									var _t = tesla.GetTesla();
-									
 									if (!_t.Allow079Interact)
 										return false;
-									
+
 									_t.Trigger(ev.Instant);
 								}
 								__instance.AddInteractionToHistory(tesla.gameObject, true);

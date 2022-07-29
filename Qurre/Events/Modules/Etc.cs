@@ -20,7 +20,7 @@ namespace Qurre.Events.Modules
             Round.Restart += RoundRestart;
             Player.SyncData += SyncData;
             Server.SendingRA += FixRaBc;
-            Player.DamageProcess += FixFF;
+            //Player.DamageProcess += FixFF;
             Round.Waiting += FixOneSerial;
             Player.ScpAttack += AntiCheat;
         }
@@ -49,7 +49,7 @@ namespace Qurre.Events.Modules
         }
         private static void Waiting()
         {
-            API.Audio._micro = Radio.comms.gameObject.AddComponent<API.Addons.Audio.Microphone>();
+            API.Audio._micro = Radio.comms.gameObject.AddComponent<API.Addons.Audio.Extensions.Microphone>();
             Radio.comms.OnPlayerJoinedSession += AudioSessionJoin;
             API.Server.Host.Dissonance.NetworkspeakingFlags = SpeakingFlags.IntercomAsHuman;
             if (API.Round.CurrentRound == 0)

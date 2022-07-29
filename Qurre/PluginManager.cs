@@ -15,7 +15,7 @@ namespace Qurre
 		internal static Harmony _harmony;
 
 		//private static string Domain { get; } = "localhost"; //qurre.team
-		public static Version Version { get; } = new Version(1, 14, 2);
+		public static Version Version { get; } = new Version(1, 14, 3);
 		public static string AppDataDirectory { get; private set; } = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 		public static string QurreDirectory { get; private set; } = Path.Combine(AppDataDirectory, "Qurre");
 		public static string PluginsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Plugins");
