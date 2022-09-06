@@ -31,7 +31,6 @@ namespace Qurre.API.Controllers
             {
                 positionsync.Network_position = value;
                 NetworkServer.UnSpawn(GameObject);
-                Transform.localPosition = value;
                 Transform.position = value;
                 NetworkServer.Spawn(GameObject);
             }
@@ -43,7 +42,6 @@ namespace Qurre.API.Controllers
             {
                 positionsync.Network_rotationY = (sbyte)(value.eulerAngles.y / 5.625f);
                 NetworkServer.UnSpawn(GameObject);
-                Transform.localRotation = value;
                 Transform.rotation = value;
                 NetworkServer.Spawn(GameObject);
             }

@@ -14,7 +14,8 @@ namespace Qurre.Patches.Events.player
         {
             try
             {
-                if (__instance == null) return false;
+                if (!ReferenceHub.LocalHub.characterClassManager.RoundStarted) return false;
+                if (__instance is null) return false;
                 if (!NetworkServer.active)
                 {
                     foreach (TeslaGate teslaGate2 in __instance.TeslaGates)
@@ -62,6 +63,11 @@ namespace Qurre.Patches.Events.player
                 }
 
                 return false;
+            }
+            catch (NullReferenceException e)
+            {
+                Log.Debug($"tesla is null in patch Player [TeslaTrigger]:\n{e}\n{e.StackTrace}");
+                return true;
             }
             catch (Exception e)
             {

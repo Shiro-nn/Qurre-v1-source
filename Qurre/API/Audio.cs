@@ -10,47 +10,47 @@ namespace Qurre.API
 		///<para>Example:</para>
 		/// <example>
 		/// <code>
-		/// Audio.PlayFromFile($"{PluginManager.PluginsDirectory}/Audio/OmegaWarhead.raw", 100, instant: true, loop: false, frameSize: 1920, sampleRate: 48000);
+		/// Audio.PlayFromFile($"{PluginManager.PluginsDirectory}/Audio/OmegaWarhead.raw", 100, instant: true, loop: false, rate: 48000);
 		/// </code>
 		/// </example>
 		///</summary>
-		public static AudioTask PlayFromFile(string path, byte volume, bool instant = false, bool loop = false, int frameSize = 1920, int sampleRate = 48000,
+		public static AudioTask PlayFromFile(string path, byte volume, bool instant = false, bool loop = false, int rate = 48000,
 			string playerName = "Qurre Audio") => Play(new AudioStream(new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read),
-				frameSize, sampleRate), volume, instant, loop, playerName);
+				rate), volume, instant, loop, playerName);
 		///<summary>
 		///<para>Plays music from a url.</para>
 		///<para>Example:</para>
 		/// <example>
 		/// <code>
-		/// Audio.PlayFromUrl("https://cdn.scpsl.store/qurre/audio/OmegaWarhead.raw", 100, instant: true, loop: false, frameSize: 1920, sampleRate: 48000);
+		/// Audio.PlayFromUrl("https://cdn.scpsl.store/qurre/audio/OmegaWarhead.raw", 100, instant: true, loop: false, rate: 48000);
 		/// </code>
 		/// </example>
 		///</summary>
-		public static AudioTask PlayFromUrl(string url, byte volume, bool instant = false, bool loop = false, int frameSize = 1920, int sampleRate = 48000,
+		public static AudioTask PlayFromUrl(string url, byte volume, bool instant = false, bool loop = false, int rate = 48000,
 			string playerName = "Qurre Audio")
 		{
 			using System.Net.WebClient _web = new();
 			byte[] byteData = _web.DownloadData(url);
-			return Play(new AudioStream(new MemoryStream(byteData), frameSize, sampleRate), volume, instant, loop, playerName);
+			return Play(new AudioStream(new MemoryStream(byteData), rate), volume, instant, loop, playerName);
 		}
 		///<summary>
 		///<para>Plays music from the stream.</para>
 		///<para>Example:</para>
 		/// <example>
 		/// <code>
-		/// Audio.PlayFromStream(new MemoryStream(audio), 100, instant: true, loop: false, frameSize: 1920, sampleRate: 48000);
+		/// Audio.PlayFromStream(new MemoryStream(audio), 100, instant: true, loop: false, rate: 48000);
 		/// </code>
 		/// </example>
 		///</summary>
-		public static AudioTask PlayFromStream(Stream stream, byte volume, bool instant = false, bool loop = false, int frameSize = 1920, int sampleRate = 48000,
-			string playerName = "Qurre Audio") => Play(new AudioStream(stream, frameSize, sampleRate), volume, instant, loop, playerName);
+		public static AudioTask PlayFromStream(Stream stream, byte volume, bool instant = false, bool loop = false, int rate = 48000,
+			string playerName = "Qurre Audio") => Play(new AudioStream(stream, rate), volume, instant, loop, playerName);
 
 		///<summary>
 		///<para>Plays music from the Audio Stream.</para>
 		///<para>Example:</para>
 		/// <example>
 		/// <code>
-		/// Audio.Play(new AudioStream(stream), 100, instant: true, loop: false, frameSize: 1920, sampleRate: 48000);
+		/// Audio.Play(new AudioStream(stream), 100, instant: true, loop: false);
 		/// </code>
 		/// </example>
 		///</summary>

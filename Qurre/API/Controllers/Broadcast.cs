@@ -120,17 +120,14 @@ namespace Qurre.API.Controllers
     }
     public class ListBroadcasts
     {
-        private List<Broadcast> bcs = new();
+        private readonly List<Broadcast> bcs = new();
         public void Add(Broadcast bc, bool instant = false)
         {
             if (bc == null) return;
             if (instant)
             {
                 var currentbc = bcs.FirstOrDefault();
-                List<Broadcast> list = new();
-                list.Add(bc);
-                list.AddRange(bcs);
-                bcs = list;
+                bcs.Insert(1, bc);
                 if (currentbc != null) currentbc.End();
                 else bcs.First().Start();
             }

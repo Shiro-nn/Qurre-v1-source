@@ -604,11 +604,12 @@ namespace Qurre.API
 			AlphaWarheadController component = AlphaWarheadController.Host;
 			PooledNetworkWriter writer = NetworkWriterPool.GetWriter();
 			writer.WriteBoolean(achieve);
+			writer.WriteBoolean(true);
 			RpcMessage msg = new()
 			{
 				netId = component.netId,
 				componentIndex = component.ComponentIndex,
-				functionHash = typeof(AlphaWarheadController).FullName.GetStableHashCode() * 503 + "RpcShake".GetStableHashCode(),
+				functionHash = typeof(AlphaWarheadController).FullName.GetStableHashCode() * 503 + "TargetRpcShake".GetStableHashCode(),
 				payload = writer.ToArraySegment()
 			};
 			Connection.Send(msg);
@@ -617,10 +618,13 @@ namespace Qurre.API
 		public void SetRole(RoleType newRole, bool lite = false, CharacterClassManager.SpawnReason reason = 0) => ClassManager.SetClassIDAdv(newRole, lite, reason);
 		public void ChangeBody(RoleType newRole, bool spawnRagdoll = false, Vector3 newPosition = default, Vector2 newRotation = default, string deathReason = "")
 		{
+			ushort iih = 0;
+			try { iih = Inventory.CurItem.SerialNumber; } catch { }
 			if (spawnRagdoll) Controllers.Ragdoll.Create(Role, Position, default, new CustomReasonDamageHandler(deathReason), this);
 			ClassManager.SetClassIDAdv(newRole, true, CharacterClassManager.SpawnReason.None);
 			if (newPosition != default) Position = newPosition;
 			if (newRotation != default) Rotation = newRotation;
+			Inventory.ServerSelectItem(iih);
 		}
 		public Controllers.Broadcast Broadcast(string message, ushort time, bool instant = false) => Broadcast(time, message, instant);
 		public Controllers.Broadcast Broadcast(ushort time, string message, bool instant = false)

@@ -5,6 +5,8 @@ using Mirror;
 using System.Collections.Generic;
 using Qurre.API.Objects;
 using Qurre.API.Modules;
+using System.Linq;
+
 namespace Qurre.API.Controllers
 {
     public class Door
@@ -62,14 +64,9 @@ namespace Qurre.API.Controllers
         {
             get
             {
-                foreach (var _type in (DoorType[])System.Enum.GetValues(typeof(DoorType)))
-                {
-                    if (_type.ToString().ToUpper().Contains(Name.ToUpper()))
-                    {
-                        type = _type;
-                        return type;
-                    }
-                }
+                foreach (var _type in (System.Enum.GetValues(typeof(DoorType)) as DoorType[])
+                    .Where(_type => _type.ToString().ToUpper().Contains(Name.ToUpper())))
+                    return type = _type;
                 if (Name.Contains("EZ BreakableDoor")) type = DoorType.EZ_Door;
                 else if (Name.Contains("LCZ BreakableDoor")) type = DoorType.LCZ_Door;
                 else if (Name.Contains("HCZ BreakableDoor")) type = DoorType.HCZ_Door;
@@ -105,12 +102,14 @@ namespace Qurre.API.Controllers
             get
             {
                 if (DoorVariant is BreakableDoor damageableDoor)
-                {
                     return damageableDoor.IsDestroyed;
-                }
                 else return false;
             }
-            set => BreakDoor();
+            set
+            {
+                if (value) BreakDoor();
+                else throw new System.Exception("not supported");
+            }
         }
         public bool BreakDoor()
         {
@@ -119,10 +118,7 @@ namespace Qurre.API.Controllers
                 damageableDoor.IsDestroyed = true;
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            else return false;
         }
         public List<Room> Rooms { get; } = new List<Room>();
         public void Destroy()

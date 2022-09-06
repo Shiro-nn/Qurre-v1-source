@@ -17,15 +17,14 @@ namespace Qurre.API.Addons.Audio.Extensions
             get => _stream.Position;
             set => _stream.Position = value;
         }
-        public TimeSpan Duration => TimeSpan.FromSeconds(_stream.Length / FrameSize * 4 * 0.04f);
-        public TimeSpan Progression => TimeSpan.FromSeconds(_stream.Position / FrameSize * 4 * 0.04f);
+        public TimeSpan Duration => TimeSpan.FromSeconds(_stream.Length / 1920 * 4 * 0.04f);
+        public TimeSpan Progression => TimeSpan.FromSeconds(_stream.Position / 1920 * 4 * 0.04f);
         public WaveFormat Format => _format;
-        public int FrameSize => _frameSize;
-        public int SampleRate => _sampleRate;
+        public int Rate => _rate;
 
         public bool Destroyed() => _destroyed;
 
-        public AudioStream(Stream stream, int frameSize = 1920, int sampleRate = 48000)
+        public AudioStream(Stream stream, int rate = 48000)
         {
             if (stream is null) throw new ArgumentNullException("Qurre Audio: Stream is null");
             if (!stream.CanRead)
@@ -34,14 +33,12 @@ namespace Qurre.API.Addons.Audio.Extensions
                 throw new ArgumentException("Qurre Audio: Stream cannot be read stream");
             }
             _stream = stream;
-            _frameSize = frameSize;
-            _sampleRate = sampleRate;
-            _format = new(sampleRate, 1);
+            _rate = rate;
+            _format = new(rate, 1);
         }
 
         private readonly WaveFormat _format;
-        private readonly int _frameSize;
-        private readonly int _sampleRate;
+        private readonly int _rate;
         private bool _destroyed = false;
 
         public void Dispose()
@@ -70,6 +67,6 @@ namespace Qurre.API.Addons.Audio.Extensions
         public static bool operator !=(AudioStream a, AudioStream b) => !(a == b);
         public override int GetHashCode() => Tuple.Create(uid).GetHashCode();
         public override string ToString()
-            => $"Audio Stream: Length: \"{Length}\"; FrameSize: {FrameSize}; SampleRate: {SampleRate}; Format: {Format}";
+            => $"Audio Stream: Length: \"{Length}\"; Rate: {Rate}; Format: {Format}";
     }
 }

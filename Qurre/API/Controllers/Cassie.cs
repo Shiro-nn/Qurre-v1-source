@@ -32,21 +32,18 @@ namespace Qurre.API.Controllers
     }
     public class CassieList
     {
-        private List<Cassie> Cassies = new();
-        public void Add(Cassie bc, bool instant = false)
+        private readonly List<Cassie> Cassies = new();
+        public void Add(Cassie cassie, bool instant = false)
         {
-            if (bc == null) return;
+            if (cassie == null) return;
             if (instant)
             {
-                List<Cassie> list = new();
-                list.Add(bc);
-                list.AddRange(Cassies);
-                Cassies = list;
-                Cassies.First().Send();
+                Cassies.Insert(1, cassie);
+                cassie.Send();
             }
             else
             {
-                Cassies.Add(bc);
+                Cassies.Add(cassie);
                 if (!Cassies.First().Active) Cassies.First().Send();
             }
         }

@@ -15,22 +15,14 @@ namespace Qurre.API.Addons.Audio
         public bool Active { get; internal set; } = false;
         public string PlayerName { get; set; }
         public bool Loop { get; set; }
-        public byte Volume
-        {
-            get => _volume;
-            set
-            {
-                _volume = value;
-                API.Audio._micro.UpdateListeners(this);
-            }
-        }
+        public byte Volume => _volume;
         public IAudioStream Stream { get; private set; }
         public readonly TimeSpan Duration;
 
         private bool _clearedCache = false;
         private readonly DateTime _createdTime = DateTime.Now;
         private readonly string uid = Guid.NewGuid().ToString("N");
-        private byte _volume;
+        private readonly byte _volume;
 
 
         public void Dispose()

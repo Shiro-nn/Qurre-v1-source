@@ -1,6 +1,5 @@
 ﻿using InventorySystem.Items.Firearms.Attachments;
 using Mirror;
-using Mirror.LiteNetLib4Mirror;
 using Qurre.API.Objects;
 using UnityEngine;
 namespace Qurre.API.Controllers
@@ -8,16 +7,12 @@ namespace Qurre.API.Controllers
     public class WorkStation
     {
         internal readonly WorkstationController workStation;
-        internal WorkStation(WorkstationController station)
-        {
-            workStation = station;
-        }
+        internal WorkStation(WorkstationController station) => workStation = station;
         public WorkStation(Vector3 position, Vector3 rotation, Vector3 scale)
         {
             workStation = Object.Instantiate(Addons.Prefabs.WorkStation, position, Quaternion.Euler(rotation));
-            var bench = workStation.gameObject;
-            bench.transform.localScale = scale;
-            NetworkServer.Spawn(bench);
+            workStation.gameObject.transform.localScale = scale;
+            NetworkServer.Spawn(workStation.gameObject);
             Map.WorkStations.Add(this);
         }
         public GameObject GameObject => workStation.gameObject;

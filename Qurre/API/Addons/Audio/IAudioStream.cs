@@ -11,8 +11,7 @@ namespace Qurre.API.Addons.Audio
 		TimeSpan Duration { get; }
 		TimeSpan Progression { get; }
 		WaveFormat Format { get; }
-		int FrameSize { get; }
-		int SampleRate { get; }
+		int Rate { get; }
 
 		bool Destroyed();
 

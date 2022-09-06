@@ -19,18 +19,10 @@ namespace Qurre.API.Addons.Audio.Extensions
         private float[] _frame = new float[1920];
         private byte[] _frameBytes = new byte[1920 * 4];
 
-        internal void UpdateFrames(AudioTask task)
+        internal void UpdateFrames()
         {
-            _frame = new float[task.Stream.FrameSize];
-            _frameBytes = new byte[task.Stream.FrameSize * 4];
-        }
-        internal void UpdateListeners(AudioTask task)
-        {
-            foreach (var channel in Radio.comms.PlayerChannels._openChannelsBySubId.Values)
-            {
-                Radio.comms.PlayerChannels.Close(channel);
-                Radio.comms.PlayerChannels.Open(channel.TargetId, amplitudeMultiplier: (float)task.Volume / 100);
-            }
+            _frame = new float[1920];
+            _frameBytes = new byte[1920 * 4];
         }
 
         public virtual void Subscribe(IMicrophoneSubscriber listener) => _subs.Add(listener);
@@ -82,7 +74,15 @@ namespace Qurre.API.Addons.Audio.Extensions
         {
             if (_tasks.Count == 0) throw new NullReferenceException(GetType().FullName);
             AudioTask task = _tasks[0];
-            try { UpdateListeners(task); } catch { }
+            try
+            {
+                foreach (var channel in Radio.comms.PlayerChannels._openChannelsBySubId.Values)
+                {
+                    Radio.comms.PlayerChannels.Close(channel);
+                    Radio.comms.PlayerChannels.Open(channel.TargetId, amplitudeMultiplier: (float)task.Volume / 100);
+                }
+            }
+            catch { }
             Server.Host.Radio.Network_syncPrimaryVoicechatButton = true;
 
             Radio.comms._capture._micName = task.PlayerName;
@@ -95,7 +95,7 @@ namespace Qurre.API.Addons.Audio.Extensions
             Latency = TimeSpan.Zero;
             Status = StatusType.Playing;
 
-            UpdateFrames(task);
+            UpdateFrames();
 
             task.Active = true;
 
