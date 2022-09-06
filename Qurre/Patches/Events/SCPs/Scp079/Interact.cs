@@ -479,6 +479,11 @@ namespace Qurre.Patches.Events.SCPs.Scp079
 
 				return false;
 			}
+			catch (NullReferenceException e)
+			{
+				Log.Debug($"gameobject is null in patch SCPs -> SCP079 [Interact]:\n{e}\n{e.StackTrace}");
+				return true;
+			}
 			catch (Exception e)
 			{
 				Log.Error($"umm, error in patching SCPs -> SCP079 [Interact]:\n{e}\n{e.StackTrace}");
