@@ -117,6 +117,11 @@ namespace Qurre.API.Controllers
             BC.BroadcastComponent.TargetClearElements(pl.Scp079PlayerScript.connectionToClient);
             if (pl.Broadcasts.FirstOrDefault() != null) pl.Broadcasts.FirstOrDefault().Start();
         }
+        internal void SmallEnd()
+        {
+            Active = false;
+            BC.BroadcastComponent.TargetClearElements(pl.Scp079PlayerScript.connectionToClient);
+        }
     }
     public class ListBroadcasts
     {
@@ -124,12 +129,12 @@ namespace Qurre.API.Controllers
         public void Add(Broadcast bc, bool instant = false)
         {
             if (bc == null) return;
-            if (instant)
+            if (instant && bcs.Count > 0)
             {
                 var currentbc = bcs.FirstOrDefault();
-                bcs.Insert(1, bc);
-                if (currentbc != null) currentbc.End();
-                else bcs.First().Start();
+                currentbc.SmallEnd();
+                bcs[0] = bc;
+                bc.Start();
             }
             else
             {
