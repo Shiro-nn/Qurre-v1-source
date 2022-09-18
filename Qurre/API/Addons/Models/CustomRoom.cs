@@ -7,6 +7,7 @@ namespace Qurre.API.Addons.Models
     public class CustomRoom : Model
     {
         static internal readonly List<CustomRoom> _list = new();
+        static public IReadOnlyCollection<CustomRoom> List => _list.AsReadOnly();
 
         internal float _intensity = 1;
         internal Color _lastColor = Color.white;

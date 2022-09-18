@@ -16,12 +16,20 @@ namespace Qurre.API.Controllers
             foreach (var room in Map.Rooms.Where(x => x.Zone == zone))
                 room.LightsOff(duration);
         }
-        static public void ChangeColor(Color color, bool customToo = true)
+        static public void ChangeColor(Color color, bool customToo = true, bool lockChange = false, bool ignoreLock = false)
         {
             foreach (var room in Map.Rooms)
+            {
+                if (ignoreLock) room.Lights.LockChange = false;
                 room.Lights.Color = color;
+                if (lockChange) room.Lights.LockChange = true;
+            }
             if (customToo) foreach (var room in CustomRoom._list)
+                {
+                    if (ignoreLock) room.LightsController.LockChange = false;
                     room.LightsController.Color = color;
+                    if (lockChange) room.LightsController.LockChange = true;
+                }
         }
         static public void ChangeColor(Color color, ZoneType zone)
         {
@@ -40,12 +48,18 @@ namespace Qurre.API.Controllers
             foreach (var room in Map.Rooms.Where(x => x.Zone == zone))
                 room.Lights.Intensity = intensive;
         }
-        static public void SetToDefault(bool customToo = true)
+        static public void SetToDefault(bool customToo = true, bool ignoreLock = false)
         {
             foreach (var room in Map.Rooms)
+            {
+                if (ignoreLock) room.Lights.LockChange = false;
                 room.Lights.Override = false;
+            }
             if (customToo) foreach (var room in CustomRoom._list)
+                {
+                    if (ignoreLock) room.LightsController.LockChange = false;
                     room.LightsController.Override = false;
+                }
         }
     }
 }
