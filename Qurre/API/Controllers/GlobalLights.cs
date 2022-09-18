@@ -6,38 +6,46 @@ namespace Qurre.API.Controllers
 {
     public static class GlobalLights
     {
-        public static void TurnOff(float duration)
+        static public void TurnOff(float duration)
         {
             foreach (var room in Map.Rooms)
                 room.LightsOff(duration);
         }
-        public static void TurnOff(float duration, ZoneType zone)
+        static public void TurnOff(float duration, ZoneType zone)
         {
             foreach (var room in Map.Rooms.Where(x => x.Zone == zone))
                 room.LightsOff(duration);
         }
-        public static void ChangeColor(Color color)
+        static public void ChangeColor(Color color, bool customToo = true)
         {
             foreach (var room in Map.Rooms)
                 room.Lights.Color = color;
-            foreach (var room in CustomRoom._list)
-                room.LightsController.Color = color;
+            if (customToo) foreach (var room in CustomRoom._list)
+                    room.LightsController.Color = color;
         }
-        public static void ChangeColor(Color color, ZoneType zone)
+        static public void ChangeColor(Color color, ZoneType zone)
         {
             foreach (var room in Map.Rooms.Where(x => x.Zone == zone))
                 room.Lights.Color = color;
         }
-        public static void Intensivity(float intensive)
+        static public void Intensivity(float intensive, bool customToo = false)
         {
             foreach (var room in Map.Rooms)
                 room.Lights.Intensity = intensive;
-            //set for custom rooms is not prefere
+            if (customToo) foreach (var room in CustomRoom._list)
+                    room.LightsController.Intensity = intensive;
         }
-        public static void Intensivity(float intensive, ZoneType zone)
+        static public void Intensivity(float intensive, ZoneType zone)
         {
             foreach (var room in Map.Rooms.Where(x => x.Zone == zone))
                 room.Lights.Intensity = intensive;
+        }
+        static public void SetToDefault(bool customToo = true)
+        {
+            foreach (var room in Map.Rooms)
+                room.Lights.Override = false;
+            if (customToo) foreach (var room in CustomRoom._list)
+                    room.LightsController.Override = false;
         }
     }
 }
