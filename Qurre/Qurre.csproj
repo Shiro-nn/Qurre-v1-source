@@ -135,6 +135,7 @@
     <Compile Include="API\Config.cs" />
     <Compile Include="API\Controllers\Camera.cs" />
     <Compile Include="API\Controllers\Bot.cs" />
+    <Compile Include="API\Controllers\GlobalLights.cs" />
     <Compile Include="API\Controllers\Items\Scp330.cs" />
     <Compile Include="API\Controllers\Items\GrenadeFlash.cs" />
     <Compile Include="API\Controllers\Items\GrenadeFrag.cs" />

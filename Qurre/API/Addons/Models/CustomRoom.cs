@@ -6,6 +6,8 @@ namespace Qurre.API.Addons.Models
 {
     public class CustomRoom : Model
     {
+        static internal readonly List<CustomRoom> _list = new();
+
         internal float _intensity = 1;
         internal Color _lastColor = Color.white;
         internal Dictionary<ModelLight, Color> _colors = new();
@@ -14,6 +16,7 @@ namespace Qurre.API.Addons.Models
         public CustomRoom(string id, Vector3 position, Vector3 rotation = default, Model root = null) : base(id, position, rotation, root)
         {
             LightsController = new(this);
+            _list.Add(this);
             Lights.ForEach(light =>
             {
                 _intensity = Math.Max(_intensity, light.Light.Intensivity);
