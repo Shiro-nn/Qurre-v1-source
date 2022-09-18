@@ -114,6 +114,7 @@
     <Compile Include="API\Addons\Audio\Extensions\Microphone.cs" />
     <Compile Include="API\Addons\Audio\StatusType.cs" />
     <Compile Include="API\Addons\Audio\IMicrophone.cs" />
+    <Compile Include="API\Addons\Models\CustomRoom.cs" />
     <Compile Include="API\Addons\UnitGenerator.cs" />
     <Compile Include="API\Addons\Models\ModelPickup.cs" />
     <Compile Include="API\Addons\Models\ModelBot.cs" />

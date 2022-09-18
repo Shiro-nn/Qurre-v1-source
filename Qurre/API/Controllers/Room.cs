@@ -12,7 +12,7 @@ namespace Qurre.API.Controllers
         internal Room(RoomIdentifier identifier)
         {
             Identifier = identifier;
-            if (Identifier == null) return;
+            if (Identifier is null) return;
             RoomName = Identifier.Name;
             Shape = Identifier.Shape;
             GameObject = identifier.gameObject;
@@ -24,28 +24,12 @@ namespace Qurre.API.Controllers
                 Cameras.Add(new Camera(cam, this));
 
             NetworkIdentity = GetNetworkIdentity(Identifier.Name);
+
+            Lights = new(this);
         }
         internal FlickerableLightController LightController { get; set; }
+        public Lights Lights { get; private set; }
         public void LightsOff(float duration) => LightController.ServerFlickerLights(duration);
-        public float LightIntensity
-        {
-            get => LightController.LightIntensityMultiplier;
-            set => LightController.UpdateLightsIntensity(LightController.LightIntensityMultiplier, value);
-        }
-        public Color LightColor
-        {
-            get => LightController.Network_warheadLightColor;
-            set
-            {
-                LightController.Network_warheadLightColor = value;
-                LightOverride = true;
-            }
-        }
-        public bool LightOverride
-        {
-            get => LightController.WarheadLightOverride;
-            set => LightController.WarheadLightOverride = value;
-        }
         public GameObject GameObject { get; }
         public RoomIdentifier Identifier { get; }
 #nullable enable
@@ -182,9 +166,9 @@ namespace Qurre.API.Controllers
                 NetworkIdentities.AddRange(Object.FindObjectsOfType<NetworkIdentity>().Where(x => x.name.Contains("All")));
             return room switch
             {
-                MapGeneration.RoomName.Lcz330 => NetworkIdentities.FirstOrDefault(x => x.assetId == new Guid("17f38aa5-1bc8-8bc4-0ad1-fffcbe4214ae")),
-                MapGeneration.RoomName.Hcz939 => NetworkIdentities.FirstOrDefault(x => x.assetId == new Guid("d1566564-d477-24c4-c953-c619898e4751")),
-                MapGeneration.RoomName.Hcz106 => NetworkIdentities.FirstOrDefault(x => x.assetId == new Guid("c1ae9ee4-cc8e-0794-3b2c-358aa6e57565")),
+                RoomName.Lcz330 => NetworkIdentities.FirstOrDefault(x => x.assetId == new Guid("17f38aa5-1bc8-8bc4-0ad1-fffcbe4214ae")),
+                RoomName.Hcz939 => NetworkIdentities.FirstOrDefault(x => x.assetId == new Guid("d1566564-d477-24c4-c953-c619898e4751")),
+                RoomName.Hcz106 => NetworkIdentities.FirstOrDefault(x => x.assetId == new Guid("c1ae9ee4-cc8e-0794-3b2c-358aa6e57565")),
                 _ => null,
             };
         }

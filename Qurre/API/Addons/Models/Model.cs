@@ -23,7 +23,7 @@ namespace Qurre.API.Addons.Models
         public readonly List<ModelPrimitive> Primitives = new();
         public readonly List<ModelTarget> Targets = new();
         public readonly List<ModelWorkStation> WorkStations = new();
-        private readonly Dictionary<GameObject, ModelEnums> Parts = new();
+        internal readonly Dictionary<GameObject, ModelEnums> Parts = new();
         private static readonly List<Model> ModelsList = new();
 
         public void AddPart(ModelBody part, bool addToList = true)

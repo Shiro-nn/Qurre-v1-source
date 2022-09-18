@@ -36,7 +36,7 @@ namespace Qurre.API.Controllers
         public void Add(Cassie cassie, bool instant = false)
         {
             if (cassie == null) return;
-            if (instant)
+            if (instant && Cassies.Count > 0)
             {
                 Cassies.Insert(1, cassie);
                 cassie.Send();
