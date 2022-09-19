@@ -12,7 +12,8 @@ namespace Qurre
         internal static bool SpawnBlood => Plugin.Config.GetBool("Qurre_Spawn_Blood", true, "Allow the appearance of blood?");
         internal static bool Better268 => Plugin.Config.GetBool("Qurre_Better268", false, "SCP 079 & SCP 096 will not see the wearer of SCP 268");
         internal static string ReloadAccess => Plugin.Config.GetString("Qurre_ReloadAccess", "owner, UserId64@steam, UserDiscordId@discord", "Those who can use the \"reload\" command");
-        public static void QurreLoad()
+        internal static bool BetterHints => Plugin.Config.GetBool("Qurre_BetterHints", false, "Enable Addon [BetterHints]?");
+        public static void Init()
         {
             Log.Info("Initializing Qurre...");
             if (!Directory.Exists(PluginManager.ConfigsDirectory))
@@ -33,6 +34,7 @@ namespace Qurre
                 _ = SpawnBlood;
                 _ = Better268;
                 _ = ReloadAccess;
+                _ = BetterHints;
                 using StreamWriter sw = new(PluginManager.ConfigsPath, true, System.Text.Encoding.Default);
                 sw.Write("Qurre_Banned: banned\nQurre_Kicked: kicked\nQurre_BanOrKick_msg: You have been %bok%.\nQurre_Reason: Reason\n");
                 sw.Close();

@@ -23,6 +23,7 @@ using Qurre.API.Addons;
 using InventorySystem.Items.Firearms;
 using InventorySystem.Items.Usables.Scp330;
 using MEC;
+using Qurre.API.Addons.BetterHints;
 namespace Qurre.API
 {
 	public class Player
@@ -878,6 +879,7 @@ namespace Qurre.API
 		public void ChangeEffectIntensity(string effect, byte intensity, float duration = 0) => PlayerEffectsController.ChangeByString(effect, intensity, duration);
 		public void ShowHint(string text, float duration = 1f, HintEffect[] effect = null) =>
 			HintDisplay.Show(new TextHint(text, new HintParameter[] { new StringHintParameter("") }, effect, duration));
+		public void ShowHint(HintStruct hs) => Manager.Sender.Hint(this, hs);
 		public void BodyDelete()
 		{
 			foreach (Controllers.Ragdoll doll in Map.Ragdolls.Where(x => x.Owner == this)) doll.Destroy();

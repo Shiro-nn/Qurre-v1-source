@@ -52,15 +52,20 @@ namespace Qurre.Events.Modules
             API.Audio._micro = Radio.comms.gameObject.AddComponent<API.Addons.Audio.Extensions.Microphone>();
             Radio.comms.OnPlayerJoinedSession += AudioSessionJoin;
             API.Server.Host.Dissonance.NetworkspeakingFlags = SpeakingFlags.IntercomAsHuman;
+
             if (API.Round.CurrentRound == 0)
                 API.Addons.Prefabs.InitLate();
+
             API.Round.CurrentRound++;
             API.Map.AddObjects();
+
             if (API.Round.BotSpawned) Patches.Controllers.Bot.UnInitialize();
             API.Round.BotSpawned = false;
             API.Round.ForceEnd = false;
+
             RoundSummary.RoundLock = false;
             API.Round.ActiveGenerators = 0;
+
             if (Loader.AllUnits)
             {
                 API.Round.AddUnit(TeamUnitType.ClassD, $"<color=#00ff00>Qurre v{PluginManager.Version}</color>");
