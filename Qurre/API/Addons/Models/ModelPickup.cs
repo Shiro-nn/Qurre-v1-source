@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using Mirror;
 using Object = UnityEngine.Object;
@@ -24,13 +24,13 @@ namespace Qurre.API.Addons.Models
                 item.PickupDropModel.Info.Rotation = new LowPrecisionQuaternion(Quaternion.Euler(model.GameObject.transform.rotation.eulerAngles + rotation));
                 item.PickupDropModel.NetworkInfo = item.PickupDropModel.Info;
                 ItemPickupBase ipb = Object.Instantiate(item.PickupDropModel);
-                var gameObject = ipb.gameObject;
-                gameObject.GetComponent<Rigidbody>().isKinematic = kinematic;
-                gameObject.transform.parent = model.GameObject.transform;
-                gameObject.transform.localPosition = position;
-                gameObject.transform.localRotation = Quaternion.Euler(rotation);
-                gameObject.transform.localScale = size;
-                NetworkServer.Spawn(gameObject);
+                GameObject = ipb.gameObject;
+                GameObject.GetComponent<Rigidbody>().isKinematic = kinematic;
+                GameObject.transform.parent = model.GameObject.transform;
+                GameObject.transform.localPosition = position;
+                GameObject.transform.localRotation = Quaternion.Euler(rotation);
+                GameObject.transform.localScale = size;
+                NetworkServer.Spawn(GameObject);
                 ipb.InfoReceived(default, item.PickupDropModel.NetworkInfo);
                 Pickup = ipb;
             }
