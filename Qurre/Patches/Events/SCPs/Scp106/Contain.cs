@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 namespace Qurre.Patches.Events.SCPs.Scp106
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdContain106))]
     internal static class Contain
     {

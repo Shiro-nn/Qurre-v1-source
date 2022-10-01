@@ -593,11 +593,6 @@ namespace Qurre.API.Events
         public bool InIdlingRange { get; }
         public bool InRageRange { get; }
         public bool Allowed { get; set; }
-
-        [Obsolete("Removed due to optimization")]
-        public bool InHurtingRange { get; }
-        [Obsolete("Use \"Allowed\"")]
-        public bool Triggerable { get; set; }
     }
     public class SpawnEvent : EventArgs
     {
@@ -744,10 +739,6 @@ namespace Qurre.API.Events
         public Sinkhole Sinkhole { get; }
         public HazardEventsType Event { get; }
         public bool Allowed { get; set; }
-        [Obsolete("removed")]
-        public List<EffectType> Effects { get; }
-        [Obsolete("removed")]
-        public Dictionary<EffectType, float> Durations { get; }
     }
     public class TantrumWalkingEvent : EventArgs
     {

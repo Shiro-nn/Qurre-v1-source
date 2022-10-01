@@ -1,7 +1,7 @@
 ﻿using HarmonyLib;
 using Qurre.API.Events;
 using System.Collections.Generic;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
     [HarmonyPatch(typeof(BanHandler), nameof(BanHandler.IssueBan))]
     internal static class Banned

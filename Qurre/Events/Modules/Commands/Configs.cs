@@ -15,7 +15,8 @@ namespace Qurre.Events.Modules.Commands
                 response = "Access denied";
                 return false;
             }
-            Plugin.Config.Reload();
+            API.Addons.JsonConfig.UpdateFile();
+            API.Addons.JsonConfig.RefreshConfig();
             response = "Configs reloaded";
             return true;
         }

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 using NorthwoodLib.Pools;
-using Qurre.API;
 using Qurre.API.Events;
 using Respawning;
 using Respawning.NamingRules;
 using UnityEngine;
 namespace Qurre.Patches.Events.Round
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(RespawnManager), nameof(RespawnManager.Spawn))]
     internal static class TeamRespawn
     {

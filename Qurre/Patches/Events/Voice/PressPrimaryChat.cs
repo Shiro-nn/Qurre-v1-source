@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.Voice
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(Radio), nameof(Radio.Network_syncPrimaryVoicechatButton), MethodType.Setter)]
 	internal static class PressPrimaryChat
 	{

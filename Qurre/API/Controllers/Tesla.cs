@@ -19,44 +19,8 @@ namespace Qurre.API.Controllers
             }
             set => name = value;
         }
-        public Vector3 Position
-        {
-            get => Transform.position;
-            [System.Obsolete("Works every other time. Tesla moves successfully on the server. On the client, Tesla moves for about 10ms and then comes back.")]
-            set
-            {
-                Gate.localPosition = value;
-                NetworkServer.UnSpawn(GameObject);
-                Gate.localPosition = value;
-                Transform.localPosition = value;
-                Transform.position = value;
-                Gate.localPosition = value;
-                Gate.transform.localPosition = value;
-                Gate.transform.position = value;
-                Gate.gameObject.transform.localPosition = value;
-                Gate.gameObject.transform.position = value;
-                NetworkServer.Spawn(GameObject);/*
-                NetworkServer.UnSpawn(Gate.transform.gameObject);
-                Gate.localPosition = value;
-                Gate.transform.localPosition = value;
-                Gate.transform.position = value;
-                Gate.localPosition = value;
-                NetworkServer.Spawn(Gate.transform.gameObject);*/
-                Gate.localPosition = value;
-            }
-        }
-        public Quaternion Rotation
-        {
-            get => Transform.localRotation;
-            [System.Obsolete("Works every other time. Tesla moves successfully on the server. On the client, Tesla moves for about 10ms and then comes back.")]
-            set
-            {
-                NetworkServer.UnSpawn(GameObject);
-                Transform.localRotation = value;
-                Gate.localRotation = value.eulerAngles;
-                NetworkServer.Spawn(GameObject);
-            }
-        }
+        public Vector3 Position => Transform.position;
+        public Quaternion Rotation => Transform.localRotation;
         public Vector3 Scale
         {
             get => Transform.localScale;

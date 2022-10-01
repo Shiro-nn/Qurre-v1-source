@@ -10,7 +10,9 @@ namespace Qurre
 {
 	public abstract class Plugin
 	{
+        [Obsolete("Use 'JsonConfig'")]
 		public static Config Config { get; internal set; }
+		public JsonConfig JsonConfig { get; }
 		public ListConfigs CustomConfigs { get; } = new();
 		public virtual string Developer { get; } = "";
 		public virtual string Name { get; } = "";

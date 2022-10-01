@@ -2,13 +2,13 @@
 using CustomPlayerEffects;
 using HarmonyLib;
 using MapGeneration;
-using Qurre.API;
 using Qurre.API.Events;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 namespace Qurre.Patches.Events.SCPs.Scp106
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.SuccessEscape))]
     internal static class PocketEscape
     {

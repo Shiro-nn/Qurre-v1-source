@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 using InventorySystem;
-using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
 using System;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.UserCode_CmdDropAmmo))]
     internal static class DropAmmo
     {

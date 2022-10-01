@@ -10,8 +10,7 @@ namespace Qurre.Events.Modules.Commands
         internal static bool CheckPerms(string UserId)
         {
             if (UserId == "SERVER CONSOLE") return true;
-            string _ = Loader.ReloadAccess;
-            string[] str = _.Split(',');
+            string[] str = Loader.ReloadAccess;
             List<string> strl = new();
             foreach (string st in str) strl.Add(st.Trim());
             if (strl.Contains(UserId)) return true;

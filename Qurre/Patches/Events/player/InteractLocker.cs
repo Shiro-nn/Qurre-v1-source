@@ -2,10 +2,10 @@
 using System.Linq;
 using HarmonyLib;
 using MapGeneration.Distributors;
-using Qurre.API;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(Locker), nameof(Locker.ServerInteract))]
     internal static class InteractLocker
     {

@@ -1,12 +1,12 @@
 ﻿using System;
-using InventorySystem.Items.Usables.Scp330;
-using Qurre.API;
 using HarmonyLib;
 using Qurre.API.Events;
 using InventorySystem;
 using System.Collections.Generic;
-namespace Qurre.Patches.Events.player
+using InventorySystem.Items.Usables.Scp330;
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(Scp330Bag), nameof(Scp330Bag.ServerProcessPickup))]
     internal class PickupCandy
     {

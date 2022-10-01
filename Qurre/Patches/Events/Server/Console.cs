@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using RemoteAdmin;
 namespace Qurre.Patches.Events.Server
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(QueryProcessor), nameof(QueryProcessor.ProcessGameConsoleQuery))]
     internal static class Console
     {

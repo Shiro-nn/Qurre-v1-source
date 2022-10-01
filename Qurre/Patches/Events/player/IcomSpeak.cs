@@ -1,7 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
     [HarmonyPatch(typeof(Intercom), nameof(Intercom.UserCode_CmdSetTransmit))]
     internal static class IcomSpeak

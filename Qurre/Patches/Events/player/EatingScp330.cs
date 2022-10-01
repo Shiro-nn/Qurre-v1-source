@@ -1,10 +1,10 @@
 ﻿using System;
 using InventorySystem.Items.Usables.Scp330;
 using Qurre.API.Events;
-using Qurre.API;
 using HarmonyLib;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(Scp330Bag), nameof(Scp330Bag.ServerOnUsingCompleted))]
     internal static class EatingScp330
     {

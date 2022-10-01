@@ -1,12 +1,12 @@
 ﻿using HarmonyLib;
 using Mirror;
 using PlayableScps.ScriptableObjects;
-using Qurre.API;
 using Qurre.API.Events;
 using System;
 using UnityEngine;
 namespace Qurre.Patches.Events.SCPs.Scp173
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(PlayableScps.Scp173), nameof(PlayableScps.Scp173.ServerDoTantrum))]
     internal static class TantrumPlace
     {

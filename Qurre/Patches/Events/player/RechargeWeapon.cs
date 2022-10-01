@@ -3,7 +3,7 @@ using HarmonyLib;
 using InventorySystem.Items.Firearms.BasicMessages;
 using Qurre.API.Controllers;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
     [HarmonyPatch(typeof(FirearmBasicMessagesHandler), nameof(FirearmBasicMessagesHandler.ServerRequestReceived))]
     internal static class RechargeWeapon

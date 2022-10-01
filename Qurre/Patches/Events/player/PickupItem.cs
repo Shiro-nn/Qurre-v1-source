@@ -1,11 +1,11 @@
 ﻿using System;
 using HarmonyLib;
 using InventorySystem.Searching;
-using Qurre.API;
 using Qurre.API.Controllers.Items;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(ItemSearchCompletor), nameof(ItemSearchCompletor.Complete))]
     internal static class PickupItem
     {

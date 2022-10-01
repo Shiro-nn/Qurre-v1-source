@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
 using InventorySystem.Items.ThrowableProjectiles;
-using Qurre.API;
 using Qurre.API.Events;
 using System;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(FlashbangGrenade), nameof(FlashbangGrenade.PlayExplosionEffects))]
 	internal static class FlashExplosionPatch
 	{

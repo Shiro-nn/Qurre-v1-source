@@ -1,10 +1,10 @@
 ﻿using System;
 using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using GameCore;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.UserCode_CmdRequestShowTag))]
 	internal static class ShowBadge
 	{

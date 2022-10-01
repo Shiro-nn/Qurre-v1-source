@@ -3,11 +3,11 @@ using Mirror;
 using UnityEngine;
 using Qurre.API.Events;
 using MapGeneration;
-using Qurre.API;
 using PlayerStatsSystem;
 using PDTT = PocketDimensionTeleport.PDTeleportType;
 namespace Qurre.Patches.Events.SCPs.Scp106
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(PocketDimensionTeleport), nameof(PocketDimensionTeleport.OnTriggerEnter))]
     internal static class PocketTryEscape
     {

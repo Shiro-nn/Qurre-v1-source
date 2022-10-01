@@ -1,10 +1,10 @@
 ﻿using System;
+using Mirror;
 using HarmonyLib;
 using Qurre.API.Events;
-using Qurre.API;
-using Mirror;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(PlayerMovementSync), nameof(PlayerMovementSync.ReceivePosition2DJump))]
     internal static class Jump
     {

@@ -4,11 +4,11 @@ using Mirror;
 using PlayerStatsSystem;
 using Qurre.API.Events;
 using Qurre.API.Objects;
-using Qurre.Events.Invoke;
 using UnityEngine;
 using static CharacterClassManager;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.Events.Invoke;
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.SetPlayersClass))]
     internal static class RoleChange
     {

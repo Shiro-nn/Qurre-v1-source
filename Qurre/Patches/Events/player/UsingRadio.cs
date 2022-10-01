@@ -3,7 +3,7 @@ using InventorySystem.Items.Radio;
 using Mirror;
 using Qurre.API.Events;
 using UnityEngine;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
     [HarmonyPatch(typeof(RadioItem), nameof(RadioItem.Update))]
     internal static class UsingRadio

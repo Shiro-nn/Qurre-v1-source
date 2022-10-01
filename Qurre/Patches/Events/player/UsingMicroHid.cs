@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 using InventorySystem.Items.MicroHID;
-using Qurre.API;
 using Qurre.API.Events;
 using System;
 using UnityEngine;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(MicroHIDItem), nameof(MicroHIDItem.ExecuteServerside))]
     internal static class UsingMicroHid
     {

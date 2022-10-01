@@ -24,6 +24,7 @@ namespace Qurre
 		public static string CustomConfigsDirectory { get; private set; } = Path.Combine(ConfigsDirectory, "Custom");
 		public static string LogsDirectory { get; private set; } = Path.Combine(QurreDirectory, "Logs");
 		public static string ManagedAssembliesDirectory { get; private set; } = Path.Combine(Path.Combine(Environment.CurrentDirectory, "SCPSL_Data"), "Managed");
+        [Obsolete("Outdated; Use 'JsonConfig'")]
 		public static string ConfigsPath { get; internal set; }
 		internal static IEnumerator<float> LoadPlugins()
 		{

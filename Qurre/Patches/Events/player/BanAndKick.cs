@@ -1,14 +1,34 @@
 ﻿using GameCore;
 using HarmonyLib;
 using Mirror;
-using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
-namespace Qurre.Patches.Events.player
+using Newtonsoft.Json.Linq;
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(BanPlayer), nameof(BanPlayer.BanUser), new[] { typeof(GameObject), typeof(long), typeof(string), typeof(string), typeof(bool) })]
     internal static class BanAndKick
     {
+        internal static string Banned { get; private set; } = "banned";
+        internal static string Kicked { get; private set; } = "kicked";
+        internal static string BanOrKick { get; private set; } = "You have been %bok%.";
+        internal static string Reason { get; private set; } = "Reason";
+
+        internal static void SetUpConfigs()
+        {
+            var par = Loader.Config.JsonArray["translation"];
+            if (par is null)
+            {
+                par = JObject.Parse("{ }");
+                Loader.Config.JsonArray["translation"] = par;
+            }
+            Banned = Loader.Config.SafeGetValue("Banned", "banned", source: par);
+            Kicked = Loader.Config.SafeGetValue("Kicked", "kicked", source: par);
+            BanOrKick = Loader.Config.SafeGetValue("BanOrKick", "You have been %bok%.", source: par);
+            Reason = Loader.Config.SafeGetValue("Reason", "Reason", source: par);
+        }
+
         private static bool Prefix(GameObject user, long duration, string reason, string issuer, bool isGlobalBan)
         {
             try
@@ -19,13 +39,13 @@ namespace Qurre.Patches.Events.player
                 string address = user.GetComponent<NetworkIdentity>().connectionToClient.address;
                 Player targetPlayer = Player.Get(user);
                 Player issuerPlayer;
-                if (issuer.Contains("(")) issuerPlayer = Player.Get(issuer.Substring(issuer.LastIndexOf('(') + 1).TrimEnd(')')) ?? API.Server.Host;
-                else issuerPlayer = API.Server.Host;
+                if (issuer.Contains("(")) issuerPlayer = Player.Get(issuer.Substring(issuer.LastIndexOf('(') + 1).TrimEnd(')')) ?? Server.Host;
+                else issuerPlayer = Server.Host;
                 try { if (ConfigFile.ServerConfig.GetBool("online_mode", false)) userId = targetPlayer.UserId; }
                 catch { return false; }
-                string umm = (duration > 0) ? Plugin.Config.GetString("Qurre_banned", "banned") : Plugin.Config.GetString("Qurre_kicked", "kicked");
-                string message = Plugin.Config.GetString("Qurre_BanOrKick_msg", $"You have been %bok%.").Replace("%bok%", umm);
-                if (!string.IsNullOrEmpty(reason)) message = $"{message} {Plugin.Config.GetString("Qurre_reason", "Reason")}: {reason}";
+                string umm = (duration > 0) ? Banned : Kicked;
+                string message = BanOrKick.Replace("%bok%", umm);
+                if (!string.IsNullOrEmpty(reason)) message = $"{message} {Reason}: {reason}";
                 if (duration > 0)
                 {
                     var ev = new BanEvent(targetPlayer, issuerPlayer, duration, reason, message);

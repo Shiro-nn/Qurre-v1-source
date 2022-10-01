@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
 using InventorySystem;
-using Qurre.API;
 using Qurre.API.Controllers;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(Inventory), nameof(Inventory.ServerSelectItem))]
     internal static class ItemChange
     {

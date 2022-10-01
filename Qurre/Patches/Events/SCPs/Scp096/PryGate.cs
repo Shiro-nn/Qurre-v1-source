@@ -1,11 +1,11 @@
-﻿using Qurre.API;
-using Qurre.API.Events;
+﻿using Qurre.API.Events;
 using HarmonyLib;
 using System;
 using UnityEngine;
 using scp096 = PlayableScps.Scp096;
 namespace Qurre.Patches.Events.SCPs.Scp096
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(scp096), nameof(scp096.PryGate))]
     internal static class PryGate
     {

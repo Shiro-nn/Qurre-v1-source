@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
 using PlayerStatsSystem;
-using Qurre.API;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.Map
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(NineTailedFoxAnnouncer), nameof(NineTailedFoxAnnouncer.AnnounceScpTermination))]
     internal static class ScpDeadAnnouncement
     {

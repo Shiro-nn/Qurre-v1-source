@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
 using System;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(SinkholeEnvironmentalHazard), nameof(SinkholeEnvironmentalHazard.OnEnter))]
     internal static class SinkholeEnter
     {

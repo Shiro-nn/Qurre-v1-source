@@ -1,9 +1,9 @@
 ﻿using System;
 using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.UserCode_CmdRequestHideTag))]
 	internal static class HideBadge
 	{

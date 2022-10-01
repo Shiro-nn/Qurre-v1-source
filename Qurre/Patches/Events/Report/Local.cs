@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.Server.Report
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(CheaterReport), nameof(CheaterReport.UserCode_CmdReport))]
     internal static class Local
     {

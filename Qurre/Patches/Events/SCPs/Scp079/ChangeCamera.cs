@@ -1,9 +1,9 @@
 ﻿using System;
 using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.SCPs.Scp079
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.UserCode_CmdSwitchCamera))]
 	internal static class ChangeCamera
 	{

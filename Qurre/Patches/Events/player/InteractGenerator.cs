@@ -2,11 +2,11 @@
 using HarmonyLib;
 using Interactables.Interobjects.DoorUtils;
 using MapGeneration.Distributors;
-using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(Scp079Generator), nameof(Scp079Generator.ServerInteract))]
 	internal static class InteractGenerator
 	{

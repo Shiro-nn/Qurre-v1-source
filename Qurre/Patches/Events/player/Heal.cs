@@ -3,7 +3,7 @@ using HarmonyLib;
 using PlayerStatsSystem;
 using Qurre.API.Events;
 using UnityEngine;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
     [HarmonyPatch(typeof(HealthStat), nameof(HealthStat.ServerHeal))]
     internal static class Heal

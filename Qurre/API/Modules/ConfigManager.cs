@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 namespace Qurre.API.Modules
 {
+	[System.Obsolete("Use 'JsonConfig'")]
 	internal class ConfigManager
 	{
 		internal ConfigManager() => LoadConfigFile();
@@ -18,6 +19,8 @@ namespace Qurre.API.Modules
 		internal void Reload() => LoadConfigFile();
 		internal void LoadConfigFile()
 		{
+			PluginManager.ConfigsPath = Path.Combine(PluginManager.ConfigsDirectory, $"{Loader.Port}-cfg.yml");
+			if (!File.Exists(PluginManager.ConfigsPath)) File.Create(PluginManager.ConfigsPath).Close();
 			RemoveInvalid();
 			RawData = Filter(FileManager.ReadAllLines(PluginManager.ConfigsPath));
 		}

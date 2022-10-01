@@ -12,8 +12,7 @@ namespace Qurre.API.DataBase
             new Thread(() => _()).Start();
             void _()
             {
-                Plugin.Config.GetString("Qurre_DataBase", "undefined", "Link-access to your database(MongoDB)");
-                string _link = Plugin.Config.ConfigManager.GetDataBase("qurre_database");
+                string _link = Loader.Config.SafeGetValue("DataBase", "undefined", "Link-access to your database(MongoDB)");
                 if (_link != "" && _link != "undefined")
                 {
                     Enabled = true;

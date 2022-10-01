@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 using Qurre.API.Events;
-using Qurre.API;
 using System.Linq;
 using PlayerStatsSystem;
 using Qurre.API.Addons;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(PlayerStats), nameof(PlayerStats.KillPlayer))]
     internal static class Dead
     {

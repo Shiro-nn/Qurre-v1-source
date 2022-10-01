@@ -1,9 +1,9 @@
 ﻿using System;
 using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 namespace Qurre.Patches.Events.Server.Report
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(CheaterReport), nameof(CheaterReport.IssueReport))]
     internal static class Cheater
     {

@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using System;
 using System.Collections.Generic;
@@ -7,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 namespace Qurre.Patches.Events.SCPs.Scp173
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(PlayableScps.Scp173), nameof(PlayableScps.Scp173.ServerHandleBlinkMessage))]
     internal static class Blink
     {

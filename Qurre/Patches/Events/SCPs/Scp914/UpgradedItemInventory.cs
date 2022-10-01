@@ -1,5 +1,4 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Controllers;
 using Qurre.API.Events;
 using Scp914;
@@ -7,6 +6,7 @@ using Scp914.Processors;
 using System;
 namespace Qurre.Patches.Events.SCPs.Scp914
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(FirearmItemProcessor), nameof(FirearmItemProcessor.OnInventoryItemUpgraded))]
     internal static class UpgradedItemInventory1
     {

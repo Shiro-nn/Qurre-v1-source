@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(SpectatorManager), nameof(SpectatorManager.CurrentSpectatedPlayer), MethodType.Setter)]
     internal static class ChangeSpectate
     {
@@ -12,7 +12,7 @@ namespace Qurre.Patches.Events.player
             {
                 if (__instance is null || __instance._hub is null || value is null) return;
                 var player = Player.Get(__instance._hub);
-                if (player != null)
+                if (player is not null)
                 {
                     Player _val = null;
                     try { _val = Player.Get(value); } catch { }

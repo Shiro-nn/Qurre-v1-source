@@ -1,11 +1,11 @@
 ﻿using HarmonyLib;
 using InventorySystem;
 using InventorySystem.Disarming;
-using Qurre.API;
 using Qurre.API.Events;
 using System;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(DisarmedPlayers), nameof(DisarmedPlayers.SetDisarmedStatus))]
 	internal static class DisarmedPatch
 	{

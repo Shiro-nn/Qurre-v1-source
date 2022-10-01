@@ -1,10 +1,10 @@
 ﻿using System;
 using Interactables.Interobjects;
 using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(Scp330Interobject), nameof(Scp330Interobject.ServerInteract))]
     internal static class InteractScp330
     {

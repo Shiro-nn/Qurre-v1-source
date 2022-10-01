@@ -1,10 +1,10 @@
 ﻿using System;
 using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdUseElevator), typeof(GameObject))]
     internal static class InteractLift
     {

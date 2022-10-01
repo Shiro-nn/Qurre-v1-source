@@ -2,11 +2,11 @@
 using HarmonyLib;
 using InventorySystem.Items.ThrowableProjectiles;
 using Mirror;
-using Qurre.API;
 using Qurre.API.Controllers;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(ThrowableItem), nameof(ThrowableItem.ServerProcessInitiation))]
     internal static class ThrowItemPatch
     {

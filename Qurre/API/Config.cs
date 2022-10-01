@@ -2,6 +2,7 @@
 using Qurre.API.Objects;
 namespace Qurre.API
 {
+    [System.Obsolete("Use 'JsonConfig'")]
     public class Config
     {
         internal ConfigManager ConfigManager { get; private set; }

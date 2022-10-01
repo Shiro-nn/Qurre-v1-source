@@ -1,8 +1,8 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(ServerRoles), nameof(ServerRoles.SetGroup))]
     internal static class GroupChange
     {

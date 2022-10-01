@@ -1,9 +1,9 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 namespace Qurre.Patches.Events.Alpha
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(PlayerInteract), nameof(PlayerInteract.UserCode_CmdSwitchAWButton))]
     internal static class EnablePanel
     {

@@ -1,11 +1,10 @@
 ﻿using HarmonyLib;
-using Mirror;
-using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
 using System;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(TantrumEnvironmentalHazard), nameof(TantrumEnvironmentalHazard.OnEnter))]
     internal static class TantrumEnter
     {

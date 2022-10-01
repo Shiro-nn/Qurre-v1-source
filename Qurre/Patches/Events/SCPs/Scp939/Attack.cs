@@ -1,13 +1,12 @@
-﻿using Footprinting;
-using HarmonyLib;
+﻿using HarmonyLib;
 using PlayerStatsSystem;
-using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
 using System;
 using UnityEngine;
 namespace Qurre.Patches.Events.SCPs.Scp939
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(PlayableScps.Scp939), nameof(PlayableScps.Scp939.ServerAttack))]
 	internal static class Attack
 	{

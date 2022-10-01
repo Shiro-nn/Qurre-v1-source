@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Collections.Generic;
 using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using Interactables.Interobjects.DoorUtils;
 using GameCore;
@@ -10,6 +9,7 @@ using UnityEngine;
 using Console = GameCore.Console;
 namespace Qurre.Patches.Events.SCPs.Scp079
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(Scp079PlayerScript), nameof(Scp079PlayerScript.UserCode_CmdInteract))]
 	internal static class Interact
 	{

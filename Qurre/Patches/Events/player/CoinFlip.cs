@@ -1,13 +1,13 @@
 ﻿using HarmonyLib;
 using InventorySystem.Items.Coin;
 using Mirror;
-using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
 using Utils.Networking;
 using static InventorySystem.Items.Coin.CoinNetworkHandler;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(CoinNetworkHandler), nameof(CoinNetworkHandler.ServerProcessMessage))]
     internal static class CoinFlip
     {

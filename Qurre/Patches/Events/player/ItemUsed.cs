@@ -1,7 +1,7 @@
 ﻿using System;
 using HarmonyLib;
 using InventorySystem.Items.Usables;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
     [HarmonyPatch(typeof(Consumable), nameof(Consumable.ServerOnUsingCompleted))]
     internal static class ItemUsedPatch

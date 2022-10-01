@@ -2,13 +2,13 @@
 using HarmonyLib;
 using Mirror;
 using UnityEngine;
-using Qurre.API;
 using Qurre.API.Events;
 using System.Collections.Generic;
 using NorthwoodLib.Pools;
 using InventorySystem.Items.Pickups;
 namespace Qurre.Patches.Events.SCPs.Scp914
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(Scp914Upgrader), nameof(Scp914Upgrader.Upgrade))]
     internal static class Upgrade
     {

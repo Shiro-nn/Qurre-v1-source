@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using HarmonyLib;
 using Mirror;
-using Qurre.API;
 using Qurre.API.Events;
 using UnityEngine;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(TeslaGateController), nameof(TeslaGateController.FixedUpdate))]
     internal static class TeslaTrigger
     {

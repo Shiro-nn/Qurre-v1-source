@@ -1,12 +1,12 @@
 ﻿using System;
 using HarmonyLib;
 using Qurre.API.Events;
-using Qurre.API;
 using Mirror;
 using System.Linq;
 using System.Collections.Generic;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(CustomNetworkManager), nameof(CustomNetworkManager.OnServerDisconnect), new[] { typeof(NetworkConnection) })]
     internal static class Leave
     {

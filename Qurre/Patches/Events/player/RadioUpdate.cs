@@ -2,7 +2,7 @@
 using InventorySystem.Items.Radio;
 using Qurre.API.Events;
 using Qurre.API.Objects;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
     [HarmonyPatch(typeof(RadioItem), nameof(RadioItem.ServerProcessCmd))]
     internal static class RadioUpdate

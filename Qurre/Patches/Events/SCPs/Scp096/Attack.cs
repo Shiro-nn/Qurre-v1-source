@@ -2,7 +2,6 @@
 using Interactables.Interobjects.DoorUtils;
 using PlayableScps.Messages;
 using PlayerStatsSystem;
-using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
 using System;
@@ -10,6 +9,7 @@ using UnityEngine;
 using Utils.Networking;
 namespace Qurre.Patches.Events.SCPs.Scp096
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(PlayableScps.Scp096), nameof(PlayableScps.Scp096.ServerHitObject))]
 	internal static class Attack
 	{

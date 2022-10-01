@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using Respawning.NamingRules;
 namespace Qurre.Patches.Events.Map
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(NineTailedFoxNamingRule), nameof(NineTailedFoxNamingRule.PlayEntranceAnnouncement))]
     internal static class MTFAnnouncement
     {

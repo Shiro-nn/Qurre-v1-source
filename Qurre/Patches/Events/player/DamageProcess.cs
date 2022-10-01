@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
 using PlayerStatsSystem;
-using Qurre.API;
 using Qurre.API.Events;
 using System;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(AttackerDamageHandler), nameof(AttackerDamageHandler.ProcessDamage))]
 	internal static class DamageProcess
 	{
@@ -19,7 +19,7 @@ namespace Qurre.Patches.Events.player
 					allowed = false;
 				}
 				var attacker = Player.Get(__instance.Attacker.Hub);
-				if (attacker is null) attacker = API.Server.Host;
+				if (attacker is null) attacker = Server.Host;
 				if (ply.networkIdentity.netId == __instance.Attacker.NetId)
 				{
 					if (!__instance.AllowSelfDamage && !__instance.ForceFullFriendlyFire && !attacker.FriendlyFire)

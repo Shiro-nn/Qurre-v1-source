@@ -1,12 +1,12 @@
 ﻿using Footprinting;
 using HarmonyLib;
 using InventorySystem.Items.ThrowableProjectiles;
-using Qurre.API;
 using Qurre.API.Events;
 using System;
 using UnityEngine;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(ExplosionGrenade), nameof(ExplosionGrenade.Explode))]
 	internal static class FragExplosionPatch
 	{

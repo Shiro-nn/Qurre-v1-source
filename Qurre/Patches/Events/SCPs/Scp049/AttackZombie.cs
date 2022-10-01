@@ -1,12 +1,12 @@
 ﻿using HarmonyLib;
 using PlayerStatsSystem;
-using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
 using System;
 using UnityEngine;
 namespace Qurre.Patches.Events.SCPs.Scp049
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(Scp049_2PlayerScript), nameof(Scp049_2PlayerScript.UserCode_CmdHurtPlayer))]
     internal static class AttackZombie
     {

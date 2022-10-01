@@ -261,15 +261,12 @@ namespace Qurre.API
 			Primitives.Clear();
 			ShootingTargets.Clear();
 			Cameras.Clear();
-			Patches.Events.player.Banned.Cached.Clear();
+			Patches.Events.Player.Banned.Cached.Clear();
 			Extensions.DamagesCached.Clear();
 			try { Addons.Models.Model.ClearCache(); } catch { }
 			try { Audio._micro?._tasks.Clear(); Audio._micro = null; } catch { }
 			Room.NetworkIdentities.Clear();
 			MEC.Timing.KillCoroutines("Qurre.Controllers.Doors.UpdateNetwork");
 		}
-
-		[Obsolete("Use \"AnnounceMtfEntrance\"")]
-		public static void AnnounceNtfEntrance(int scpsLeft, int mtfNumber, char mtfLetter) => AnnounceMtfEntrance(scpsLeft, mtfNumber, mtfLetter);
 	}
 }

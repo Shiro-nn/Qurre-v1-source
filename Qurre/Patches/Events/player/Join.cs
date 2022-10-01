@@ -1,9 +1,9 @@
 ﻿using System;
-using Qurre.API;
 using HarmonyLib;
 using MEC;
-namespace Qurre.Patches.Events.player
+namespace Qurre.Patches.Events.Player
 {
+    using Qurre.API;
     [HarmonyPatch(typeof(CharacterClassManager), nameof(CharacterClassManager.NetworkIsVerified), MethodType.Setter)]
     internal static class Join
     {

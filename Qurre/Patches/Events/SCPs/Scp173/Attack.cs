@@ -1,10 +1,10 @@
 ﻿using HarmonyLib;
-using Qurre.API;
 using Qurre.API.Events;
 using Qurre.API.Objects;
 using System;
 namespace Qurre.Patches.Events.SCPs.Scp173
 {
+	using Qurre.API;
 	[HarmonyPatch(typeof(PlayableScps.Scp173), nameof(PlayableScps.Scp173.ServerKillPlayer))]
 	internal static class Attack
 	{
