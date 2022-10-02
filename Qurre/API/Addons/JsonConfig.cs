@@ -93,7 +93,6 @@ namespace Qurre.API.Addons
         private JToken ConvertObject<T>(T obj)
         {
             if (obj is string str) return str;
-            if (obj is long n1) return n1;
             if (obj is bool bl) return bl;
             if (obj is IEnumerable<object> list)
             {
@@ -108,6 +107,20 @@ namespace Qurre.API.Addons
                     ["y"] = vec.y,
                     ["z"] = vec.z
                 };
+            try
+            {
+                long numb = long.Parse(obj.ToString());
+                return numb;
+            }
+            catch
+            {
+                try
+                {
+                    float numb = float.Parse(obj.ToString());
+                    if (!float.IsNaN(numb)) return numb;
+                }
+                catch { }
+            }
             return JObject.FromObject(obj);
 
             static void MergeArray(JArray jt, IEnumerable<object> arr)

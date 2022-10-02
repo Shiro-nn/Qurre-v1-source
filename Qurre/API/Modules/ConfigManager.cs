@@ -9,7 +9,7 @@ namespace Qurre.API.Modules
 	internal class ConfigManager
 	{
 		internal ConfigManager() => LoadConfigFile();
-		internal List<string> RawData;
+		internal List<string> RawData = new();
 		private static List<string> Filter(IEnumerable<string> lines)
 		{
 			return (from line in lines
@@ -20,12 +20,13 @@ namespace Qurre.API.Modules
 		internal void LoadConfigFile()
 		{
 			PluginManager.ConfigsPath = Path.Combine(PluginManager.ConfigsDirectory, $"{Loader.Port}-cfg.yml");
-			if (!File.Exists(PluginManager.ConfigsPath)) File.Create(PluginManager.ConfigsPath).Close();
+			if (!File.Exists(PluginManager.ConfigsPath)) return;
 			RemoveInvalid();
 			RawData = Filter(FileManager.ReadAllLines(PluginManager.ConfigsPath));
 		}
 		private static void RemoveInvalid()
 		{
+			if (!File.Exists(PluginManager.ConfigsPath)) return;
 			string[] array = FileManager.ReadAllLines(PluginManager.ConfigsPath);
 			bool flag = false;
 			for (int i = 0; i < array.Length; i++)
@@ -234,23 +235,27 @@ namespace Qurre.API.Modules
 			if (key.ToLower() == "qurre_database") return def;
 			return rawString.Replace("\\n", "\n");
 		}
-		internal string GetDataBase(string key)
-		{
-			string rawString = GetRawString(key);
-			if (rawString == "default") return "";
-			return rawString.Replace("\\n", "\n");
-		}
 		private void WriteCfg(string key, object def, string comment = "")
 		{
 			string _com = comment.Trim().Replace("\n", "\n#");
 			string _def = def.ToString().Replace("\n", "\\n");
-			using StreamWriter sw = new StreamWriter(PluginManager.ConfigsPath, true, Encoding.Default);
 			if (_def == "True") _def = "true";
 			if (_def == "False") _def = "false";
-			if (_com == "") sw.WriteLine($"{key}: {_def}");
-			else sw.WriteLine($"#{_com}\n{key}: {_def}");
+			string _text = _com == "" ? $"{key}: {_def}" : $"#{_com}\n{key}: {_def}";
+			if (!File.Exists(PluginManager.ConfigsPath))
+			{
+				byte[] content = new UTF8Encoding(true).GetBytes(_text);
+				var stream = File.Create(PluginManager.ConfigsPath);
+				stream.Write(content, 0, content.Length);
+				stream.Close();
+			}
+			else
+			{
+				using StreamWriter sw = new(PluginManager.ConfigsPath, true, Encoding.Default);
+				sw.WriteLine(_text);
+				sw.Close();
+			}
 			RawData.Add($"{key}: {_def}");
-			sw.Close();
 		}
 		private void CommentInvalid(string key, string type)
 		{
