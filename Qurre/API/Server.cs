@@ -12,7 +12,7 @@ namespace Qurre.API
         private static Inventory hinv;
         public static ServerConsole ServerConsole => ServerConsole.singleton;
         public static DataBase.Client DataBase { get; internal set; }
-        public static ushort Port => global::Loader.Port;
+        public static ushort Port => ServerStatic.ServerPort;
         public static string Ip => ServerConsole.Ip;
         ///<summary>
         ///<para>if true, then no items will be issued during the escape &amp; the escaped person will not change his location.</para>

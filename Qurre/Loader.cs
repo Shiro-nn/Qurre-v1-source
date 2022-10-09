@@ -7,7 +7,7 @@ namespace Qurre
 {
     internal class Loader : ICharacterLoader
     {
-        internal static ushort Port => global::Loader.Port;
+        internal static ushort Port => ServerStatic.ServerPort;
         internal static JsonConfig Config { get; private set; }
         internal static bool AllUnits { get; private set; } = true;
         internal static bool OnlyTutorialUnit { get; private set; } = false;
