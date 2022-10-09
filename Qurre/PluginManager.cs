@@ -47,7 +47,7 @@ namespace Qurre
 				try
 				{
 					Log.Debug($"Loading {plugin}");
-					LoadPlugin(Assembly.Load(MainInitializator.ReadFile(plugin)));
+					LoadPlugin(Assembly.Load(LoaderManager.ReadFile(plugin)));
 				}
 				catch (Exception ex)
 				{
@@ -64,9 +64,9 @@ namespace Qurre
 				Directory.CreateDirectory(LoadedDependenciesDirectory);
 			foreach (string dll in Directory.GetFiles(LoadedDependenciesDirectory))
 			{
-				if (!dll.EndsWith(".dll") || MainInitializator.Loaded(dll)) continue;
-				Assembly assembly = Assembly.Load(MainInitializator.ReadFile(dll));
-				MainInitializator.LocalLoaded.Add(assembly);
+				if (!dll.EndsWith(".dll") || LoaderManager.Loaded(dll)) continue;
+				Assembly assembly = Assembly.Load(LoaderManager.ReadFile(dll));
+				LoaderManager.LocalLoaded.Add(assembly);
 				Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
 			}
 			DownloadDependencies();
