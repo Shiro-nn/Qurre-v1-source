@@ -5,7 +5,7 @@ using RemoteAdmin;
 using System.IO;
 namespace Qurre
 {
-    internal static class Loader
+    internal class Loader : ICharacterLoader
     {
         internal static ushort Port => global::Loader.Port;
         internal static JsonConfig Config { get; private set; }
@@ -16,7 +16,7 @@ namespace Qurre
         internal static bool BetterHints { get; private set; } = false;
         internal static string[] ReloadAccess { get; private set; } = new string[] { };
 
-        public static void Init()
+        public void Init()
         {
             Log.Info("Initializing Qurre...");
 
