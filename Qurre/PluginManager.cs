@@ -66,7 +66,7 @@ namespace Qurre
 			{
 				if (!dll.EndsWith(".dll") || LoaderManager.Loaded(dll)) continue;
 				Assembly assembly = Assembly.Load(LoaderManager.ReadFile(dll));
-				LoaderManager.LocalLoaded.Add(assembly);
+				LoaderManager.LocalLoaded.Add(new(assembly, dll));
 				Log.Custom("Loaded dependency " + assembly.FullName, "Loader", ConsoleColor.Blue);
 			}
 			DownloadDependencies();
