@@ -77,7 +77,7 @@ namespace Qurre.API
 		public static Primitive GetPrimitive(this GameObject gameObject) => Map.Primitives.FirstOrDefault(x => x.Base.gameObject == gameObject);
 		public static Controllers.Light GetLight(this GameObject gameObject) => Map.Lights.FirstOrDefault(x => x.Base.gameObject == gameObject);
 		public static _lift GetLift(this Lift lift) => Map.Lifts.FirstOrDefault(x => x.GameObject == lift.gameObject);
-		public static _locker GetLocker(this MapGeneration.Distributors.Locker locker) => Map.Lockers.FirstOrDefault(x => x.Transform == locker.gameObject);
+		public static _locker GetLocker(this MapGeneration.Distributors.Locker locker) => Map.Lockers.FirstOrDefault(x => x.GameObject == locker.gameObject);
 		public static _workStation GetWorkStation(this WorkstationController station) => Map.WorkStations.FirstOrDefault(x => x.GameObject == station.gameObject);
 		public static Window GetWindow(this BreakableWindow station) => Map.Windows.FirstOrDefault(x => x.Breakable == station);
 		public static Window GetWindow(this GameObject go) => Map.Windows.FirstOrDefault(x => x.GameObject == go);

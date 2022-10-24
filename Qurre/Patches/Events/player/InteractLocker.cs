@@ -15,11 +15,14 @@ namespace Qurre.Patches.Events.Player
             {
                 var locker = __instance.GetLocker();
                 if (locker is null) return true;
-                if (colliderId >= __instance.Chambers.Length || !__instance.Chambers[colliderId].CanInteract) return false;
+                if (colliderId >= __instance.Chambers.Length) return false;
+                var chmb = __instance.Chambers[colliderId];
+                if (!chmb.CanInteract) return false;
                 bool allow = true;
-                if (!__instance.CheckPerms(__instance.Chambers[colliderId].RequiredPermissions, ply) && !ply.serverRoles.BypassMode) allow = false;
+                if (!__instance.CheckPerms(chmb.RequiredPermissions, ply) && !ply.serverRoles.BypassMode) allow = false;
                 var chamber = __instance.Chambers[colliderId];
-                var ev = new InteractLockerEvent(Player.Get(ply), locker, locker.Chambers.Where(x => x.LockerChamber == chamber).FirstOrDefault(), allow);
+                locker.Chambers.TryFind(out var chmbr, x => x.LockerChamber == chamber);
+                var ev = new InteractLockerEvent(Player.Get(ply), locker, chmbr, allow);
                 Qurre.Events.Invoke.Player.InteractLocker(ev);
                 if (!ev.Allowed) __instance.RpcPlayDenied(colliderId);
                 else
