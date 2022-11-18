@@ -18,11 +18,26 @@ namespace Qurre.Events.Modules
             Round.Waiting += Waiting;
             Player.RoleChange += ChangeRole;
             Round.Restart += RoundRestart;
-            Player.SyncData += SyncData;
             Server.SendingRA += FixRaBc;
             //Player.DamageProcess += FixFF;
             Round.Waiting += FixOneSerial;
             Player.ScpAttack += AntiCheat;
+
+            MEC.Timing.RunCoroutine(CheckPlayersEscape());
+            static IEnumerator<float> CheckPlayersEscape()
+            {
+                for (; ; )
+                {
+                    try
+                    {
+                        if (API.Round.Started)
+                            foreach (var pl in API.Player.List)
+                                try { CheckEscape(pl); } catch { }
+                    }
+                    catch { }
+                    yield return MEC.Timing.WaitForSeconds(1);
+                }
+            }
         }
         private static void SceneUnloaded(Scene _)
         {
@@ -109,10 +124,10 @@ namespace Qurre.Events.Modules
                 ev.Player.DropItems();
         }
         private static void RoundRestart() => API.Map.ClearObjects();
-        private static void SyncData(SyncDataEvent ev)
+        private static void CheckEscape(API.Player pl)
         {
-            if (ev.Player is not null && ev.Player.Escape is not null && Vector3.Distance(ev.Player.Position, ev.Player.Escape.worldPosition) < Escape.radius)
-                ev.Player.CheckEscape();
+            if (pl.Escape is not null && Vector3.Distance(pl.Position, pl.Escape.worldPosition) < Escape.radius)
+                pl.CheckEscape();
         }
         private static void FixRaBc(SendingRAEvent ev)
         {
