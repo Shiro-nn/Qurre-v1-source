@@ -8,27 +8,41 @@ namespace Qurre
 		internal static bool Debugging { get; set; } = true;
 		internal static bool Logging { get; set; } = false;
 		internal static bool AllLogging { get; set; } = false;
-		public static void Info(object message) =>
-			ServerConsole.AddLog($"[INFO] [{Assembly.GetCallingAssembly().GetName().Name}] {message}", ConsoleColor.Yellow);
+		public static void Info(object message)
+		{
+			string caller = "█████";
+			try { caller = Assembly.GetCallingAssembly().GetName().Name; } catch { }
+			ServerConsole.AddLog($"[INFO] [{caller}] {message}", ConsoleColor.Yellow);
+		}
 		public static void Debug(object message)
 		{
-			if (Debugging)
-				ServerConsole.AddLog($"[DEBUG] [{Assembly.GetCallingAssembly().GetName().Name}] {message}", ConsoleColor.DarkGreen);
+			if (!Debugging) return;
+			string caller = "█████";
+			try { caller = Assembly.GetCallingAssembly().GetName().Name; } catch { }
+			ServerConsole.AddLog($"[DEBUG] [{caller}] {message}", ConsoleColor.DarkGreen);
 		}
 		public static void Warn(object message)
 		{
-			string text = $"[WARN] [{Assembly.GetCallingAssembly().GetName().Name}] {message}";
+			string caller = "█████";
+			try { caller = Assembly.GetCallingAssembly().GetName().Name; } catch { }
+			string text = $"[WARN] [{caller}] {message}";
 			ServerConsole.AddLog(text, ConsoleColor.DarkYellow);
 			LogTxt(text);
 		}
 		public static void Error(object message)
 		{
-			string text = $"[ERROR] [{Assembly.GetCallingAssembly().GetName().Name}] {message}";
+			string caller = "█████";
+			try { caller = Assembly.GetCallingAssembly().GetName().Name; } catch { }
+			string text = $"[ERROR] [{caller}] {message}";
 			ServerConsole.AddLog(text, ConsoleColor.Red);
 			LogTxt(text);
 		}
-		public static void Custom(object message, string prefix = "Custom", ConsoleColor color = ConsoleColor.Gray) =>
-			ServerConsole.AddLog($"[{prefix}] [{Assembly.GetCallingAssembly().GetName().Name}] {message}", color);
+		public static void Custom(object message, string prefix = "Custom", ConsoleColor color = ConsoleColor.Gray)
+		{
+			string caller = "█████";
+			try { caller = Assembly.GetCallingAssembly().GetName().Name; } catch { }
+			ServerConsole.AddLog($"[{prefix}] [{caller}] {message}", color);
+		}
 		internal static void LogTxt(object message)
 		{
 			if (!Logging) return;

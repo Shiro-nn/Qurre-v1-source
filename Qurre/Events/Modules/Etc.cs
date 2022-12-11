@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using Qurre.API.Objects;
 using System.Linq;
 using Assets._Scripts.Dissonance;
-using Dissonance;
+using Mirror;
 namespace Qurre.Events.Modules
 {
     internal static class Etc
@@ -46,26 +46,14 @@ namespace Qurre.Events.Modules
             API.Player.ArgsPlayers.Clear();
             API.Player.Dictionary.Clear();
             API.Map.ClearObjects();
-            try { Radio.comms.OnPlayerJoinedSession -= AudioSessionJoin; } catch { }
         }
         private static void AntiCheat(ScpAttackEvent ev)
         {
             if (ev.Target.Team is Team.SCP) ev.Allowed = false;
         }
-        private static void AudioSessionJoin(VoicePlayerState state)
-        {
-            Radio.comms.PlayerChannels.Open(state._name, false, ChannelPriority.Default, GetVolume());
-            static float GetVolume()
-            {
-                if (API.Audio.Microphone is null) return 1;
-                foreach (var task in API.Audio.Microphone.Tasks) return (float)task.Volume / 100;
-                return 1;
-            }
-        }
         private static void Waiting()
         {
             API.Audio._micro = Radio.comms.gameObject.AddComponent<API.Addons.Audio.Extensions.Microphone>();
-            Radio.comms.OnPlayerJoinedSession += AudioSessionJoin;
             API.Server.Host.Dissonance.NetworkspeakingFlags = SpeakingFlags.IntercomAsHuman;
 
             if (API.Round.CurrentRound == 0)

@@ -73,7 +73,7 @@ namespace Qurre.API
 			if (instant && _micro._tasks.Count > 0)
 			{
 				_micro._tasks.Insert(1, task);
-				_micro.StopCapture();
+				_micro.StopPlay();
 			}
 			else
 			{

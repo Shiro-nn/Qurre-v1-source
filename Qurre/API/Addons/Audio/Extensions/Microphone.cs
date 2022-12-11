@@ -14,6 +14,7 @@ namespace Qurre.API.Addons.Audio.Extensions
 
         internal readonly TasksList _tasks = new();
         private readonly List<IMicrophoneSubscriber> _subs = new();
+        private Dissonance.RoomChannel? _channel;
 
         private float _elapsedTime;
         private float[] _frame = new float[1920];
@@ -31,7 +32,7 @@ namespace Qurre.API.Addons.Audio.Extensions
         {
             if (_tasks.Count == 0)
             {
-                StopCapture();
+                StopPlay();
                 return true;
             }
             if (Status is not StatusType.Playing)
@@ -59,7 +60,7 @@ namespace Qurre.API.Addons.Audio.Extensions
                 return false;
 
             if (_tasks[0].Loop) stream.Position = 0;
-            else StopCapture();
+            else StopPlay();
 
             return false;
         }
@@ -76,11 +77,9 @@ namespace Qurre.API.Addons.Audio.Extensions
             AudioTask task = _tasks[0];
             try
             {
-                foreach (var channel in Radio.comms.PlayerChannels._openChannelsBySubId.Values)
-                {
-                    Radio.comms.PlayerChannels.Close(channel);
-                    Radio.comms.PlayerChannels.Open(channel.TargetId, amplitudeMultiplier: (float)task.Volume / 100);
-                }
+                if (_channel is not null)
+                    Radio.comms.RoomChannels.Close(_channel.Value);
+                _channel = Radio.comms.RoomChannels.Open("Intercom", amplitudeMultiplier: (float)task.Volume / 100);
             }
             catch { }
             Server.Host.Radio.Network_syncPrimaryVoicechatButton = true;
@@ -101,19 +100,7 @@ namespace Qurre.API.Addons.Audio.Extensions
 
             return task.Stream.Format;
         }
-        public virtual void StopCapture()
-        {
-            if (_tasks.Count == 0) return;
-            Server.Host.Radio.Network_syncPrimaryVoicechatButton = false;
-
-            IsRecording = false;
-            Status = StatusType.Stopped;
-
-            AudioTask task = _tasks[0];
-            _tasks.Remove(task);
-
-            MEC.Timing.CallDelayed(0.1f, () => { if (_tasks.Count > 0) ResetMicrophone(); });
-        }
+        public virtual void StopCapture() => StopPlay(false);
         public virtual void Pause()
         {
             if (Status is not StatusType.Playing) return;
@@ -130,8 +117,31 @@ namespace Qurre.API.Addons.Audio.Extensions
         }
         public virtual void Skip()
         {
-            StopCapture();
+            StopPlay();
             ResetMicrophone();
+        }
+
+        internal void StopPlay(bool api = true)
+        {
+            if (_tasks.Count == 0) return;
+            if (api) Stop();
+            else MEC.Timing.CallDelayed(0.5f, () =>
+            {
+                if (IsRecording) return;
+                Stop();
+            });
+            void Stop()
+            {
+                Server.Host.Radio.Network_syncPrimaryVoicechatButton = false;
+
+                IsRecording = false;
+                Status = StatusType.Stopped;
+
+                AudioTask task = _tasks[0];
+                _tasks.Remove(task);
+
+                if (_tasks.Count > 0) ResetMicrophone();
+            }
         }
     }
 }
