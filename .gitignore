@@ -1,0 +1,6 @@
+Loader/Archiver/obj/*
+Loader/Loader/obj/*
+Loader/Patcher/obj/*
+Loader/.bin/*
+Loader/.vs/*
+.vs/*
